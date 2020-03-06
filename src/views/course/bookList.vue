@@ -1,6 +1,6 @@
 <template>
   <div v-cloak class="font16 hgt_full">
-       <router-view />
+    <router-view />
     <div class="flex_column hgt_full">
       <!-- 查询表单 -->
       <div class="m-t-20">
@@ -25,41 +25,41 @@
         </el-form>
       </div>
       <!-- 科目列表 -->
-    
-        <el-table
-          ref="refSubjectListElTabel"
-          :data="subjectList"
-          border
-          tooltip-effect="light"
-          style="width: 100%"
-          height="100%"
+
+      <el-table
+        ref="refSubjectListElTabel"
+        :data="subjectList"
+        border
+        tooltip-effect="light"
+        style="width: 100%"
+        height="100%"
+      >
         >
-          >
-          <el-table-column prop="Id" label="ID" width="50" />
-          <el-table-column prop="Label" label="名称" width="250" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <span
-                class="color-1890ff font-w6 cursor"
-                @click="openMoreOptationDialog(scope.$index, scope.row)"
-              >{{ scope.row.Label }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="Topic" label="章节数" width="60" />
-          <el-table-column
-            prop="Coursekind"
-            label="所属课程类别"
-            width="250"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column prop="Description" :show-overflow-tooltip="true" label="描述" />
-          <el-table-column label="操作" width="200" fixed="right">
-            <template slot-scope="scope">
-              <el-button type="success" @click="addChapter(scope.$index, scope.row)">内容管理</el-button>
-              <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题管理</el-button>
-              <!-- <el-button type="info" @click="gotoBookExercisePage(scope.$index, scope.row)">学员作业</el-button> -->
-            </template>
-          </el-table-column>
-        </el-table> 
+        <el-table-column prop="Id" label="ID" width="50" />
+        <el-table-column prop="Label" label="名称" width="250" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span
+              class="color-1f85aa font-w6 cursor"
+              @click="openMoreOptationDialog(scope.$index, scope.row)"
+            >{{ scope.row.Label }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="Topic" label="章节数" width="60" />
+        <el-table-column
+          prop="Coursekind"
+          label="所属课程类别"
+          width="250"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column prop="Description" :show-overflow-tooltip="true" label="描述" />
+        <el-table-column label="操作" width="200" fixed="right">
+          <template slot-scope="scope">
+            <el-button type="success" @click="addChapter(scope.$index, scope.row)">内容管理</el-button>
+            <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题管理</el-button>
+            <!-- <el-button type="info" @click="gotoBookExercisePage(scope.$index, scope.row)">学员作业</el-button> -->
+          </template>
+        </el-table-column>
+      </el-table>
       <div class="between-center m-v-15">
         <el-button type="primary" @click="openSubjectDialog(1)">新增教材</el-button>
         <div>
@@ -85,19 +85,17 @@
           <bookRowDetail @itemModify="updateListItem" :formItemData="customFormData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <!-- <el-tabs>
-            <el-tab-pane id="gjjl" label="跟进记录" name="gjjl"></el-tab-pane>
-            <el-tab-pane id="gmjl" label="购买记录" name="gmjl"></el-tab-pane>
-            <el-tab-pane id="htdd" label="合同订单" name="htdd"></el-tab-pane>
-            <el-tab-pane id="cjlr" label="成绩录入" name="cjlr"></el-tab-pane>
-            <el-tab-pane id="dazl" label="档案资料" name="dazl"></el-tab-pane>
-          </el-tabs>~ -->
+          <el-tabs  v-model="activeName">
+            <el-tab-pane id="xgxz" label="相关下载" name="xgxz">
+              <bookDownFile :formItemData="customFormData" @subClickEvent="updateListItem" />
+            </el-tab-pane>
+          </el-tabs>
         </div>
       </my-dialog>
       <el-dialog
         :visible.sync="editDialog"
         width="500px"
-        :title="customFormData.Id>0?'编辑'+customFormData.Label:'新增校区'"
+        :title="customFormData.Id>0?'编辑'+customFormData.Label:'新增教材'"
       >
         <bookRowDetail
           @itemModify="updateListItem"
@@ -113,13 +111,15 @@
 import Layout from "@/layout";
 import myDialog from "@/components/myDialog/myDialog";
 import bookRowDetail from "@/views/course/component/bookRowDetail";
+import bookDownFile from "@/views/course/component/bookDownFile";
 import { queryBookList } from "@/api/book";
 
 export default {
   name: "bookList",
   components: {
     myDialog,
-    bookRowDetail
+    bookRowDetail,
+    bookDownFile
   },
   data() {
     return {
@@ -133,6 +133,7 @@ export default {
       searchBookCourseKind: "",
       // 查询内容
       searchContent: "",
+      activeName:"xgxz",
       // 科目的列表数据
       subjectList: [],
       // 更多操作弹窗
@@ -200,17 +201,17 @@ export default {
     // 关联章节管理
     addChapter: function(index, row) {
       this.$router.push({
-        name: "bookAdpter", 
-        query:{Id:row.Id}
+        name: "bookAdpter",
+        query: { Id: row.Id }
       });
     },
     // 关联试题管理
     questionManager: function(index, row) {
       this.$router.push({
         name: "questionsList",
-        query: {  Id: row.Id }
+        query: { Id: row.Id }
       });
-    },
+    }
     // 学生作业
     // gotoBookExercisePage(index, row) {
     //   this.$router.push({

@@ -1,6 +1,6 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper">
+    <scroll-pane ref="scrollPane" class="tags-view-wrapper" >
    
         <router-link
           v-for="tag in visitedViews"
@@ -216,6 +216,7 @@ export default {
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   .tags-view-wrapper {
+    background-color:#e6e6e6;
     .tags-view-item {
       display: inline-block;
       position: relative;

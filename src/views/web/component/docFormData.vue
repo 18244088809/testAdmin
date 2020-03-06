@@ -41,7 +41,7 @@
                 :auto-upload="false"
                 action
               >
-                <el-input placeholder="点击上传" v-model="currentItemData.Downfile"></el-input>
+                <el-input placeholder="点击选择附件" v-model="currentItemData.Downfile" disabled></el-input>
               </el-upload>
             </el-form-item>
           </div>
@@ -76,7 +76,7 @@ export default {
     formItemData: {
       type: Object,
       default: function() {
-        return { Id: 0 };
+        return { Id: 0,icon :"/upload/icon/Icon-DOCX.png" };
       }
     },
     platform: {
@@ -93,17 +93,13 @@ export default {
   },
   data() {
     return {
-      common, 
+      common,
       // 表单验证
       newsFormRules: {
         Title: [{ required: true, message: "标题不能为空", trigger: "blur" }]
       },
       currentPlatfrom: 0,
-      currentItemData: {
-        CollegeID: 0,
-        Platform: 0,
-        Content:""
-      }
+      currentItemData:this.formItemData
     };
   },
   watch: {
@@ -118,11 +114,11 @@ export default {
     }
   },
   mounted() {
-    this.setData();
+     this.setData();
   },
   methods: {
     setData() {
-      this.currentItemData = this.formItemData; 
+      this.currentItemData = this.formItemData;
     },
 
     formatTooltipFunc(value) {
@@ -207,9 +203,12 @@ export default {
     // 添加或编辑数据
     saveNewsFormData() {
       // 验证表单数据
-      console.log("  this.currentItemData:",  this.currentItemData)
-       this.currentItemData.Platform = this.platform;
-       this.currentItemData.CollegeID = this.college;
+      if (this.currentItemData.icon == "") {
+        this.currentItemData.icon = "/upload/icon/Icon-DOCX.png";
+      }
+      this.currentItemData.Platform = this.platform;
+      this.currentItemData.CollegeID = this.college;
+       this.currentItemData.Isnews = 2;
       this.$refs.newsForm.validate(async valid => {
         if (valid) {
           if (this.currentItemData.Id > 0) {

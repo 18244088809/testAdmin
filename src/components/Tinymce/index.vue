@@ -1,7 +1,6 @@
 <template>
   <div :class="{fullscreen:fullscreen}" class="tinymce-container editor-container">
-   
- <textarea :id="tinymceId" class="tinymce-textarea" /> 
+    <textarea :id="tinymceId" class="tinymce-textarea" />
   </div>
 </template>
 
@@ -27,6 +26,11 @@ export default {
       type: String,
       default: ""
     },
+    data: {
+      type: String,
+      default: ""
+    },
+
     toolbar: {
       type: Array,
       required: false,
@@ -61,13 +65,13 @@ export default {
       return this.languageTypeList["zh_CN"];
     }
   },
-  watch: {
-    value(val) {
-      // if (!this.hasChange && this.hasInit) {
-      //   this.$nextTick(() =>
-      window.tinymce.get(this.tinymceId).setContent(val || "");
-      //   );
-      // }
+  watch: { 
+    value(val) { 
+      if (!this.hasChange && this.hasInit) {
+        this.$nextTick(() =>
+          window.tinymce.get(this.tinymceId).setContent(val || "")
+        );
+      }
     },
     language() {
       this.destroyTinymce();
@@ -88,7 +92,7 @@ export default {
   },
   methods: {
     initTinymce() {
-      const _this = this; 
+      const _this = this;
       tinymce.init({
         language: "zh_CN",
         selector: `#${this.tinymceId}`,
@@ -141,7 +145,7 @@ export default {
           _this.hasInit = true;
           editor.on("NodeChange Change KeyUp SetContent", () => {
             this.hasChange = true;
-            this.$emit("input", editor.getContent());
+            this.$emit("input", editor.getContent()); 
           });
         },
         setup(editor) {
@@ -167,7 +171,7 @@ export default {
         tinymce.destroy();
       }
     },
-    setContent(value) {
+    setContent(value) { 
       window.tinymce.get(this.tinymceId).setContent(value);
     },
     getContent() {
@@ -186,8 +190,6 @@ export default {
 </script>
 
 <style scoped>
- 
-
 .tinymce-container {
   position: relative;
   line-height: normal;

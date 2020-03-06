@@ -11,17 +11,23 @@
           height="100%"
         >
           <el-table-column prop="Id" label="ID" width="50"></el-table-column>
-          <el-table-column prop="Title" label="竞赛标题" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Title" label="竞赛标题" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span
+                class="color-1f85aa font-w6 cursor"
+                @click="openMoreOptationDialog(scope.$index, scope.row)"
+              >{{ scope.row.Title }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="竞赛类型" width="100">
             <template slot-scope="scope">
-              <span>{{common.FormatSelect(newsKindOptions,scope.row.KindId)}}</span>
+              <span>{{common.FormatSelect(kindList,scope.row.KindId)}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="Creattime" :formatter="TimeFormatter" label="发布时间" width="130"></el-table-column>
           <el-table-column prop="AuthorLabel" label="发布人" width="100"></el-table-column>
-          <el-table-column label="操作" width="150" fixed="right">
-            <template slot-scope="scope">
-              <el-button type="primary" @click="editNewsRow(scope.$index, scope.row)">编辑</el-button>
+          <el-table-column label="操作" width="100" fixed="right">
+            <template slot-scope="scope"> 
               <el-button type="danger" @click="deleteNewsRow(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -49,7 +55,7 @@
         :closeLeft="false"
       >
         <div slot="right_content">
-          <newsFormData ref="newsForm" :formItemData="newsFormData" @updateRowData="updateNewsList"></newsFormData>
+          <newsFormData ref="newsForm" :formItemData="newsFormData" @updateRowData="updateNewsList" :kindList="kindList"></newsFormData>
         </div>
       </my-dialog>
     </div>
@@ -71,18 +77,22 @@ export default {
     return {
       common,
       // 竞赛类型的选项
-      newsKindOptions: [
+      kindList: [
         {
           value: 1,
-          Label: "企业动态"
+          Label: "常规竞赛"
         },
         {
           value: 2,
-          Label: "就业动态"
+          Label: "初级竞赛"
         },
         {
           value: 3,
-          Label: "行业动态"
+          Label: "中级竞赛"
+        },
+        {
+          value: 4,
+          Label: "高级竞赛"
         }
       ],
       // 竞赛的数据列表
@@ -141,7 +151,7 @@ export default {
         .catch(() => {});
     },
     // 打开编辑弹窗获取用户数据
-    editNewsRow(index, row) {
+    openMoreOptationDialog(index, row) {
       this.newsFormDialog = true;
       this.currentNewsIndex = index;
       this.newsFormData = row;
@@ -154,7 +164,7 @@ export default {
     newsAdd() {
       this.newsFormDialog = true;
       this.newsFormData = {
-        icon: "upload/news/defaultNewsIcon.jpg",
+        icon: "/upload/icon/defaultnews.png",
         Id: 0,
         Downfile: "",
         Title: "",

@@ -11,17 +11,29 @@
           height="100%"
         >
           <el-table-column prop="Id" label="ID" width="50"></el-table-column>
-          <el-table-column prop="Title" label="新闻标题" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Title" label="新闻标题" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span
+                class="color-1f85aa font-w6 cursor"
+                @click="openMoreOptationDialog(scope.$index, scope.row)"
+              >{{ scope.row.Title }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="新闻类型" width="100">
             <template slot-scope="scope">
               <span>{{common.FormatSelect(newsKindOptions,scope.row.KindId)}}</span>
             </template>
           </el-table-column>
+          <el-table-column label="是否公共" width="100">
+            <template slot-scope="scope">
+              <span v-if="scope.row.Platform==0">公共新闻</span>
+              <span v-else>校区新闻</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="Creattime" :formatter="TimeFormatter" label="发布时间" width="130"></el-table-column>
           <el-table-column prop="AuthorLabel" label="发布人" width="100"></el-table-column>
-          <el-table-column label="操作" width="150" fixed="right">
+          <el-table-column label="操作" width="100" fixed="right">
             <template slot-scope="scope">
-              <el-button type="primary" @click="editNewsRow(scope.$index, scope.row)">编辑</el-button>
               <el-button type="danger" @click="deleteNewsRow(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -49,7 +61,13 @@
         :closeLeft="false"
       >
         <div slot="right_content">
-          <newsFormData ref="newsForm" :formItemData="newsFormData" @updateRowData="updateNewsList"></newsFormData>
+          <newsFormData
+            ref="newsForm"
+            :kindList="newsKindOptions"
+            :platform="currentPlatform"
+            :formItemData="currentItemData"
+            @updateRowData="updateNewsList"
+          ></newsFormData>
         </div>
       </my-dialog>
     </div>
@@ -60,7 +78,7 @@
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
 import newsFormData from "@/views/web/component/newsFormData";
-import { getNewsList, deleNewsRow } from "@/api/news";
+import { GetPlatformNews, deleNewsRow } from "@/api/news";
 export default {
   name: "newsList",
   components: {
@@ -74,15 +92,15 @@ export default {
       newsKindOptions: [
         {
           value: 1,
-          Label: "企业动态"
+          Label: "校园新闻"
         },
         {
           value: 2,
-          Label: "就业动态"
+          Label: "行业新闻"
         },
         {
           value: 3,
-          Label: "行业动态"
+          Label: "其他新闻"
         }
       ],
       // 新闻的数据列表
@@ -96,21 +114,23 @@ export default {
       // 显示隐藏模态框
       newsFormDialog: false,
       // 模态框获得的单条数据
-      newsFormData: null,
+      currentItemData: null,
       // 当前索引
-      currentNewsIndex: null
+      currentNewsIndex: null,
+      currentPlatform: 0
     };
   },
   methods: {
     // 获取新闻的数据列表
-    async getNewsList() {
+    async GetPlatformNews() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
-        simple: 1,
+        needPublic: false,
+        content: 1,
         limit: this.rows,
         offset: offsetRow
       };
-      let res = await getNewsList("", newParams);
+      let res = await GetPlatformNews(this.currentPlatform, newParams);
       if (res.code == 200) {
         this.newsListTable = [];
         if (res.data) {
@@ -122,7 +142,7 @@ export default {
     // 分页获取数据
     currentPageChange(val) {
       this.nowPage = val;
-      this.getNewsList();
+      this.GetPlatformNews();
     },
     // 删除新闻数据
     deleteNewsRow: function(index, row) {
@@ -135,16 +155,16 @@ export default {
           this.currentNewsIndex = index;
           let res = await deleNewsRow(row.Id);
           if (res.code == 200) {
-            this.getNewsList();
+            this.GetPlatformNews();
           }
         })
         .catch(() => {});
     },
     // 打开编辑弹窗获取用户数据
-    editNewsRow(index, row) {
+    openMoreOptationDialog(index, row) {
       this.newsFormDialog = true;
       this.currentNewsIndex = index;
-      this.newsFormData = row;
+      this.currentItemData = row;
     },
     // 显示列表的时候格式化时间
     TimeFormatter(row, column, cellValue) {
@@ -153,14 +173,14 @@ export default {
     // 点击新增新闻
     newsAdd() {
       this.newsFormDialog = true;
-      this.newsFormData = {
-        icon: "upload/news/defaultNewsIcon.jpg",
+      this.currentItemData = {
+        icon: "/upload/icon/defaultnews.png",
         Id: 0,
         Downfile: "",
         Title: "",
         Description: "",
-        Content: "",
-        KindId: null
+        Content: "没有写任何内容",
+        KindId: 1
       };
     },
     // 编辑或者添加之后更新表格数据-新闻列表
@@ -176,10 +196,12 @@ export default {
   },
 
   mounted() {
-    setTimeout(() => {
-      this.$refs.refElTabel.doLayout();
-    }, 2000);
-    this.getNewsList();
+    let paths = this.$router.currentRoute.path.split("/");
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
+    if (isNaN(this.currentPlatform)) {
+      this.currentPlatform = 0;
+    }
+    this.GetPlatformNews();
   }
 };
 </script>

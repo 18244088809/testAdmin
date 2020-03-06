@@ -102,7 +102,7 @@
         <el-table-column width="120" fixed label="姓名">
           <template slot-scope="scope">
             <span
-              class="color-1890ff font-w6 cursor"
+              class="color-1f85aa font-w6 cursor"
               @click="openMoreOperationDialog(scope.$index, scope.row)"
             >{{ scope.row.Realname }}</span>
           </template>
@@ -150,7 +150,7 @@
               :content="scope.row.RecentTrack.substr(17)"
               placement="top-start"
             >
-              <span class="color-1890ff font-w6 cursor">{{ scope.row.RecentTrack.substr(0,16) }}</span>
+              <span class="color-1f85aa font-w6 cursor">{{ scope.row.RecentTrack.substr(0,16) }}</span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -165,7 +165,7 @@
               :content="'电话:'+scope.row.ManagerTel"
               placement="top-start"
             >
-              <span class="color-1890ff font-w6 cursor">{{ scope.row.ManagerLabel }}</span>
+              <span class="color-1f85aa font-w6 cursor">{{ scope.row.ManagerLabel }}</span>
             </el-tooltip>
           </template>
         </el-table-column>

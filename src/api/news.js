@@ -1,8 +1,17 @@
 import request from '@/utils/request'
-// 获取新闻列表
-export function getNewsList(url, param, data) {
+// 获取资料列表
+export function getDocument(url, param, data) {
   return request({
-    url: '/news/getNewsest'+url,
+    url: '/news/getDocument/'+url,
+    method: 'get',
+    params: param,
+    data
+  })
+}
+// 获取新闻列表
+export function GetPlatformNews(url, param, data) {
+  return request({
+    url: '/news/getPlatformNews/'+url,
     method: 'get',
     params: param,
     data

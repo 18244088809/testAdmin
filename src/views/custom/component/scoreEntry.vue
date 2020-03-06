@@ -18,7 +18,7 @@
       </el-select>
     </div>
     <div class="m-t-20">
-      <p class="font16 color-1890ff border-b-e0 p-v-10 font-w6">专业科目</p>
+      <p class="font16 color-1f85aa border-b-e0 p-v-10 font-w6">专业科目</p>
 
       <div v-for="(item,itemIndex) in allSubjectList" :key="itemIndex">
         <div class="flex_mid p-v-20 border-b-e0">

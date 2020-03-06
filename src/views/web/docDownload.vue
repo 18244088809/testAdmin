@@ -20,14 +20,20 @@
         <el-table-column prop="Title" label="资料名称" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <span
-              class="color-1890ff font-w6 cursor"
+              class="color-1f85aa font-w6 cursor"
               @click="openMoreOperationDialog(scope.$index, scope.row)"
             >{{scope.row.Title}}</span>
           </template>
         </el-table-column>
+        <el-table-column label="是否公共" width="100">
+            <template slot-scope="scope">
+              <span v-if="scope.row.Platform==0">公共资料</span>
+              <span v-else>校区资料</span>
+            </template>
+          </el-table-column>
         <el-table-column label="保密级别" width="100">
           <template slot-scope="scope">
-            <span>{{common.FormatSelect(newsKindOptions,scope.row.KindId)}}</span>
+            <span>{{common.FormatSelect(common.docRights,scope.row.KindId)}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="Creattime" :formatter="TimeFormatter" label="发布时间" width="130"></el-table-column>
@@ -62,7 +68,7 @@
       >
         <div slot="right_content">
           <docFormData
-            ref="newsForm"
+            ref="newsForm" 
             :college="currentCollege"
             :platform="currentPlatform"
             :formItemData="currentRowData"
@@ -78,7 +84,7 @@
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
 import docFormData from "@/views/web/component/docFormData";
-import { getNewsList, deleNewsRow } from "@/api/news";
+import { getDocument, deleNewsRow } from "@/api/news";
 export default {
   name: "newsList",
   components: {
@@ -89,29 +95,29 @@ export default {
     return {
       common,
       currentCollege: 0,
-      // 资料类型的选项
-      newsKindOptions: [
-        {
-          value: 0,
-          Label: "公开资料"
-        },
-        {
-          value: 1,
-          Label: "内部资料"
-        },
-        {
-          value: 2,
-          Label: "隐秘资料"
-        },
-        {
-          value: 3,
-          Label: "保密资料"
-        },
-        {
-          value: 4,
-          Label: "绝密资料"
-        }
-      ],
+      // // 资料类型的选项
+      // newsKindOptions: [
+      //   {
+      //     value: 0,
+      //     Label: "公开资料"
+      //   },
+      //   {
+      //     value: 1,
+      //     Label: "内部资料"
+      //   },
+      //   {
+      //     value: 2,
+      //     Label: "隐秘资料"
+      //   },
+      //   {
+      //     value: 3,
+      //     Label: "保密资料"
+      //   },
+      //   {
+      //     value: 4,
+      //     Label: "绝密资料"
+      //   }
+      // ],
       // 资料的数据列表
       newsListTable: [],
       // 数据总条数
@@ -151,14 +157,13 @@ export default {
     async getNewsList() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
-        college: this.currentCollege,
-        platform: this.currentPlatform,
-        needPublic: true,
-        simple: 1,
+        college: this.currentCollege, 
+        needPublic:true,
+        content: 1,
         limit: this.rows,
         offset: offsetRow
       };
-      let res = await getNewsList("", newParams);
+      let res = await getDocument(this.currentPlatform, newParams);
       if (res.code == 200) {
         this.newsListTable = [];
         if (res.data) {
@@ -206,7 +211,7 @@ export default {
     newsAdd() {
       this.moreOperationDialog = true;
       this.currentRowData = {
-        icon: "upload/news/defaultNewsIcon.jpg",
+        icon: "/upload/icon/defaultnews.png",
         Id: 0,
         Downfile: "",
         Title: "",

@@ -20,7 +20,7 @@
         <el-table-column label="学院名称" width="120">
           <template slot-scope="scope">
             <span
-              class="color-1890ff font-w6 cursor"
+              class="color-1f85aa font-w6 cursor"
               @click="openMoreOperationDialog(scope.$index, scope.row)"
             >{{scope.row.Label}}</span>
           </template>

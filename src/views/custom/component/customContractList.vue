@@ -16,7 +16,7 @@
             placement="top-start"
           >
             <span
-              class="color-1890ff font-w6 cursor"
+              class="color-1f85aa font-w6 cursor"
               @click="editCustomContract(scope.$index, scope.row)"
             >{{ scope.row.Title }}</span>
           </el-tooltip>

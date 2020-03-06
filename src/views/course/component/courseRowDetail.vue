@@ -56,7 +56,7 @@
           >
             <el-input v-model="currentItemData.Background" disabled style="width:auto;" />
             <span
-              class="m-l-15 wid60 cursor color-1890ff"
+              class="m-l-15 wid60 cursor color-1f85aa"
               @click="onPreview(currentItemData.Background)"
             >预览</span>
           </el-upload>
@@ -73,12 +73,12 @@
           >
             <el-input v-model="currentItemData.Jxtx" disabled style="width:auto; " />
           </el-upload>
-          <span class="m-l-15 wid60 cursor color-1890ff" @click="onPreview(currentItemData.Jxtx)">预览</span>
+          <span class="m-l-15 wid60 cursor color-1f85aa" @click="onPreview(currentItemData.Jxtx)">预览</span>
         </div>
       </el-form-item>
       <el-form-item label="详情图">
         <div style="display: flex">
-          <div class="color-1890ff">
+          <div class="color-1f85aa">
             <el-upload
               v-loading="isbusy3"
               :auto-upload="false"
@@ -89,7 +89,7 @@
               <el-input v-model="currentItemData.Kcxq" disabled style="width:auto; " />
             </el-upload>
           </div>
-          <span class="m-l-15 wid60 cursor color-1890ff" @click="onPreview(currentItemData.Kcxq)">预览</span>
+          <span class="m-l-15 wid60 cursor color-1f85aa" @click="onPreview(currentItemData.Kcxq)">预览</span>
         </div>
       </el-form-item> 
     </el-form>
@@ -153,9 +153,7 @@ export default {
       this.currentItemData.TCourseKindID = this.courseKindId;
       // this.collegeChangeGetCourseKind(0);
     },
-    courseKindIdProp(newval) {
-      console.log(this.courseKindId,"=====2====",this.courseKindIdProp)
- 
+    courseKindIdProp(newval) { 
       if (this.courseKindIdProp > 0) {
         this.courseKindId = this.courseKindIdProp;
       }
@@ -165,11 +163,11 @@ export default {
   },
   data() {
     return {
-      myImageViewer,
       common,
       currenteditEnable: this.editEnable,
       // 课程的表单数据
       currentItemData: {},
+      myImageViewer,
       // 预览图片的图片地址
       imageViewerSrc: "",
       // 显示图片查看器

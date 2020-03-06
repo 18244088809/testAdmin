@@ -9,8 +9,8 @@
               <div class="flex_mid p_both20 m-t-10">
                 <div class="m-l-15">
                   <p class="font14 color-666">
-                    <span class="color-1890ff">客户：{{ item.StudentLabel }}</span>
-                    <span class="font12 color-1890ff">{{ item.StudentTel }}</span>
+                    <span class="color-1f85aa">客户：{{ item.StudentLabel }}</span>
+                    <span class="font12 color-1f85aa">{{ item.StudentTel }}</span>
                   </p>
                   <p class="m-t-10 font14 color-666">
                     <span>{{ item.ManagerLabel }}：{{ item.track_method }}</span>
@@ -46,7 +46,7 @@
                   :key="replyIndex"
                   class="color-666 font14 m-b-10"
                 >
-                  <span class="color-1890ff">{{ replyItem.ManagerLabel }}：</span>
+                  <span class="color-1f85aa">{{ replyItem.ManagerLabel }}：</span>
                   <span>{{ replyItem.Content }}</span>
                 </p>
               </div>

@@ -73,3 +73,13 @@ export function createBookStructure(url, param, data) {
     data
   })
 }
+
+// 设置教材的info
+export function SetBookInfo(url, param, data) {
+  return request({
+    url: '/book/setbookInfo/' + url,
+    method: 'post',
+    params: param,
+    data
+  })
+}

@@ -86,7 +86,7 @@
             :key="replyIndex"
             class="color-666 font14 m-b-10"
           >
-            <span class="color-1890ff">{{ replyItem.ManagerLabel }}：</span>
+            <span class="color-1f85aa">{{ replyItem.ManagerLabel }}：</span>
             <span>{{ replyItem.Content }}</span>
           </p>
         </div>

@@ -79,7 +79,7 @@
           <el-table-column label="合同名称" width="210" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span
-                class="color-1890ff font-w6 cursor"
+                class="color-1f85aa font-w6 cursor"
                 @click="editContract(scope.$index, scope.row)"
               >{{ scope.row.Title }}</span>
             </template>

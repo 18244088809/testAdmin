@@ -134,7 +134,8 @@ export default {
   padding: 20px 30px 0px 20px;
   position: relative;
   box-sizing: border-box;
-  border-radius: 10px;
+ border-radius: 5px;
+  border:1px dashed rgba(46,84,56,0.2);
 }
 .el-upload {
   border: 1px dashed #e0e0e0;

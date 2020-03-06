@@ -2,7 +2,7 @@
   <!-- --------------------数据编辑或者添加表单组件----------------------- -->
   <div class="pad20">
     <el-form
-      :model="formItemData"
+      :model="currentItemData"
       :rules="newsFormRules"
       ref="newsForm"
       size="small"
@@ -17,18 +17,18 @@
             :auto-upload="false"
             action
           >
-            <img :src="formItemData.icon" width="100px" height="100px" />
+            <img :src="currentItemData.icon" width="100px" height="100px" />
           </el-upload>
         </el-tooltip>
         <div class="flex_1 m-l-30">
           <div class="flex_dom">
-            <el-form-item label="类别">
-              <el-select v-model="formItemData.KindId" placeholder="请选择类别">
+            <el-form-item label="新闻类别">
+              <el-select v-model="currentItemData.KindId" placeholder="请选择类别">
                 <el-option
                   :label="item.Label"
                   :key="index"
                   :value="item.value"
-                  v-for="(item,index) in newsKindOptions"
+                  v-for="(item,index) in kindList"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -40,20 +40,20 @@
                 :auto-upload="false"
                 action
               >
-                <el-input placeholder="附件地址" v-model="formItemData.Downfile"></el-input>
+                <el-input placeholder="点击选择附件" v-model="currentItemData.Downfile" disabled></el-input>
               </el-upload>
             </el-form-item>
           </div>
-          <el-form-item label="标题" prop="Title">
-            <el-input placeholder="请输入内容" v-model="formItemData.Title"></el-input>
+          <el-form-item label="新闻标题" prop="Title">
+            <el-input placeholder="请输入内容" v-model="currentItemData.Title"></el-input>
           </el-form-item>
         </div>
       </div>
       <el-form-item label="副标题">
-        <el-input placeholder="请输入内容" v-model="formItemData.Description"></el-input>
+        <el-input placeholder="请输入内容" v-model="currentItemData.Description"></el-input>
       </el-form-item>
       <el-form-item label="内容">
-        <Tinymce ref :height="400" v-model="formItemData.Content"></Tinymce>
+        <Tinymce ref :height="400" v-model="currentItemData.Content"></Tinymce>
       </el-form-item>
     </el-form>
     <div class="center-end m-v-15">
@@ -78,9 +78,17 @@ export default {
         return { Id: 0 };
       }
     },
+      platform: {
+      typ: Number,
+      default: 0
+    },
     editEnable: {
       typ: Boolean,
       default: false
+    },
+    kindList: {
+      typ: Array,
+      default: []
     }
   },
   components: {
@@ -89,21 +97,37 @@ export default {
   data() {
     return {
       common,
-       
+      currentItemData: this.formItemData,
       // 表单验证
       newsFormRules: {
-        Title: [
-          { required: true, message: "标题不能为空", trigger: "blur" }
-        ]
+        Title: [{ required: true, message: "标题不能为空", trigger: "blur" }]
       }
     };
   },
+  watch: {
+    formItemData(newvar) {
+      this.setData();
+    },
+    platform(newvar) {
+      this.setData();
+    },
+    college(newvar) {
+      this.setData();
+    }
+  },
+  mounted() {
+    this.setData();
+  },
   methods: {
+    setData() {
+      this.currentItemData = this.formItemData;
+    },
+
     // 上传的图片
     async newsImgUpload(file) {
       let res = await $ImgAPI.UploadImg("news", file.raw);
       if (res.code == 200) {
-        this.formItemData.icon = res.data;
+        this.currentItemData.icon = res.data;
       }
     },
     // 上传附件之前的验证
@@ -168,37 +192,40 @@ export default {
       if (RightType) {
         let res = await $ImgAPI.UploadImg("news", file.raw);
         if (res.code == 200) {
-          this.formItemData.Downfile = res.data;
+          this.currentItemData.Downfile = res.data;
         }
       }
     },
     // 添加或编辑数据
     saveNewsFormData() {
       // 验证表单数据
+      this.currentItemData.Platform = this.platform; 
+       this.currentItemData.Isnews = 1;
       this.$refs.newsForm.validate(async valid => {
         if (valid) {
-          if (this.formItemData.Id > 0) {
+          this.currentItemData.Isnews = 1; //新闻
+          if (this.currentItemData.Id > 0) {
             // 编辑数据
             let res = await editNewsRow(
-              this.formItemData.Id,
+              this.currentItemData.Id,
               "",
-              this.formItemData
+              this.currentItemData
             );
             if (res.code == 200) {
               this.isShowPlatformDialog = false;
-              this.formItemData = res.data;
+              this.currentItemData = res.data;
               this.$message({
                 message: "修改成功",
                 type: "success"
               });
               this.$emit("updateRowData", res.data, 1);
             }
-          } else if (this.formItemData.Id == 0) {
+          } else if (this.currentItemData.Id == 0) {
             // 添加数据
-            let res = await addNewsRow("", "", this.formItemData);
+            let res = await addNewsRow("", "", this.currentItemData);
             if (res.code == 200) {
               this.isShowPlatformDialog = false;
-              this.formItemData = res.data;
+              this.currentItemData = res.data;
               this.$message({
                 message: "添加成功",
                 type: "success"
@@ -215,8 +242,7 @@ export default {
     cancleUpdate() {
       this.$emit("updateRowData");
     }
-  },
-  mounted() {}
+  }
 };
 </script> 
 <style scoped>
