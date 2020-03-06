@@ -6,7 +6,7 @@
     :title="'['+currentItemData.StudentLabel+']合同订单'"
     width="740px"
   >
-  <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
+    <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
     <div class="contractform">
       <el-form
         ref="refContractForm"
@@ -32,22 +32,20 @@
             :disabled="operationType==0"
             placeholder="身份证号码"
           />
-        </el-form-item> 
+        </el-form-item>
         <el-form-item label="所属学院">
           <el-select
-            v-model="currentItemData.CollegeID"
+            v-model="currentCollege"
             class="changInputWidth"
             :disabled="operationType==0"
             placeholder="请选择所属学院"
-              @change="collegeChangeGetCourseKind"
-          
+            @change="collegeChangeGetCourseKind"
           >
             <el-option
-              v-for="item in $store.getters.app.collegeWithCourseKind"
+              v-for="(item,index) in $store.getters.app.collegeWithCourseKind"
               :key="item.Id"
               :label="item.Label"
-              :value="item.Id"
-             
+              :value="index"
             />
           </el-select>
         </el-form-item>
@@ -64,7 +62,7 @@
                 v-for="(item) in CourseKindsOps"
                 :key="item.Id"
                 :label="item.Label"
-                :value="item.Label"
+                :value="item"
               />
             </el-select>
           </el-form-item>
@@ -181,7 +179,7 @@
           <el-input
             v-model="currentItemData.QiankuanPrice"
             placeholder="请输入欠款金额"
-            @change="countCourseRealPrice()" 
+            @change="countCourseRealPrice()"
           />
         </el-form-item>
         <el-form-item label="回款时间">
@@ -191,7 +189,7 @@
             value-format="timestamp"
             :disabled="operationType==0"
             class="changInputWidth"
-            placeholder="请选择回款时间" 
+            placeholder="请选择回款时间"
           />
         </el-form-item>
         <div class="center">
@@ -199,7 +197,7 @@
             <el-input
               v-model="currentItemData.ZhuanPerson"
               :disabled="operationType==0"
-              placeholder="请输入转介绍人" 
+              placeholder="请输入转介绍人"
             />
           </el-form-item>
 
@@ -207,19 +205,14 @@
             <el-input
               v-model="currentItemData.ZhuanTel"
               :disabled="operationType==0"
-              placeholder="请输入联系电话" 
+              placeholder="请输入联系电话"
             />
           </el-form-item>
         </div>
         <el-form-item label="图片">
           <div class="flex_dom flex_wrap">
             <div v-for="(item,index) in contractImgArr" :key="index" class="relative marg15">
-              
-                class="wid80 hgt80"
-                :preview-src-list="[item]"
-                :src="item"
-                fit="cover"
-              />
+              <img class="wid80 hgt80" :preview-src-list="[item]" :src="item" fit="cover" />
               <div
                 v-show="currentItemData.Id<=0"
                 class="deleImgIcon cursor"
@@ -241,11 +234,7 @@
           </div>
         </el-form-item>
         <el-form-item label="情况备注">
-          <el-input
-            v-model="currentItemData.Comments"
-            type="textarea"
-            placeholder="情况备注~" 
-          />
+          <el-input v-model="currentItemData.Comments" type="textarea" placeholder="情况备注~" />
         </el-form-item>
       </el-form>
       <div class="around-center hgt60 bge0e3ea">
@@ -291,7 +280,7 @@ export default {
       isShowContractDialog: false,
       // 添加客户合同的默认数据
       currentItemData: {},
-        // 预览图片的图片地址
+      // 预览图片的图片地址
       imageViewerSrc: "",
       // 显示图片查看器
       showViewer: false,
@@ -302,9 +291,10 @@ export default {
       // 当前用户姓名-添加合同
       PlatformWorkerLabel: "",
       //选中学院后的课程类别
-      CourseKindsOps:[],
+      CourseKindsOps: [],
       // 所有获取课程
       courseList: [],
+      currentCollege: 0,
       // 操作类型:1添加，2追加，0编辑
       operationType: null,
       // 表单验证规则
@@ -342,21 +332,13 @@ export default {
   methods: {
     //  选中学院后回调
     collegeChangeGetCourseKind(index) {
-      this.subjectListOps = [];
-      this.currentItemData.TCourseKindID = null;
-      this.currentItemData.TCollegeID = this.$store.getters.app.collegeWithCourseKind[
-        index
-      ].Id;
-      this.CourseKindsOps = [
-        ...this.$store.getters.app.collegeWithCourseKind[index].Children
-      ];
-      if (this.CourseKindsOps.length > 0) {
-        this.currentItemData.TCourseKindID = this.CourseKindsOps[0].Id;
-        this.courseKindLabel = this.CourseKindsOps[0].Label;
- 
-      }
-    },
+      let college = this.$store.getters.app.collegeWithCourseKind[index];
 
+      this.CourseKindsOps = college.Children;
+      this.currentItemData.TCollegeID = college.Id;
+      this.currentItemData.TCourseKindID = this.CourseKindsOps[0].Id;
+      this.courseKindLabel = this.CourseKindsOps[0].Label;
+    },
 
     // 获取重复组件传递过来的值
     getContractFormData(rowData, type) {
@@ -447,7 +429,7 @@ export default {
               this.currentItemData
             );
           } else {
-            res = await addCustomContract(this.currentItemData);
+            res = await addCustomContract("", "", this.currentItemData);
           }
 
           if (res.code == 200) {
@@ -467,18 +449,10 @@ export default {
         }
       });
     },
-    changeCollege(event){
-      console.log("========",event);
-    },
+
     // 获取课程
-    async getCourse(value) {
-      let kindId = 1;
-      this.$store.getters.app.courseKind.forEach(item => {
-        if (item.Label == value) {
-          kindId = item.Id;
-        }
-      });
-      const res = await GetCourseOfKind("",{ kindid: kindId });
+    async getCourse(coursekind) {
+      const res = await GetCourseOfKind("", { kindid: coursekind.Id });
       this.courseList = res.data;
       if (this.courseList != null && this.courseList.length > 0) {
         this.currentItemData.CourseID = this.courseList[0].Id;

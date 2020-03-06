@@ -12,8 +12,8 @@
               :show-file-list="false"
               :on-change="function(file, fileList){return uploadDataImg(file,fileList,index)}"
             >
-              <i slot="default" class="el-icon-plus"  >&nbsp;点击上传</i>
               <img v-if="item.image" :src="item.image" style="width: 140px; height: 140px" />
+              <i v-else slot="default" class="el-icon-plus"  >&nbsp;点击上传</i>
             </el-upload> 
             <el-button @click="onPreview(item.image)">&nbsp;预览</el-button>
           </div>
