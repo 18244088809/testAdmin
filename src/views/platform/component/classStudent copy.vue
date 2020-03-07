@@ -1,19 +1,69 @@
 <template>
-  <div class="pad0">
+  <div class="p_both10 p-t-5">
     <el-table
       :data="classAllStuList"
       @selection-change="changeSelectStu"
-      style="width: 100%;margin:0px"
+      border
+      style="width: 100%"
       tooltip-effect="light"
     >
+      <el-table-column type="selection" label="全选" width="55"></el-table-column>
       <el-table-column prop="id" label="学号" width="60"></el-table-column>
-      <el-table-column prop="Realname" label="姓名">
-        <template slot-scope="scope">
-          <span class="color-1f85aa font-w6 cursor">{{ scope.row.Realname }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column prop="Realname" label="姓名" width="100"></el-table-column>
       <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
+      <el-table-column prop="Telephone" label="电话" width="100"></el-table-column>
+      <el-table-column prop="Education" label="学历" width="120"></el-table-column>
+      <el-table-column prop="FromLabel" label="渠道来源" width="120"></el-table-column>
+      <el-table-column label="备注" :show-overflow-tooltip="true"></el-table-column>
     </el-table>
+    <div class="m-v-15">
+      <!-- <el-button type="danger" @click="removeClassStu" class="border0 m-t-30">移除学员</el-button> -->
+      <el-button type="primary" @click="ShowSearchForm=true">添加学员</el-button>
+    </div>
+    <div class="pad20 border-e0 radius5 m-t-20" v-show="ShowSearchForm">
+      <el-form
+        :model="stuSearchForm"
+        ref="stuSearchForm"
+        :rules="stuSearchFormRules"
+        label-width="70px"
+      >
+        <div class="center">
+          <el-form-item label="手机号" prop="searchPhone">
+            <el-input
+              v-model="stuSearchForm.searchPhone"
+              @keyup.enter.native="searchStudent"
+              placeholder="请输入学员的手机号"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="姓名" prop="searchPhone">
+            <el-input
+              v-model="stuSearchForm.searchName"
+              @keyup.enter.native="searchStudent"
+              placeholder="请输入学员的姓名"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label-width="30px">
+            <el-button type="primary" @click="searchStudent" class="border0">查 询</el-button>
+          </el-form-item>
+        </div>
+      </el-form>
+      <div class="m-t-20" v-show="showSrarchStuResult">
+        <p>查找结果：</p>
+        <div class="m-t-20 flex_mid flex_wrap m-l-15">
+          <el-checkbox-group v-model="checkBoxAddStu">
+            <el-checkbox
+              :label="item.id"
+              class="m-b-5"
+              :key="item.id"
+              v-for="item in serachStuList"
+            >{{item.Realname}}（{{item.Telephone}}）</el-checkbox>
+          </el-checkbox-group>
+        </div>
+        <div class="m-t-30 center-end">
+          <el-button type="primary" @click="addStudentToClass" class="border0">加入班级</el-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -117,9 +167,10 @@ export default {
       // 验证表单数据
       if (!this.stuSearchForm.searchPhone && !this.stuSearchForm.searchName) {
         this.$message({
-          message: "必须填写学生手机号或姓名之后才能查询",
+          message: "必须填写学生手机号或姓名之后才能查询哦！",
           type: "warning"
         });
+
         return false;
       }
       this.$refs.stuSearchForm.validate(async valid => {
@@ -135,9 +186,8 @@ export default {
               this.showSrarchStuResult = true;
             } else {
               this.serachStuList = [];
-
               this.$message({
-                message: "没有找到该学员",
+                message: "没有找到该学员哦！",
                 type: "warning"
               });
             }
@@ -202,9 +252,9 @@ export default {
     removeClassStu() {
       if (this.checkBoxStuID.length == 0) {
         this.$message({
-          message: "还没有勾选学员",
+          message: "还没有勾选学员哦！",
           type: "warning"
-        });
+        });   
       } else {
         console.log(this.checkBoxStuID);
       }

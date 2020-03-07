@@ -244,7 +244,10 @@ export default {
       //   file.raw
       // );
       if (res.code == 200) {
-        this.$message("上传成功");
+       this.$message({
+              message: "操作成功",
+              type: "success"
+            });
         this.ImgAddr = `<img src="${res.data}" />`;
         this.isbusy = false;
       }
@@ -275,7 +278,7 @@ export default {
               this.currentItemData
             );
             if (res.code == 200) {
-              this.$message("修改成功 !");
+              
               this.$emit("subClickEvent", 1, res.data);
             }
           } else if (!this.currentItemData.Id||this.currentItemData.Id == 0) {
@@ -283,9 +286,13 @@ export default {
             let res = await addQuestion("","",this.currentItemData);
             if (res.code == 200) {
               this.$emit("subClickEvent", 0, res.data);
-              this.$message("添加成功 !");
+       
             }
           }
+          this.$message({
+              message: "操作成功",
+              type: "success"
+            });
         } else {
           console.log("没通过")
           return false;

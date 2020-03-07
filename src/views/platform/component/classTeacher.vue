@@ -1,6 +1,6 @@
 <template>
   <div class="p_both10 p-t-5">
-    <div class="flex_1 m-l-20">
+    <div class="flex_1">
       <vxe-table
         ref="ClassTeacherTable"
         size="mini"
@@ -150,6 +150,8 @@ export default {
           }
         ]
       },
+      //  某一天课程表数据
+      todayTimeTableList: [],
       // 老师所教的科目
       teacheingBookOptions: [],
       // 查找学员的列表-查找结果
@@ -173,6 +175,25 @@ export default {
     };
   },
   methods: {
+    // 改变科目的时候自动获取老师和老师id
+    changeSubject(val, row, rowIndex) {
+      this.classAllSubject.forEach(item => {
+        if (item.book_label == val) {
+          row.TeacherID = item.teacher_id;
+          row.BookID = item.book_id;
+          row.TeacherLabel = item.teacher_label;
+        }
+      });
+      this.todayTimeTableList.splice(rowIndex, 1, row);
+    },
+
+    // 插入行添加课表
+    insertTeacherRow() {
+      let newItem = {
+        Id: -this.teacherList.length - 1
+      };
+      this.teacherList.push(newItem);
+    },
     // 保存开班申请的所有数据
     saveClassOpenFormData() {
       // 验证表单数据
@@ -249,6 +270,17 @@ export default {
         return rowIndex == rowIndex;
       }
     },
+    // 改变老师的时候保存老师的id，并获取科目
+    changeTeacher(val, row, rowIndex) {
+      this.teacherOptionList.forEach(item => {
+        if (item.Realname == val) {
+          row.teacher_id = item.Id;
+        }
+      });
+      this.getTeacherTeachingBook(row.teacher_id, val);
+      this.classOpenFormData.teacherList.splice(rowIndex, 1, row);
+    },
+
     // id小于0的行可以删除
     deleTeacherRow(row, rowIndex) {
       this.teacherList.splice(rowIndex, 1);
@@ -274,7 +306,10 @@ export default {
     searchStudent() {
       // 验证表单数据
       if (!this.stuSearchForm.searchPhone && !this.stuSearchForm.searchName) {
-        this.$message("必须填写学生手机号或姓名之后才能查询哦！");
+        this.$message({
+          message: "必须填写学生手机号或姓名之后才能查询",
+          type: "warning"
+        });
         return false;
       }
       this.$refs.stuSearchForm.validate(async valid => {
@@ -290,7 +325,10 @@ export default {
               this.showSrarchStuResult = true;
             } else {
               this.serachStuList = [];
-              this.$message("没有找到该学员哦！");
+              this.$message({
+                message: "没有找到该学员",
+                type: "warning"
+              });
             }
           }
         } else {
@@ -301,7 +339,10 @@ export default {
     // 向班级添加学员
     async addStudentToClass() {
       if (this.checkBoxAddStu.length < 1) {
-        this.$message("还没有选中要添加的学员哦！");
+        this.$message({
+          message: "还没有选中要添加的学员",
+          type: "warning"
+        });
         return;
       }
       let newStu = [...this.checkBoxAddStu];
@@ -314,13 +355,19 @@ export default {
         });
       }
       if (newStu.length == 0) {
-        this.$message("该学员已经添加过了哦,换个试试吧！");
+        this.$message({
+          message: "该学员已经添加过了",
+          type: "warning"
+        });
         this.checkBoxAddStu = [];
         return;
       }
       let res = await addClassStu(this.formItemData.Id, "", newStu);
       if (res.code == 200) {
-        this.$message("添加成功！");
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
         // 清空搜索和选中的学员数据
         this.checkBoxAddStu = [];
         this.serachStuList = [];
@@ -343,7 +390,10 @@ export default {
     // 移除班级学员
     removeClassStu() {
       if (this.checkBoxStuID.length == 0) {
-        this.$message("还没有勾选学员哦！");
+        this.$message({
+          message: "还没有勾选学员",
+          type: "warning"
+        });
       } else {
         console.log(this.checkBoxStuID);
       }

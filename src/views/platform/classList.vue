@@ -1,6 +1,6 @@
 <template>
   <div class="font16 hgt_full" v-cloak>
-    <div class="flex_column hgt_full">
+    <div class="flex_column hgt_full p-t-20">
       <!-- 查询表单 -->
       <div class="m-b-10">
         <el-form :inline="true">
@@ -43,7 +43,7 @@
         >
           <template slot-scope="scope">
             <span
-              class="color-2e77f8 font-w6 cursor"
+              class="color-1f85aa font-w6 cursor"
               @click="openMoreOptationDialog(scope.$index, scope.row)"
             >{{scope.row.Label}}</span>
           </template>
@@ -54,9 +54,20 @@
           </template>
         </el-table-column>
         <el-table-column prop="StudentNum" label="学员人数" width="70"></el-table-column>
-        <el-table-column prop="CreaterLabel" label="创建人员" width="100"></el-table-column>
+        <el-table-column prop="CreaterLabel" label="创建人员" width="70"></el-table-column>
         <el-table-column prop="Createtime" label="创建时间" width="90" :formatter="TimeFormatter"></el-table-column>
+        <el-table-column prop="OpenTime" label="开课时间" width="90" :formatter="TimeFormatter"></el-table-column>
+        <el-table-column prop="Endtime" label="结课时间" width="90" :formatter="TimeFormatter"></el-table-column>
         <el-table-column prop="Description" label="情况备注" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="操作" width="110" fixed="right">
+          <template slot-scope="scope">
+            <el-button
+              type="success"
+              style="margin:0px;"
+              @click="openClassStudents(scope.$index, scope.row)"
+            >本班学员</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="between-center m-v-10">
         <el-button type="primary" @click="openClassDialog()">创建班级</el-button>
@@ -77,10 +88,14 @@
       <!-- 班级相关操作的模态框 -->
       <my-dialog :visible.sync="moreOperationDialog" :closeShow="true" :title="classFormData.Label">
         <div slot="left_content" class="p_both20 p-b-20">
-          <class-row-detail :formItemData="classFormData" :platform="currentPlatform"></class-row-detail>
+          <class-row-detail
+            :formItemData="classFormData"
+            :platform="currentPlatform"
+            @subClickEvent="updateListItem"
+          ></class-row-detail>
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activeClassTabs" @tab-click="changDialogClassTabs">
+          <el-tabs v-model="activeClassTabs">
             <el-tab-pane label="班级学员" name="bjxy" id="bjxy">
               <ClassStudent :formItemData="classFormData"></ClassStudent>
             </el-tab-pane>
@@ -106,6 +121,24 @@
           @subClickEvent="updateListItem"
         />
       </el-dialog>
+
+      <!-- 班级相关操作的模态框 -->
+      <my-dialog :visible.sync="classStudentsDialog" :closeShow="true" :title="'【'+classFormData.Label+'】全体学员'">
+        <div slot="left_content" class="pad0">
+          <ClassStudent :formItemData="classFormData" :platform="currentPlatform"></ClassStudent>
+        </div>
+        <div slot="right_content" class="p_both20 p-b-20">
+          <el-tabs v-model="activeClassTabs">
+            <el-tab-pane label="添加学员" name="bjxy" id="bjxy"></el-tab-pane>
+            <el-tab-pane label="任课老师" name="rkls" id="rkls">
+              <classTeacher :formItemData="classFormData"></classTeacher>
+            </el-tab-pane>
+            <el-tab-pane label="课程表" name="kcb" id="kcb">
+              <SchoolTimeTable ref="refClassTimeTable"></SchoolTimeTable>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+      </my-dialog>
     </div>
   </div>
 </template> 
@@ -161,6 +194,7 @@ export default {
       activeClassTabs: "bjxy",
       // 控制班级更多操作的弹出框
       moreOperationDialog: false,
+      classStudentsDialog: false,
       searchClassLabel: "",
       searchGrade: new Date(),
       // 当前的校区id
@@ -197,9 +231,16 @@ export default {
         that.allRows = res.title;
       }
     },
+    // 打开本班的学员列表
+    openClassStudents(index, row) {
+      this.classFormData = { ...row };
+      this.classStudentsDialog = true;
+      this.currentIndex = index;
+    },
     // 打开更多操作模态框
     openMoreOptationDialog(index, row) {
-      this.classFormData = row;
+      this.classFormData = { ...row };
+
       this.classFormData.OpenTime = row.OpenTime * 1000;
       this.classFormData.Endtime = row.Endtime * 1000;
       this.classFormData.Createtime = row.Createtime * 1000;
@@ -213,12 +254,13 @@ export default {
       this.editDialog = true;
     },
     // 添加班级成功之后更新表格数据-班级列表
-    updateListItem(type, rowData) { 
+    updateListItem(type, rowData) {
       if (type == 0) {
         this.classList.unshift(rowData);
       } else if (type == 1) {
         this.$set(this.classList, this.currentIndex, rowData);
       }
+      console.log(this.classList, "----currentIndex---", this.currentIndex);
       this.editDialog = false;
     },
     // 切换tabs标签页在调用函数
@@ -246,7 +288,7 @@ export default {
   },
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform = paths[paths.length - 1];
+    this.currentPlatform =  parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }

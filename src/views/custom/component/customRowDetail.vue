@@ -43,7 +43,7 @@
         <div class="flex_dom flex_wrap">
           <div v-for="(item,index) in customImgArr" :key="index" class="relative marg15">
             <div
-              v-show="currentItemData.id<=0"
+              v-show="currentItemData.id>0"
               class="deleImgIcon cursor"
               @click="deleCustomImg(index)"
             >
@@ -86,7 +86,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="意向课程">
+      <!-- <el-form-item label="意向课程">
         <el-select v-model="currentItemData.FocusCourse" placeholder="请选择意向课程">
           <el-option
             v-for="(item) in $store.getters.app.courseKindList"
@@ -95,7 +95,8 @@
             :value="item.Label"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
+
       <el-form-item label="渠道来源">
         <el-select
           v-model="currentItemData.FromLabel"
@@ -110,35 +111,20 @@
           />
         </el-select>
       </el-form-item>
-
-      <el-form-item label="所属校区" prop="Platform">
-        <el-select
-          v-model="currentItemData.Platform"
-          :disabled="$route.query.id?true:false"
-          placeholder="请选择所属校区"
-        >
-          <el-option
-            v-for="(platform) in $store.getters.app.platformList"
-            v-show="platform.Id!=0"
-            :key="platform.Id"
-            :label="platform.Label"
-            :value="platform.Id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="管理员">
+     
+      <!-- <el-form-item label="管理员">
         <el-input v-model="currentItemData.ManagerLabel" disabled />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="描述">
         <el-input
           v-model="currentItemData.Description"
           type="textarea"
           :rows="3"
-          placeholder="客户描述~"
+          placeholder="客户描述~ 只用来记录。不用来查询"
         />
       </el-form-item>
-      <el-form-item label="备注">
-        <el-input v-model="currentItemData.Comments" type="textarea" :rows="3" placeholder="客户备注~" />
+      <el-form-item label="数据备注">
+        <el-input v-model="currentItemData.Comments" type="textarea" :rows="3" placeholder="备注。可以用来查询。" />
       </el-form-item>
     </el-form>
     <div class="around-center hgt60">
@@ -163,7 +149,7 @@
           type="danger"
           v-show="currentItemData.id>0"
           @click="resetCustomPassword(currentItemData.id)"
-        >重置密码</el-button> -->
+        >重置密码</el-button>-->
       </div>
     </div>
   </div>
@@ -193,6 +179,7 @@ import {
   batchChangeManager
 } from "@/api/custom";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
+import $ImgHttp from "@/api/ImgAPI";
 import crypto from "crypto";
 export default {
   name: "PlatformForm",
@@ -207,6 +194,10 @@ export default {
     editEnable: {
       typ: Boolean,
       default: false
+    },
+    platform: {
+      typ: Number,
+      default: 0
     }
   },
   components: {
@@ -220,13 +211,14 @@ export default {
       // 显示图片查看器
       showViewer: false,
       currentItemData: {},
+      currentPlatform:this.platform,
       currenteditEnable: this.editEnable,
       // 表单验证规则
       customInfoRules: {
         Realname: [
           { required: true, message: "请输入客户姓名", trigger: "blur" }
         ],
- 
+
         rePassword: [
           {
             required: true,
@@ -345,9 +337,12 @@ export default {
     },
     // 客户资料图片上传
     async uploadCustomImg(file) {
-      const res = await UploadAddCustom("", "", file.raw);
+      let res = await $ImgHttp.UploadImg("custom", file.raw);
       if (res.code == 200) {
-        this.$message("上传成功！");
+        this.$message({
+          message: "上传成功！",
+          type: "success"
+        });
         this.customImgArr.push(res.data);
       }
     },
@@ -360,6 +355,7 @@ export default {
     async saveFormItemData() {
       this.$refs.refCustomInfo.validate(async valid => {
         if (valid) {
+          this.currentItemData.Platform = this.currentPlatform;
           this.currentItemData.MasterID = this.masterID;
           const md5 = crypto.createHash("md5");
           md5.update(this.customPassword);
@@ -374,10 +370,6 @@ export default {
               this.$alert("添加成功.密码是:" + res.title, "密码", {
                 confirmButtonText: "确定"
               });
-              // this.$message({
-              //   message: "添加成功",
-              //   type: "success"
-              // });
             }
           } else {
             // 修改

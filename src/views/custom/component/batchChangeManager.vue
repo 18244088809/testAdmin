@@ -98,7 +98,10 @@ export default {
       )
       if (res.code == 200) {
         this.isShowChangeManagerDialog = false
-        this.$message('转移成功！')
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
         this.$emit('subClickEvent', res.data)
       }
     }

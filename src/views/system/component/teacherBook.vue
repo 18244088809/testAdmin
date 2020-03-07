@@ -169,7 +169,10 @@ export default {
       booksid = this.allBookidSelected.map(String);
       let res = await setTeachBook(this.currentFormData.Id, "", booksid);
       if (res.code == 200) {
-        this.$message("设置成功!");
+       this.$message({
+        message: "操作成功",
+        type: "success"
+      }); 
         this.currentFormData = res.data;
         this.$emit("subClickEvent", 1, res.data);
       }

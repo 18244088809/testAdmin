@@ -309,7 +309,10 @@ export default {
             true
           );
           if (res.code == 200) {
-            this.$message("设置成功");
+            this.$message({
+          message: "设置成功",
+          type: "success"
+        });  
             this.$set(this.courseList, index, res.data);
           }
         })
@@ -328,7 +331,7 @@ export default {
       if (type == 0) {
         this.courseList.push(rowData);
       } else if (type == 1) {
-        this.$set(this.courseList, this.currentCourseIndex, rowData);
+        this.$set(this.courseList, this.currentCourseIndex, rowData); 
       }
       this.editDialog = false;
     },
@@ -343,7 +346,11 @@ export default {
     // 打开课程的模态框
     openCourseDialog(type) {
       if (!this.searchCourseKindId || this.searchCourseKindId == 0) {
-        this.$message("没有选择课程类别");
+        
+        this.$message({
+          message: "没有选择课程类别",
+          type: "warning"
+        });  
         return;
       }
       this.editDialog = true;

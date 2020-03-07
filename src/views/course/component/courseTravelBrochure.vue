@@ -299,7 +299,10 @@ export default {
       if (res.code == 200) {
         if (res.data) {
           this.travelBrochureData = res.data;
-          this.$message("保存成功！");
+       this.$message({
+              message: "操作成功",
+              type: "success"
+            });
         }
       }
     }

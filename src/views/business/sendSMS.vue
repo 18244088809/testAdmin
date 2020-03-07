@@ -51,7 +51,10 @@ export default {
     async sendSMS() {
       this.$store.dispatch('app/getPlatformList', this.payload).then(() => {
         this.responseData = res
-        this.$message('发送成功')
+        this.$message({
+          message: "发送成功",
+          type: "success"
+        }); 
       })
     }
   }

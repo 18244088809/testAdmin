@@ -92,7 +92,10 @@ export default {
         this.currentManagerRights
       );
       if (res.code == 200) {
-        this.$message("设置成功!");
+      this.$message({
+        message: "操作成功",
+        type: "success"
+      }); 
         this.$emit("subClickEvent", 0, res.data);
       }
     }

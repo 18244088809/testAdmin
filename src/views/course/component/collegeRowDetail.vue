@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { updateCollege,addCollege } from "@/api/college";
+import { updateCollege, addCollege } from "@/api/college";
 export default {
   props: {
     // 校区的表单数据
@@ -100,8 +100,10 @@ export default {
                 "",
                 this.currentFormData
               );
-
-              this.$message("修改成功 !");
+              this.$message({
+                message: "修改成功",
+                type: "success"
+              }); 
             } else {
               res = await addCollege("", "", this.currentFormData);
               this.currentFormData = res.data;
@@ -109,7 +111,10 @@ export default {
                 this.currentFormData.Children = [];
               }
               this.currentFormData.Children.push(res.data);
-              this.$message("添加成功 !");
+              this.$message({
+                message: "添加成功",
+                type: "success"
+              });
             }
 
             this.$store.dispatch("app/getCollegeWithCourseKind");

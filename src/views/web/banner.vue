@@ -108,7 +108,7 @@ export default {
   },
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform = paths[paths.length - 1];
+    this.currentPlatform = parseInt( paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }

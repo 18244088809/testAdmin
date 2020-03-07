@@ -102,7 +102,10 @@ export default {
             this.currentItemData
           );
           if (res.code == 200) {
-            this.$message("修改成功 !");
+          this.$message({
+              message: "操作成功",
+              type: "success"
+            });
             this.$emit("subClickEvent", 1, res.data);
           }
         } else {
@@ -188,7 +191,10 @@ export default {
         cancelButtonText: "取消"
       })
         .then(({ value }) => {
-          this.$message("新增成功");
+         this.$message({
+              message: "操作成功",
+              type: "success"
+            });
           this.coursePriceColumnTitle.push({
             editRender: { name: "input" },
             field: value,
@@ -228,7 +234,10 @@ export default {
             this.currentItemData.Children
           );
           if (res.code == 200) {
-            this.$message("设置成功");
+           this.$message({
+              message: "操作成功",
+              type: "success"
+            });
             this.getCoursePrice();
           }
         })

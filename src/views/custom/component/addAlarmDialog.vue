@@ -93,7 +93,10 @@ export default {
           if (res.code == 200) {
             res.title = res.title ? res.title : 0
             this.$store.dispatch('Alarm', res.title)
-            this.$message('添加成功！')
+            this.$message({
+          message: "操作成功",
+          type: "success"
+        });
             this.$emit('subClickEvent')
             this.isShowAlarmDialog = false
           }

@@ -1,6 +1,6 @@
 <template  >
   <div v-cloak class="font16 hgt_full">
-         <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
+    <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
     <div class="flex_column hgt_full">
       <!-- 条件查询表单 -->
       <div class="p-t-20">
@@ -89,7 +89,7 @@
           </div>
         </el-form>
       </div>
-      <!-- 客户显示列表 --> 
+      <!-- 客户显示列表 -->
       <el-table
         ref="refCustomListTable"
         :data="customTableDataList"
@@ -242,7 +242,7 @@
       >
         <!-- 展示校区的基本信息 -->
         <div slot="left_content">
-          <custom-row-detail :formItemData="customFormData" />
+          <custom-row-detail :formItemData="customFormData"  :platform="currentPlatform" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
           <el-tabs v-model="activElTab" @tab-click="changDialogTab">
@@ -274,6 +274,7 @@
         <custom-row-detail
           style="padding:20px 20px 20px 20px"
           :editEnable="true"
+          :platform="currentPlatform"
           :formItemData="customFormData"
         />
       </el-dialog>
@@ -459,7 +460,7 @@ export default {
   mounted() {
     this.qxRole = sessionStorage.ROLE;
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform = paths[paths.length - 1];
+    this.currentPlatform = parseInt( paths[paths.length - 1]);
     // 因为客户管理和我的校区应用的是同一个页面所有让当路由有参数是就代表但是我的校区
     if (this.currentPlatform > 0) {
       // 获取该校区下所属我的所有销售成员
@@ -629,7 +630,7 @@ export default {
 
     openItemDialog() {
       this.editDialog = true;
-      this.customFormData = {};
+      this.customFormData = { id: 0 };
     },
     // 打开更多操作的弹出框
     openMoreOperationDialog(index, row) {
@@ -651,18 +652,7 @@ export default {
       } else if (tab.$attrs.id == "cjlr") {
         // this.getScoreEntry(this.customFormData.id);
       }
-    },
-    // // 打开客户信息弹窗
-    // openCustomDialog(type) {
-    //   // type=1新增，type=0编辑
-    //   if (type) {
-    //     this.$refs.refCustomDialog.getCustomRowData({ id: 0 });
-    //   } else {
-    //     this.$refs.refCustomDialog.getCustomRowData({
-    //       ...this.customFormData
-    //     });
-    //   }
-    // },
+    }, 
     // 获取选中的学生
     selectionCustomChange(val) {
       this.mulSelectionCustomId = [];
@@ -673,7 +663,10 @@ export default {
     // 转移学员的管理员到其他管理名下
     changeManager() {
       if (this.mulSelectionCustomId.length <= 0) {
-        this.$message("你还没有勾选学员哦！");
+        this.$message({
+          message: "你还没有勾选学员哦！",
+          type: "warning"
+        });
         return;
       }
       this.$refs.refChangeManager.getCustomIds(this.mulSelectionCustomId);
@@ -1020,7 +1013,10 @@ export default {
       trackRow.kind = 6;
       this.$refs.refsendSMSDialog.closeDialog();
       const res = await addcustomTracks(trackRow);
-      this.$message("短信发送成功");
+      this.$message({
+        message: "短信发送成功",
+        type: "success"
+      });
     },
     websocketsend(agentData) {
       // 数据发送

@@ -128,15 +128,17 @@ export default {
                 }
                 kindIndex++;
               });
-              this.$message("修改成功 !");
             } else {
               res = await addCourseKind("", "", this.courseKindItem);
               if (!this.collegeItem.Children) {
                 this.collegeItem.Children = [];
               }
               this.collegeItem.Children.push(res.data);
-              this.$message("添加成功 !");
             }
+            this.$message({
+              message: "操作成功",
+              type: "success"
+            });
             this.courseKindItem = {};
 
             this.$store.dispatch("app/getCollegeWithCourseKind");
@@ -155,7 +157,7 @@ export default {
         }).then(async () => {
           let res = await deleteCourseKind(updateCourseKind.Id, "", "");
           this.collegeItem.Children.splice(index, 1);
-           this.courseKindItem = {};
+          this.courseKindItem = {};
           this.$store.dispatch("app/getCollegeWithCourseKind");
         });
       }

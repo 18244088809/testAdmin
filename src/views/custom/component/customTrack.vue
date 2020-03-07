@@ -1,8 +1,8 @@
 <template>
   <!-- --------------------客户的跟进记录模块----------------------- -->
-  
+
   <div class="p_both10 p-t-5">
-       <myImageViewer   v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
+    <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
     <div class="border-e5ecf7 radius3">
       <div class="m-b-10 bg-f5f9ff p_both20 p-v-15">
         <span>跟进方式：</span>
@@ -69,7 +69,11 @@
         <p v-else class="m-v-15 font14 color-666 p_both20">{{ item.Content }}</p>
         <div v-show="item.ImageList.length>0" class="p_both20">
           <div class="flex_dom flex_wrap">
-            <div v-for="(img,index) in item.ImageList" :key="index" class="marg10 flex_mid flex_wrap">
+            <div
+              v-for="(img,index) in item.ImageList"
+              :key="index"
+              class="marg10 flex_mid flex_wrap"
+            >
               <!--  class="wid80 hgt80" :preview-src-list="[img]" :src="img" fit="cover" /> -->
               <img
                 v-if="img"
@@ -130,7 +134,6 @@ import {
   getStudentStatustByStudent
 } from "@/api/custom";
 
-
 import $ImgAPI from "@/api/ImgAPI";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 import common from "@/utils/common";
@@ -165,15 +168,15 @@ export default {
     };
   },
   watch: {
-    customData(newvar){
+    customData(newvar) {
       this.customFormData = this.customData;
-      this.customTrackList = []; 
+      this.customTrackList = [];
       this.getCustomId(this.customData.id);
     }
   },
   mounted() {
     this.customFormData = this.customData;
-     this.getCustomId(this.customData.id);
+    this.getCustomId(this.customData.id);
   },
 
   methods: {
@@ -196,9 +199,12 @@ export default {
     },
     // 上传跟进记录的图片
     async uploadTrackImg(file) {
-      const res = await $ImgAPI.UploadImg("track",  file.raw);
+      const res = await $ImgAPI.UploadImg("track", file.raw);
       if (res.code == 200) {
-        this.$message("上传成功！");
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
         this.trackImgList.push(res.data);
       }
     },
@@ -217,7 +223,10 @@ export default {
     // 提交客户的跟进信息
     async submitCustomTrack() {
       if (this.trackContent.length < 3) {
-        this.$message("跟进记录不得少于3个字符");
+        this.$message({
+          message: "跟进记录不得少于3个字符",
+          type: "warning"
+        });
         return;
       }
       const trackRow = {};
@@ -234,9 +243,8 @@ export default {
         this.trackContent = "";
         this.trackImgList = [];
         this.$message({
-          message: "提交成功",
-          type: "success",
-          duration: 1500
+          message: "操作成功",
+          type: "success"
         });
 
         this.$refs["trackImageUpload"].clearFiles();
@@ -247,12 +255,18 @@ export default {
     async submitReplyTrack(track, index) {
       const oldtrack = { ...track };
       if (!track.replyContent) {
-        this.$message("还没有输入内容哦 ！");
+        this.$message({
+          message: "还没有输入内容",
+          type: "warning"
+        });
       } else {
         this.currentReplyIndex = index;
         const res = await replyTracks(track.Id, track.replyContent);
         if (res.code == 200) {
-          this.$message("评论成功 ！");
+          this.$message({
+            message: "操作成功",
+            type: "success"
+          });
           if (res.data) {
             oldtrack.Reply = res.data;
             oldtrack.replyContent = "";

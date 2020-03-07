@@ -277,17 +277,20 @@ export default {
               "",
               this.currentItemData
             );
-            if (res.code == 200) {
-              this.$message("修改成功 !");
+            if (res.code == 200) { 
               this.$emit("subClickEvent", 1, res.data);
             }
           } else {
             const res = await addCourse("", "", this.currentItemData);
             if (res.code == 200) {
-              this.$message("添加成功 !");
+              
               this.$emit("subClickEvent", 0, res.data);
             }
           }
+          this.$message({
+              message: "操作成功",
+              type: "success"
+            });
         } else {
           return false;
         }

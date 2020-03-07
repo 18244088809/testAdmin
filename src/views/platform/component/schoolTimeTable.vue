@@ -12,8 +12,6 @@
           </template>
         </el-calendar>
       </div>
-
-     
     </div>
 
     <vxe-table
@@ -26,7 +24,7 @@
       :data="todayTimeTableList"
       :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:false,activeMethod: activeTeacherRow}"
     >
-      <vxe-table-column field="StartTime" title="上课时间" :edit-render="{type: 'default'}" width="90">
+      <vxe-table-column field="StartTime" title="上课时间" :edit-render="{type: 'default'}" width="120">
         <template v-slot:edit="{ row }">
           <el-time-select
             placeholder="上课时间"
@@ -39,7 +37,7 @@
           ></el-time-select>
         </template>
       </vxe-table-column>
-      <vxe-table-column field="EndTime" title="下课时间" :edit-render="{type: 'default'}" width="90">
+      <vxe-table-column field="EndTime" title="下课时间" :edit-render="{type: 'default'}" width="120">
         <template v-slot:edit="{ row }">
           <el-time-select
             placeholder="下课时间"
@@ -68,26 +66,26 @@
         </template>
       </vxe-table-column>
       <vxe-table-column field="TeacherLabel" title="授课老师" width="90"></vxe-table-column>
-      <vxe-table-column field="CourseNum" title="授课课时" :edit-render="{type: 'default'}" width="90">
+      <vxe-table-column field="CourseNum" title="授课课时" :edit-render="{type: 'default'}" width="120">
         <template v-slot:edit="{ row }">
-          <el-input-number v-model="row.CourseNum" :min="0"></el-input-number>
+          <el-input-number v-model="row.CourseNum" :min="0" :step="0.5" placeholder="小时"></el-input-number>
         </template>
       </vxe-table-column>
       <vxe-table-column
         field="Address"
         title="授课地址"
         :edit-render="{type: 'default'}"
-        width="200"
+       
         show-overflow
       >
         <template v-slot:edit="scope">
           <el-input v-model="scope.row.Address" @input="$refs.timeTable.updateStatus(scope)"></el-input>
         </template>
       </vxe-table-column>
-      <vxe-table-column title="操作" width="120" fixed="right">
+      <vxe-table-column title="操作" width="80" fixed="right">
         <template v-slot="{row,rowIndex}">
           <el-button v-if="row.Id<0" @click="deleTimeTableRow(row,rowIndex)">删除</el-button>
-          <el-button v-if="row.Id>=0" type="primary" @click="openTimeTagDialog(row,rowIndex)">考勤</el-button>
+          <el-button v-else type="primary" @click="openTimeTagDialog(row,rowIndex)">考勤</el-button>
         </template>
       </vxe-table-column>
     </vxe-table>
@@ -158,7 +156,7 @@ export default {
       classAllSubject: [],
       //  某一月课程表数据
       MonthTimeTableList: {},
-      //  某一天课程表数据
+       //  某一天课程表数据
       todayTimeTableList: [],
       // 之前月份获取的数据的那年那月的
       nowTimeTableOfDay: "",
@@ -268,35 +266,7 @@ export default {
         }
       }
     },
-    // 改变科目的时候自动获取老师和老师id
-    changeSubject(val, row, rowIndex) {
-      this.classAllSubject.forEach(item => {
-        if (item.book_label == val) {
-          row.TeacherID = item.teacher_id;
-          row.BookID = item.book_id;
-          row.TeacherLabel = item.teacher_label;
-        }
-      });
-      this.todayTimeTableList.splice(rowIndex, 1, row);
-    },
-     // 插入行添加课表
-    insertTeacherRow() {
-      let newItem = {
-        Id: -this.todayTimeTableList.length - 1
-      };
-      this.todayTimeTableList.push(newItem);
-    },
-    // 插入行添加课表
-    insertTimeTableRow() {
-      let newItem = {
-        Id: -this.todayTimeTableList.length - 1
-      };
-      this.todayTimeTableList.push(newItem);
-    },
-    // id小于0的行可以删除
-    deleTimeTableRow(row, rowIndex) {
-      this.todayTimeTableList.splice(rowIndex, 1);
-    },
+   
     // 保存添加或者编辑的课程表
     saveTimeTableList() {
       this.$refs.timeTable.validate(async valid => {
@@ -380,7 +350,7 @@ export default {
 </script> 
 <style scoped>
 #calendar {
-  width: 235px;
+  width: 100%;
 }
 .day_selected {
   border-radius: 50%;

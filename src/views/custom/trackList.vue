@@ -1,6 +1,6 @@
 <template>
   <div v-cloak class="font16 hgt_full">
-           <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
+    <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
     <div class="flex_column hgt_full">
       <div class="flex_1 overflow_hide border-e0 m-t-20">
         <div class="hgt_100 overflow_auto">
@@ -175,18 +175,23 @@ export default {
     async submitReplyTrack(track, index) {
       const oldtrack = { ...track };
       if (!track.replyContent) {
-        this.$message("还没有输入内容哦 ！");
+        this.$message({
+          message: "还没有输入内容哦",
+          type: "warning"
+        });
       } else {
         this.currentReplyIndex = index;
         const res = await replyTracks(track.Id, "", track.replyContent);
-        if (res.code == 200) {
-          this.$message("评论成功 ！");
-          if (res.data) {
-            oldtrack.Reply = res.data;
-            oldtrack.replyContent = "";
-            this.customTrackList.splice(this.currentReplyIndex, 1, oldtrack);
-          }
+
+        if (res.data) {
+          oldtrack.Reply = res.data;
+          oldtrack.replyContent = "";
+          this.customTrackList.splice(this.currentReplyIndex, 1, oldtrack);
         }
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
       }
     }
   }

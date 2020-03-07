@@ -176,7 +176,7 @@ export default {
 
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform = paths[paths.length - 1];
+    this.currentPlatform =  parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
@@ -313,7 +313,10 @@ export default {
         .then(async () => {
           const res = await deleCustomContract(id);
           if (res.code == 200) {
-            this.$message("删除成功!");
+            this.$message({
+              message: "操作成功",
+              type: "success"
+            });
             this.contractList.splice(index, 1);
           }
         })

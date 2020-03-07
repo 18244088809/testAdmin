@@ -5,21 +5,35 @@
       ref="classForm"
       :disabled="currenteditEnable==false"
       :rules="ClassFormRules"
-      style="padding:20px 10px 10px 10px"
+      style="padding:10px 0px 0px 0px"
       label-width="80px"
       size="small"
     >
       <el-form-item label="班级名称" prop="Label">
-        <el-input v-model="currentItemData.Label" placeholder="请输入班级名称"></el-input>
+        <el-input v-model="currentItemData.Label" @input="$forceUpdate()" placeholder="请输入班级名称"></el-input>
       </el-form-item>
       <el-form-item label="开班时间" prop="OpenTime">
-        <el-date-picker v-model="currentItemData.OpenTime" style="width:170px" type="date"></el-date-picker>
+        <el-date-picker
+          v-model="currentItemData.OpenTime"
+          @input="$forceUpdate()"
+          style="width:170px"
+          type="date"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="结课时间" prop="Endtime">
-        <el-date-picker v-model="currentItemData.Endtime" style="width:170px" type="date"></el-date-picker>
+        <el-date-picker
+          v-model="currentItemData.Endtime"
+          @input="$forceUpdate()"
+          style="width:170px"
+          type="date"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="授课形式">
-        <el-select v-model="currentItemData.TeachMethod" placeholder="请选择授课形式">
+        <el-select
+          v-model="currentItemData.TeachMethod"
+          @change="$forceUpdate()"
+          placeholder="请选择授课形式"
+        >
           <el-option
             :label="item.Label"
             :value="item.value"
@@ -44,6 +58,7 @@
         <el-input
           type="textarea"
           :rows="3"
+          @input="$forceUpdate()"
           v-model="currentItemData.Description"
           placeholder="情况备注~"
         ></el-input>
@@ -87,7 +102,7 @@ import {
   getAllClassTaskRecord
 } from "@/api/class";
 import common from "@/utils/common";
-import { isDate } from 'xe-utils/methods';
+import { isDate } from "xe-utils/methods";
 export default {
   props: {
     // 校区的表单数据
@@ -117,7 +132,7 @@ export default {
       createClassTime: null,
       // 创建人
       createPerson: null,
-      currentItemData: {},
+      currentItemData: this.formItemData,
       // 表单验证
       ClassFormRules: {
         Label: [
@@ -128,19 +143,18 @@ export default {
   },
   watch: {
     formItemData(newvar) {
-      this.setData();
+     this.currentItemData = this.formItemData;
+     this.currenteditEnable = false;
     }
   },
   mounted() {
     if (isDate(this.searchGrade)) {
       this.currentItemData.Grade = this.searchGrade.getFullYear();
-    }
-    this.setData();
+    } 
+    this.currentItemData = this.formItemData;
   },
   methods: {
-    setData() {
-      this.currentItemData = this.formItemData;
-    },
+   
     // 添加或编辑数据
     saveFormItemData() {
       this.currentItemData.PlatformID = parseInt(this.platform);
@@ -166,11 +180,18 @@ export default {
           } else {
             rowdata.Endtime = this.currentItemData.Endtime / 1000;
           }
+          if (isNaN(this.currentItemData.Createtime)) {
+            rowdata.Createtime = Math.floor(
+              this.currentItemData.Createtime.getTime() / 1000
+            );
+          } else {
+            rowdata.Createtime = this.currentItemData.Createtime / 1000;
+          }
           if (rowdata.Id > 0) {
             // 编辑
             let res = await editClassInfo(rowdata.Id, "", rowdata);
             this.isShowPlatformDialog = false;
-            this.currentItemData = res.data; 
+            this.currentItemData = res.data;
             this.$emit("subClickEvent", 1, res.data);
             this.$message({
               message: "修改成功",
@@ -179,14 +200,19 @@ export default {
           } else {
             // 创建
             let res = await addClassInfo("", "", rowdata);
-            if (res.code == 200) {
-              this.$message({
-                message: "创建成功",
-                type: "success"
-              });
-              this.$emit("subClickEvent", 0, res.data); 
-            }
+
+            this.$message({
+              message: "创建成功",
+              type: "success"
+            });
+            this.$emit("subClickEvent", 0, res.data);
           }
+          console.log(" before:", this.currentItemData.OpenTime);
+          this.currentItemData.OpenTime = this.currentItemData.OpenTime * 1000;
+          console.log(" after:", this.currentItemData.OpenTime);
+          this.currentItemData.Endtime = this.currentItemData.Endtime * 1000;
+          this.currentItemData.Createtime =
+            this.currentItemData.Createtime * 1000;
         } else {
           return false;
         }

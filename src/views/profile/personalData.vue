@@ -185,8 +185,10 @@ export default {
       this.showMineInfo = !this.showMineInfo;
       this.mineData = res.data;
       // this.common.storageObj(res.data);
-
-      this.$message("修改成功！");
+      this.$message({
+        message: "操作成功",
+        type: "success"
+      });
     },
     // 图片上传
     async imgUpload(file) {
@@ -200,16 +202,25 @@ export default {
     async editPassword() {
       let that = this;
       if (!that.oldPsw || !that.newPsw || !that.newPsw1) {
-        this.$message("密码不能为空 ！");
+        this.$message({
+          message: "密码不能为空",
+          type: "warning"
+        });
         return false;
       }
 
       if (that.newPsw != that.newPsw1) {
-        this.$message("两次密码不一致 ！");
+        this.$message({
+          message: "两次密码不一致",
+          type: "warning"
+        });
         return false;
       }
       if (that.newPsw.length > 12 || that.newPsw.length < 6) {
-        this.$message("请输入6-12位的密码 !");
+        this.$message({
+          message: "请输入6-12位的密码",
+          type: "warning"
+        });
         return false;
       }
       // 加密
@@ -220,7 +231,10 @@ export default {
       nmd5.update(that.newPsw);
       let newPsw1 = nmd5.digest("hex");
       let res = await updatePSWD("", { oldpswd: oldPsw1, newpswd: newPsw1 });
-      this.$message("修改成功 ！");
+      this.$message({
+        message: "操作成功",
+        type: "success"
+      });
     }
   },
   mounted() {

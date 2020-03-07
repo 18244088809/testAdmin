@@ -380,7 +380,10 @@ export default {
     async uploadContractImg(file) {
       const res = await $ImgAPI.UploadImg("contract", file.raw);
       if (res.code == 200) {
-        this.$message("上传成功！");
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
         this.contractImgArr.push(res.data);
       }
     },
@@ -407,7 +410,11 @@ export default {
             this.currentItemData.Picture = JSON.stringify(this.contractImgArr);
           }
           if (this.currentItemData.ShijiPrice < 0) {
-            this.$message("实际价格不能为负数");
+            this.$message({
+              message: "实际价格不能为负数",
+              type: "warning"
+            });
+
             return;
           }
           this.currentItemData.CoursePrice = parseFloat(
@@ -432,18 +439,18 @@ export default {
             res = await addCustomContract("", "", this.currentItemData);
           }
 
-          if (res.code == 200) {
-            if (this.currentItemData.Id > 0) {
-              this.$emit("updateContractData", 0, res.data);
-              this.$message("修改成功 ！");
-            } else {
-              if (this.operationType == 2) {
-                this.$emit("updateContractData", 1, res.data);
-              }
-              this.$message("添加成功 ！");
+          if (this.currentItemData.Id > 0) {
+            this.$emit("updateContractData", 0, res.data);
+          } else {
+            if (this.operationType == 2) {
+              this.$emit("updateContractData", 1, res.data);
             }
-            this.isShowContractDialog = false;
           }
+          this.isShowContractDialog = false;
+          this.$message({
+            message: "操作成功",
+            type: "success"
+          });
         } else {
           return false;
         }

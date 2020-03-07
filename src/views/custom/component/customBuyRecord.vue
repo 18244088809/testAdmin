@@ -219,13 +219,13 @@ export default {
   },
   watch: {
     customData(newval) {
-      this.customBuyCourseList=[];
+      this.customBuyCourseList = [];
       this.customItemData = this.customData;
       this.getBuyCouseRecord();
     }
   },
   mounted() {
-     this.customBuyCourseList=[];
+    this.customBuyCourseList = [];
     this.customItemData = this.customData;
     this.getBuyCouseRecord();
   },
@@ -267,10 +267,12 @@ export default {
     // 上传跟进记录的图片
     async uploadTrackImg(file) {
       const res = await $ImgAPI.UploadImg("track", file.raw);
-      if (res.code == 200) {
-        this.$message("上传成功！");
-        this.trackImgList.push(res.data);
-      }
+
+      this.$message({
+        message: "操作成功",
+        type: "success"
+      });
+      this.trackImgList.push(res.data);
     },
 
     // 获取客户的购买记录
@@ -282,17 +284,15 @@ export default {
           limit: 100000,
           offset: 0
         });
-        if (res.code == 200) {
-          if (res.data) {
-            res.data.forEach(item => {
-              const newitem = item;
-              if (item.Info != "") {
-                const info = JSON.parse(item.Info);
-                newitem.ForbiddenVideo = info.ForbiddenVideo;
-              }
-              this.customBuyCourseList.unshift(newitem);
-            });
-          }
+        if (res.data) {
+          res.data.forEach(item => {
+            const newitem = item;
+            if (item.Info != "") {
+              const info = JSON.parse(item.Info);
+              newitem.ForbiddenVideo = info.ForbiddenVideo;
+            }
+            this.customBuyCourseList.unshift(newitem);
+          });
         }
       }
     },
@@ -331,7 +331,7 @@ export default {
       this.$refs.refbuyCourse.validate(valid => {
         if (valid) {
           const that = this;
-          console.log(that.customItemData)
+          console.log(that.customItemData);
           that.customBuyCourseList = [];
           that
             .$confirm("确认添加吗", "提示", {
@@ -370,9 +370,15 @@ export default {
                 }
                 that.addBuyCourseDialog = false;
                 if (that.sendSMS == true) {
-                  this.$message("手动添加成功，并已发送短信告知对方");
+                  this.$message({
+                    message: "手动添加成功，并已发送短信告知对方",
+                    type: "success"
+                  });
                 } else {
-                  this.$message("手动添加成功!");
+                  this.$message({
+                    message: "手动添加成功 .没有用短信通知对方",
+                    type: "success"
+                  });
                 }
               }
             })
@@ -399,7 +405,10 @@ export default {
         .then(async () => {
           const res = await deleteBuyCourse(id, "", "");
           if (res.code == 200) {
-            this.$message("删除成功!");
+            this.$message({
+        message: "操作成功",
+        type: "success"
+      });
             this.customBuyCourseList.splice(index, 1);
           }
         })
