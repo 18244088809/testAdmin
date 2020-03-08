@@ -195,9 +195,15 @@ export default {
       this.isbusy = true;
 
       let res = await $ImgAPI.UploadImg("manager", file.raw);
-
-      this.mineData.face = res.data;
-      this.isbusy = false;
+      if (res.code == 200) {
+        this.mineData.face = res.data;
+        this.isbusy = false;
+      } else {
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
+      }
     },
     async editPassword() {
       let that = this;

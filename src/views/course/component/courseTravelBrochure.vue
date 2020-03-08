@@ -226,7 +226,12 @@ export default {
             List: res.data
           });
         }
-      }
+      }else {
+            this.$message({
+              message: res.title,
+              type: "warning"
+            });
+          }
     },
     // 删除图片
     deleImg(index, type) {
@@ -255,7 +260,12 @@ export default {
             List: res.data
           });
         }
-      }
+      }else {
+            this.$message({
+              message: res.title,
+              type: "warning"
+            });
+          }
     },
     // 保存视频信息
     saveVideoUrl(type) {

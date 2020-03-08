@@ -33,7 +33,7 @@
           </el-table-column>
         <el-table-column label="保密级别" width="100">
           <template slot-scope="scope">
-            <span>{{common.FormatSelect(common.docRights,scope.row.KindId)}}</span>
+            <span>{{common.FormatSelect(common.docRights,scope.row.KindID)}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="Creattime" :formatter="TimeFormatter" label="发布时间" width="130"></el-table-column>
@@ -94,30 +94,7 @@ export default {
   data() {
     return {
       common,
-      currentCollege: 0,
-      // // 资料类型的选项
-      // newsKindOptions: [
-      //   {
-      //     value: 0,
-      //     Label: "公开资料"
-      //   },
-      //   {
-      //     value: 1,
-      //     Label: "内部资料"
-      //   },
-      //   {
-      //     value: 2,
-      //     Label: "隐秘资料"
-      //   },
-      //   {
-      //     value: 3,
-      //     Label: "保密资料"
-      //   },
-      //   {
-      //     value: 4,
-      //     Label: "绝密资料"
-      //   }
-      // ],
+      currentCollege: 0, 
       // 资料的数据列表
       newsListTable: [],
       // 数据总条数
@@ -236,14 +213,7 @@ export default {
     openMoreOperationDialog(index, row) {
       this.currentTeacherIndex = index;
       this.currentRowData = row;
-
-      // if (this.currentRowData.Platform) {
-      //   this.currentRowData.platformSelect = [];
-      //   this.currentRowData.platformSelect = this.currentRowData.Platform.split(
-      //     ","
-      //   ).map(Number);
-      // }  npm install --save xlsx script-loader!xlsx/dist/xlsx.core.min
-
+ 
       this.moreOperationDialog = true;
     }
   },

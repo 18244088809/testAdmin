@@ -385,6 +385,11 @@ export default {
           type: "success"
         });
         this.contractImgArr.push(res.data);
+      }else {
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
       }
     },
     // 删除合同资料的图片

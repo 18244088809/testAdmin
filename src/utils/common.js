@@ -93,7 +93,7 @@ export default {
   spliceLabel: function (val, leng) {
     return val.length > leng ? val.slice(0, leng) + '...' : val
   },
- 
+
   // 导出表格-全部导出
   exportExcel(className, title) {
     const xlsxParam = { raw: true }
@@ -331,7 +331,7 @@ export default {
       value: 3,
       Label: '彻底抛弃'
     }
-  ], 
+  ],
   // 客户签订合同- 优惠类型
   costomPreferentialType: [
     {
@@ -376,7 +376,7 @@ export default {
       value: 0,
       Label: '管理员'
     },
-   
+
   ],
   // 授课形式
   teachingForm: [
@@ -430,7 +430,7 @@ export default {
     {
       value: 4,
       Label: '绝密资料'
-    } 
+    }
   ],
   docRightmarks: {
     0: {
@@ -468,6 +468,7 @@ export default {
   AllQuestionTypes: [], // 所有题的类型
   // 根据类型变化返回一些数据的Label
   FormatSelect(options, typeId) {
+
     let title = '未知'
     if (options) {
       options.forEach(item => {
@@ -475,13 +476,14 @@ export default {
           title = item.Label
           return
         } else if (item.value == typeId) {
+          console.log(item.value, "-----------", typeId)
           title = item.Label
           return
         } else if (item.ID == typeId) {
           title = item.Label
           return
         }
-      }) 
+      })
     }
     return title
   },
@@ -489,6 +491,64 @@ export default {
     return input * 1000;
   },
   ToUnixTime(input) {
-    return input /1000;
+    return input / 1000;
   }
+  ,
+  // 上传附件之前的验证
+  beforeUploadEnclosure(filename) {
+    var ext = filename.slice(filename.lastIndexOf(".") + 1).toLowerCase();
+    let isRightType = false;
+    switch (ext) {
+      case "jpg":
+        isRightType = true;
+        break;
+      case "jpeg":
+        isRightType = true;
+        break;
+      case "png":
+        isRightType = true;
+        break;
+      case "gif":
+        isRightType = true;
+        break;
+      case "pdf":
+        isRightType = true;
+        break;
+      case "doc":
+        isRightType = true;
+        break;
+      case "docx":
+        isRightType = true;
+        break;
+      case "xls":
+        isRightType = true;
+        break;
+      case "xlsx":
+        isRightType = true;
+        break;
+      case "ppt":
+        isRightType = true;
+        break;
+      case "pptx":
+        isRightType = true;
+        break;
+      case "rar":
+        isRightType = true;
+        break;
+      case "zip":
+        isRightType = true;
+        break;
+      case "txt":
+        isRightType = true;
+        break;
+
+      default:
+        isRightType = false;
+        break;
+    }
+    if (!isRightType) {
+      return ("文件仅支持jpg/jpeg/png/gif/pdf/doc/docx/xls/xlsx/ppt/pptx/rar/zip等格式!");
+    }
+    return isRightType;
+  },
 }

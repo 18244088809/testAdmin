@@ -132,72 +132,32 @@ export default {
       let res = await $ImgAPI.UploadImg("news", file.raw);
       if (res.code == 200) {
         this.currentItemData.icon = res.data;
+      } else {
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
       }
-    },
-    // 上传附件之前的验证
-    beforeUploadEnclosure(type) {
-      let isRightType = false;
-      switch (type) {
-        case "image/jpg":
-          isRightType = true;
-          break;
-        case "image/jpeg":
-          isRightType = true;
-          break;
-        case "image/png":
-          isRightType = true;
-          break;
-        case "image/gif":
-          isRightType = true;
-          break;
-        case "image/pdf":
-          isRightType = true;
-          break;
-        case "image/doc":
-          isRightType = true;
-          break;
-        case "image/docx":
-          isRightType = true;
-          break;
-        case "image/xls":
-          isRightType = true;
-          break;
-        case "image/xlsx":
-          isRightType = true;
-          break;
-        case "image/ppt":
-          isRightType = true;
-          break;
-        case "image/pptx":
-          isRightType = true;
-          break;
-        case "image/rar":
-          isRightType = true;
-          break;
-        case "image/zip":
-          isRightType = true;
-          break;
-        default:
-          isRightType = false;
-          break;
-      }
-      console.log(isRightType);
-      if (!isRightType) {
-        this.$message(
-          "文件仅支持jpg/jpeg/png/gif/pdf/doc/docx/xls/xlsx/ppt/pptx/rar/zip等格式!"
-        );
-      }
-      return isRightType;
-    },
+    }, 
     // 上传附件
     async uploadEnclosure(file) {
       // 上传附件之前的验证
-      let RightType = this.beforeUploadEnclosure(file.raw.type);
+      let RightType = this.common.beforeUploadEnclosure(file.name);
       if (RightType) {
         let res = await $ImgAPI.UploadImg("news", file.raw);
         if (res.code == 200) {
           this.currentItemData.Downfile = res.data;
-        }
+        } else {
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
+      }
+      }else {
+        this.$message({
+          message: RightType,
+          type: "warning"
+        });
       }
     },
     // 添加或编辑数据

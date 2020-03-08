@@ -21,13 +21,13 @@
           </el-table-column>
           <el-table-column label="竞赛类型" width="100">
             <template slot-scope="scope">
-              <span>{{common.FormatSelect(kindList,scope.row.KindId)}}</span>
+              <span>{{common.FormatSelect(kindList,scope.row.KindID)}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="Creattime" :formatter="TimeFormatter" label="发布时间" width="130"></el-table-column>
           <el-table-column prop="AuthorLabel" label="发布人" width="100"></el-table-column>
           <el-table-column label="操作" width="100" fixed="right">
-            <template slot-scope="scope"> 
+            <template slot-scope="scope">
               <el-button type="danger" @click="deleteNewsRow(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -55,7 +55,13 @@
         :closeLeft="false"
       >
         <div slot="right_content">
-          <newsFormData ref="newsForm" :formItemData="newsFormData" @updateRowData="updateNewsList" :kindList="kindList"></newsFormData>
+          <activeFormData
+            ref="newsForm"
+            :platform="currentPlatform"
+            :formItemData="newsFormData"
+            @updateRowData="updateNewsList"
+            :kindList="kindList"
+          ></activeFormData>
         </div>
       </my-dialog>
     </div>
@@ -65,13 +71,13 @@
 <script>
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
-import newsFormData from "@/views/web/component/newsFormData";
+import activeFormData from "@/views/web/component/activeFormData";
 import { getActive, deleNewsRow } from "@/api/news";
 export default {
   name: "newsList",
   components: {
     myDialog,
-    newsFormData
+    activeFormData
   },
   data() {
     return {
@@ -103,6 +109,7 @@ export default {
       nowPage: 1,
       // 每页数据的总条
       rows: 30,
+      currentPlatform:0,
       // 显示隐藏模态框
       newsFormDialog: false,
       // 模态框获得的单条数据
@@ -116,7 +123,8 @@ export default {
     async getNewsList() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
-        simple: 1,
+        needPublic:true,
+        content: 1,
         limit: this.rows,
         offset: offsetRow
       };
@@ -164,7 +172,7 @@ export default {
     newsAdd() {
       this.newsFormDialog = true;
       this.newsFormData = {
-        icon: "/upload/icon/defaultnews.png",
+        icon: "/upload/icon/defaultActive.jpg",
         Id: 0,
         Downfile: "",
         Title: "",
@@ -196,14 +204,13 @@ export default {
 };
 </script>
 <style scope >
-
 .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 .selectStyle {
   border: none;
   appearance: none;

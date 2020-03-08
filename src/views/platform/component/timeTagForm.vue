@@ -292,6 +292,11 @@ export default {
       }); 
         let ImgItem = { ImgSrc: res.data, Label: file.raw.name };
         this.timeTagFormData.Dianmingbiao.push(ImgItem);
+      }else {
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
       }
     },
     // 更换考勤表的图片
@@ -304,6 +309,11 @@ export default {
       }); 
         let ImgItem = { ImgSrc: res.data, Label: file.raw.name };
         this.timeTagFormData.Dianmingbiao.splice(index, 1, ImgItem);
+      }else {
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
       }
     },
     // 删除考勤表的图片

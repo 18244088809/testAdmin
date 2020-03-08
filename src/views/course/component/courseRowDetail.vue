@@ -234,7 +234,7 @@ export default {
         this.isbusy3 = true;
       }
       const res = await $ImgAPI.UploadImg("course", file.raw);
-
+  
       if (res.code == 200) {
         if (type == 1) {
           this.currentItemData.Background = res.data;
@@ -246,7 +246,12 @@ export default {
           this.currentItemData.Kcxq = res.data;
           this.isbusy3 = false;
         }
-      }
+      }else {
+            this.$message({
+              message: res.title,
+              type: "warning"
+            });
+          }
     },
     // 图片预览
     onPreview(src) {

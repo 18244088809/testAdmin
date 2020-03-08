@@ -267,12 +267,18 @@ export default {
     // 上传跟进记录的图片
     async uploadTrackImg(file) {
       const res = await $ImgAPI.UploadImg("track", file.raw);
-
-      this.$message({
-        message: "操作成功",
-        type: "success"
-      });
-      this.trackImgList.push(res.data);
+      if (res.code == 200) {
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
+        this.trackImgList.push(res.data);
+      } else {
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
+      }
     },
 
     // 获取客户的购买记录

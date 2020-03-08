@@ -21,7 +21,7 @@
           </el-table-column>
           <el-table-column label="新闻类型" width="100">
             <template slot-scope="scope">
-              <span>{{common.FormatSelect(newsKindOptions,scope.row.KindId)}}</span>
+              <span>{{common.FormatSelect(newsKindOptions,scope.row.KindID)}}</span>
             </template>
           </el-table-column>
           <el-table-column label="是否公共" width="100">

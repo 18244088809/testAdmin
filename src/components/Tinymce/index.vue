@@ -65,8 +65,8 @@ export default {
       return this.languageTypeList["zh_CN"];
     }
   },
-  watch: { 
-    value(val) { 
+  watch: {
+    value(val) {
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
           window.tinymce.get(this.tinymceId).setContent(val || "")
@@ -145,7 +145,7 @@ export default {
           _this.hasInit = true;
           editor.on("NodeChange Change KeyUp SetContent", () => {
             this.hasChange = true;
-            this.$emit("input", editor.getContent()); 
+            this.$emit("input", editor.getContent());
           });
         },
         setup(editor) {
@@ -156,7 +156,16 @@ export default {
         async images_upload_handler(blobInfo, success, failure, progress) {
           progress(0);
           const res = await $ImgAPI.UploadImg("news", blobInfo.blob());
-          success(res.data);
+          if (res.code == 200) {
+            this.currentItemData.Downfile = res.data;
+            success(res.data);
+          } else {
+            this.$message({
+              message: res.title,
+              type: "warning"
+            });
+          }
+          
           progress(100);
         }
       });
@@ -171,7 +180,7 @@ export default {
         tinymce.destroy();
       }
     },
-    setContent(value) { 
+    setContent(value) {
       window.tinymce.get(this.tinymceId).setContent(value);
     },
     getContent() {

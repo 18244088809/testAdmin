@@ -206,6 +206,11 @@ export default {
           type: "success"
         });
         this.trackImgList.push(res.data);
+      }else {
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
       }
     },
     // 获取客户的跟进记录

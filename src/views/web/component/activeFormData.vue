@@ -22,13 +22,13 @@
         </el-tooltip>
         <div class="flex_1 m-l-30">
           <div class="flex_dom">
-            <el-form-item label="新闻类别">
+            <el-form-item label="活动类别"> 
               <el-select v-model="currentItemData.KindID" placeholder="请选择类别">
                 <el-option
+                  v-for="(item,index) in kindList"
                   :label="item.Label"
                   :key="index"
                   :value="item.value"
-                  v-for="(item,index) in kindList"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -44,7 +44,7 @@
               </el-upload>
             </el-form-item>
           </div>
-          <el-form-item label="新闻标题" prop="Title">
+          <el-form-item label="活动标题" prop="Title">
             <el-input placeholder="请输入内容" v-model="currentItemData.Title"></el-input>
           </el-form-item>
         </div>
@@ -115,12 +115,12 @@ export default {
       this.setData();
     }
   },
-  mounted() {
+  mounted() { 
     this.setData();
   },
   methods: {
     setData() {
-      this.currentItemData = this.formItemData;
+      this.currentItemData = this.formItemData; 
     },
 
     // 上传的图片
@@ -128,27 +128,28 @@ export default {
       let res = await $ImgAPI.UploadImg("news", file.raw);
       if (res.code == 200) {
         this.currentItemData.icon = res.data;
-      } else {
+      }  else {
         this.$message({
           message: res.title,
           type: "warning"
         });
       }
     },
+
     // 上传附件
     async uploadEnclosure(file) {
       // 上传附件之前的验证
       let RightType = this.common.beforeUploadEnclosure(file.name);
-      if (RightType) {
+      if (RightType == true) {
         let res = await $ImgAPI.UploadImg("news", file.raw);
         if (res.code == 200) {
           this.currentItemData.Downfile = res.data;
         } else {
-          this.$message({
-            message: res.title,
-            type: "warning"
-          });
-        }
+        this.$message({
+          message: res.title,
+          type: "warning"
+        });
+      }
       } else {
         this.$message({
           message: RightType,
@@ -160,10 +161,9 @@ export default {
     saveNewsFormData() {
       // 验证表单数据
       this.currentItemData.Platform = this.platform;
-      this.currentItemData.Isnews = 1;
+      this.currentItemData.Isnews = 3;
       this.$refs.newsForm.validate(async valid => {
         if (valid) {
-          this.currentItemData.Isnews = 1; //新闻
           if (this.currentItemData.Id > 0) {
             // 编辑数据
             let res = await editNewsRow(
