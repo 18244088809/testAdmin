@@ -29,7 +29,7 @@
                 </el-form-item>
               </div>
               <el-form-item label="简介" >
-                <el-input type="textarea" rows="5" v-model="item.title" placeholder="老师的介绍"></el-input>
+                <el-input type="textarea" rows="5" v-model="item.content" placeholder="老师的介绍"></el-input>
               </el-form-item>
             </el-form>
 

@@ -13,7 +13,7 @@
                   <el-input v-model="item.href" placeholder="友情链接的网址"></el-input>
                 </el-form-item>
                 <el-form-item label="备注" style="width:100%">
-                  <el-input v-model="item.title" placeholder="说明"></el-input>
+                  <el-input v-model="item.content" placeholder="说明"></el-input>
                 </el-form-item>
               </div>
             </el-form>
@@ -87,7 +87,7 @@ export default {
   },
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform =  parseInt(paths[paths.length - 1]);
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
@@ -107,8 +107,8 @@ export default {
   padding: 20px 30px 0px 20px;
   position: relative;
   box-sizing: border-box;
- border-radius: 5px;
-  border:1px dashed rgba(46,84,56,0.2);
+  border-radius: 5px;
+  border: 1px dashed rgba(46, 84, 56, 0.2);
 }
 .el-upload {
   border: 1px dashed #e0e0e0;

@@ -53,7 +53,7 @@
         <el-input placeholder="请输入内容" v-model="currentItemData.Description"></el-input>
       </el-form-item>
       <el-form-item label="内容">
-        <Tinymce ref :height="400" v-model="currentItemData.Content"></Tinymce>
+        <Tinymce ref :height="400" v-model="currentItemData.Content"  :content="currentItemData.Id"></Tinymce>
       </el-form-item>
     </el-form>
     <div class="center-end m-v-15">

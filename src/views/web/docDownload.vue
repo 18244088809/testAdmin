@@ -179,6 +179,9 @@ export default {
       this.moreOperationDialog = true;
       this.currentNewsIndex = index;
       this.currentRowData = row;
+
+
+     
     },
     // 显示列表的时候格式化时间
     TimeFormatter(row, column, cellValue) {

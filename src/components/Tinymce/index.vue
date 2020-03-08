@@ -26,9 +26,9 @@ export default {
       type: String,
       default: ""
     },
-    data: {
-      type: String,
-      default: ""
+    content: {
+      type: Number,
+      default: 0
     },
 
     toolbar: {
@@ -52,6 +52,7 @@ export default {
     return {
       hasChange: false,
       hasInit: false,
+      hasKey: false,
       tinymceId: this.id,
       fullscreen: false,
       languageTypeList: {
@@ -66,6 +67,9 @@ export default {
     }
   },
   watch: {
+    content(newval) {
+      this.hasChange = false;
+    },
     value(val) {
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
@@ -145,6 +149,7 @@ export default {
           _this.hasInit = true;
           editor.on("NodeChange Change KeyUp SetContent", () => {
             this.hasChange = true;
+            this.hasKey = true;
             this.$emit("input", editor.getContent());
           });
         },
@@ -158,7 +163,6 @@ export default {
           let that = this;
           const res = await $ImgAPI.UploadImg("news", blobInfo.blob());
           if (res.code == 200) {
-            // that.currentItemData.Downfile = res.data;
             success(res.data);
           } else {
             that.$message({
@@ -182,7 +186,8 @@ export default {
       }
     },
     setContent(value) {
-      window.tinymce.get(this.tinymceId).setContent(value);
+      // window.tinymce.get(this.tinymceId).setContent(value);
+      this.hasChange = false;
     },
     getContent() {
       window.tinymce.get(this.tinymceId).getContent();
