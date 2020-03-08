@@ -91,7 +91,7 @@
           </div>
           <span class="m-l-15 wid60 cursor color-1f85aa" @click="onPreview(currentItemData.Kcxq)">预览</span>
         </div>
-      </el-form-item> 
+      </el-form-item>
     </el-form>
     <div class="around-center hgt60">
       <div>
@@ -146,14 +146,14 @@ export default {
   },
   watch: {
     formItemData(newvar) {
-      this.currentItemData = this.formItemData; 
+      this.currentItemData = this.formItemData;
       if (this.courseKindIdProp > 0) {
         this.courseKindId = this.courseKindIdProp;
       }
       this.currentItemData.TCourseKindID = this.courseKindId;
       // this.collegeChangeGetCourseKind(0);
     },
-    courseKindIdProp(newval) { 
+    courseKindIdProp(newval) {
       if (this.courseKindIdProp > 0) {
         this.courseKindId = this.courseKindIdProp;
       }
@@ -199,7 +199,7 @@ export default {
   },
 
   mounted() {
-    this.currentItemData = this.formItemData; 
+    this.currentItemData = this.formItemData;
     if (this.currentItemData.TCourseKindID > 0) {
       this.courseKindId = this.currentItemData.TCourseKindID;
     } else {
@@ -233,25 +233,26 @@ export default {
       } else if (type == 3) {
         this.isbusy3 = true;
       }
+      let that = this;
       const res = await $ImgAPI.UploadImg("course", file.raw);
-  
+
       if (res.code == 200) {
         if (type == 1) {
-          this.currentItemData.Background = res.data;
-          this.isbusy1 = false;
+          that.currentItemData.Background = res.data;
+          that.isbusy1 = false;
         } else if (type == 2) {
-          this.currentItemData.Jxtx = res.data;
-          this.isbusy2 = false;
+          that.currentItemData.Jxtx = res.data;
+          that.isbusy2 = false;
         } else if (type == 3) {
-          this.currentItemData.Kcxq = res.data;
-          this.isbusy3 = false;
+          that.currentItemData.Kcxq = res.data;
+          that.isbusy3 = false;
         }
-      }else {
-            this.$message({
-              message: res.title,
-              type: "warning"
-            });
-          }
+      } else {
+        that.$message({
+          message: res.title,
+          type: "warning"
+        });
+      }
     },
     // 图片预览
     onPreview(src) {
@@ -262,7 +263,6 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
-   
 
     // 保存课程数据
     saveCourse: function() {
@@ -282,20 +282,19 @@ export default {
               "",
               this.currentItemData
             );
-            if (res.code == 200) { 
+            if (res.code == 200) {
               this.$emit("subClickEvent", 1, res.data);
             }
           } else {
             const res = await addCourse("", "", this.currentItemData);
             if (res.code == 200) {
-              
               this.$emit("subClickEvent", 0, res.data);
             }
           }
           this.$message({
-              message: "操作成功",
-              type: "success"
-            });
+            message: "操作成功",
+            type: "success"
+          });
         } else {
           return false;
         }

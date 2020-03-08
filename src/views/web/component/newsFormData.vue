@@ -125,11 +125,12 @@ export default {
 
     // 上传的图片
     async newsImgUpload(file) {
+      let that = this;
       let res = await $ImgAPI.UploadImg("news", file.raw);
       if (res.code == 200) {
-        this.currentItemData.icon = res.data;
+        that.currentItemData.icon = res.data;
       } else {
-        this.$message({
+        that.$message({
           message: res.title,
           type: "warning"
         });
@@ -138,19 +139,20 @@ export default {
     // 上传附件
     async uploadEnclosure(file) {
       // 上传附件之前的验证
+      let that = this;
       let RightType = this.common.beforeUploadEnclosure(file.name);
       if (RightType) {
         let res = await $ImgAPI.UploadImg("news", file.raw);
         if (res.code == 200) {
-          this.currentItemData.Downfile = res.data;
+          that.currentItemData.Downfile = res.data;
         } else {
-          this.$message({
+          that.$message({
             message: res.title,
             type: "warning"
           });
         }
       } else {
-        this.$message({
+        that.$message({
           message: RightType,
           type: "warning"
         });

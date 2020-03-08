@@ -475,8 +475,7 @@ export default {
         if (item.Id == typeId) {
           title = item.Label
           return
-        } else if (item.value == typeId) {
-          console.log(item.value, "-----------", typeId)
+        } else if (item.value == typeId) { 
           title = item.Label
           return
         } else if (item.ID == typeId) {

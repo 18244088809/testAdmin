@@ -76,7 +76,7 @@ export default {
     formItemData: {
       type: Object,
       default: function() {
-        return { Id: 0,icon :"/upload/icon/Icon-DOCX.png" };
+        return { Id: 0, icon: "/upload/icon/Icon-DOCX.png" };
       }
     },
     platform: {
@@ -99,7 +99,7 @@ export default {
         Title: [{ required: true, message: "标题不能为空", trigger: "blur" }]
       },
       currentPlatfrom: 0,
-      currentItemData:this.formItemData
+      currentItemData: this.formItemData
     };
   },
   watch: {
@@ -114,7 +114,7 @@ export default {
     }
   },
   mounted() {
-     this.setData();
+    this.setData();
   },
   methods: {
     setData() {
@@ -129,31 +129,33 @@ export default {
     },
     // 上传的图片
     async newsImgUpload(file) {
+      let that = this;
       let res = await $ImgAPI.UploadImg("news", file.raw);
       if (res.code == 200) {
-        this.currentItemData.icon = res.data;
+        that.currentItemData.icon = res.data;
       } else {
-        this.$message({
+        that.$message({
           message: res.title,
           type: "warning"
         });
       }
-    }, 
+    },
     // 上传附件
     async uploadEnclosure(file) {
       // 上传附件之前的验证
+      let that = this;
       let RightType = this.common.beforeUploadEnclosure(file.name);
       if (RightType) {
         let res = await $ImgAPI.UploadImg("news", file.raw);
         if (res.code == 200) {
-          this.currentItemData.Downfile = res.data;
+          that.currentItemData.Downfile = res.data;
         } else {
-        this.$message({
-          message: res.title,
-          type: "warning"
-        });
-      }
-      }else {
+          that.$message({
+            message: res.title,
+            type: "warning"
+          });
+        }
+      } else {
         this.$message({
           message: RightType,
           type: "warning"
@@ -168,7 +170,7 @@ export default {
       }
       this.currentItemData.Platform = this.platform;
       this.currentItemData.CollegeID = this.college;
-       this.currentItemData.Isnews = 2;
+      this.currentItemData.Isnews = 2;
       this.$refs.newsForm.validate(async valid => {
         if (valid) {
           if (this.currentItemData.Id > 0) {

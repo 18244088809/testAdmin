@@ -89,14 +89,13 @@
               :src="item.ImgSrc"
               :preview-src-list="[item.ImgSrc]"
               fit="cover"
-            ></my-image> -->
-             <img
-                v-if="item.ImgSrc"
-                class="wid20"
-                src="/assets/slice/uploadedIcon.png"
-                @click="onPreview(item.ImgSrc)"
-              />
-
+            ></my-image>-->
+            <img
+              v-if="item.ImgSrc"
+              class="wid20"
+              src="/assets/slice/uploadedIcon.png"
+              @click="onPreview(item.ImgSrc)"
+            />
 
             <div class="between-center m-v-5 wid80">
               <span class="text-center color-2e77f8 font12 m-r-5">{{item.Label}}</span>
@@ -163,8 +162,7 @@
 </template>
 
 <script>
-
- import { 
+import {
   getAllClass,
   editClassInfo,
   addClassInfo,
@@ -178,15 +176,15 @@
   addClassStu,
   getClassStu,
   handOutTask,
-  getAllClassTaskRecord 
+  getAllClassTaskRecord
 } from "@/api/class";
 import common from "@/utils/common";
- 
+
 import $ImgAPI from "@/api/ImgAPI";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 export default {
   name: "timeTagForm",
-  components:{
+  components: {
     myImageViewer
   },
   props: {
@@ -197,7 +195,7 @@ export default {
   },
   data() {
     return {
-       common,
+      common,
       // 考勤记录的表单数据
       timeTagFormData: {
         Dianmingbiao: []
@@ -238,7 +236,7 @@ export default {
   methods: {
     // 获取班级的所有学员
     async getClassAllStuList() {
-      let res = await  getOneClass(this.timeTableRowData.ClassID, {
+      let res = await getOneClass(this.timeTableRowData.ClassID, {
         withStudent: "1"
       });
       if (res.code == 200) {
@@ -258,10 +256,10 @@ export default {
         }
       });
       if (this.searchResultStuList.length == 0) {
-         this.$message({
+        this.$message({
           message: "没有找到该学生",
           type: "warning"
-        });   
+        });
       }
       this.searchStudentName = "";
     },
@@ -284,16 +282,17 @@ export default {
     },
     // 考勤表的图片上传
     async uploadTimeTagImg(file) {
-      let res = await $ImgAPI.UploadImg("courseTime",  file.raw);
+      let that = this;
+      let res = await $ImgAPI.UploadImg("courseTime", file.raw);
       if (res.code == 200) {
-        this.$message({
-        message: "操作成功",
-        type: "success"
-      }); 
+        that.$message({
+          message: "操作成功",
+          type: "success"
+        });
         let ImgItem = { ImgSrc: res.data, Label: file.raw.name };
-        this.timeTagFormData.Dianmingbiao.push(ImgItem);
-      }else {
-        this.$message({
+        that.timeTagFormData.Dianmingbiao.push(ImgItem);
+      } else {
+        that.$message({
           message: res.title,
           type: "warning"
         });
@@ -301,16 +300,17 @@ export default {
     },
     // 更换考勤表的图片
     async updateTimeTagImg(file, fileList, index) {
-      let res = await $ImgAPI.UploadImg("courseTime",  file.raw);
+      let that = this;
+      let res = await $ImgAPI.UploadImg("courseTime", file.raw);
       if (res.code == 200) {
-       this.$message({
-        message: "操作成功",
-        type: "success"
-      }); 
+        that.$message({
+          message: "操作成功",
+          type: "success"
+        });
         let ImgItem = { ImgSrc: res.data, Label: file.raw.name };
-        this.timeTagFormData.Dianmingbiao.splice(index, 1, ImgItem);
-      }else {
-        this.$message({
+        that.timeTagFormData.Dianmingbiao.splice(index, 1, ImgItem);
+      } else {
+        that.$message({
           message: res.title,
           type: "warning"
         });
@@ -328,12 +328,12 @@ export default {
           Obg.Dianmingbiao = JSON.stringify(Obg.Dianmingbiao);
           Obg.QueqingStudent = this.missClaaStuList.join(",");
           Obg.planStudentNum = this.planStudentNum;
-          let res = await  addTimeTag(this.timeTableRowData.Id, Obg);
+          let res = await addTimeTag(this.timeTableRowData.Id, Obg);
           if (res.code == 200) {
             this.$message({
-        message: "操作成功",
-        type: "success"
-      }); 
+              message: "操作成功",
+              type: "success"
+            });
             // this.isEditTimeTag = false;
             // this.timeTagFormData = {};
             // if (res.data.QueqingStudent) {
@@ -356,7 +356,7 @@ export default {
       this.classAllStuList = this.timeTableRowData.stuList;
       this.planStudentNum = this.classAllStuList.length;
       this.timeTagFormData.ShidaoNumber = this.classAllStuList.length;
-      let res = await  getTimeTag(this.timeTableRowData.Id);
+      let res = await getTimeTag(this.timeTableRowData.Id);
       if (res.code == 200) {
         if (res.data != null && res.data.Createtime > 0) {
           this.isEditTimeTag = false;

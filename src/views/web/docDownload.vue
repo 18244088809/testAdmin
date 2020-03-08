@@ -27,7 +27,7 @@
         </el-table-column>
         <el-table-column label="是否公共" width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.Platform==0">公共资料</span>
+              <span v-if="scope.row.Platform==0">总部发布</span>
               <span v-else>本校私有</span>
             </template>
           </el-table-column>

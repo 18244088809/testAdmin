@@ -205,33 +205,34 @@ export default {
     },
     // 上传图片
     async uploadPicture(file, fileList, type) {
+      let that = this;
       const res = await $ImgAPI.UploadImg("course", file.raw);
       if (res.code == 200) {
-        if (!this.travelBrochureData.ImageList) {
-          this.travelBrochureData.ImageList = [];
+        if (!that.travelBrochureData.ImageList) {
+          that.travelBrochureData.ImageList = [];
         }
-        if (!this.travelBrochureData.TeacherList) {
-          this.travelBrochureData.TeacherList = [];
+        if (!that.travelBrochureData.TeacherList) {
+          that.travelBrochureData.TeacherList = [];
         }
         if (type == 1) {
           // 上传展示图片
-          this.travelBrochureData.ImageList.push({
+          that.travelBrochureData.ImageList.push({
             Label: res.title,
             List: res.data
           });
         } else if (type == 2) {
           // 上传老师图片
-          this.travelBrochureData.TeacherList.push({
+          that.travelBrochureData.TeacherList.push({
             Label: res.title,
             List: res.data
           });
         }
-      }else {
-            this.$message({
-              message: res.title,
-              type: "warning"
-            });
-          }
+      } else {
+        that.$message({
+          message: res.title,
+          type: "warning"
+        });
+      }
     },
     // 删除图片
     deleImg(index, type) {
@@ -245,27 +246,28 @@ export default {
     },
     // 更换图片
     async updatePicture(file, fileList, index, type) {
+      let that = this;
       const res = await $ImgAPI.UploadImg("course", file.raw);
       if (res.code == 200) {
         if (type == 1) {
           // 修改展示图片
-          this.$set(this.travelBrochureData.ImageList, index, {
+          that.$set(that.travelBrochureData.ImageList, index, {
             Label: res.title,
             List: res.data
           });
         } else if (type == 2) {
           // 修改老师图片
-          this.$set(this.travelBrochureData.TeacherList, index, {
+          that.$set(that.travelBrochureData.TeacherList, index, {
             Label: res.title,
             List: res.data
           });
         }
-      }else {
-            this.$message({
-              message: res.title,
-              type: "warning"
-            });
-          }
+      } else {
+        that.$message({
+          message: res.title,
+          type: "warning"
+        });
+      }
     },
     // 保存视频信息
     saveVideoUrl(type) {
@@ -309,10 +311,10 @@ export default {
       if (res.code == 200) {
         if (res.data) {
           this.travelBrochureData = res.data;
-       this.$message({
-              message: "操作成功",
-              type: "success"
-            });
+          this.$message({
+            message: "操作成功",
+            type: "success"
+          });
         }
       }
     }

@@ -13,7 +13,7 @@
         <el-input v-model="currentFormData.Label" />
       </el-form-item>
       <el-form-item label="备注">
-        <el-input v-model="currentFormData.Descritpion" />
+        <el-input type="textarea" :rows="5" v-model="currentFormData.Descritpion" />
       </el-form-item>
     </el-form>
     <div>

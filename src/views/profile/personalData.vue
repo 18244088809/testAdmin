@@ -193,13 +193,13 @@ export default {
     // 图片上传
     async imgUpload(file) {
       this.isbusy = true;
-
+      let that = this;
       let res = await $ImgAPI.UploadImg("manager", file.raw);
       if (res.code == 200) {
-        this.mineData.face = res.data;
-        this.isbusy = false;
+        that.mineData.face = res.data;
+        that.isbusy = false;
       } else {
-        this.$message({
+        that.$message({
           message: res.title,
           type: "warning"
         });

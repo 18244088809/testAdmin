@@ -155,17 +155,18 @@ export default {
         },
         async images_upload_handler(blobInfo, success, failure, progress) {
           progress(0);
+          let that = this;
           const res = await $ImgAPI.UploadImg("news", blobInfo.blob());
           if (res.code == 200) {
-            this.currentItemData.Downfile = res.data;
+            // that.currentItemData.Downfile = res.data;
             success(res.data);
           } else {
-            this.$message({
+            that.$message({
               message: res.title,
               type: "warning"
             });
           }
-          
+
           progress(100);
         }
       });

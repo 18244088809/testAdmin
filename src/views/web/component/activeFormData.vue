@@ -22,7 +22,7 @@
         </el-tooltip>
         <div class="flex_1 m-l-30">
           <div class="flex_dom">
-            <el-form-item label="活动类别"> 
+            <el-form-item label="活动类别">
               <el-select v-model="currentItemData.KindID" placeholder="请选择类别">
                 <el-option
                   v-for="(item,index) in kindList"
@@ -115,21 +115,22 @@ export default {
       this.setData();
     }
   },
-  mounted() { 
+  mounted() {
     this.setData();
   },
   methods: {
     setData() {
-      this.currentItemData = this.formItemData; 
+      this.currentItemData = this.formItemData;
     },
 
     // 上传的图片
     async newsImgUpload(file) {
+      let that = this;
       let res = await $ImgAPI.UploadImg("news", file.raw);
       if (res.code == 200) {
-        this.currentItemData.icon = res.data;
-      }  else {
-        this.$message({
+        that.currentItemData.icon = res.data;
+      } else {
+        that.$message({
           message: res.title,
           type: "warning"
         });
@@ -138,20 +139,21 @@ export default {
 
     // 上传附件
     async uploadEnclosure(file) {
+      let that = this;
       // 上传附件之前的验证
-      let RightType = this.common.beforeUploadEnclosure(file.name);
+      let RightType = that.common.beforeUploadEnclosure(file.name);
       if (RightType == true) {
         let res = await $ImgAPI.UploadImg("news", file.raw);
         if (res.code == 200) {
-          this.currentItemData.Downfile = res.data;
+          that.currentItemData.Downfile = res.data;
         } else {
-        this.$message({
-          message: res.title,
-          type: "warning"
-        });
-      }
+          that.$message({
+            message: res.title,
+            type: "warning"
+          });
+        }
       } else {
-        this.$message({
+        that.$message({
           message: RightType,
           type: "warning"
         });

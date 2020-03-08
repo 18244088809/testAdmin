@@ -199,15 +199,16 @@ export default {
     },
     // 上传跟进记录的图片
     async uploadTrackImg(file) {
+      let that = this;
       const res = await $ImgAPI.UploadImg("track", file.raw);
       if (res.code == 200) {
-        this.$message({
+        that.$message({
           message: "操作成功",
           type: "success"
         });
-        this.trackImgList.push(res.data);
-      }else {
-        this.$message({
+        that.trackImgList.push(res.data);
+      } else {
+        that.$message({
           message: res.title,
           type: "warning"
         });
