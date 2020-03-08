@@ -75,8 +75,7 @@ const actions = {
       //   children: [
       //   ]
       // }
-      let myPlatformList = store.getters.manager.myPlatformList; 
-      console.log(myPlatformList)
+      let myPlatformList = store.getters.manager.myPlatformList;  
       if (myPlatformList) {
         let index = 0;
         myPlatformList.forEach(platform => {

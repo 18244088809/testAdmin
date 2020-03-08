@@ -13,22 +13,14 @@ export default {
   name: "Tinymce",
   props: {
     id: {
-      type: String,
+      type: Number,
       default: function() {
-        return (
-          "vue-tinymce-" +
-          +new Date() +
-          ((Math.random() * 1000).toFixed(0) + "")
-        );
+        return new Date() + (Math.random() * 1000).toFixed(0);
       }
     },
     value: {
       type: String,
       default: ""
-    },
-    content: {
-      type: Number,
-      default: 0
     },
 
     toolbar: {
@@ -52,7 +44,6 @@ export default {
     return {
       hasChange: false,
       hasInit: false,
-      hasKey: false,
       tinymceId: this.id,
       fullscreen: false,
       languageTypeList: {
@@ -67,13 +58,14 @@ export default {
     }
   },
   watch: {
-    content(newval) {
+    id(neid) {
       this.hasChange = false;
     },
+
     value(val) {
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
-          window.tinymce.get(this.tinymceId).setContent(val || "")
+          window.tinymce.get(this.tinymceId + "").setContent(val || "")
         );
       }
     },
@@ -99,7 +91,7 @@ export default {
       const _this = this;
       tinymce.init({
         language: "zh_CN",
-        selector: `#${this.tinymceId}`,
+        selector: `#${this.tinymceId + ""}`,
         height: this.height,
         body_class: "panel-body ",
         object_resizing: false,
@@ -176,7 +168,7 @@ export default {
       });
     },
     destroyTinymce() {
-      const tinymce = window.tinymce.get(this.tinymceId);
+      const tinymce = window.tinymce.get(this.tinymceId + "");
       if (this.fullscreen) {
         tinymce.execCommand("mceFullScreen");
       }
@@ -185,18 +177,17 @@ export default {
         tinymce.destroy();
       }
     },
-    setContent(value) {
-      // window.tinymce.get(this.tinymceId).setContent(value);
-      this.hasChange = false;
-    },
+    // setContent(value) {
+    //   this.hasChange = false;
+    // },
     getContent() {
-      window.tinymce.get(this.tinymceId).getContent();
+      window.tinymce.get(this.tinymceId + "").getContent();
     },
     imageSuccessCBK(arr) {
       const _this = this;
       arr.forEach(v => {
         window.tinymce
-          .get(_this.tinymceId)
+          .get(_this.tinymceId + "")
           .insertContent(`<img class="wscnph" src="${v.url}" >`);
       });
     }
