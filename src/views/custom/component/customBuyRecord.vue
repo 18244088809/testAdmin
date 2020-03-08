@@ -406,9 +406,9 @@ export default {
           const res = await deleteBuyCourse(id, "", "");
           if (res.code == 200) {
             this.$message({
-        message: "操作成功",
-        type: "success"
-      });
+              message: "操作成功",
+              type: "success"
+            });
             this.customBuyCourseList.splice(index, 1);
           }
         })

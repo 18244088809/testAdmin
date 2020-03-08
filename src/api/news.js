@@ -8,6 +8,15 @@ export function getDocument(url, param, data) {
     data
   })
 }
+// 获取竞赛活动
+export function getActive(url, param, data) {
+  return request({
+    url: '/news/getActive/'+url,
+    method: 'get',
+    params: param,
+    data
+  })
+}
 // 获取新闻列表
 export function GetPlatformNews(url, param, data) {
   return request({

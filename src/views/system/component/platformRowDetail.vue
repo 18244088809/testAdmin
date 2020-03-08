@@ -3,25 +3,25 @@
     <el-form
       ref="formUI"
       :disabled="currenteditEnable==false"
-      :model="currentFormData"
+      :model="currentItemData"
       :rules="platFormInfoRules"
       style="padding:20px 10px 10px 10px"
       label-width="80px"
       size="small"
     >
       <el-form-item label="名称" prop="Label">
-        <el-input v-model="currentFormData.Label" />
+        <el-input v-model="currentItemData.Label" />
       </el-form-item>
       <el-form-item label="联系电话" prop="Telephone">
-        <el-input v-model="currentFormData.Telephone" />
+        <el-input v-model="currentItemData.Telephone" />
       </el-form-item>
       <el-form-item label="地址">
-        <el-input v-model="currentFormData.Address" />
+        <el-input v-model="currentItemData.Address" />
       </el-form-item>
       <!-- 校区负责人 -->
-      <el-form-item label="负责人">{{currentFormData.MasterLabel}}</el-form-item>
+      <el-form-item label="负责人">{{currentItemData.MasterLabel}}</el-form-item>
       <el-form-item label="备注">
-        <el-input v-model="currentFormData.Description" />
+        <el-input v-model="currentItemData.Description" />
       </el-form-item>
     </el-form>
     <div class="around-center marg20">
@@ -63,7 +63,7 @@ export default {
   name: "PlatformForm",
   data() {
     return {
-      currentFormData: this.formItemData,
+      currentItemData: this.formItemData,
       currenteditEnable: this.editEnable,
       // 校区对应的工作人员
       PlatformWorkers: [],
@@ -82,22 +82,27 @@ export default {
         ]
       }
     };
-  }, 
+  },
+  watch: {
+    formItemData(newvar) {
+      this.currentItemData = this.formItemData;
+    }
+  },
   methods: {
     // 保存客户信息
     async savecurrentFormData() {
       this.$refs.formUI.validate(async valid => {
         if (valid) {
-          this.currentFormData.MasterID = this.masterID;
-          if (this.currentFormData.Id == null || this.currentFormData.Id == 0) {
+          this.currentItemData.MasterID = this.masterID;
+          if (this.currentItemData.Id == null || this.currentItemData.Id == 0) {
             // 新增
-            let res = await addPlatform("", "", this.currentFormData);
-            this.$emit("subClickEvent", 0, res.data);
+            let res = await addPlatform("", "", this.currentItemData);
+            // this.$emit("subClickEvent", 0, res.data);
             // 添加成功之后要触发父组件信息列表修改
             this.$store
               .dispatch("app/pushPlatform", res.data)
-              .then(response => { 
-                this.currentFormData = res.data;
+              .then(response => {
+                this.currentItemData = res.data;
                 this.$message({
                   message: "添加成功",
                   type: "success"
@@ -106,20 +111,21 @@ export default {
           } else {
             // 修改
             let res = await updatePlatform(
-              this.currentFormData.Id,
+              this.currentItemData.Id,
               "",
-              this.currentFormData
+              this.currentItemData
             );
-            this.$emit("subClickEvent", 1, res.data);
+            // this.$emit("subClickEvent", 1, res.data);
             this.$store
               .dispatch("app/pushPlatform", res.data)
-              .then(response => { 
+              .then(response => {
                 this.$message({
                   message: "修改成功",
                   type: "success"
                 });
               });
           }
+          this.currenteditEnable = false;
         } else {
           this.$message({
             message: "请完善表单",

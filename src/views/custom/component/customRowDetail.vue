@@ -27,10 +27,10 @@
           @blur="checkRepeatPhone"
         />
       </el-form-item>
-      <el-form-item label="初始密码" prop="fistPswd">
+      <el-form-item v-show="currentItemData.id<=0" label="初始密码" prop="fistPswd">
         <el-input v-model="customPassword" type="password" placeholder="请输入密码" />
       </el-form-item>
-      <el-form-item label="重复密码" prop="rePassword">
+      <el-form-item v-show="currentItemData.id<=0" label="重复密码" prop="rePassword">
         <el-input v-model="rePassword" type="password" placeholder="请再次输入密码" />
       </el-form-item>
       <el-form-item label="身份证" prop="Idcard">
@@ -111,10 +111,10 @@
           />
         </el-select>
       </el-form-item>
-     
+
       <!-- <el-form-item label="管理员">
         <el-input v-model="currentItemData.ManagerLabel" disabled />
-      </el-form-item> -->
+      </el-form-item>-->
       <el-form-item label="描述">
         <el-input
           v-model="currentItemData.Description"
@@ -124,7 +124,12 @@
         />
       </el-form-item>
       <el-form-item label="数据备注">
-        <el-input v-model="currentItemData.Comments" type="textarea" :rows="3" placeholder="备注。可以用来查询。" />
+        <el-input
+          v-model="currentItemData.Comments"
+          type="textarea"
+          :rows="3"
+          placeholder="备注。可以用来查询。"
+        />
       </el-form-item>
     </el-form>
     <div class="around-center hgt60">
@@ -142,14 +147,13 @@
           v-show="currenteditEnable"
           class="m-l-40"
           @click="saveFormItemData"
-        >确 认</el-button>
-
+        >确 认</el-button> 
         <el-button v-show="currenteditEnable" @click="currenteditEnable=false">取 消</el-button>
-        <!-- <el-button
-          type="danger"
-          v-show="currentItemData.id>0"
+        <el-button
+          type="danger" 
+          v-show="currentItemData.id>0&&currenteditEnable"
           @click="resetCustomPassword(currentItemData.id)"
-        >重置密码</el-button>-->
+        >重置密码</el-button>
       </div>
     </div>
   </div>
@@ -211,7 +215,7 @@ export default {
       // 显示图片查看器
       showViewer: false,
       currentItemData: {},
-      currentPlatform:this.platform,
+      currentPlatform: this.platform,
       currenteditEnable: this.editEnable,
       // 表单验证规则
       customInfoRules: {
@@ -367,20 +371,23 @@ export default {
             if (res.code == 200) {
               this.isShowPlatformDialog = false;
               this.currentItemData = res.data;
-              this.$alert("添加成功.密码是:" + res.title, "密码", {
-                confirmButtonText: "确定"
-              });
+              if (res.title != "") {
+                this.$alert("添加成功.密码是:" + res.title, "密码", {
+                  confirmButtonText: "确定"
+                });
+              }
+              this.$emit("updateListData", 0, res.data);
             }
           } else {
             // 修改
             let res = await editCustomInfo("", "", this.currentItemData);
-            if (res.code == 200) {
-              this.isShowPlatformDialog = false;
-              this.$message({
-                message: "修改成功",
-                type: "success"
-              });
-            }
+
+            this.isShowPlatformDialog = false;
+            this.$message({
+              message: "修改成功",
+              type: "success"
+            });
+            this.$emit("updateListData", 1, res.data);
           }
         } else {
           this.$message({

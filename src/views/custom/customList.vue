@@ -177,13 +177,13 @@
         </el-table-column>
         <el-table-column prop="Createtime" width="130" :formatter="TimeFormatter" label="录入时间" />
         <el-table-column prop="Comments" width="200" label="备注" :show-overflow-tooltip="true" />
-        <el-table-column label="操作" width="310" fixed="right">
+        <el-table-column label="操作" width="150" fixed="right">
           <template slot-scope="scope">
-            <el-button
+            <!-- <el-button
               type="danger"
               style="margin:0px;"
               @click="addCustomContract(scope.$index, scope.row)"
-            >办理报名</el-button>
+            >办理报名</el-button> -->
             <el-button
               style="margin:0px"
               size="mini"
@@ -206,12 +206,12 @@
               size="mini"
               @click="callTelephone($event,scope.row)"
             >打电话</el-button>
-            <el-button
+            <!-- <el-button
               :disabled="connectTelStatus<=0"
               size="mini"
               style="margin:0px"
               @click="openSendSMSDialog(scope.row)"
-            >发短信</el-button>
+            >发短信</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -242,10 +242,10 @@
       >
         <!-- 展示校区的基本信息 -->
         <div slot="left_content">
-          <custom-row-detail :formItemData="customFormData"  :platform="currentPlatform" />
+          <custom-row-detail :formItemData="customFormData" :platform="currentPlatform" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activElTab" @tab-click="changDialogTab">
+          <el-tabs v-model="activElTab"  >
             <el-tab-pane id="gjjl" label="跟进记录" name="gjjl">
               <custom-track :custom-data="customFormData" @subClickEvent="updateCustomRecentTrack" />
             </el-tab-pane>
@@ -274,6 +274,7 @@
         <custom-row-detail
           style="padding:20px 20px 20px 20px"
           :editEnable="true"
+          @updateListData="updateCustomInfoList"
           :platform="currentPlatform"
           :formItemData="customFormData"
         />
@@ -460,7 +461,7 @@ export default {
   mounted() {
     this.qxRole = sessionStorage.ROLE;
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform = parseInt( paths[paths.length - 1]);
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
     // 因为客户管理和我的校区应用的是同一个页面所有让当路由有参数是就代表但是我的校区
     if (this.currentPlatform > 0) {
       // 获取该校区下所属我的所有销售成员
@@ -639,20 +640,6 @@ export default {
       this.moreOperationDialog = true;
     },
 
-    // 切换tabs标签页在调用函数
-    changDialogTab(tab) {
-      if (tab.$attrs.id == "gjjl") {
-        // this.$refs.refCustomTrack.getCustomId(this.customFormData.id);
-      } else if (tab.$attrs.id == "gmjl") {
-        // this.$refs.refBuyRecord.getCustomId(this.customFormData.id);
-      } else if (tab.$attrs.id == "htdd") {
-        // this.$refs.refCustomContract.getCustomRowData(this.customFormData);
-      } else if (tab.$attrs.id == "xj") {
-        // this.$refs.refCustomStuStatus.getCustomRowData(this.customFormData);
-      } else if (tab.$attrs.id == "cjlr") {
-        // this.getScoreEntry(this.customFormData.id);
-      }
-    }, 
     // 获取选中的学生
     selectionCustomChange(val) {
       this.mulSelectionCustomId = [];
@@ -686,7 +673,7 @@ export default {
     },
     // 更新客户列表数据
     updateCustomInfoList(type, rowData) {
-      // type=1添加，type=0修改，type=-1取消
+      // type=0添加，type=1修改，
       // 显示第一章图片格式化
       if (rowData) {
         if (rowData.Info) {
@@ -697,13 +684,12 @@ export default {
           }
         }
       }
-      if (type == -1) {
-      } else if (type == 1) {
+      if (type == 0) {
         this.customTableDataList.unshift(rowData);
-      } else if (type == 0) {
-        this.customFormData = { ...rowData };
+      } else if (type == 1) {
+        // this.customFormData = { ...rowData };
         this.$set(this.customTableDataList, this.currentCustomIndex, rowData);
-        this.$refs.refCustomDetail.getCustomRowData({ ...rowData });
+        // this.$refs.refCustomDetail.getCustomRowData({ ...rowData });
       }
     },
     // 添加跟进记录后更新用户列表的最新跟进记录

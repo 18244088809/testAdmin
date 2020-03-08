@@ -8,8 +8,10 @@ const getters = {
   cachedViews: state => state.tagsView.cachedViews,
   token: state => state.manager.token, 
   manager: state => state.manager.manager,
-  myPlatformList: state => state.manager.myPlatformList,
+  myPlatformList: state => state.app.myPlatformList,
   permission_routes: state => state.permission.routes,
-  errorLogs: state => state.errorLog.logs
+  errorLogs: state => state.errorLog.logs,
+  currentClassMate: state => state.class.currentClassMate
+
 }
 export default getters

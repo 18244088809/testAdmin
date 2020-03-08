@@ -66,7 +66,7 @@
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
 import newsFormData from "@/views/web/component/newsFormData";
-import { getNewsList, deleNewsRow } from "@/api/news";
+import { getActive, deleNewsRow } from "@/api/news";
 export default {
   name: "newsList",
   components: {
@@ -120,7 +120,7 @@ export default {
         limit: this.rows,
         offset: offsetRow
       };
-      let res = await getNewsList("", newParams);
+      let res = await getActive(this.currentPlatform, newParams);
       if (res.code == 200) {
         this.newsListTable = [];
         if (res.data) {
@@ -186,9 +186,11 @@ export default {
   },
 
   mounted() {
-    setTimeout(() => {
-      this.$refs.refElTabel.doLayout();
-    }, 2000);
+    let paths = this.$router.currentRoute.path.split("/");
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
+    if (isNaN(this.currentPlatform)) {
+      this.currentPlatform = 0;
+    }
     this.getNewsList();
   }
 };

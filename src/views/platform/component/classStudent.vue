@@ -9,7 +9,14 @@
       <el-table-column prop="id" label="学号" width="60"></el-table-column>
       <el-table-column prop="Realname" label="姓名">
         <template slot-scope="scope">
-          <span class="color-1f85aa font-w6 cursor">{{ scope.row.Realname }}</span>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="'Tel:'+scope.row.Telephone"
+            placement="top"
+          >
+            <span class="color-1f85aa font-w6 cursor">{{ scope.row.Realname }}</span>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
@@ -67,9 +74,12 @@ export default {
     }
   },
   watch: {
-    formItemData(newval) {
+    formItemData(newval) { 
       this.getClassAllStuList();
     }
+  },
+  mounted() { 
+    this.getClassAllStuList();
   },
   data() {
     return {
@@ -209,8 +219,7 @@ export default {
         console.log(this.checkBoxStuID);
       }
     }
-  },
-  mounted() {}
+  }
 };
 </script> 
 <style scoped>
