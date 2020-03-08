@@ -1,67 +1,62 @@
 <template>
   <div class="p_both10 p-t-5">
-    <el-table
-      :data="classAllStuList"
-      @selection-change="changeSelectStu"
-      border
-      style="width: 100%"
-      tooltip-effect="light"
-    >
-      <el-table-column type="selection" label="全选" width="55"></el-table-column>
-      <el-table-column prop="id" label="学号" width="60"></el-table-column>
-      <el-table-column prop="Realname" label="姓名" width="100"></el-table-column>
-      <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
-      <el-table-column prop="Telephone" label="电话" width="100"></el-table-column>
-      <el-table-column prop="Education" label="学历" width="120"></el-table-column>
-      <el-table-column prop="FromLabel" label="渠道来源" width="120"></el-table-column>
-      <el-table-column label="备注" :show-overflow-tooltip="true"></el-table-column>
-    </el-table>
-    <div class="m-v-15">
-      <!-- <el-button type="danger" @click="removeClassStu" class="border0 m-t-30">移除学员</el-button> -->
-      <el-button type="primary" @click="ShowSearchForm=true">添加学员</el-button>
-    </div>
-    <div class="pad20 border-e0 radius5 m-t-20" v-show="ShowSearchForm">
-      <el-form
-        :model="stuSearchForm"
-        ref="stuSearchForm"
-        :rules="stuSearchFormRules"
-        label-width="70px"
-      >
-        <div class="center">
-          <el-form-item label="手机号" prop="searchPhone">
-            <el-input
-              v-model="stuSearchForm.searchPhone"
-              @keyup.enter.native="searchStudent"
-              placeholder="请输入学员的手机号"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="姓名" prop="searchPhone">
-            <el-input
-              v-model="stuSearchForm.searchName"
-              @keyup.enter.native="searchStudent"
-              placeholder="请输入学员的姓名"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label-width="30px">
-            <el-button type="primary" @click="searchStudent" class="border0">查 询</el-button>
-          </el-form-item>
-        </div>
-      </el-form>
-      <div class="m-t-20" v-show="showSrarchStuResult">
-        <p>查找结果：</p>
-        <div class="m-t-20 flex_mid flex_wrap m-l-15">
-          <el-checkbox-group v-model="checkBoxAddStu">
-            <el-checkbox
-              :label="item.id"
-              class="m-b-5"
-              :key="item.id"
-              v-for="item in serachStuList"
-            >{{item.Realname}}（{{item.Telephone}}）</el-checkbox>
-          </el-checkbox-group>
-        </div>
-        <div class="m-t-30 center-end">
-          <el-button type="primary" @click="addStudentToClass" class="border0">加入班级</el-button>
-        </div>
+    <el-form :inline="true" :model="stuSearchForm" :rules="stuSearchFormRules" label-width="100px">
+      <el-form-item label="录入时间段">
+        <el-date-picker
+          v-model="queryEndDate"
+          type="daterange"
+          align="right"
+          unlink-panels
+          value-format="timestamp"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="common.datePickerOptions"
+          style="width:220px;"
+        />
+      </el-form-item>
+      <el-form-item prop="searchPhone">
+        <el-input
+          v-model="searchContentVal"
+          placeholder="请输入搜索内容"
+          class="input-with-select"
+          @keyup.enter.native="searchSubmit"
+        >
+          <el-select
+            slot="prepend"
+            v-model="seaechConditionVal"
+            placeholder="请选择查询条件"
+            class="wid90"
+          >
+            <el-option
+              v-for="(item,index) in searchCustomOptions"
+              :key="index"
+              :label="item.Label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-input>
+      </el-form-item>
+
+      <el-form-item label-width="30px">
+        <el-button type="primary" @click="searchStudent" class="border0">查 询</el-button>
+      </el-form-item>
+    </el-form>
+    <div class="m-t-20" v-show="showSrarchStuResult">
+      <p>备选学员：</p>
+      <hr />
+      <div class="m-t-20 center flex_wrap m-l-15">
+        <el-checkbox-group v-model="checkBoxAddStu">
+          <el-checkbox
+            :label="item.id"
+            class="m-b-5"
+            :key="item.id"
+            v-for="item in serachStuList"
+          >{{item.Realname}}（{{item.Telephone}}）</el-checkbox>
+        </el-checkbox-group>
+      </div>
+      <div class="m-t-30 center-end">
+        <el-button type="primary" @click="addStudentToClass" class="border0">加入班级</el-button>
       </div>
     </div>
   </div>
@@ -109,18 +104,12 @@ export default {
   name: "ClassStudent",
   props: {
     // 校区的表单数据
-    formItemData: {
-      type: Object,
-      default: function() {
-        return { Id: 0 };
-      }
+    currentPlatform: {
+      type: Number,
+      default:0
     }
   },
-  watch: {
-    formItemData(newval) {
-      this.getClassAllStuList();
-    }
-  },
+  
   data() {
     return {
       common,
@@ -129,6 +118,30 @@ export default {
         searchPhone: "",
         searchName: ""
       },
+      // 日期选择-日期筛选
+      queryEndDate: null,
+        // 查询客户所选条件值
+      seaechConditionVal: "",
+      // 查询客户内容的值
+      searchContentVal: "",
+      // 搜索学生的类型-条件查询
+      searchTypeVal: "realname",
+      // 查询客户的条件选项
+      searchCustomOptions: [
+        {
+          value: "realname",
+          Label: "姓名"
+        },
+
+        {
+          value: "tel",
+          Label: "电话"
+        },
+        {
+          value: "comments",
+          Label: "备注"
+        }
+      ],
       // 搜索表单验证
       stuSearchFormRules: {
         searchPhone: [
@@ -139,6 +152,12 @@ export default {
           }
         ]
       },
+      // 数据总条数-分页
+      allRows: 0,
+      // 当前页数-分页
+      nowPage: 1,
+      // 每页数据的总条-分页
+      rows: 40,
       // 查找学员的列表-查找结果
       serachStuList: [],
       // 选中的要加入班级的学员
@@ -163,39 +182,37 @@ export default {
       this.classAllStuList = res.data ? res.data : [];
     },
     // 查找学员
-    searchStudent() {
-      // 验证表单数据
-      if (!this.stuSearchForm.searchPhone && !this.stuSearchForm.searchName) {
-        this.$message({
-          message: "必须填写学生手机号或姓名之后才能查询哦！",
-          type: "warning"
-        });
-
-        return false;
+    async searchStudent() {
+      let startDate;
+      let endDate;
+      if (this.queryEndDate && this.queryEndDate.length == 2) {
+        startDate = parseInt(this.queryEndDate[0] / 1000);
+        endDate = parseInt(this.queryEndDate[1] / 1000 + 3600 * 24 - 1);
       }
-      this.$refs.stuSearchForm.validate(async valid => {
-        if (valid) {
-          let res = await getCustomInfoList("", {
-            limit: 10000,
-            tel: this.stuSearchForm.searchPhone,
-            realname: this.stuSearchForm.searchName
-          });
-          if (res.code == 200) {
-            if (res.data) {
-              this.serachStuList = res.data;
-              this.showSrarchStuResult = true;
-            } else {
-              this.serachStuList = [];
-              this.$message({
-                message: "没有找到该学员哦！",
-                type: "warning"
-              });
-            }
-          }
-        } else {
-          return false;
-        }
+       // 取数据的位置
+      const offsetRow = (this.nowPage - 1) * this.rows;
+      let res = await getCustomInfoList("", {
+        limit: this.rows,
+        offset: offsetRow,
+        kind: this.searchTypeVal,
+        platform: this.currentPlatform,
+        startDate: startDate,
+        endDate: endDate,
+        [this.seaechConditionVal]: this.searchContentVal
       });
+
+      if (res.code == 200) {
+        if (res.data) {
+          this.serachStuList = res.data;
+          this.showSrarchStuResult = true;
+        } else {
+          this.serachStuList = [];
+          this.$message({
+            message: "没有找到该学员哦！",
+            type: "warning"
+          });
+        }
+      }
     },
     // 向班级添加学员
     async addStudentToClass() {
@@ -254,7 +271,7 @@ export default {
         this.$message({
           message: "还没有勾选学员哦！",
           type: "warning"
-        });   
+        });
       } else {
         console.log(this.checkBoxStuID);
       }

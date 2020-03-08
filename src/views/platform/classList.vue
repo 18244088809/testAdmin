@@ -65,12 +65,12 @@
               type="success"
               style="margin:0px;"
               @click="openClassStudents(scope.$index, scope.row)"
-            >本班学员</el-button>
+            >学员作业</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="between-center m-v-10">
-        <el-button type="primary" @click="openClassDialog()">创建班级</el-button>
+        <el-button type="primary" @click="createClass()">创建班级</el-button>
         <div>
           <el-pagination
             background
@@ -96,12 +96,11 @@
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
           <el-tabs v-model="activeClassTabs">
-            <el-tab-pane label="班级学员" name="bjxy" id="bjxy">
-              <ClassStudent :formItemData="classFormData"></ClassStudent>
-            </el-tab-pane>
+            
             <el-tab-pane label="任课老师" name="rkls" id="rkls">
               <classTeacher :formItemData="classFormData"></classTeacher>
             </el-tab-pane>
+            
             <el-tab-pane label="课程表" name="kcb" id="kcb">
               <SchoolTimeTable ref="refClassTimeTable"></SchoolTimeTable>
             </el-tab-pane>
@@ -123,20 +122,21 @@
       </el-dialog>
 
       <!-- 班级相关操作的模态框 -->
-      <my-dialog :visible.sync="classStudentsDialog" :closeShow="true" :title="'【'+classFormData.Label+'】全体学员'">
-        <div slot="left_content" class="pad0">
-          <ClassStudent :formItemData="classFormData" :platform="currentPlatform"></ClassStudent>
-        </div>
+      <my-dialog
+        :visible.sync="classStudentsDialog"
+        :closeShow="true"
+        :title="'【'+classFormData.Label+'】学员作业'"
+        :showLeft="false"
+      >
+      
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activeClassTabs">
-            <el-tab-pane label="添加学员" name="bjxy" id="bjxy"></el-tab-pane>
-            <el-tab-pane label="任课老师" name="rkls" id="rkls">
-              <classTeacher :formItemData="classFormData"></classTeacher>
+           <studentWork :formItemData="classFormData"></studentWork>
+          <!-- <el-tabs v-model="activeClassTabs">
+            
+             <el-tab-pane label="本班学员作业" name="xyzy" id="xyzy">
+              <studentWork :formItemData="classFormData"></studentWork>
             </el-tab-pane>
-            <el-tab-pane label="课程表" name="kcb" id="kcb">
-              <SchoolTimeTable ref="refClassTimeTable"></SchoolTimeTable>
-            </el-tab-pane>
-          </el-tabs>
+          </el-tabs> -->
         </div>
       </my-dialog>
     </div>
@@ -144,8 +144,9 @@
 </template> 
 <script>
 import classRowDetail from "@/views/platform/component/classRowDetail";
-import classTeacher from "@/views/platform/component/classTeacher";
-import ClassStudent from "@/views/platform/component/classStudent";
+import classTeacher from "@/views/platform/component/classTeacher"; 
+import manageClassStudent from "@/views/platform/component/manageClassStudent"; 
+import studentWork from "@/views/platform/component/studentWork";
 import SchoolTimeTable from "@/views/platform/component/schoolTimeTable";
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
@@ -170,10 +171,11 @@ export default {
   name: "classList",
   components: {
     myDialog,
-    classRowDetail,
-    ClassStudent,
+    classRowDetail, 
     SchoolTimeTable,
-    classTeacher
+    classTeacher,
+    studentWork,
+    manageClassStudent
   },
   data() {
     return {
@@ -250,7 +252,11 @@ export default {
       this.currentIndex = index;
     },
     //打开班级信息模态框
-    openClassDialog(type) {
+    createClass(type) {
+      this.classFormData = {};
+      this.classFormData.OpenTime = new Date();
+      this.classFormData.Endtime = new Date(); 
+      this.classFormData.Createtime = new Date();
       this.editDialog = true;
     },
     // 添加班级成功之后更新表格数据-班级列表
@@ -259,8 +265,7 @@ export default {
         this.classList.unshift(rowData);
       } else if (type == 1) {
         this.$set(this.classList, this.currentIndex, rowData);
-      }
-      console.log(this.classList, "----currentIndex---", this.currentIndex);
+      } 
       this.editDialog = false;
     },
     // 切换tabs标签页在调用函数
@@ -288,7 +293,7 @@ export default {
   },
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform =  parseInt(paths[paths.length - 1]);
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }

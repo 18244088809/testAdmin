@@ -1,26 +1,6 @@
 <template>
   <div class="pad0">
-    <el-table
-      :data="classAllStuList"
-      @selection-change="changeSelectStu"
-      style="width: 100%;margin:0px"
-      tooltip-effect="light"
-    >
-      <el-table-column prop="id" label="学号" width="60"></el-table-column>
-      <el-table-column prop="Realname" label="姓名">
-        <template slot-scope="scope">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="'Tel:'+scope.row.Telephone"
-            placement="top"
-          >
-            <span class="color-1f85aa font-w6 cursor">{{ scope.row.Realname }}</span>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
-    </el-table>
+   
   </div>
 </template>
 <script>

@@ -1,69 +1,88 @@
 <template>
-  <div>
-    <el-form
-      :model="currentItemData"
-      ref="classForm"
-      :disabled="currenteditEnable==false"
-      :rules="ClassFormRules"
-      style="padding:10px 0px 0px 0px"
-      label-width="80px"
-      size="small"
-    >
-      <el-form-item label="班级名称" prop="Label">
-        <el-input v-model="currentItemData.Label" @input="$forceUpdate()" placeholder="请输入班级名称"></el-input>
-      </el-form-item>
-      <el-form-item label="开班时间" prop="OpenTime">
-        <el-date-picker
-          v-model="currentItemData.OpenTime"
-          @input="$forceUpdate()"
-          style="width:170px"
-          type="date"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="结课时间" prop="Endtime">
-        <el-date-picker
-          v-model="currentItemData.Endtime"
-          @input="$forceUpdate()"
-          style="width:170px"
-          type="date"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="授课形式">
-        <el-select
-          v-model="currentItemData.TeachMethod"
-          @change="$forceUpdate()"
-          placeholder="请选择授课形式"
-        >
-          <el-option
-            :label="item.Label"
-            :value="item.value"
-            v-for="item in common.teachingForm"
-            :key="item.Id"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="创建人员">
+  <div class="flex_column">
+    <div class="flex_dom pd0 marg0">
+      <el-table :data="classAllStuList" style="width:30%;" tooltip-effect="light">
+        <el-table-column prop="id" label="学号" width="60"></el-table-column>
+        <el-table-column prop="Realname" label="姓名">
+          <template slot-scope="scope">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="'Tel:'+scope.row.Telephone"
+              placement="top"
+            >
+              <span class="color-1f85aa font-w6 cursor">{{ scope.row.Realname }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
+      </el-table>
+
+      <el-form
+        :model="currentItemData"
+        ref="classForm"
+        style="width:70%;"
+        :disabled="currenteditEnable==false"
+        :rules="ClassFormRules"
+        label-width="80px"
+        size="small"
+      >
+        <el-form-item label="班级名称" prop="Label">
+          <el-input v-model="currentItemData.Label" @input="$forceUpdate()" placeholder="请输入班级名称"></el-input>
+        </el-form-item>
+        <el-form-item label="开班时间" prop="OpenTime">
+          <el-date-picker
+            v-model="currentItemData.OpenTime"
+            @input="$forceUpdate()"
+            style="width:170px"
+            type="date"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="结课时间" prop="Endtime">
+          <el-date-picker
+            v-model="currentItemData.Endtime"
+            @input="$forceUpdate()"
+            style="width:170px"
+            type="date"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="授课形式">
+          <el-select
+            v-model="currentItemData.TeachMethod"
+            @change="$forceUpdate()"
+            placeholder="请选择授课形式"
+          >
+            <el-option
+              :label="item.Label"
+              :value="item.value"
+              v-for="item in common.teachingForm"
+              :key="item.Id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="创建人员">
         <el-input v-model="createPerson" disabled></el-input>
-      </el-form-item>-->
-      <el-form-item label="年级">
-        <el-date-picker
-          style="width:100px"
-          v-model="searchGrade"
-          value-format="yyyy"
-          type="year"
-          placeholder="选择年"
-        ></el-date-picker>届
-      </el-form-item>
-      <el-form-item label="情况备注">
-        <el-input
-          type="textarea"
-          :rows="3"
-          @input="$forceUpdate()"
-          v-model="currentItemData.Description"
-          placeholder="情况备注~"
-        ></el-input>
-      </el-form-item>
-    </el-form>
+        </el-form-item>-->
+        <el-form-item label="年级">
+          <el-date-picker
+            style="width:100px"
+            v-model="searchGrade"
+            value-format="yyyy"
+            type="year"
+            placeholder="选择年"
+          ></el-date-picker>届
+        </el-form-item>
+        <el-form-item label="情况备注">
+          <el-input
+            type="textarea"
+            :rows="3"
+            @input="$forceUpdate()"
+            v-model="currentItemData.Description"
+            placeholder="情况备注~"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
     <div class="around-center hgt60 bge0e3ea">
       <el-button
         type="warning"
@@ -130,6 +149,8 @@ export default {
       isShowClassDialog: false,
       // 创建班级的时间
       createClassTime: null,
+      // 获取班级的所有学员
+      classAllStuList: [],
       // 创建人
       createPerson: null,
       currentItemData: this.formItemData,
@@ -145,15 +166,25 @@ export default {
     formItemData(newvar) {
       this.currentItemData = this.formItemData;
       console.log(" this.currenteditEnable :", this.currenteditEnable);
+      this.getClassAllStuList();
     }
   },
   mounted() {
-    if (isDate(this.searchGrade)) {
-      this.currentItemData.Grade = this.searchGrade.getFullYear();
-    }
-    this.currentItemData = this.formItemData;
+    // if (isDate(this.searchGrade)) {
+    //   this.currentItemData.Grade = this.searchGrade.getFullYear();
+    // }
+    // this.currentItemData = this.formItemData;
+    
   },
   methods: {
+    // 获取班级的所有学员
+    async getClassAllStuList() {
+      this.serachStuList = [];
+      this.ShowSearchForm = false;
+      this.showSrarchStuResult = false;
+      let res = await getClassStu(this.formItemData.Id);
+      this.classAllStuList = res.data ? res.data : [];
+    },
     // 添加或编辑数据
     saveFormItemData() {
       this.currentItemData.PlatformID = parseInt(this.platform);
