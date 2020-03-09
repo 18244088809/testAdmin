@@ -136,7 +136,7 @@ export default {
       // 表单验证
       ClassFormRules: {
         Label: [
-          { required: true, message: "班级名称不能为空", trigger: "blur" }
+          { required: true, message: '班级名称不能为空', trigger: "blur" }
         ]
       }
     };

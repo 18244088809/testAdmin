@@ -86,8 +86,8 @@ export default {
       courseKindsOps: [],
       // 表单验证
       subjectFormRules: {
-        Label: [{ required: true, message: "名称不能为空", trigger: "blur" }],
-        Topic: [{ required: true, message: "请输入章节数", trigger: "blur" }]
+        Label: [{ required: true, message: '名称不能为空', trigger: "blur" }],
+        Topic: [{ required: true, message: '请输入章节数', trigger: "blur" }]
       }
     };
   },

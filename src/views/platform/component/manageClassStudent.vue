@@ -106,10 +106,10 @@ export default {
     // 校区的表单数据
     currentPlatform: {
       type: Number,
-      default:0
+      default: 0
     }
   },
-  
+
   data() {
     return {
       common,
@@ -120,7 +120,7 @@ export default {
       },
       // 日期选择-日期筛选
       queryEndDate: null,
-        // 查询客户所选条件值
+      // 查询客户所选条件值
       seaechConditionVal: "",
       // 查询客户内容的值
       searchContentVal: "",
@@ -189,7 +189,7 @@ export default {
         startDate = parseInt(this.queryEndDate[0] / 1000);
         endDate = parseInt(this.queryEndDate[1] / 1000 + 3600 * 24 - 1);
       }
-       // 取数据的位置
+      // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getCustomInfoList("", {
         limit: this.rows,

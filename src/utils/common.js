@@ -312,23 +312,23 @@ export default {
   // 意向客户客户类型
   IntentionalCustomerType: [
     {
-      value: -1,
+      value: 0,
       Label: '全部客户'
     },
     {
-      value: 0,
+      value: 1,
       Label: '普通客户'
     },
     {
-      value: 1,
+      value: 2,
       Label: '有意向'
     },
     {
-      value: 2,
+      value: 3,
       Label: '暂无意向'
     },
     {
-      value: 3,
+      value: 4,
       Label: '彻底抛弃'
     }
   ],

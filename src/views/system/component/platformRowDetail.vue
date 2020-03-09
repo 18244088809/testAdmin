@@ -18,8 +18,15 @@
       <el-form-item label="地址">
         <el-input v-model="currentItemData.Address" />
       </el-form-item>
+      <el-form-item label="年度上限">
+        <el-input-number :min="0" label="每年的招生上限" v-model="currentItemData.MaxPerYear" />
+      </el-form-item>
+      <el-form-item label="总上限">
+        <el-input-number :min="0"  label="总的招生上限" v-model="currentItemData.MaxAllYear" />
+      </el-form-item>
       <!-- 校区负责人 -->
-      <el-form-item label="负责人">{{currentItemData.MasterLabel}}</el-form-item>
+      <el-form-item v-if="currentItemData.MasterLabel!=''" label="负责人">请在右边校区员工里勾选负责人</el-form-item>
+       <el-form-item v-else label="负责人">{{currentItemData.MasterLabel}}</el-form-item>
       <el-form-item label="备注">
         <el-input v-model="currentItemData.Description" />
       </el-form-item>
@@ -70,10 +77,10 @@ export default {
       // 表单验证
       platFormInfoRules: {
         Label: [
-          { required: true, message: "校区名称不能为空", trigger: "blur" }
+          { required: true, message: '校区名称不能为空', trigger: "blur" }
         ],
         Telephone: [
-          { required: true, message: "请输入电话号码", trigger: "blur" },
+          { required: true, message: '请输入电话号码', trigger: "blur" },
           {
             pattern: /^\d{11}$/,
             message: "请输入正确的手机号",

@@ -8,22 +8,13 @@
     >
       <div class="between-center">
         <el-form-item label="章" class="flex_1" prop="ZhangId">
-          <el-input v-model.number="currentItemData.ZhangId" :disabled="currentItemData.Id>0"></el-input>
+          <el-input-number :min="1" v-model="ZhangId" :disabled="currentItemData.Id>0"></el-input-number>
         </el-form-item>
         <el-form-item label="节" class="flex_1" prop="JieId">
-          <el-input v-model.number="currentItemData.JieId" :disabled="currentItemData.Id>0"></el-input>
+          <el-input-number :min="1" v-model="JieId" :disabled="currentItemData.Id>0"></el-input-number>
         </el-form-item>
-        <el-form-item label="知识点" class="flex_1" prop="TopicId">
-          <el-input v-model.number="currentItemData.TopicId" :disabled="currentItemData.Id>0"></el-input>
-        </el-form-item>
-      </div>
-      <div class="between-center">
         <el-form-item label="题型" class="flex_1">
-          <el-select
-            v-model="currentItemData.QuestionType"
-            :disabled="currentItemData.Id>0"
-            placeholder="请选择题型"
-          >
+          <el-select v-model="QuestionType" :disabled="currentItemData.Id>0" placeholder="请选择题型">
             <el-option
               :label="item.Label"
               :key="index"
@@ -33,11 +24,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="分值" prop="QuestionScore" class="flex_1">
-          <el-input v-model.number="currentItemData.QuestionScore"></el-input>
+          <el-input-number :min="1" v-model="QuestionScore" :step="0.5"></el-input-number>
         </el-form-item>
         <el-form-item class="flex_1 center">
-          <el-radio v-model="currentItemData.State" :label="1">上架</el-radio>
-          <el-radio v-model="currentItemData.State" :label="0">下架</el-radio>
+          <el-radio v-model="State" :label="1">上架</el-radio>
+          <el-radio v-model="State" :label="0">下架</el-radio>
         </el-form-item>
       </div>
       <el-form-item label="题干" prop="QuestionContent">
@@ -48,17 +39,17 @@
           v-model="currentItemData.QuestionContent"
         ></el-input>
       </el-form-item>
-      <el-form-item label="解析" prop="QuestionAnalyse">
+      <el-form-item label="解析答案" prop="QuestionAnalyse">
         <el-input
           type="textarea"
           :rows="3"
-          placeholder="请输入解析内容"
+          placeholder="请输入解析内容，学员需要的时候用来给学员分析原因。"
           v-model="currentItemData.QuestionAnalyse"
         ></el-input>
       </el-form-item>
       <!-- 单选题,判断题 -->
       <el-form-item label="选项">
-        <div v-show="currentItemData.QuestionType==1||currentItemData.QuestionType==3">
+        <div v-show="QuestionType==1||QuestionType==3">
           <div class="center flex_wrap" style="width:100%">
             <div
               :key="index"
@@ -75,7 +66,7 @@
           </div>
         </div>
         <!-- 多选题-编辑-->
-        <div v-show="currentItemData.QuestionType==2">
+        <div v-show="QuestionType==2">
           <div class="flex_dom flex_wrap">
             <div
               :key="index"
@@ -92,13 +83,8 @@
         <!-- 添加选项 -->
         <div class="center flex_dom">
           <el-button @click="addQuestionOption">添加选项</el-button>
-          <el-button @click="deleteQuestionOption">删除最后项</el-button> 
-        </div>
-  </el-form-item>
-      <el-form-item label="附加图片">
-
-        <div class="center flex_dom">
-            <el-upload
+          <el-button @click="deleteQuestionOption">删除最后项</el-button>
+          <el-upload
             :auto-upload="false"
             action
             class="m-l-10"
@@ -107,25 +93,27 @@
             :on-change="function(file, fileList){return ImgUploadQuestion(file, fileList)}"
           >
             <el-button>上传图片</el-button>
-          </el-upload> 
-            <el-tooltip class="item cursor" effect="dark" content="点击文本复制" placement="top">
-              <span class="tag-read" :data-clipboard-text="ImgAddr" @click="copyText">{{ImgAddr}}</span>
-            </el-tooltip>
-          </div>
+          </el-upload>
+          <el-tooltip
+            class="item cursor"
+            effect="dark"
+            content="点击复制后贴到任何你想要放图片的题干或者选项里"
+            placement="top"
+          >
+            <span class="tag-read" :data-clipboard-text="ImgAddr" @click="copyText">{{ImgAddr}}</span>
+          </el-tooltip>
+        </div>
       </el-form-item>
-      <div class="between-center">
-        <el-form-item label="答题次数" class="flex_1">
-          <el-input v-model.number="currentItemData.AnswerNum"></el-input>
-        </el-form-item>
-        <el-form-item label="答错次数" class="flex_1">
-          <el-input v-model.number="currentItemData.WrongNum"></el-input>
-        </el-form-item>
-      </div>
+
+      <el-form-item>
+        <!-- 添加选项 -->
+
+        <div class="m-v-15 text-right">
+          <el-button @click="questionFormDialog = false">取 消</el-button>
+          <el-button type="primary" @click="saveQuestion">确 认</el-button>
+        </div>
+      </el-form-item>
     </el-form>
-    <div class="m-v-15 text-right">
-      <el-button @click="questionFormDialog = false">取 消</el-button>
-      <el-button type="primary" @click="saveQuestion">确 认</el-button>
-    </div>
   </div>
 </template>
 
@@ -154,6 +142,11 @@ export default {
       words: ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
       // 题型信息
       currentItemData: {},
+      ZhangId: 1,
+      JieId: 1,
+      QuestionType: 1,
+      QuestionScore: 1,
+      State: 1,
       // 多选题答案
       quesCheckboxAnswer: [],
       // 存放题的选项
@@ -165,37 +158,38 @@ export default {
       ],
       // 表单验证
       questionFormRules: {
-        ZhangId: [{ required: true, message: "请填写章编号", trigger: "blur" }],
-        JieId: [{ required: true, message: "请填写节编号", trigger: "blur" }],
-        TopicId: [{ required: true, message: "请填写知识点", trigger: "blur" }],
+        ZhangId: [{ required: true, message: '请填写章编号', trigger: "blur" }],
+        JieId: [{ required: true, message: '请填写节编号', trigger: "blur" }],
+        TopicId: [{ required: true, message: '请填写知识点', trigger: "blur" }],
         QuestionScore: [
-          { required: true, message: "请填写题的分值", trigger: "blur" }
+          { required: true, message: '请填写题的分值', trigger: "blur" }
         ],
         QuestionContent: [
-          { required: true, message: "请填写题干内容", trigger: "blur" }
+          { required: true, message: '请填写题干内容', trigger: "blur" }
         ]
       }
     };
   },
   watch: {
     formItemData(newval) {
-      this.currentItemData = this.formItemData;
+      this.setData();
       this.getQuestionRow();
     }
   },
   mounted() {
-    this.currentItemData = this.formItemData;
+    this.setData();
     this.getQuestionRow();
   },
   methods: {
+    setData() {
+      this.currentItemData = this.formItemData;
+    },
     // 从父组件获取的值
-    getQuestionRow() { 
+    getQuestionRow() {
       // 初始化值
       this.isbusy = false;
       this.ImgAddr = "";
       this.quesCheckboxAnswer = [];
-      // this.currentItemData = { ...row };
-      // this.currentItemData.Options = [];
       if (this.currentItemData.Id > 0) {
         if (this.currentItemData.QuestionType == 2) {
           this.quesCheckboxAnswer = this.currentItemData.QuestionAnswer.split(
@@ -238,63 +232,61 @@ export default {
     // 题库上传图片
     async ImgUploadQuestion(file, fileList) {
       this.isbusy = true;
-       let res = await $ImgHttp.UploadImg("exercise", file.raw);
-      // let res = await $ImgHttp.UploadImgExercise(
-      //   this.currentItemData.BookId,
-      //   file.raw
-      // );
+      let res = await $ImgHttp.UploadImg("exercise", file.raw);
       if (res.code == 200) {
-       this.$message({
-              message: "操作成功",
-              type: "success"
-            });
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
         this.ImgAddr = `<img src="${res.data}" />`;
         this.isbusy = false;
       }
     },
     // 修改数据
     saveQuestion() {
+      this.currentItemData.ZhangId = this.ZhangId;
+      this.currentItemData.JieId = this.JieId;
+      this.currentItemData.QuestionType = this.QuestionType;
+      this.currentItemData.State = this.State;
+      this.currentItemData.QuestionScore = this.QuestionScore;
       this.$refs.refQuestionForm.validate(async valid => {
-        if (valid) { 
-          if (!this.currentItemData.Options){
+        if (valid) {
+          if (!this.currentItemData.Options) {
             this.currentItemData.Options = [];
-          } 
+          }
           // 处理选项
           this.quesAnswerOptions.forEach(item => {
             if (item.content) {
               this.currentItemData.Options.push(item.content);
             }
-          }); 
+          });
           // 处理多选题答案
           if (this.currentItemData.QuestionType == 2) {
             this.currentItemData.QuestionAnswer = this.quesCheckboxAnswer.join(
               ""
             );
-          } 
+          }
           // 修改数据
           if (this.currentItemData.Id > 0) {
             let res = await editQuestion(
-              this.currentItemData.Id,"",
+              this.currentItemData.Id,
+              "",
               this.currentItemData
             );
             if (res.code == 200) {
-              
               this.$emit("subClickEvent", 1, res.data);
             }
-          } else if (!this.currentItemData.Id||this.currentItemData.Id == 0) {
-     
-            let res = await addQuestion("","",this.currentItemData);
+          } else if (!this.currentItemData.Id || this.currentItemData.Id == 0) {
+            let res = await addQuestion("", "", this.currentItemData);
             if (res.code == 200) {
               this.$emit("subClickEvent", 0, res.data);
-       
             }
           }
           this.$message({
-              message: "操作成功",
-              type: "success"
-            });
+            message: "操作成功",
+            type: "success"
+          });
         } else {
-          console.log("没通过")
           return false;
         }
       });
@@ -302,7 +294,7 @@ export default {
     // 添加选项
     addQuestionOption() {
       let addTag = 65 + this.quesAnswerOptions.length;
-      if (addTag < 74) {
+      if (addTag < 80) {
         let tagName = String.fromCharCode(addTag);
         this.quesAnswerOptions.push({ tag: tagName, content: "" });
       }

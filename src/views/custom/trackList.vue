@@ -148,6 +148,10 @@ export default {
       this.showViewer = true;
       this.imageViewerSrc = src;
     },
+     // 关闭查看器
+    closeViewer() {
+      this.showViewer = false;
+    },
     // 获取客户的跟进记录
     getCustomtTracks() {
       const offsetRow = (this.nowPage - 1) * this.rows;

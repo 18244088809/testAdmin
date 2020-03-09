@@ -129,7 +129,7 @@
         :showLeft="false"
       >
       
-        <div slot="right_content" class="p_both20 p-b-20">
+        <div slot="right_content"  >
            <studentWork :formItemData="classFormData"></studentWork>
           <!-- <el-tabs v-model="activeClassTabs">
             

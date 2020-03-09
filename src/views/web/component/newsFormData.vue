@@ -100,7 +100,7 @@ export default {
       currentItemData: this.formItemData,
       // 表单验证
       newsFormRules: {
-        Title: [{ required: true, message: "标题不能为空", trigger: "blur" }]
+        Title: [{ required: true, message: '标题不能为空', trigger: "blur" }]
       }
     };
   },

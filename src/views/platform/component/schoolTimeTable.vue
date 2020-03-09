@@ -166,11 +166,11 @@ export default {
       showDate: new Date(),
       // table数据的验证
       TimeTableRules: {
-        StartTime: [{ required: true, message: "上课时间不能为空" }],
-        EndTime: [{ required: true, message: "下课时间不能为空" }],
-        BookLabel: [{ required: true, message: "授课科目不能为空" }],
-        CourseNum: [{ required: true, message: "授课课时不能为空" }],
-        Address: [{ required: true, message: "授课地址不能为空" }]
+        StartTime: [{ required: true, message: '上课时间不能为空'}],
+        EndTime: [{ required: true, message: '下课时间不能为空'}],
+        BookLabel: [{ required: true, message: '授课科目不能为空'}],
+        CourseNum: [{ required: true, message: '授课课时不能为空'}],
+        Address: [{ required: true, message: '授课地址不能为空'}]
       },
       // 控制考勤记录模态框的显隐
       showTimeTagDialog: false,

@@ -95,7 +95,7 @@ export default {
 
 .no_left {
   width: calc(100% - 20px);
-  margin-left: 10px;
+  margin-left: 0px;
 }
 .left_body_div {
   overflow-y: scroll;

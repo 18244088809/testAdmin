@@ -62,10 +62,10 @@ export default {
       // 表单验证
       platFormInfoRules: {
         Label: [
-          { required: true, message: "校区名称不能为空", trigger: "blur" }
+          { required: true, message: '校区名称不能为空', trigger: "blur" }
         ],
         Telephone: [
-          { required: true, message: "请输入电话号码", trigger: "blur" },
+          { required: true, message: '请输入电话号码', trigger: "blur" },
           {
             pattern: /^\d{11}$/,
             message: "请输入正确的手机号",

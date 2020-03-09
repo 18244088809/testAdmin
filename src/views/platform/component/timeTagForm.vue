@@ -203,14 +203,14 @@ export default {
       // 课堂考勤的表单验证
       timetagRules: {
         ShiJi: [
-          { required: true, message: "实际课时不能为空", trigger: "blur" }
+          { required: true, message: '实际课时不能为空', trigger: "blur" }
         ],
         Dianmingbiao: [
-          { required: true, message: "必须上传考勤表", trigger: "blur" }
+          { required: true, message: '必须上传考勤表', trigger: "blur" }
         ],
-        Jindu: [{ required: true, message: "教学进度必填", trigger: "blur" }],
+        Jindu: [{ required: true, message: '教学进度必填', trigger: "blur" }],
         JiaoxueNeirong: [
-          { required: true, message: "教学内容必填", trigger: "blur" }
+          { required: true, message: '教学内容必填', trigger: "blur" }
         ]
       },
       // 上课时间

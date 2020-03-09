@@ -76,12 +76,12 @@ export default {
         if (res.code == 200) {
           this.examFormDialog = false;
           this.common.go_alert("修改成功 !");
-          this.$emit("subClick", 0, res.data);
+          this.$emit("subClick", 0, res.data)
         }
       }
     }
   }
-};
+}
 </script>
 <style scoped >
 </style>

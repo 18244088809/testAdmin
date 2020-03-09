@@ -222,7 +222,7 @@ export default {
       } else {
         this.$message({
           type: 'error',
-          message: '当前浏览器不支持 WebSocket，请升级或更换浏览器！'
+          message: "当前浏览器不支持 WebSocket，请升级或更换浏览器！"
         })
       }
     },
@@ -313,7 +313,7 @@ export default {
       if (!phone) {
         Message({
           type: 'error',
-          message: '您所拨打的号码不存在'
+          message: "您所拨打的号码不存在"
         })
         return
       }

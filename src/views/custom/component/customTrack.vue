@@ -78,7 +78,7 @@
               <img
                 v-if="img"
                 class="wid20"
-                src="/assets/slice/uploadedIcon.png"
+              :src="img" 
                 @click="onPreview(img)"
               />
             </div>

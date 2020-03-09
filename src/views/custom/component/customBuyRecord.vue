@@ -206,13 +206,13 @@ export default {
       // 表单验证
       buyCourseRules: {
         selectedCourseId: [
-          { required: true, message: "课程不能为空", trigger: "blur" }
+          { required: true, message: '课程不能为空', trigger: "blur" }
         ],
         courseStudyTime: [
-          { required: true, message: "课时时效不能为空", trigger: "blur" }
+          { required: true, message: '课时时效不能为空', trigger: "blur" }
         ],
         actualPrice: [
-          { required: true, message: "实际金额不能为空", trigger: "blur" }
+          { required: true, message: '实际金额不能为空', trigger: "blur" }
         ]
       }
     };

@@ -176,8 +176,8 @@ export default {
       isEditVideo: false,
       // 表单验证
       videoFormRules: {
-        Label: [{ required: true, message: "请输入视频名称", trigger: "blur" }],
-        List: [{ required: true, message: "请输入视频地址", trigger: "blur" }]
+        Label: [{ required: true, message: '请输入视频名称', trigger: "blur" }],
+        List: [{ required: true, message: '请输入视频地址', trigger: "blur" }]
       }
     };
   },

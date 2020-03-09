@@ -176,13 +176,13 @@ export default {
       collegeIndex: 0,
       // 表单验证
       courseFormRules: {
-        Price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
+        Price: [{ required: true, message: '价格不能为空', trigger: "blur" }],
         CourseNum: [
-          { required: true, message: "课时不能为空", trigger: "blur" }
+          { required: true, message: '课时不能为空', trigger: "blur" }
         ],
-        Sort: [{ required: true, message: "排序不能为空", trigger: "blur" }],
+        Sort: [{ required: true, message: '排序不能为空', trigger: "blur" }],
         Label: [
-          { required: true, message: "产品名称不能为空", trigger: "blur" }
+          { required: true, message: '产品名称不能为空', trigger: "blur" }
         ]
       },
       // 搜索科目时通过课程类别的名称查找

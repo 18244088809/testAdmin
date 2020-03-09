@@ -18,7 +18,7 @@
               <el-radio-group
                 v-model="searchWorkerId"
                 :disabled="!isPlatformMaster"
-                @change="getCustomList"
+                
               >
                 <el-radio-button :label="0">全部</el-radio-button>
                 <el-radio-button
@@ -36,7 +36,7 @@
                   v-model="searchTypeVal"
                   class="wid110"
                   placeholder="请选择类型"
-                  @change="getCustomList"
+                  
                 >
                   <el-option
                     v-for="(item,index) in common.IntentionalCustomerType"
@@ -183,7 +183,7 @@
               type="danger"
               style="margin:0px;"
               @click="addCustomContract(scope.$index, scope.row)"
-            >办理报名</el-button> -->
+            >办理报名</el-button>-->
             <el-button
               style="margin:0px"
               size="mini"
@@ -211,7 +211,7 @@
               size="mini"
               style="margin:0px"
               @click="openSendSMSDialog(scope.row)"
-            >发短信</el-button> -->
+            >发短信</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -245,7 +245,7 @@
           <custom-row-detail :formItemData="customFormData" :platform="currentPlatform" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activElTab"  >
+          <el-tabs v-model="activElTab">
             <el-tab-pane id="gjjl" label="跟进记录" name="gjjl">
               <custom-track :custom-data="customFormData" @subClickEvent="updateCustomRecentTrack" />
             </el-tab-pane>
@@ -382,7 +382,7 @@ export default {
       // 获取当前登录用的角色权限
       qxRole: "",
       // 搜索学生的类型-条件查询
-      searchTypeVal: -1,
+      searchTypeVal: 0,
       // 查询客户的条件选项
       searchCustomOptions: [
         {
@@ -506,10 +506,10 @@ export default {
       const offsetRow = (this.nowPage - 1) * this.rows;
       let res;
       let notInKind = 0; // sql中标识为   kind!=
-      if (this.searchTypeVal == -1) {
-        // 选择全部客户的时候， 要排除kind=6 的公海客户
-        notInKind = 6;
-      }
+      // if (this.searchTypeVal == 0) {
+      //   // 选择全部客户的时候， 要排除kind=4 的公海客户
+      //   notInKind = 4;
+      // }
       let startDate;
       let endDate;
       if (this.queryEndDate && this.queryEndDate.length == 2) {
@@ -687,10 +687,9 @@ export default {
       if (type == 0) {
         this.customTableDataList.unshift(rowData);
       } else if (type == 1) {
-        // this.customFormData = { ...rowData };
         this.$set(this.customTableDataList, this.currentCustomIndex, rowData);
-        // this.$refs.refCustomDetail.getCustomRowData({ ...rowData });
       }
+       this.editDialog = false;
     },
     // 添加跟进记录后更新用户列表的最新跟进记录
     updateCustomRecentTrack(RecentTrack) {

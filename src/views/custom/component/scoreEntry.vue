@@ -148,11 +148,11 @@ export default {
       // 成绩录入的表单验证
       scoreEntryRules: {
         score: [
-          { required: true, message: "成绩不能为空", trigger: "blur" },
-          { pattern: /^\d/, message: "成绩必须为数字", trigger: "blur" }
+          { required: true, message: '成绩不能为空', trigger: "blur" },
+          { pattern: /^\d/, message: '成绩必须为数字', trigger: "blur" }
         ],
         examTime: [
-          { required: true, message: "考试时间不能为空", trigger: "blur" }
+          { required: true, message: '考试时间不能为空', trigger: "blur" }
         ]
       }
     };

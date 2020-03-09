@@ -21,6 +21,7 @@
           </el-table-column>
           <el-table-column prop="MasterLabel" label="负责人" width="120" />
           <el-table-column prop="Telephone" label="联系电话" width="100" />
+           <el-table-column prop="Telephone" label="每年招生上限" width="100" />
           <el-table-column prop="Address" label="地址" :show-overflow-tooltip="true" width="300" />
           <el-table-column prop="Description" label="备注" :show-overflow-tooltip="true" />
         </el-table> 

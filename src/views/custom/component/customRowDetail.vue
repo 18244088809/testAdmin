@@ -31,7 +31,7 @@
         <el-input v-model="customPassword" type="password" placeholder="请输入密码" />
       </el-form-item>
       <el-form-item v-show="currentItemData.id<=0" label="重复密码" prop="rePassword">
-        <el-input v-model="rePassword" type="password" placeholder="请再次输入密码" />
+        <el-input v-model="rePassword" type="password" @blur="checkPswd" placeholder="请再次输入密码" />
       </el-form-item>
       <el-form-item label="身份证" prop="Idcard">
         <el-input v-model="currentItemData.Idcard" placeholder="请输入客户身份证" />
@@ -42,16 +42,15 @@
       <el-form-item label="图片">
         <div class="flex_dom flex_wrap">
           <div v-for="(item,index) in customImgArr" :key="index" class="relative marg15">
-            <div
-              v-show="currentItemData.id>0"
-              class="deleImgIcon cursor"
+            <img v-if="item" class="wid20" :src="item" @click="onPreview(item)" />
+            <img
+              class="wid20 deleImgIcon cursor"
+              src="/assets/slice/deleteIcon.png"
               @click="deleCustomImg(index)"
-            >
-              <img class="wid20" src="/assets/slice/deleteIcon.png" @click="onPreview(item)" />
-            </div>
+            />
           </div>
+
           <el-upload
-            v-show="currentItemData.id<=0"
             :auto-upload="false"
             action
             class="avatar-uploader"
@@ -147,10 +146,10 @@
           v-show="currenteditEnable"
           class="m-l-40"
           @click="saveFormItemData"
-        >确 认</el-button> 
+        >确 认</el-button>
         <el-button v-show="currenteditEnable" @click="currenteditEnable=false">取 消</el-button>
         <el-button
-          type="danger" 
+          type="danger"
           v-show="currentItemData.id>0&&currenteditEnable"
           @click="resetCustomPassword(currentItemData.id)"
         >重置密码</el-button>
@@ -218,26 +217,26 @@ export default {
       currentPlatform: this.platform,
       currenteditEnable: this.editEnable,
       // 表单验证规则
+      rePassword: [
+        {
+          required: true,
+          validator: (rule, value, callback) => {
+            if (this.rePassword === "") {
+              callback(new Error("请再次输入密码"));
+            } else if (this.rePassword !== this.customPassword) {
+              callback(new Error("两次输入密码不一致"));
+            } else {
+              callback();
+            }
+          },
+          trigger: "blur"
+        }
+      ],
       customInfoRules: {
         Realname: [
-          { required: true, message: "请输入客户姓名", trigger: "blur" }
+          { required: true, message: '请输入客户姓名', trigger: "blur" }
         ],
 
-        rePassword: [
-          {
-            required: true,
-            validator: (rule, value, callback) => {
-              if (this.rePassword === "") {
-                callback(new Error("请再次输入密码"));
-              } else if (this.rePassword !== this.customPassword) {
-                callback(new Error("两次输入密码不一致"));
-              } else {
-                callback();
-              }
-            },
-            trigger: "blur"
-          }
-        ],
         Qq: [
           {
             pattern: /^[0-9]*$/,
@@ -245,9 +244,9 @@ export default {
             trigger: "blur"
           }
         ],
-        Sex: [{ required: true, message: "请选择客户性别", trigger: "blur" }],
+        Sex: [{ required: true, message: '请选择客户性别', trigger: "blur" }],
         Telephone: [
-          { required: true, message: "请输入电话号码", trigger: "blur" },
+          { required: true, message: '请输入电话号码', trigger: "blur" },
           {
             pattern: /^\d{11}$/,
             message: "请输入正确的手机号",
@@ -255,7 +254,7 @@ export default {
           }
         ],
         Platform: [
-          { required: true, message: "必须选择一个校区", trigger: "blur" }
+          { required: true, message: '必须选择一个校区', trigger: "blur" }
         ]
       },
       // 学历选择
@@ -281,19 +280,37 @@ export default {
   watch: {
     formItemData(newvar) {
       this.currentItemData = this.formItemData;
+
+      this.setData();
+    }
+  },
+
+  mounted() {
+    this.currentItemData = this.formItemData;
+    this.setData();
+  },
+  methods: {
+    setData() {
       if (this.currentItemData.Info && this.currentItemData.Info.attach_image) {
         const info = JSON.parse(this.currentItemData.Info);
         if (info.attach_image) {
           this.customImgArr = info.attach_image.split(",");
         }
       }
-    }
-  },
-
-  mounted() {
-    this.currentItemData = this.formItemData;
-  },
-  methods: {
+    },
+    checkPswd() {
+      if (
+        this.customPassword != this.rePassword &&
+        this.rePassword.length < 6
+      ) {
+        this.$message({
+          message: "两次密码必须一致",
+          type: "warning"
+        });
+        return false;
+      }
+      return true;
+    },
     // 图片预览
     onPreview(src) {
       this.showViewer = true;
@@ -357,10 +374,22 @@ export default {
 
     // 保存客户信息
     async saveFormItemData() {
+      if (this.checkPswd() == false) {
+        return;
+      }
       this.$refs.refCustomInfo.validate(async valid => {
         if (valid) {
           this.currentItemData.Platform = this.currentPlatform;
           this.currentItemData.MasterID = this.masterID;
+          if (this.customImgArr.length > 0) {
+            this.currentItemData.Info = {};
+            this.currentItemData.Info.attach_image = this.customImgArr.join(
+              ","
+            );
+            this.currentItemData.Info = JSON.stringify(
+              this.currentItemData.Info
+            );
+          }
           const md5 = crypto.createHash("md5");
           md5.update(this.customPassword);
           this.currentItemData.Password = md5.digest("hex");
@@ -368,16 +397,15 @@ export default {
           if (this.currentItemData.id == null || this.currentItemData.id == 0) {
             // 新增
             let res = await addCustomInfo("", "", this.currentItemData);
-            if (res.code == 200) {
-              this.isShowPlatformDialog = false;
-              this.currentItemData = res.data;
-              if (res.title != "") {
-                this.$alert("添加成功.密码是:" + res.title, "密码", {
-                  confirmButtonText: "确定"
-                });
-              }
-              this.$emit("updateListData", 0, res.data);
+
+            this.isShowPlatformDialog = false;
+            this.currentItemData = res.data;
+            if (res.title != "") {
+              this.$alert("添加成功.密码是:" + res.title, "密码", {
+                confirmButtonText: "确定"
+              });
             }
+            this.$emit("updateListData", 0, res.data);
           } else {
             // 修改
             let res = await editCustomInfo("", "", this.currentItemData);

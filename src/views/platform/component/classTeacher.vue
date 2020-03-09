@@ -168,9 +168,9 @@ export default {
       checkBoxStuID: [],
       teacherList: [],
       ClassOpenTableRules: {
-        teacher_label: [{ required: true, message: "授课课时不能为空" }],
-        book_label: [{ required: true, message: "授课科目不能为空" }],
-        total_time: [{ required: true, message: "总课时不能为空" }]
+        teacher_label: [{ required: true, message: '授课课时不能为空'}],
+        book_label: [{ required: true, message: '授课科目不能为空'}],
+        total_time: [{ required: true, message: '总课时不能为空'}]
       }
     };
   },

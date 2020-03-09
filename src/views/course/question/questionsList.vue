@@ -1,8 +1,8 @@
 <template>
-  <div class="font16 hgt_full" v-cloak>
+  <div class="font16 hgt_full m-t-10">
     <div class="flex_column hgt_full">
       <div class="between-center">
-        <span class="m-b-10">科目名称：{{subjectLabel}}</span>
+        <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="章">
             <el-input-number v-model="searchQuestionZhang" :min="0" :max="1000" label="输入章"></el-input-number>
@@ -121,8 +121,8 @@ export default {
       // 每页数据的总条
       rows: 30,
       // 查询-搜索
-      searchQuestionZhang: 0, //搜索章
-      searchQuestionJie: 0, //搜索节
+      searchQuestionZhang: 1, //搜索章
+      searchQuestionJie: 1, //搜索节
       //搜索有没有相同的题干了.
       searchQuestionContent: "",
       // 科目名称
@@ -140,14 +140,14 @@ export default {
       currentItemData: {},
       // 表单验证
       questionFormRules: {
-        ZhangId: [{ required: true, message: "请填写章编号", trigger: "blur" }],
-        JieId: [{ required: true, message: "请填写节编号", trigger: "blur" }],
-        TopicId: [{ required: true, message: "请填写知识点", trigger: "blur" }],
+        ZhangId: [{ required: true, message: '请填写章编号', trigger: "blur" }],
+        JieId: [{ required: true, message: '请填写节编号', trigger: "blur" }],
+        TopicId: [{ required: true, message: '请填写知识点', trigger: "blur" }],
         QuestionScore: [
-          { required: true, message: "请填写题的分值", trigger: "blur" }
+          { required: true, message: '请填写题的分值', trigger: "blur" }
         ],
         QuestionContent: [
-          { required: true, message: "请填写题干内容", trigger: "blur" }
+          { required: true, message: '请填写题干内容', trigger: "blur" }
         ]
       }
     };
@@ -188,10 +188,8 @@ export default {
         limit: this.rows,
         offset: offsetRow
       });
-      if (res.code == 200) {
-        this.questionsListOfBook = res.data ? res.data : [];
-        this.allRows = res.title;
-      }
+      this.questionsListOfBook = res.data ? res.data : [];
+      this.allRows = res.title;
     },
     // 打开试题的模态框-新增
     openAddQuestionDialog() {
@@ -199,22 +197,12 @@ export default {
       this.currentItemData = {};
       this.moreOperationDialog = true;
       this.currentItemData.BookId = parseInt(this.$route.query.Id);
-
-      // this.$refs.refQusetionDialog.getQuestionRow({
-      //   Id: 0,
-      //   QuestionType: 1,
-      //   State: 1,
-      //   QuestionAnswer: "A",
-      //   BookId: this.bookID,
-      //   Options: []
-      // });
     },
     //  打开试题的模态框-编辑
     openEditQuestionDialog(index, row) {
       this.currentQuestionIndex = index;
       this.moreOperationDialog = true;
       this.currentItemData = row;
-      // this.$refs.refQusetionDialog.getQuestionRow(row);
     },
     // 更新数据列表
     updateQuestionList(type, row) {

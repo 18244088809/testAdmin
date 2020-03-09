@@ -78,7 +78,7 @@ export default {
       // 表单验证
       courseFormRules: {
         Label: [
-          { required: true, message: "课程类别名称不能为空", trigger: "blur" }
+          { required: true, message: '课程类别名称不能为空', trigger: "blur" }
         ]
       },
       // 搜索科目时通过课程类别的名称查找
