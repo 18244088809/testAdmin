@@ -651,7 +651,7 @@ export default {
     changeManager() {
       if (this.mulSelectionCustomId.length <= 0) {
         this.$message({
-          message: "你还没有勾选学员哦！",
+          message: "你还没有勾选学员",
           type: "warning"
         });
         return;

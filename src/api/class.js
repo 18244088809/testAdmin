@@ -125,3 +125,14 @@ export function getAllClassTaskRecord(url, param, data) {
     data
   })
 }
+// 删除 班级学员
+export function removeClassStudent(url, param, data) {
+  return request({
+    url: '/class/removeClassStudent/'+url,
+    method: 'delete',
+    params: param,
+    data
+  })
+}
+
+

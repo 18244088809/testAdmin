@@ -96,11 +96,13 @@
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
           <el-tabs v-model="activeClassTabs">
-            
+            <el-tab-pane label="本班学员" name="bbxy" id="bbxy">
+              <classStudent :formItemData="classFormData"></classStudent>
+            </el-tab-pane>
             <el-tab-pane label="任课老师" name="rkls" id="rkls">
               <classTeacher :formItemData="classFormData"></classTeacher>
             </el-tab-pane>
-            
+
             <el-tab-pane label="课程表" name="kcb" id="kcb">
               <SchoolTimeTable ref="refClassTimeTable"></SchoolTimeTable>
             </el-tab-pane>
@@ -128,15 +130,14 @@
         :title="'【'+classFormData.Label+'】学员作业'"
         :showLeft="false"
       >
-      
-        <div slot="right_content"  >
-           <studentWork :formItemData="classFormData"></studentWork>
+        <div slot="right_content">
+          <studentWork :formItemData="classFormData"></studentWork>
           <!-- <el-tabs v-model="activeClassTabs">
             
              <el-tab-pane label="本班学员作业" name="xyzy" id="xyzy">
               <studentWork :formItemData="classFormData"></studentWork>
             </el-tab-pane>
-          </el-tabs> -->
+          </el-tabs>-->
         </div>
       </my-dialog>
     </div>
@@ -144,8 +145,8 @@
 </template> 
 <script>
 import classRowDetail from "@/views/platform/component/classRowDetail";
-import classTeacher from "@/views/platform/component/classTeacher"; 
-import manageClassStudent from "@/views/platform/component/manageClassStudent"; 
+import classTeacher from "@/views/platform/component/classTeacher";
+import classStudent from "@/views/platform/component/classStudent";
 import studentWork from "@/views/platform/component/studentWork";
 import SchoolTimeTable from "@/views/platform/component/schoolTimeTable";
 import myDialog from "@/components/myDialog/myDialog";
@@ -171,11 +172,11 @@ export default {
   name: "classList",
   components: {
     myDialog,
-    classRowDetail, 
+    classRowDetail,
     SchoolTimeTable,
     classTeacher,
     studentWork,
-    manageClassStudent
+    classStudent
   },
   data() {
     return {
@@ -193,7 +194,7 @@ export default {
       // 当前操作的班级数据的索引
       currentIndex: 0,
       // 模态框当前激活的标签页
-      activeClassTabs: "bjxy",
+      activeClassTabs: "bbxy",
       // 控制班级更多操作的弹出框
       moreOperationDialog: false,
       classStudentsDialog: false,
@@ -247,15 +248,14 @@ export default {
       this.classFormData.Endtime = row.Endtime * 1000;
       this.classFormData.Createtime = row.Createtime * 1000;
 
-      this.moreOperationDialog = true;
-      this.activeClassTabs = "bjxy";
+      this.moreOperationDialog = true; 
       this.currentIndex = index;
     },
     //打开班级信息模态框
     createClass(type) {
       this.classFormData = {};
       this.classFormData.OpenTime = new Date();
-      this.classFormData.Endtime = new Date(); 
+      this.classFormData.Endtime = new Date();
       this.classFormData.Createtime = new Date();
       this.editDialog = true;
     },
@@ -265,7 +265,7 @@ export default {
         this.classList.unshift(rowData);
       } else if (type == 1) {
         this.$set(this.classList, this.currentIndex, rowData);
-      } 
+      }
       this.editDialog = false;
     },
     // 切换tabs标签页在调用函数

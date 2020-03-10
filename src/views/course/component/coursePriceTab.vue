@@ -213,7 +213,7 @@ export default {
       for (const items of this.currentItemData.Children) {
         for (const item in items) {
           if (items[item] == null || items[item] == "") { 
-            this.$alert("价格不能为空哦！", "提示", {
+            this.$alert("价格不能为空", "提示", {
               confirmButtonText: "确定",
               type: "warning",
               callback: action => {}
