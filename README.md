@@ -89,6 +89,9 @@
 点击学员姓名后可以进入 学员的详情页面。可以给学员开通在线课程让学员拥有权限在线做题，视频学习，成绩录入等等。类似crm系统
 ![登录页](https://images.gitee.com/uploads/images/2020/0223/214411_7020f8f3_870483.png "登录页") 
 添加跟进记录。记录下每个学员的 重要交谈历史。以便日后查证
+![班级老师排课课程表](https://images.gitee.com/uploads/images/2020/0311/160229_9909d999_870483.png "深度截图_选择区域_20200311155452.png")
+
+![任课老师考勤记录](https://images.gitee.com/uploads/images/2020/0311/160302_503be148_870483.png "深度截图_选择区域_20200311155812.png")
 ![登录页](https://images.gitee.com/uploads/images/2020/0223/214411_cf4ca241_870483.png "登录页") 
 
 ![登录页](https://images.gitee.com/uploads/images/2020/0223/214411_41f18c86_870483.png "登录页") 
