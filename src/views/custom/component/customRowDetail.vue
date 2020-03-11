@@ -39,8 +39,7 @@
       <el-form-item label="客户微信">
         <el-input v-model="currentItemData.Wechat" placeholder="请输入客户微信号" />
       </el-form-item>
-      <el-form-item label="图片">
-        {{customImgArr}}
+      <el-form-item label="图片"> 
         <div class="flex_dom flex_wrap">
           <div v-for="(item,index) in customImgArr" :key="index" class="relative marg15">
             <img v-if="item" class="wid20" :src="item" @click="onPreview(item)" />
