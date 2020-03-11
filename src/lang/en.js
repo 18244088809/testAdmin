@@ -22,7 +22,7 @@ export default {
     managerList: 'manager　ｌist',
     managerLogs: 'manager　log',
     news: 'news manager',
-    jingsai: 'race',
+    active: 'race',
     teacher: 'hot teacher',
     linker:'linker',
     classList: 'class List',

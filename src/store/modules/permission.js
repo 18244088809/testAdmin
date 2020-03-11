@@ -113,10 +113,10 @@ const actions = {
                     meta: { title: 'news', icon: "news" }
                   },
                   {
-                    path: 'jingsai/' + platform.Id.toString(10),
-                    name: 'jingsai' + index.toString(10),
-                    component: () => import('@/views/web/jingsai'),
-                    meta: { title: 'jingsai', icon: "jingsai" }
+                    path: 'active/' + platform.Id.toString(10),
+                    name: 'active' + index.toString(10),
+                    component: () => import('@/views/web/active'),
+                    meta: { title: 'active', icon: "active" }
                   },
                   {
                     path: 'teacher/' + platform.Id.toString(10),

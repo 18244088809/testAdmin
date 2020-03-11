@@ -88,10 +88,10 @@ import {
   editClassInfo,
   addClassInfo,
   getOneClass,
-  addClassOpenData,
-  getClassOpenData,
+  setClassTeacher,
+  getClassTeachers,
   getTimeTableByMonth,
-  addTimeTableBy,
+  addClassDaily,
   addTimeTag,
   getTimeTag,
   addClassStu,
@@ -286,6 +286,7 @@ export default {
       if (res.data && res.data.length > 0) {
         this.classAllStuList = res.data;
       }
+      this.selectExistStudents = [];
     },
     // 当复选框发生改变时获取所选中的项
     changeSelectStu(checked, item) {
@@ -325,6 +326,7 @@ export default {
             message: "操作成功",
             type: "success"
           });
+          this.selectExistStudents = [];
         });
       }
     }

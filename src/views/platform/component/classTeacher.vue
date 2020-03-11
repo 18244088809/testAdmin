@@ -15,18 +15,15 @@
           field="teacher_label"
           title="老师名称"
           :edit-render="{type: 'default'}"
-          width="110"
+          min-width="110"
         >
           <template v-slot:edit="{row,rowIndex}">
-            <el-select
-              v-model="row.teacher_label"
-              @change="(val)=>{return changeTeacher(val, row,rowIndex)}"
-            >
+            <el-select v-model="row.teacher_id" @change="changeTeacher(  row,rowIndex)">
               <el-option
-                v-for="(item,index) in teacherOptionList"
-                :key="index"
+                v-for="(item) in teacherOptionList"
+                :key="item.Id"
                 :label="item.Realname"
-                :value="item.Realname"
+                :value="item.Id"
               ></el-option>
             </el-select>
           </template>
@@ -34,21 +31,18 @@
 
         <vxe-table-column
           field="book_label"
-          title="教教材目"
+          title="所教教材"
           :edit-render="{type: 'default'}"
-          width="220"
+          min-width="300"
           show-overflow
         >
           <template v-slot:edit="{row,rowIndex}">
-            <el-select
-              v-model="row.book_label"
-              @change="(val)=>{return changeTeachingBook(val, row,rowIndex)}"
-            >
+            <el-select v-model="row.book_id" @change="changeTeachingBook( row,rowIndex)">
               <el-option
-                v-for="(item,index) in  teacheingBookOptions"
-                :key="index"
+                v-for="(item) in  teacheingBookOptions"
+                :key="item.Id"
                 :label="item.Label"
-                :value="item.Label"
+                :value="item.Id"
               ></el-option>
             </el-select>
           </template>
@@ -57,15 +51,15 @@
           field="total_time"
           title="总课时"
           :edit-render="{type: 'default'}"
-          width="80"
+          min-width="180"
         >
           <template v-slot:edit="{ row }">
             <el-input-number v-model="row.total_time" :min="0"></el-input-number>
           </template>
         </vxe-table-column>
-        <vxe-table-column title="操作" show-overflow>
+        <vxe-table-column min-width="80" title="操作" show-overflow>
           <template v-slot="{ row,rowIndex }">
-            <el-button v-if="row.id<0" @click="deleTeacherRow(row,rowIndex)">删除</el-button>
+            <el-button v-if="row.id<=0" @click="deleTeacherRow(row,rowIndex)">删除</el-button>
           </template>
         </vxe-table-column>
       </vxe-table>
@@ -83,10 +77,10 @@ import {
   editClassInfo,
   addClassInfo,
   getOneClass,
-  addClassOpenData,
-  getClassOpenData,
+  setClassTeacher,
+  getClassTeachers,
   getTimeTableByMonth,
-  addTimeTableBy,
+  addClassDaily,
   addTimeTag,
   getTimeTag,
   addClassStu,
@@ -115,6 +109,8 @@ import {
   setStar,
   batchChangeManager
 } from "@/api/custom";
+import { getPlatformTeacher, getTeachBook } from "@/api/manager";
+
 import common from "@/utils/common";
 export default {
   name: "ClassStudent",
@@ -129,7 +125,7 @@ export default {
   },
   watch: {
     formItemData(newval) {
-      this.getClassAllStuList();
+      this.getClassTeachers();
     }
   },
   data() {
@@ -162,23 +158,38 @@ export default {
       ShowSearchForm: false,
       // 是否显示搜索学员的搜索结果模块
       showSrarchStuResult: false,
-      // 获取班级的所有学员
-      classAllStuList: [],
-      // 复选框所选中的学员ID
-      checkBoxStuID: [],
+
       teacherList: [],
       ClassOpenTableRules: {
-        teacher_label: [{ required: true, message: '授课课时不能为空'}],
-        book_label: [{ required: true, message: '授课科目不能为空'}],
-        total_time: [{ required: true, message: '总课时不能为空'}]
-      }
+        teacher_id: [{ required: true, message: "授课课时不能为空" }],
+        book_id: [{ required: true, message: "授课科目不能为空" }],
+        total_time: [{ required: true, message: "总课时不能为空" }]
+      }, // 获取所有的老师
+      teacherOptionList: [],
+      // 是否可以编辑图片和开班申请
+      isEditImgIcon: true,
+      // 查看的图片的路径
+      showImgUrl: ""
     };
   },
+  mounted() {
+    this.getPlatformTeacher();
+    this.getClassTeachers();
+  },
   methods: {
+    // 获取所有的老师
+    async getPlatformTeacher() {
+      let res = await getPlatformTeacher("", {
+        platform: this.formItemData.PlatformID
+      });
+      if (res.code == 200) {
+        this.teacherOptionList = res.data ? res.data : [];
+      }
+    },
     // 改变科目的时候自动获取老师和老师id
     changeSubject(val, row, rowIndex) {
       this.classAllSubject.forEach(item => {
-        if (item.book_label == val) {
+        if (item.book_id == val) {
           row.TeacherID = item.teacher_id;
           row.BookID = item.book_id;
           row.TeacherLabel = item.teacher_label;
@@ -190,216 +201,106 @@ export default {
     // 插入行添加课表
     insertTeacherRow() {
       let newItem = {
-        Id: -this.teacherList.length - 1
+        id: -this.teacherList.length - 1
       };
       this.teacherList.push(newItem);
     },
     // 保存开班申请的所有数据
     saveClassOpenFormData() {
-      // 验证表单数据
-      this.$refs.classOpenForm.validate(valid => {
+      this.$refs.ClassTeacherTable.validate(async valid => {
         if (valid) {
-          this.$refs.ClassTeacherTable.validate(async valid => {
-            if (valid) {
-              let rowdata;
-              rowdata.kksq_image = JSON.stringify(rowdata.kksq_image);
-              if (isNaN(rowdata.opentime)) {
-                rowdata.opentime = Math.floor(
-                  rowdata.opentime.getTime() / 1000
-                );
-              } else {
-                rowdata.opentime = rowdata.opentime / 1000;
-              }
-              if (isNaN(rowdata.endtime)) {
-                rowdata.endtime = Math.floor(rowdata.endtime.getTime() / 1000);
-              } else {
-                rowdata.endtime = rowdata.endtime / 1000;
-              }
-              let res = await addClassOpenData(
-                this.classRowData.Id,
-                "",
-                rowdata
-              );
-              if (res.code == 200) {
-                if (res.data) {
-                  res.data.kksq_image = JSON.parse(res.data.kksq_image);
-                  res.data.opentime = res.data.opentime * 1000;
-                  res.data.endtime = res.data.endtime * 1000;
-                  this.isEditImgIcon = false;
-                  // this. = res.data;
-                }
-                this.$message({
-                  message: "保存成功！",
-                  type: "success"
-                });
-              }
-            } else {
-              return false;
-            }
+          let rowdata;
+          let res = await setClassTeacher(
+            this.formItemData.Id,
+            "",
+            this.teacherList
+          );
+
+          if (res.data) {
+            this.isEditImgIcon = false;
+          }
+          this.$message({
+            message: "保存成功！",
+            type: "success"
           });
         } else {
           return false;
         }
       });
     },
-    // 改变科目的时候保存科目Id
-    changeTeachingBook(val, row, rowIndex) {
-      this.teacheingBookOptions.forEach(item => {
-        if (item.Label == val) {
-          row.book_id = item.Id;
-        }
-      });
-      this.teacherList.splice(rowIndex, 1, row);
-    },
-    // 插入行
-    insertTableRow(row) {
-      let newItem = {
-        id: -this.teacherList.length - 1
-      };
-      this.teacherList.push(newItem);
-    },
+
     // 禁止编辑以前添加的老师
     editDisabledRow({ row, column }) {
-      console.log(row, "11111");
-      this.common.go_alert("禁止编辑");
+      this.$message({
+        message:
+          "已经安排好的计划不允许修改，否则考勤混乱。如果确实计划有误，忽略即可不用修改",
+        type: "warning"
+      });
     },
     // 可以编辑的行数
     activeTeacherRow({ row, rowIndex }) {
-      console.log(row, "2222");
       if (row.id <= 0) {
-        return rowIndex == rowIndex;
+        return true;
       }
     },
     // 改变老师的时候保存老师的id，并获取科目
-    changeTeacher(val, row, rowIndex) {
+    changeTeacher(row, rowIndex) {
       this.teacherOptionList.forEach(item => {
-        if (item.Realname == val) {
-          row.teacher_id = item.Id;
+        if (item.Id == row.teacher_id) {
+          row.teacher_label = item.Realname;
         }
       });
-      this.getTeacherTeachingBook(row.teacher_id, val);
-      this.classOpenFormData.teacherList.splice(rowIndex, 1, row);
+      this.getTeacherTeachingBook(row.teacher_id);
+      this.teacherList.splice(rowIndex, 1, row);
     },
 
+    // 改变老师是获取老师所教的科目
+    async getTeacherTeachingBook(teacherId) {
+      this.teacheingBookOptions = [];
+      let res = await getTeachBook(teacherId);
+
+      if (!res.data) {
+        this.$message({
+          message: "老师还没有关联的科目",
+          type: "warning"
+        });
+      }
+      this.teacheingBookOptions = res.data ? res.data : [];
+    },
     // id小于0的行可以删除
     deleTeacherRow(row, rowIndex) {
       this.teacherList.splice(rowIndex, 1);
     },
     // 改变科目的时候保存科目Id
-    changeTeachingBook(val, row, rowIndex) {
+    changeTeachingBook(row, rowIndex) {
       this.teacheingBookOptions.forEach(item => {
-        if (item.Label == val) {
-          row.book_id = item.Id;
+        if (item.Id == row.book_id) {
+          row.book_label = item.Label;
         }
       });
-      this.teacherList.splice(rowIndex, 1, row);
+      this.teacherList.forEach(item => {
+        if (
+          row.id != item.id &&
+          item.book_id == row.book_id &&
+          item.teacher_id == row.teacher_id
+        ) {
+          this.$message({
+            message: "已经设置过这个老师所教的这个科目",
+            type: "warning"
+          });
+          this.teacherList.splice(rowIndex, 1);
+        }
+      });
     },
-    // 获取班级的所有学员
-    async getClassAllStuList() {
+    // 获取班级的所有老师
+    async getClassTeachers() {
       this.serachStuList = [];
       this.ShowSearchForm = false;
       this.showSrarchStuResult = false;
-      let res = await getClassStu(this.formItemData.Id);
-      this.classAllStuList = res.data ? res.data : [];
-    },
-    // 查找学员
-    searchStudent() {
-      // 验证表单数据
-      if (!this.stuSearchForm.searchPhone && !this.stuSearchForm.searchName) {
-        this.$message({
-          message: "必须填写学生手机号或姓名之后才能查询",
-          type: "warning"
-        });
-        return false;
-      }
-      this.$refs.stuSearchForm.validate(async valid => {
-        if (valid) {
-          let res = await getCustomInfoList("", {
-            limit: 10000,
-            tel: this.stuSearchForm.searchPhone,
-            realname: this.stuSearchForm.searchName
-          });
-          if (res.code == 200) {
-            if (res.data) {
-              this.serachStuList = res.data;
-              this.showSrarchStuResult = true;
-            } else {
-              this.serachStuList = [];
-              this.$message({
-                message: "没有找到该学员",
-                type: "warning"
-              });
-            }
-          }
-        } else {
-          return false;
-        }
-      });
-    },
-    // 向班级添加学员
-    async addStudentToClass() {
-      if (this.checkBoxAddStu.length < 1) {
-        this.$message({
-          message: "还没有选中要添加的学员",
-          type: "warning"
-        });
-        return;
-      }
-      let newStu = [...this.checkBoxAddStu];
-      if (this.classAllStuList.length > 0) {
-        this.classAllStuList.forEach(stuItem => {
-          let index = newStu.indexOf(stuItem.ID);
-          if (index != -1) {
-            newStu.splice(index, 1);
-          }
-        });
-      }
-      if (newStu.length == 0) {
-        this.$message({
-          message: "该学员已经添加过了",
-          type: "warning"
-        });
-        this.checkBoxAddStu = [];
-        return;
-      }
-      let res = await addClassStu(this.formItemData.Id, "", newStu);
-      if (res.code == 200) {
-        this.$message({
-          message: "操作成功",
-          type: "success"
-        });
-        // 清空搜索和选中的学员数据
-        this.checkBoxAddStu = [];
-        this.serachStuList = [];
-        this.stuSearchForm.searchPhone = "";
-        this.ShowSearchForm = false;
-        this.showSrarchStuResult = false;
-        this.classAllStuList = [];
-        if (res.data && res.data.length > 0) {
-          this.classAllStuList = res.data;
-        }
-      }
-    },
-    // 当复选框发生改变时获取所选中的项
-    changeSelectStu(selsetItem) {
-      this.checkBoxStuID = [];
-      selsetItem.forEach(item => {
-        this.checkBoxStuID.push(item.id);
-      });
-    },
-    // 移除班级学员
-    removeClassStu() {
-      if (this.checkBoxStuID.length == 0) {
-        this.$message({
-          message: "还没有勾选学员",
-          type: "warning"
-        });
-      } else {
-        console.log(this.checkBoxStuID);
-      }
+      let res = await getClassTeachers(this.formItemData.Id);
+      this.teacherList = res.data ? res.data : [];
     }
-  },
-  mounted() {}
+  }
 };
 </script> 
 <style scoped>

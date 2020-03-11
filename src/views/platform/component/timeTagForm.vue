@@ -2,11 +2,13 @@
   <!-- 考勤记录表单 -->
   <div>
     <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
+    <p class="marg10 color-red" v-show="isRightTeacher==false">您不是本课程的授课老师，不允许填写下面的考勤资料。</p>
     <el-form
       :model="timeTagFormData"
       :rules="timetagRules"
       ref="timeTagElForm"
-      label-width="105px"
+      label-width="100px"
+       style="padding:10px 10px 10px 10px"
       size="small"
       class="dialog-body-pad"
     >
@@ -36,6 +38,19 @@
       <el-form-item label="实到人数">
         <el-input v-model.number="timeTagFormData.ShidaoNumber" disabled></el-input>
       </el-form-item>
+       <el-form-item  label="选择缺勤学员">
+        <div class="flex_mid flex_wrap">
+          <p
+            v-for="(item,index) in classAllStuList"
+            :key="index"
+            @click="addAbsenceStu(item.Realname,index)"
+            class="cursor m-r-10"
+          >
+            {{item.Realname}}
+            <i class="el-icon-circle-plus"  ></i>
+          </p>
+        </div>
+      </el-form-item>
       <el-form-item label="缺勤学员">
         <div class="flex_dom flex_wrap">
           <el-tag
@@ -45,51 +60,24 @@
             @close="deleAbsenceStu(index)"
             v-for="(item,index) in missClaaStuList"
           >{{item}}</el-tag>
-          <p
+          <!-- <p
             class="m-t-5 m-r-10"
             v-if="isEditTimeTag&&isRightTeacher"
             @click="isShowSearchStuDIv=true"
           >
             <i class="el-icon-circle-plus font26 color-2e77f8"></i>
-          </p>
+          </p> -->
         </div>
       </el-form-item>
-      <el-form-item label="查找学员" v-if="isShowSearchStuDIv">
-        <div class="center">
-          <el-input
-            v-model="searchStudentName"
-            placeholder="请输入学员的姓名"
-            @keyup.enter.native="searchStudent"
-          ></el-input>
-          <el-button type="primary" @click="searchStudent" class="border0 m-l-20">查 询</el-button>
-        </div>
-      </el-form-item>
-      <el-form-item v-show="searchResultStuList.length>0&&isShowSearchStuDIv" label="查找结果">
-        <div class="flex_mid flex_wrap">
-          <p
-            v-for="(item,index) in searchResultStuList"
-            :key="index"
-            @click="addAbsenceStu(item.Realname,index)"
-            class="cursor m-r-10"
-          >
-            {{item.Realname}}
-            <i class="el-icon-circle-plus"></i>
-          </p>
-        </div>
-      </el-form-item>
-      <el-form-item label="上传考勤" prop="Dianmingbiao">
+
+     
+      <el-form-item label="考勤照片" prop="Dianmingbiao">
         <div class="flex_dom flex_wrap">
           <div
             class="relative marg15"
             v-for="(item,index) in timeTagFormData.Dianmingbiao"
             :key="index"
           >
-            <!-- <my-image
-              class="wid80 hgt80"
-              :src="item.ImgSrc"
-              :preview-src-list="[item.ImgSrc]"
-              fit="cover"
-            ></my-image>-->
             <img
               v-if="item.ImgSrc"
               class="wid20"
@@ -167,10 +155,10 @@ import {
   editClassInfo,
   addClassInfo,
   getOneClass,
-  addClassOpenData,
-  getClassOpenData,
+  setClassTeacher,
+  getClassTeachers,
   getTimeTableByMonth,
-  addTimeTableBy,
+  addClassDaily,
   addTimeTag,
   getTimeTag,
   addClassStu,
@@ -196,6 +184,10 @@ export default {
   data() {
     return {
       common,
+      // 预览图片的图片地址
+      imageViewerSrc: "",
+      // 显示图片查看器
+      showViewer: false,
       // 考勤记录的表单数据
       timeTagFormData: {
         Dianmingbiao: []
@@ -203,14 +195,14 @@ export default {
       // 课堂考勤的表单验证
       timetagRules: {
         ShiJi: [
-          { required: true, message: '实际课时不能为空', trigger: "blur" }
+          { required: true, message: "实际课时不能为空", trigger: "blur" }
         ],
         Dianmingbiao: [
-          { required: true, message: '必须上传考勤表', trigger: "blur" }
+          { required: true, message: "必须上传考勤表", trigger: "blur" }
         ],
-        Jindu: [{ required: true, message: '教学进度必填', trigger: "blur" }],
+        Jindu: [{ required: true, message: "教学进度必填", trigger: "blur" }],
         JiaoxueNeirong: [
-          { required: true, message: '教学内容必填', trigger: "blur" }
+          { required: true, message: "教学内容必填", trigger: "blur" }
         ]
       },
       // 上课时间
@@ -223,8 +215,8 @@ export default {
       missClaaStuList: [],
       // 根据姓名搜索学员
       searchStudentName: "",
-      // 搜索结果-学生
-      searchResultStuList: [],
+      // // 搜索结果-学生
+      // searchResultStuList: [],
       // 是否显示搜索学生的模块
       isShowSearchStuDIv: false,
       // 考勤记录是否可以编辑
@@ -234,6 +226,15 @@ export default {
     };
   },
   methods: {
+    // 图片预览
+    onPreview(src) {
+      this.showViewer = true;
+      this.imageViewerSrc = src;
+    },
+    // 关闭图片查看器
+    closeViewer() {
+      this.showViewer = false;
+    },
     // 获取班级的所有学员
     async getClassAllStuList() {
       let res = await getOneClass(this.timeTableRowData.ClassID, {
@@ -265,6 +266,13 @@ export default {
     },
     // 从搜索结果中添加缺课学生
     addAbsenceStu(stuName, index) {
+      if (this.isRightTeacher==false) {
+         this.$message({
+          message: "您不是本课程的授课老师，不能替别人打考勤",
+          type: "warning"
+        });
+        return
+      }
       if (
         this.missClaaStuList.length == 0 ||
         this.missClaaStuList.indexOf(stuName) == -1
@@ -378,9 +386,7 @@ export default {
   },
 
   mounted() {
-    if (
-      this.timeTableRowData.TeacherID == this.$store.state.userInformation.Id
-    ) {
+    if (this.timeTableRowData.TeacherID == this.$store.getters.manager.Id) {
       this.isRightTeacher = true;
     } else {
       this.isRightTeacher = false;

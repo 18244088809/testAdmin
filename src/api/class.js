@@ -36,16 +36,16 @@ export function getOneClass(url, param, data) {
   })
 }
 // 添加班级的开班申请的资料
-export function addClassOpenData(url, param, data) {
+export function setClassTeacher(url, param, data) {
   return request({
-    url: '/class/openClass/'+url,
+    url: '/class/setClassTeacher/'+url,
     method: 'post',
     params: param,
     data
   })
 }
 // 获取班级的开班申请的资料
-export function getClassOpenData(url, param, data) {
+export function getClassTeachers(url, param, data) {
   return request({
     url: '/class/getClassTeachers/'+url,
     method: 'get',
@@ -63,7 +63,7 @@ export function getTimeTableByMonth(url, param, data) {
   })
 }
 // 添加班级的课程表
-export function addTimeTableBy(url, param, data) {
+export function addClassDaily(url, param, data) {
   return request({
     url: '/class/addClassDaily/'+url,
     method: 'post',

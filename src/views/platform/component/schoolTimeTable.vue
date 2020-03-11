@@ -71,13 +71,7 @@
           <el-input-number v-model="row.CourseNum" :min="0" :step="0.5" placeholder="小时"></el-input-number>
         </template>
       </vxe-table-column>
-      <vxe-table-column
-        field="Address"
-        title="授课地址"
-        :edit-render="{type: 'default'}"
-       
-        show-overflow
-      >
+      <vxe-table-column field="Address" title="授课地址" :edit-render="{type: 'default'}" show-overflow>
         <template v-slot:edit="scope">
           <el-input v-model="scope.row.Address" @input="$refs.timeTable.updateStatus(scope)"></el-input>
         </template>
@@ -91,7 +85,7 @@
     </vxe-table>
 
     <div class="between-center m-t-30">
-      <el-button v-show="isAllowEdit" @click="insertTimeTableRow(-1)">添加课程</el-button>
+      <el-button v-show="isAllowEdit" @click="insertTableRow(-1)">添加课程</el-button>
       <el-button type="primary" v-show="isAllowEdit" @click="saveTimeTableList">保 存</el-button>
     </div>
 
@@ -103,7 +97,7 @@
         :visible.sync="showTimeTagDialog"
         :append-to-body="true"
         width="740px"
-        title="考勤"
+        :title="'['+timeTableRow.TeacherLabel+'] 老师的考勤'"
       >
         <TimeTagForm
           :timeTableRowData="timeTableRow"
@@ -120,10 +114,10 @@ import {
   editClassInfo,
   addClassInfo,
   getOneClass,
-  addClassOpenData,
-  getClassOpenData,
+  setClassTeacher,
+  getClassTeachers,
   getTimeTableByMonth,
-  addTimeTableBy,
+  addClassDaily,
   addTimeTag,
   getTimeTag,
   addClassStu,
@@ -141,6 +135,13 @@ import TimeTagForm from "./timeTagForm";
 import common from "@/utils/common";
 export default {
   name: "schoolTimeTable",
+  props: {
+    // 班级
+    formItemData: {
+      type: Object,
+      default: { Id: 0 }
+    }
+  },
   components: {
     TimeTagForm
   },
@@ -150,13 +151,12 @@ export default {
       teacherList: [],
       // 已经添加课表的日期
       calendarSelectData: [],
-      // 班级的表单数据
-      classRowData: {},
+
       // 课程所有的科目
       classAllSubject: [],
       //  某一月课程表数据
       MonthTimeTableList: {},
-       //  某一天课程表数据
+      //  某一天课程表数据
       todayTimeTableList: [],
       // 之前月份获取的数据的那年那月的
       nowTimeTableOfDay: "",
@@ -166,11 +166,11 @@ export default {
       showDate: new Date(),
       // table数据的验证
       TimeTableRules: {
-        StartTime: [{ required: true, message: '上课时间不能为空'}],
-        EndTime: [{ required: true, message: '下课时间不能为空'}],
-        BookLabel: [{ required: true, message: '授课科目不能为空'}],
-        CourseNum: [{ required: true, message: '授课课时不能为空'}],
-        Address: [{ required: true, message: '授课地址不能为空'}]
+        StartTime: [{ required: true, message: "上课时间不能为空" }],
+        EndTime: [{ required: true, message: "下课时间不能为空" }],
+        BookLabel: [{ required: true, message: "授课科目不能为空" }],
+        CourseNum: [{ required: true, message: "授课课时不能为空" }],
+        Address: [{ required: true, message: "授课地址不能为空" }]
       },
       // 控制考勤记录模态框的显隐
       showTimeTagDialog: false,
@@ -180,6 +180,25 @@ export default {
       classAllStuList: []
     };
   },
+  watch: {
+    // 监听日历显示日期的变化
+    showDate: {
+      handler(newValue) {
+        let today = new Date().getTime();
+        let selectday = new Date(newValue).getTime();
+        if (selectday + 86400000 < today) {
+          this.isAllowEdit = false;
+        } else {
+          this.isAllowEdit = true;
+        }
+        this.getTimeTableSelectDay();
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.getClassRow();
+  },
   methods: {
     // 获取所有的老师
     async getAllTeachers() {
@@ -188,9 +207,7 @@ export default {
         role: 0,
         simple: 1
       });
-      if (res.code == 200) {
-        this.teacherOptionList = res.data ? res.data : [];
-      }
+      this.teacherOptionList = res.data ? res.data : [];
     },
     // 禁止编辑以前添加的老师
     editDisabledRow({ row, column }) {
@@ -200,42 +217,46 @@ export default {
       });
     },
     //获取班级的基本信息
-    getClassRow(formData) {
-      this.classRowData = {};
-      this.classRowData = { ...formData };
+    getClassRow() {
       this.getClassSubjectData();
       this.getTimeTable();
       this.getClassAllStuList();
     },
     // 获取班级的所有学员-添加考勤记录的时候用
     async getClassAllStuList() {
-      let res = await getOneClass(this.classRowData.Id, {
+      let res = await getOneClass(this.formItemData.Id, {
         withStudent: "1"
       });
-      if (res.code == 200) {
-        this.classAllStuList = [];
-        if (res.data.StudentArray) {
-          this.classAllStuList = res.data.StudentArray;
-        }
+
+      this.classAllStuList = [];
+      if (res.data.StudentArray) {
+        this.classAllStuList = res.data.StudentArray;
       }
+    },
+     // 改变科目的时候自动获取老师和老师id
+    changeSubject(val, row, rowIndex) {
+      this.classAllSubject.forEach(item => {
+        if (item.book_label == val) {
+          row.TeacherID = item.teacher_id;
+          row.BookID = item.book_id;
+          row.TeacherLabel = item.teacher_label;
+        }
+      });
+      this.todayTimeTableList.splice(rowIndex, 1, row);
     },
     // 获取班级的授课老师
     async getClassSubjectData() {
-      let res = await getClassOpenData(this.classRowData.Id);
-      if (res.code == 200) {
-        if (res.data) {
-          res.data.teacherList = res.data.teacherList
-            ? res.data.teacherList
-            : [];
-          this.classAllSubject = res.data.teacherList;
-        }
+      let res = await getClassTeachers(this.formItemData.Id);
+
+      if (res.data) {
+        this.classAllSubject = res.data ? res.data : []; 
       }
     },
     // 根据月份获取数据
     async getTimeTable() {
       let nowSelectDayObj = this.common.dateFormatStr(this.showDate).split("-");
       let urlParams =
-        this.classRowData.Id +
+        this.formItemData.Id +
         "/" +
         nowSelectDayObj[0] +
         "/" +
@@ -266,7 +287,19 @@ export default {
         }
       }
     },
-   
+
+    // 插入行添加课表
+    insertTableRow(row) {
+      let newItem = {
+        Id: -this.todayTimeTableList.length - 1
+      };
+      this.todayTimeTableList.push(newItem);
+    },
+    // id小于0的行可以删除
+    deleTimeTableRow(row, rowIndex) {
+      this.todayTimeTableList.splice(rowIndex, 1);
+    },
+
     // 保存添加或者编辑的课程表
     saveTimeTableList() {
       this.$refs.timeTable.validate(async valid => {
@@ -275,27 +308,23 @@ export default {
             .dateFormatStr(this.showDate)
             .split("-");
           let urlParams =
-            this.classRowData.Id +
+            this.formItemData.Id +
             "/" +
             this.common.dateFormatStr(this.showDate);
-          let res = await $ClassHttp.addTimeTableBy(
-            urlParams,
-            this.todayTimeTableList
-          );
-          if (res.code == 200) {
-            res.title = res.title ? res.title.split(",") : [];
-            this.calendarSelectData = res.title;
-            res.data = res.data ? res.data : {};
-            this.nowTimeTableOfDay = "";
-            this.nowTimeTableOfDay =
-              nowSelectDayObj[0] + "-" + nowSelectDayObj[1];
-            this.MonthTimeTableList = res.data;
-            this.getTimeTableSelectDay();
-            this.$message({
-              message: "保存成功",
-              type: "success"
-            });
-          }
+          let res = await addClassDaily(urlParams,"", this.todayTimeTableList);
+
+          res.title = res.title ? res.title.split(",") : [];
+          this.calendarSelectData = res.title;
+          res.data = res.data ? res.data : {};
+          this.nowTimeTableOfDay = "";
+          this.nowTimeTableOfDay =
+            nowSelectDayObj[0] + "-" + nowSelectDayObj[1];
+          this.MonthTimeTableList = res.data;
+          this.getTimeTableSelectDay();
+          this.$message({
+            message: "保存成功",
+            type: "success"
+          });
         } else {
           return false;
         }
@@ -317,9 +346,8 @@ export default {
     },
     // 点击考勤，打开考勤模态框
     openTimeTagDialog(row, rowIndex) {
-      this.showTimeTagDialog = true;
-      this.timeTableRow = {};
-      this.timeTableRow = row;
+      this.showTimeTagDialog = true; 
+      this.timeTableRow = row; 
       this.timeTableRow.timeTableDate = this.common.dateFormatStr(
         this.showDate
       );
@@ -328,22 +356,6 @@ export default {
     // 关闭考勤记录弹窗
     closeTimeTagDialog() {
       this.showTimeTagDialog = false;
-    }
-  },
-  watch: {
-    // 监听日历显示日期的变化
-    showDate: {
-      handler(newValue) {
-        let today = new Date().getTime();
-        let selectday = new Date(newValue).getTime();
-        if (selectday + 86400000 < today) {
-          this.isAllowEdit = false;
-        } else {
-          this.isAllowEdit = true;
-        }
-        this.getTimeTableSelectDay();
-      },
-      deep: true
     }
   }
 };
@@ -380,7 +392,7 @@ export default {
   padding: 10px;
 }
 .mycalendar >>> .el-button--mini {
-  padding: 2px;
+  /* padding: 2px; */
 }
 .mycalendar >>> .current,
 .mycalendar >>> .next,

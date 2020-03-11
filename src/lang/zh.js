@@ -22,7 +22,7 @@ export default {
     managerList: '员工教师',
     managerLogs: '员工日志',
     news: '新闻管理',
-    jingsai: '竞赛活动',
+    active: '竞赛活动',
     teacher: '优秀老师',
     linker:'友情链接',
     classList: '班级列表',

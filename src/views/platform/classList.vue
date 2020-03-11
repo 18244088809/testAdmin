@@ -104,7 +104,7 @@
             </el-tab-pane>
 
             <el-tab-pane label="课程表" name="kcb" id="kcb">
-              <SchoolTimeTable ref="refClassTimeTable"></SchoolTimeTable>
+              <SchoolTimeTable :formItemData="classFormData" ></SchoolTimeTable>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -156,10 +156,10 @@ import {
   editClassInfo,
   addClassInfo,
   getOneClass,
-  addClassOpenData,
-  getClassOpenData,
+  setClassTeacher,
+  getClassTeachers,
   getTimeTableByMonth,
-  addTimeTableBy,
+  addClassDaily,
   addTimeTag,
   getTimeTag,
   addClassStu,
@@ -268,14 +268,14 @@ export default {
       }
       this.editDialog = false;
     },
-    // 切换tabs标签页在调用函数
-    changDialogClassTabs(tab) {
-      if (tab.$attrs.id == "bjxy") {
-        this.$refs.refClassStudent.getClassRow(this.classFormData);
-      } else if (tab.$attrs.id == "kcb") {
-        this.$refs.refClassTimeTable.getClassRow(this.classFormData);
-      }
-    },
+    // // 切换tabs标签页在调用函数
+    // changDialogClassTabs(tab) {
+    //   if (tab.$attrs.id == "bjxy") {
+    //     this.$refs.refClassStudent.getClassRow(this.classFormData);
+    //   } else if (tab.$attrs.id == "kcb") {
+    //     this.$refs.refClassTimeTable.getClassRow(this.classFormData);
+    //   }
+    // },
     // 格式化日期
     TimeFormatter(row, column, cellValue) {
       return this.common.dateFormat(cellValue);
