@@ -18,7 +18,7 @@
               <el-radio-group
                 v-model="searchWorkerId"
                 :disabled="!isPlatformMaster"
-                
+                @change="searchSubmit"
               >
                 <el-radio-button :label="0">全部</el-radio-button>
                 <el-radio-button

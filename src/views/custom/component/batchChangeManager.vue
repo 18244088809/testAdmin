@@ -43,13 +43,11 @@
   </el-dialog>
 </template>
 <script>
-import {
-  batchChangeManager
-} from '@/api/custom'
-import { getPlatformTeacher } from '@/api/manager'
-import common from '@/utils/common'
+import { batchChangeManager } from "@/api/custom";
+import { getPlatformTeacher } from "@/api/manager";
+import common from "@/utils/common";
 export default {
-  name: '',
+  name: "",
   data() {
     return {
       common,
@@ -60,53 +58,51 @@ export default {
       // 存放平台老师的的数组
       platformTeacherOptions: [],
       // 目标人员id
-      targetManagerID: '',
+      targetManagerID: "",
       // 转移客户的ID
       customIds: []
-    }
+    };
   },
   mounted() {},
   methods: {
     // 获取学员Id
     getCustomIds(Ids) {
-      this.targetPlatform = this.$store.state.userInformation.Platform
-      if (this.targetPlatform == 0) {
-        this.targetPlatform = this.$store.getters.app.platformList[0].Id
-      }
-      this.platformTeacherOptions = []
-      this.customIds = []
-      this.targetManagerID = ''
-      this.customIds = [...Ids]
-      this.getTeacherOfPlatform()
-      this.isShowChangeManagerDialog = true
+      this.targetPlatform = this.$store.getters.app.platformList[0].Id;
+
+      this.platformTeacherOptions = [];
+      this.customIds = [];
+      this.targetManagerID = "";
+      this.customIds = [...Ids];
+      this.getTeacherOfPlatform();
+      this.isShowChangeManagerDialog = true;
     },
     // 获取平台老师
     async getTeacherOfPlatform() {
-      this.platformTeacherOptions = []
-      const res = await getPlatformTeacher({
+      this.platformTeacherOptions = [];
+      const res = await getPlatformTeacher("", {
         platform: this.targetPlatform
-      })
+      });
       if (res.code == 200) {
-        this.platformTeacherOptions = res.data
+        this.platformTeacherOptions = res.data;
       }
     },
     // 保存转移学生的提醒
     async changeManager() {
       const res = await batchChangeManager(
-        this.targetPlatform + '/' + this.targetManagerID,
+        this.targetPlatform + "/" + this.targetManagerID,"",
         this.customIds
-      )
+      );
       if (res.code == 200) {
-        this.isShowChangeManagerDialog = false
+        this.isShowChangeManagerDialog = false;
         this.$message({
           message: "操作成功",
           type: "success"
         });
-        this.$emit('subClickEvent', res.data)
+        this.$emit("subClickEvent", res.data);
       }
     }
   }
-}
+};
 </script>
 <style scoped>
 .alarmFormCss >>> .el-select {
