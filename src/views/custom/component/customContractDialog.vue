@@ -299,24 +299,24 @@ export default {
       operationType: null,
       // 表单验证规则
       contractRules: {
-        Title: [{ required: true, message: '请输入合同名称', trigger: "blur" }],
+        Title: [{ required: true, message: "请输入合同名称", trigger: "blur" }],
         AddTime: [
-          { required: true, message: '请选择报名时间', trigger: "blur" }
+          { required: true, message: "请选择报名时间", trigger: "blur" }
         ],
         CourseID: [
-          { required: true, message: '请选择报名课程', trigger: "blur" }
+          { required: true, message: "请选择报名课程", trigger: "blur" }
         ],
         CoursePrice: [
-          { required: true, message: '请输入课程价格', trigger: "blur" }
+          { required: true, message: "请输入课程价格", trigger: "blur" }
         ],
         YouhuiPrice: [
-          { required: true, message: '请输入优惠金额', trigger: "blur" }
+          { required: true, message: "请输入优惠金额", trigger: "blur" }
         ],
         PayMethod: [
-          { required: true, message: '请选择支付方式', trigger: "blur" }
+          { required: true, message: "请选择支付方式", trigger: "blur" }
         ],
         QiankuanPrice: [
-          { required: true, message: '请输入欠款金额', trigger: "blur" }
+          { required: true, message: "请输入欠款金额", trigger: "blur" }
         ]
       }
     };
@@ -386,7 +386,7 @@ export default {
           type: "success"
         });
         that.contractImgArr.push(res.data);
-      }else {
+      } else {
         that.$message({
           message: res.title,
           type: "warning"
@@ -439,6 +439,7 @@ export default {
           if (this.currentItemData.Id > 0) {
             res = await updateCustomContract(
               this.currentItemData.Id,
+              "",
               this.currentItemData
             );
           } else {

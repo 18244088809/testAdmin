@@ -1,12 +1,10 @@
 <template>
-  <div v-cloak class="font16 hgt_full">
-    <div class="flex_column hgt_full">
-      <!-- 查询表单 -->
-      <div>
-        <el-form :inline="true">
-          <div class="between-center">
-            <div class="flex_1">
-              <!-- <el-form-item label="所属校区">
+   <div v-cloak class="font16 hgt_full">
+    <div class="flex_column hgt_full  m-t-20 p-b-20"> 
+      <el-form :inline="true">
+        <div class="between-center">
+          <div class="flex_1">
+            <!-- <el-form-item label="所属校区">
                 <el-select v-model="currentPlatform" class="wid140" placeholder="请选择所属校区">
                   <el-option label="全部" :value="0" />
                   <el-option
@@ -16,95 +14,89 @@
                     :value="item.Id"
                   />
                 </el-select>
-              </el-form-item>-->
-              <el-form-item label="签订日期">
-                <el-date-picker
-                  v-model="searchDate"
-                  type="daterange"
-                  align="right"
-                  unlink-panels
-                  value-format="timestamp"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  :picker-options="common.datePickerOptions"
-                  style="width:220px"
-                />
-              </el-form-item>
-              <el-form-item label="招生老师">
-                <el-input
-                  v-model="platformworklabel"
-                  placeholder="招生老师名字"
-                  class="wid150"
-                  @input="$forceUpdate()"
-                  @keyup.enter.native="searchSubmit"
-                />
-              </el-form-item>
-              <el-form-item label="内容">
-                <el-input
-                  v-model="searchNameOrTel"
-                  placeholder="请输入客户姓名或电话"
-                  class="wid160"
-                  @input="$forceUpdate()"
-                  @keyup.enter.native="searchSubmit"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="searchSubmit">查询</el-button>
-              </el-form-item>
-            </div>
+            </el-form-item>-->
+            <el-form-item label="签订日期">
+              <el-date-picker
+                v-model="searchDate"
+                type="daterange"
+                align="right"
+                unlink-panels
+                value-format="timestamp"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="common.datePickerOptions"
+                style="width:220px"
+              />
+            </el-form-item>
+            <el-form-item label="招生老师">
+              <el-input
+                v-model="platformworklabel"
+                placeholder="招生老师名字"
+                class="wid150"
+                @input="$forceUpdate()"
+                @keyup.enter.native="searchSubmit"
+              />
+            </el-form-item>
+            <el-form-item label="内容">
+              <el-input
+                v-model="searchNameOrTel"
+                placeholder="请输入客户姓名或电话"
+                class="wid160"
+                @input="$forceUpdate()"
+                @keyup.enter.native="searchSubmit"
+              />
+            </el-form-item>
             <el-form-item>
-              <div class="m-t--9">
-                <el-button type="primary" @click="downloadExcelConstrct()">导出Excel</el-button>
-              </div>
+              <el-button type="primary" @click="searchSubmit">查询</el-button>
             </el-form-item>
           </div>
-        </el-form>
-      </div>
+          <el-form-item>
+            <div class="m-t--9">
+              <el-button type="primary" @click="downloadExcelConstrct()">导出Excel</el-button>
+            </div>
+          </el-form-item>
+        </div>
+      </el-form>
 
-      <!-- 列表 --> 
-        <el-table
-          id="contract_table"
-          ref="refElTabel"
-          :data="contractList"
-          border
-          tooltip-effect="light"
-          style="width: 100%"
-          height="100%"
-          @selection-change="contractSelectionChange"
-        >
-          <el-table-column type="selection" width="40" />
-          <el-table-column prop="StudentID" width="70" label="学员编号" />
-          <el-table-column prop="AddTime" width="130" :formatter="TimeFormatter" label="报名时间" />
-          <el-table-column label="合同名称" width="210" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <span
-                class="color-1f85aa font-w6 cursor"
-                @click="editContract(scope.$index, scope.row)"
-              >{{ scope.row.Title }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="PlatformLabel" width="110" label="归属校区" />
-          <el-table-column prop="StudentLabel" width="120" label="客户姓名" fixed />
-          <el-table-column prop="Telephone" width="120" label="客户电话" />
+      <!-- 列表 -->
+      <el-table
+        id="contract_table"
+        ref="refElTabel"
+        :data="contractList"
+        border
+        tooltip-effect="light"
+        style="width: 100%"
+        height="100%"
+        @selection-change="contractSelectionChange"
+      >
+        <el-table-column type="selection" width="40" />
+        <el-table-column prop="StudentID" width="70" label="学员编号" />
+        <el-table-column prop="AddTime" width="130" :formatter="TimeFormatter" label="报名时间" />
+        <el-table-column label="合同名称" width="210" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span
+              class="color-1f85aa font-w6 cursor"
+              @click="editContract(scope.$index, scope.row)"
+            >{{ scope.row.Title }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="PlatformLabel" width="110" label="归属校区" />
+        <el-table-column prop="StudentLabel" width="120" label="客户姓名" fixed />
+        <el-table-column prop="Telephone" width="120" label="客户电话" />
 
-          <el-table-column
-            prop="CourseLabel"
-            width="220"
-            label="报名课程"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column prop="CoursePrice" width="70" label="课程价格" />
-          <el-table-column prop="ShijiPrice" width="70" label="实收学费" />
-          <el-table-column prop="QiankuanPrice" width="70" label="欠款金额" />
-          <el-table-column prop="PayMethod" width="100" label="付款方式" />
-          <el-table-column prop="Comments" label="备注" width="200" :show-overflow-tooltip="true" />
-          <el-table-column label="操作" width="80" fixed="right">
-            <template slot-scope="scope">
-              <el-button type="primary" @click="deleteContractRecord(scope.row.Id,scope.$index)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table> 
+        <el-table-column prop="CourseLabel" width="220" label="报名课程" :show-overflow-tooltip="true" />
+        <el-table-column prop="CoursePrice" width="70" label="课程价格" />
+        <el-table-column prop="ShijiPrice" width="70" label="实收学费" />
+        <el-table-column prop="QiankuanPrice" width="70" label="欠款金额" />
+        <el-table-column prop="PayMethod" width="100" label="付款方式" />
+        <el-table-column prop="Comments" label="备注" width="200" :show-overflow-tooltip="true" />
+        <el-table-column label="操作" width="80" fixed="right">
+          <template slot-scope="scope">
+            <el-button type="primary" @click="deleteContractRecord(scope.row.Id,scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <div class="between-center m-v-10">
         <div>
           <el-pagination
@@ -119,8 +111,12 @@
       </div>
     </div>
     <!-- 弹出框 -->
-    <div>
-      <custom-contract-dialog ref="refContractDialog" @updateContractData="updateContractList" />
+     <div class="between-center m-v-15"> 
+          <custom-contract-dialog ref="refContractDialog" @updateContractData="updateContractList" />
+        </div>
+         
+    <div> 
+     
     </div>
   </div>
 </template>
@@ -176,7 +172,7 @@ export default {
 
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform =  parseInt(paths[paths.length - 1]);
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }

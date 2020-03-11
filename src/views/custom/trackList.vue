@@ -27,7 +27,7 @@
               <p v-if="item.Kind==2" class="m-v-15 font14 color-666 p_both20">
                 <audio :src="item.Content" controls="controls">你的浏览器太老，不支持显示录音</audio>
               </p>
-              <p v-else class="m-v-15 font14 color-666 p_both20">{{ item.Content }}</p>
+              <p v-else class="m-v-5 font14 color-666 p_both20">{{ item.Content }}</p>
               <div v-show="item.ImageList.length>0" class="p_both20">
                 <div class="flex_dom flex_wrap">
                   <div
@@ -38,13 +38,13 @@
                     <img
                       v-if="img"
                       class="wid20"
-                      src="/assets/slice/uploadedIcon.png"
+                      :src="img"
                       @click="onPreview(img)"
                     />
                   </div>
                 </div>
               </div>
-              <div class="p_both20 p-b-20">
+              <div  >
                 <p
                   v-for="(replyItem,replyIndex) in item.Reply"
                   :key="replyIndex"
@@ -59,8 +59,8 @@
                   <textarea
                     v-model="item.replyContent"
                     cols="30"
-                    placeholder="评论"
-                    rows="2"
+                    placeholder="输入点评文字"
+                    rows="1"
                     class="yahei border-e0 radius3 wid_100 default-input input-focus default-textarea p-v-5 p_both10"
                   />
                   <el-button type="text" class="m-l-20" @click="submitReplyTrack(item,index)">提交评论</el-button>

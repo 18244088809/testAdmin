@@ -27,7 +27,7 @@ export default {
     linker:'友情链接',
     classList: '班级列表',
     business: '教务管理',
-    contractList: '合同列表',
+    contractList: '所有合同',
     bookAdpter: '教材章节',
     chapterExercise: '章节练习',
     mockExam: '组卷模考',

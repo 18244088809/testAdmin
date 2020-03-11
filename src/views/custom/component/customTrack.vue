@@ -42,17 +42,11 @@
         :key="index"
         class="m-v-10 radius3 border-e5ecf7"
       >
-        <div class="flex_mid p_both20 m-t-10">
-          <!-- <my-image
-            v-show="item.ManagerFace"
-            class="hgt50 wid50"
-            :src="item.ManagerFace"
-            fit="cover"
-          />-->
+        <div class="flex_mid p_both20 m-t-10"> 
           <img
             v-if="item.ManagerFace"
             class="wid20"
-            src="/assets/slice/uploadedIcon.png"
+            :src="item.ManagerFace"
             @click="onPreview(item.ManagerFace)"
           />
           <div class="m-l-15">
@@ -73,18 +67,12 @@
               v-for="(img,index) in item.ImageList"
               :key="index"
               class="marg10 flex_mid flex_wrap"
-            >
-              <!--  class="wid80 hgt80" :preview-src-list="[img]" :src="img" fit="cover" /> -->
-              <img
-                v-if="img"
-                class="wid20"
-              :src="img" 
-                @click="onPreview(img)"
-              />
+            > 
+              <img v-if="img" class="wid20" :src="img" @click="onPreview(img)" />
             </div>
           </div>
         </div>
-        <div class="p_both20 p-b-20">
+        <div >
           <p
             v-for="(replyItem,replyIndex) in item.Reply"
             :key="replyIndex"
@@ -99,8 +87,8 @@
             <textarea
               v-model="item.replyContent"
               cols="30"
-              placeholder="评论"
-              rows="2"
+              placeholder="点评一下"
+              rows="1"
               class="yahei border-e0 radius3 wid_100 default-input input-focus default-textarea p-v-5 p_both10"
             />
             <el-button type="text" class="m-l-20" @click="submitReplyTrack(item,index)">提交评论</el-button>

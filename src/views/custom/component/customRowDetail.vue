@@ -6,7 +6,7 @@
       :disabled="currenteditEnable==false"
       :model="currentItemData"
       :rules="customInfoRules"
-      style="padding:10px 0px 0px 0px"
+      style="padding:20px"
       label-width="80px"
       size="small"
     >
@@ -40,6 +40,7 @@
         <el-input v-model="currentItemData.Wechat" placeholder="请输入客户微信号" />
       </el-form-item>
       <el-form-item label="图片">
+        {{customImgArr}}
         <div class="flex_dom flex_wrap">
           <div v-for="(item,index) in customImgArr" :key="index" class="relative marg15">
             <img v-if="item" class="wid20" :src="item" @click="onPreview(item)" />
@@ -290,8 +291,8 @@ export default {
     this.setData();
   },
   methods: {
-    setData() {
-      if (this.currentItemData.Info && this.currentItemData.Info.attach_image) {
+    setData() { 
+      if (this.currentItemData.Info ) {
         const info = JSON.parse(this.currentItemData.Info);
         if (info.attach_image) {
           this.customImgArr = info.attach_image.split(",");

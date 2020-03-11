@@ -168,8 +168,7 @@
               <span class="color-1f85aa font-w6 cursor">{{ scope.row.ManagerLabel }}</span>
             </el-tooltip>
           </template>
-        </el-table-column>
-        <el-table-column prop="FocusCourse" width="120" label="意向课程" :show-overflow-tooltip="true" />
+        </el-table-column> 
         <el-table-column prop="Kind" width="75" label="意向情况">
           <template slot-scope="scope">
             <span>{{ common.FormatSelect(common.IntentionalCustomerType,scope.row.Kind) }}</span>
@@ -255,13 +254,13 @@
             <el-tab-pane id="htdd" label="合同订单" name="htdd">
               <custom-contract-list :customData="customFormData" />
             </el-tab-pane>
-            <el-tab-pane id="cjlr" label="成绩录入" name="cjlr">
+            <!-- <el-tab-pane id="cjlr" label="成绩录入" name="cjlr">
               <scoreEntry :customData="customFormData" />
-            </el-tab-pane>
+            </el-tab-pane> 
             <el-tab-pane id="dazl" label="档案资料" name="dazl">
               <scoreEntry :customData="customFormData" />
-            </el-tab-pane>
-          </el-tabs>~
+            </el-tab-pane>-->
+          </el-tabs>
         </div>
       </my-dialog>
 

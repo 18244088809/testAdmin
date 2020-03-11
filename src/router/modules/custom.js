@@ -43,15 +43,15 @@ const customRouter = {
 
       }
     },
-    {
-      path: 'sendSMS',
-      component: () => import('@/views/business/sendSMS'),
-      name: 'sendSMS',
-      meta: {
-        title: 'sendSMS',
-        icon: 'email'
-      }
-    }
+    // {
+    //   path: 'sendSMS',
+    //   component: () => import('@/views/business/sendSMS'),
+    //   name: 'sendSMS',
+    //   meta: {
+    //     title: 'sendSMS',
+    //     icon: 'email'
+    //   }
+    // }
 
   ]
 }

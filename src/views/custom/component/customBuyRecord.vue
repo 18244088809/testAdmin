@@ -1,7 +1,7 @@
 
 <template>
   <!-- --------------------客户的跟进记录模块----------------------- -->
-  <div class="p_both10 p-t-5">
+  <div class="p_both10">
     <el-table :data="customBuyCourseList" border tooltip-effect="dark" style="width: 100%">
       <el-table-column prop="CourseImage" width="90" label="课程logo">
         <template slot-scope="scope">
@@ -46,14 +46,15 @@
       :close-on-click-modal="false"
       :visible.sync="addBuyCourseDialog"
       :append-to-body="true"
-      width="740px"
+      width="500px"
       title="添加购买记录"
     >
       <el-form
         ref="refbuyCourse"
         :model="addBuyCourseFormData"
         :rules="buyCourseRules"
-        label-width="105px"
+        label-width="80px"
+        style="padding:30px  "
         size="small"
         class="dialog-body-pad addBuyCourse"
       >
@@ -98,35 +99,33 @@
           </el-select>
         </el-form-item>
         <el-form-item label="课程时效" prop="courseStudyTime">
-          <el-date-picker
-            v-model="addBuyCourseFormData.courseStudyTime"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="生效时间"
-            end-placeholder="结束日期"
-            value-format="timestamp"
-            :picker-options="common.dateFuturePickerOptions"
-            @change="changeSelectStudyTime"
-          />
+          <div class="between-center">
+            <el-date-picker
+              v-model="addBuyCourseFormData.courseStudyTime"
+              type="daterange"
+              align="right"
+              style="width:250px"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="生效时间"
+              end-placeholder="结束日期"
+              value-format="timestamp"
+              :picker-options="common.dateFuturePickerOptions"
+              @change="changeSelectStudyTime"
+            />
+            <span class="m_both5">共{{ courseStudyDay }}天</span>
+          </div>
         </el-form-item>
         <div class="between-center">
-          <el-form-item label="实收金额(￥)" prop="actualPrice" class="wid_60">
-            <el-input-number v-model="addBuyCourseFormData.actualPrice" :min="0" />
+          <el-form-item label="实收金额" prop="actualPrice">
+            <el-input-number
+              v-model="addBuyCourseFormData.actualPrice"
+              style="width:250px"
+              :min="0"
+            />
           </el-form-item>
-          <el-form-item label="学习周期:">
-            <div class="center">
-              <span>
-                共
-                <span class="m_both5">{{ courseStudyDay }}</span>天
-              </span>
-            </div>
-          </el-form-item>
+          <el-checkbox v-model="sendSMS">短信通知</el-checkbox>
         </div>
-        <el-form-item>
-          <el-checkbox v-model="sendSMS">短信通知{{customItemData.id}}</el-checkbox>
-        </el-form-item>
       </el-form>
       <div class="around-center hgt60 bge0e3ea">
         <div>
@@ -206,13 +205,13 @@ export default {
       // 表单验证
       buyCourseRules: {
         selectedCourseId: [
-          { required: true, message: '课程不能为空', trigger: "blur" }
+          { required: true, message: "课程不能为空", trigger: "blur" }
         ],
         courseStudyTime: [
-          { required: true, message: '课时时效不能为空', trigger: "blur" }
+          { required: true, message: "课时时效不能为空", trigger: "blur" }
         ],
         actualPrice: [
-          { required: true, message: '实际金额不能为空', trigger: "blur" }
+          { required: true, message: "实际金额不能为空", trigger: "blur" }
         ]
       }
     };

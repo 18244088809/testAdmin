@@ -28,6 +28,7 @@ export default {
     classList: '班级列表',
     business: '教务管理',
     bookAdpter: '教材章节',
+    contractList: '所有合同',
     componentMixin: '小組件',
     personalData:"个人设置",
     backToTop: '返回頂部',
