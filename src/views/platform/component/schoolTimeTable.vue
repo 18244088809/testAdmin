@@ -15,12 +15,10 @@
     </div>
 
     <vxe-table
-      ref="timeTable"
-      size="mini"
+      ref="timeTable" 
       border
       :edit-rules="TimeTableRules"
-      @edit-disabled="editDisabledRow"
-      class="vxe-table-element"
+      @edit-disabled="editDisabledRow" 
       :data="todayTimeTableList"
       :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:false,activeMethod: activeTeacherRow}"
     >
@@ -50,7 +48,7 @@
           ></el-time-select>
         </template>
       </vxe-table-column>
-      <vxe-table-column field="BookLabel" title="上课科目" width="200" :edit-render="{type: 'default'}">
+      <vxe-table-column field="BookLabel" title="上课科目" min-width="200" :edit-render="{type: 'default'}">
         <template v-slot:edit="{row,rowIndex}">
           <el-select
             v-model="row.BookLabel"
@@ -71,15 +69,15 @@
           <el-input-number v-model="row.CourseNum" :min="0" :step="0.5" placeholder="小时"></el-input-number>
         </template>
       </vxe-table-column>
-      <vxe-table-column field="Address" title="授课地址" :edit-render="{type: 'default'}" show-overflow>
+      <vxe-table-column field="Address" title="授课地址" min-width="100" :edit-render="{type: 'default'}" show-overflow>
         <template v-slot:edit="scope">
           <el-input v-model="scope.row.Address" @input="$refs.timeTable.updateStatus(scope)"></el-input>
         </template>
       </vxe-table-column>
-      <vxe-table-column title="操作" width="80" fixed="right">
+      <vxe-table-column title="操作" min-width="80"  >
         <template v-slot="{row,rowIndex}">
-          <el-button v-if="row.Id<0" @click="deleTimeTableRow(row,rowIndex)">删除</el-button>
-          <el-button v-else type="primary" @click="openTimeTagDialog(row,rowIndex)">考勤</el-button>
+          <el-button type="warning" v-if="row.Id<0" @click="deleTimeTableRow(row,rowIndex)">删除</el-button>
+          <el-button v-else :disabled="row.TeacherID != $store.getters.manager.Id" type="primary" @click="openTimeTagDialog(row,rowIndex)">考勤</el-button>
         </template>
       </vxe-table-column>
     </vxe-table>

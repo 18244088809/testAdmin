@@ -1,8 +1,9 @@
 <template>
-  <div class="flex_column hgt_full">
-    <div class="flex_1 relative m-v-20">
-      <div class="btn_fenxi">
-        <div>
+<div class="font16 hgt_full" v-cloak>
+    <div class="flex_column hgt_full">
+      <div class="flex_1 relative">
+        <div class="">
+          <div>
           <el-radio-group v-model="radio1" @change="getDataAnalysis()">
             <el-radio-button label="fromid">录入数量</el-radio-button>
             <!-- <el-radio-button  abel="money">成交金额</el-radio-button> -->
@@ -20,6 +21,7 @@
       </div>
       <div id="myChart" :style="{width: '100%', height: '100%'}" class="m-t-20" />
     </div>
+     </div>
   </div>
 </template>
 
@@ -213,6 +215,6 @@ input::-webkit-inner-spin-button {
   position: absolute;
   top: 50px;
   right: 30px;
-  z-index: 50;
+  z-index: 2;
 }
 </style>

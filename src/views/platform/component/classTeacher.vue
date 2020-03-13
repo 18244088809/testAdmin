@@ -3,7 +3,6 @@
     <div class="flex_1">
       <vxe-table
         ref="ClassTeacherTable"
-        size="mini"
         border
         :edit-rules="ClassOpenTableRules"
         :fit="true"
@@ -51,7 +50,7 @@
           field="total_time"
           title="总课时"
           :edit-render="{type: 'default'}"
-          min-width="180"
+          min-width="100"
         >
           <template v-slot:edit="{ row }">
             <el-input-number v-model="row.total_time" :min="0"></el-input-number>
@@ -59,7 +58,10 @@
         </vxe-table-column>
         <vxe-table-column min-width="80" title="操作" show-overflow>
           <template v-slot="{ row,rowIndex }">
-            <el-button v-if="row.id<=0" @click="deleTeacherRow(row,rowIndex)">删除</el-button>
+            <el-button v-if="row.id<0" type="warning" @click="deleTeacherRow(row,rowIndex)">删除</el-button>
+            <el-tooltip v-else effect="dark" content="已经添加的授课老师不允许删除，可以忽略" placement="top-start">
+              <el-button  >删除</el-button>
+            </el-tooltip>
           </template>
         </vxe-table-column>
       </vxe-table>
