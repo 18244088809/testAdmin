@@ -8,14 +8,14 @@
       :rules="timetagRules"
       ref="timeTagElForm"
       label-width="100px"
-       style="padding:10px 10px 10px 10px"
+      style="padding:10px 10px 10px 10px"
       size="small"
       class="dialog-body-pad"
     >
       <p
         class="text-center m-b-20 color-c0c4cc font16"
         v-if="!isEditTimeTag"
-      >{{timeTagFormData.TeacherLabel}}：{{common.dateFormat(timeTagFormData.Createtime)}}</p>
+      >[{{timeTagFormData.TeacherLabel}}]考勤时间：{{common.dateFormat(timeTagFormData.Createtime)}}</p>
       <el-form-item label="教教材目">
         <el-input v-model="timeTableRowData.BookLabel" disabled></el-input>
       </el-form-item>
@@ -32,45 +32,18 @@
           placeholder="请输入实际上课课时"
         ></el-input>
       </el-form-item>
-      <el-form-item label="应到人数">
-        <el-input v-model.number="planStudentNum" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="实到人数">
-        <el-input v-model.number="timeTagFormData.ShidaoNumber" disabled></el-input>
-      </el-form-item>
-       <el-form-item  label="选择缺勤学员">
+      <el-form-item label="选择缺勤学员">
         <div class="flex_mid flex_wrap">
-          <p
-            v-for="(item,index) in classAllStuList"
-            :key="index"
-            @click="addAbsenceStu(item.Realname,index)"
-            class="cursor m-r-10"
-          >
-            {{item.Realname}}
-            <i class="el-icon-circle-plus"  ></i>
-          </p>
-        </div>
-      </el-form-item>
-      <el-form-item label="缺勤学员">
-        <div class="flex_dom flex_wrap">
-          <el-tag
-            class="m-t-5 m-r-10"
-            :closable="isEditTimeTag"
-            :key="index"
-            @close="deleAbsenceStu(index)"
-            v-for="(item,index) in missClaaStuList"
-          >{{item}}</el-tag>
-          <!-- <p
-            class="m-t-5 m-r-10"
-            v-if="isEditTimeTag&&isRightTeacher"
-            @click="isShowSearchStuDIv=true"
-          >
-            <i class="el-icon-circle-plus font26 color-2e77f8"></i>
-          </p> -->
+          <el-checkbox-group v-model="missClaaStuList" :disabled="timeTagFormData.Createtime>0">
+            <el-checkbox
+              :key="item.ID"
+              :label="item.ID"
+              v-for="item in classAllStuList"
+            >{{item.Realname}}</el-checkbox>
+          </el-checkbox-group>
         </div>
       </el-form-item>
 
-     
       <el-form-item label="考勤照片" prop="Dianmingbiao">
         <div class="flex_dom flex_wrap">
           <div
@@ -78,15 +51,15 @@
             v-for="(item,index) in timeTagFormData.Dianmingbiao"
             :key="index"
           >
-            <img
-              v-if="item.ImgSrc"
-              class="wid20"
-              src="/assets/slice/uploadedIcon.png"
-              @click="onPreview(item.ImgSrc)"
-            />
-
+            <el-tooltip class="item cursor" effect="dark" :content="item.Label" placement="top">
+              <img
+                v-if="item.ImgSrc"
+                class="wid20"
+                :src="item.ImgSrc"
+                @click="onPreview(item.ImgSrc)"
+              />
+            </el-tooltip>
             <div class="between-center m-v-5 wid80">
-              <span class="text-center color-2e77f8 font12 m-r-5">{{item.Label}}</span>
               <el-upload
                 :auto-upload="false"
                 action
@@ -266,12 +239,12 @@ export default {
     },
     // 从搜索结果中添加缺课学生
     addAbsenceStu(stuName, index) {
-      if (this.isRightTeacher==false) {
-         this.$message({
+      if (this.isRightTeacher == false) {
+        this.$message({
           message: "您不是本课程的授课老师，不能替别人打考勤",
           type: "warning"
         });
-        return
+        return;
       }
       if (
         this.missClaaStuList.length == 0 ||
@@ -336,7 +309,7 @@ export default {
           Obg.Dianmingbiao = JSON.stringify(Obg.Dianmingbiao);
           Obg.QueqingStudent = this.missClaaStuList.join(",");
           Obg.planStudentNum = this.planStudentNum;
-          let res = await addTimeTag(this.timeTableRowData.Id, Obg);
+          let res = await addTimeTag(this.timeTableRowData.Id, "", Obg);
           if (res.code == 200) {
             this.$message({
               message: "操作成功",
@@ -363,20 +336,21 @@ export default {
         this.timeTableRowData.StartTime + "-" + this.timeTableRowData.EndTime;
       this.classAllStuList = this.timeTableRowData.stuList;
       this.planStudentNum = this.classAllStuList.length;
-      this.timeTagFormData.ShidaoNumber = this.classAllStuList.length;
+      // this.timeTagFormData.ShidaoNumber = this.classAllStuList.length;
       let res = await getTimeTag(this.timeTableRowData.Id);
-      if (res.code == 200) {
-        if (res.data != null && res.data.Createtime > 0) {
-          this.isEditTimeTag = false;
-          if (res.data.QueqingStudent) {
-            this.missClaaStuList = res.data.QueqingStudent.split(",");
-          }
-          if (res.data.Dianmingbiao) {
-            res.data.Dianmingbiao = JSON.parse(res.data.Dianmingbiao);
-          }
-
-          this.timeTagFormData = res.data;
+      if (res.data != null && res.data.Createtime > 0) {
+        this.isEditTimeTag = false;
+        if (res.data.QueqingStudent) {
+          let temp = res.data.QueqingStudent.split(",");
+          temp.forEach(element => {
+            this.missClaaStuList.push(parseInt(element));
+          });
         }
+        if (res.data.Dianmingbiao) {
+          res.data.Dianmingbiao = JSON.parse(res.data.Dianmingbiao);
+        }
+
+        this.timeTagFormData = res.data;
       }
     },
     // 关闭考勤记录模态框
