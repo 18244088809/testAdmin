@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bg-fff center p_both20 alarm_type">
+    <div class=" m-l-20 bg-fff  alarm_type flex_dom">
       <p class="item_nav" :class="{active_item_nav:alarmKind==0}" @click="searchSubmit(0)">全部消息</p>
       <p class="item_nav" :class="{active_item_nav:alarmKind==1}" @click="searchSubmit(1)">未推送提醒</p>
     </div>

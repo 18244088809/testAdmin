@@ -46,7 +46,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <my-dialog :visible.sync="alarmListDialog" :closeShow="true" :showLeft="false" width="100px">
+    <my-dialog :visible.sync="alarmListDialog" :closeShow="true" title="消息中心" :showLeft="false" >
       <div slot="right_content" class="bg-f5f9ff hgt_100">
         <alarmList ref="refAlarmList"></alarmList>
       </div>
