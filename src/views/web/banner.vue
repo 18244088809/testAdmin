@@ -23,7 +23,7 @@
               <el-form-item label="标题">
                 <el-input v-model="item.label" placeholder="请输入标题"></el-input>
               </el-form-item>
-              <el-form-item label="跳转地址：">
+              <el-form-item label="跳转地址：" style="width:100%">
                 <el-input v-model="item.href" placeholder="请输入连接地址"></el-input>
               </el-form-item>
             </el-form>

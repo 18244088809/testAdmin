@@ -43,8 +43,8 @@
           <el-option
             :label="item.Label"
             :key="index"
-            :value="item.Id"
-            v-for="(item,index) in $store.getters.app.myPlatformList"
+            :value="item.Id" 
+            v-for="(item,index) in $store.getters.manager.myPlatformList"
           ></el-option>
         </el-select>
       </el-form-item>
