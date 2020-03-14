@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class=" m-l-20 bg-fff  alarm_type flex_dom">
+    <div class="m-l-20 bg-fff alarm_type flex_dom">
       <p class="item_nav" :class="{active_item_nav:alarmKind==0}" @click="searchSubmit(0)">全部消息</p>
       <p class="item_nav" :class="{active_item_nav:alarmKind==1}" @click="searchSubmit(1)">未推送提醒</p>
     </div>
     <div class="m-t-20 p-b-30">
       <div class="mes_item m-b-15 m_both20" v-for="(item,index) in alarmList" :key="index">
         <div class="center">
-          <p class="blue_dot m-r-10"></p>
+          <p v-if="item.Status==0" class="blue_dot m-r-10"></p>
           <el-tooltip effect="light" class="flex_1 m-r-10" :content="item.Title" placement="top">
             <div class="flex_dom">
               <p class="only_line font16">{{item.Title}}</p>
@@ -25,6 +25,7 @@
             @click="handleAlarm(item.Id,index)"
             v-if="item.Status==0"
           >立即处理</p>
+          <p v-else>已经处理</p>
         </div>
       </div>
     </div>
@@ -37,7 +38,7 @@ export default {
   name: "alarmList",
   data() {
     return {
-        common,
+      common,
       // 提醒消息列表
       alarmList: [],
       // 查询消息的类型,0全部消息,1未推送消息
@@ -45,7 +46,7 @@ export default {
     };
   },
   mounted() {
-     this.getAlarms();
+    this.getAlarms();
   },
   methods: {
     // 条件搜索
@@ -55,7 +56,7 @@ export default {
     },
     // 获取消息列表
     async getAlarms() {
-      let res = await getAlarmList("",{ kind: this.alarmKind });
+      let res = await getAlarmList("", { kind: this.alarmKind });
       if (res.code == 200) {
         this.alarmList = res.data ? res.data : [];
       }
@@ -112,6 +113,7 @@ export default {
   border-radius: 50%;
   background: #2e77f8;
 }
+
 .unread_mark {
   display: inline-block;
   width: 6px;

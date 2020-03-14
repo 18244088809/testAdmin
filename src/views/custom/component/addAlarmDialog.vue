@@ -26,7 +26,12 @@
           />
         </el-form-item>
         <el-form-item label="提醒内容" prop="Content">
-          <el-input v-model="alarmFormData.Content" type="textarea" :rows="3" placeholder="请输入提醒内容" />
+          <el-input
+            v-model="alarmFormData.Content"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入提醒内容"
+          />
         </el-form-item>
       </el-form>
       <div class="around-center hgt60 bge0e3ea">
@@ -39,45 +44,43 @@
   </el-dialog>
 </template>
 <script>
-import {
-  addAlarm
-} from '@/api/alarm'
+import { addAlarm } from "@/api/alarm";
 
 export default {
   data() {
     return {
       // 跟进提醒的表单数据
       alarmFormData: {
-        Content: '',
+        Content: "",
         ExeTime: null,
-        Title: ''
+        Title: ""
       },
       // 控制提醒表单的显隐
       isShowAlarmDialog: false,
       // 表单验证
       alarmFormRules: {
-        Title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        Title: [{ required: true, message: "标题不能为空", trigger: "blur" }],
         ExeTime: [
-          { required: true, message: '提醒时间不能为空', trigger: 'blur' }
+          { required: true, message: "提醒时间不能为空", trigger: "blur" }
         ],
         Content: [
-          { required: true, message: '提醒内容不能为空', trigger: 'blur' }
+          { required: true, message: "提醒内容不能为空", trigger: "blur" }
         ]
       }
-    }
+    };
   },
   mounted() {},
   methods: {
     // 获取客户的基本信息
     getCustomInfo(row) {
       this.alarmFormData = {
-        Content: '',
+        Content: "",
         ExeTime: null,
-        Title: ''
-      }
+        Title: ""
+      };
       this.alarmFormData.Title =
-        row.Realname + '(' + row.Sex + ')-' + row.Telephone + '的跟进提醒'
-      this.isShowAlarmDialog = true
+        row.Realname + "(" + row.Sex + ")-" + row.Telephone + "的跟进提醒";
+      this.isShowAlarmDialog = true;
     },
     // 保存添加的提醒
     saveAlarmFormData() {
@@ -87,26 +90,25 @@ export default {
           if (this.alarmFormData.ExeTime) {
             this.alarmFormData.ExeTime = parseInt(
               this.alarmFormData.ExeTime.getTime() / 1000
-            )
+            );
           }
-          const res = await addAlarm(this.alarmFormData)
-          if (res.code == 200) {
-            res.title = res.title ? res.title : 0
-            this.$store.dispatch('Alarm', res.title)
-            this.$message({
-          message: "操作成功",
-          type: "success"
-        });
-            this.$emit('subClickEvent')
-            this.isShowAlarmDialog = false
-          }
+          const res = await addAlarm("", "", this.alarmFormData);
+
+          res.title = res.title ? res.title : 0;
+          this.$store.dispatch("Alarm", res.title);
+          this.$message({
+            message: "操作成功",
+            type: "success"
+          });
+          this.$emit("subClickEvent");
+          this.isShowAlarmDialog = false;
         } else {
-          return false
+          return false;
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 <style scoped>
 .alarmFormCss >>> .el-select {

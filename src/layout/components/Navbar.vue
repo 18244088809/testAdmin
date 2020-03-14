@@ -46,7 +46,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <my-dialog :visible.sync="alarmListDialog" :closeShow="true" title="消息中心" :showLeft="false" >
+    <my-dialog :visible.sync="alarmListDialog" :closeShow="true" title="消息中心" :showLeft="false">
       <div slot="right_content" class="bg-f5f9ff hgt_100">
         <alarmList ref="refAlarmList"></alarmList>
       </div>
@@ -64,7 +64,8 @@ import Screenfull from "@/components/Screenfull";
 import LangSelect from "@/components/LangSelect";
 import myDialog from "@/components/myDialog/myDialog";
 import alarmList from "@/layout/components/alarmList";
-
+ 
+import { handleAlarm, getSingleAlarm,getAlarmList } from "@/api/alarm";
 export default {
   components: {
     Breadcrumb,
@@ -91,7 +92,72 @@ export default {
       notifyPromise: Promise.resolve()
     };
   },
+    mounted() {
+    this.getAlarm();
+  },
   methods: {
+     // 获取提醒，有提醒弹出弹框
+    async getAlarm() {
+      let res = await getSingleAlarm("");
+      if (res.code == 200) {
+        res.title = res.title ? res.title : 0;
+        this.$store.dispatch("Alarm", res.title);
+        if (res.data && res.data.length > 0) {
+          res.data.forEach((item, index) => {
+            let isExist = this.allAlarmId.indexOf(item.Id);
+            if (isExist == -1) {
+              this.allAlarmId.push(item.Id);
+              this.notifyPromise = this.notifyPromise
+                .then(this.$nextTick)
+                .then(() => {
+                  let h = this.$createElement;
+                  let notify = this.$notify.info({
+                    title: item.Title,
+                    duration: 0,
+                    showClose: false,
+                    message: h("div", { class: "font12 color-92" }, [
+                      h("p", null, item.Content),
+                      h("div", { class: "center-end" }, [
+                        h(
+                          "p",
+                          {
+                            class: "alarm_untreated_btn m-r-10",
+                            on: {
+                              click: async () => {
+                                notify.close();
+                              }
+                            }
+                          },
+                          "暂不处理"
+                        ),
+                        h(
+                          "p",
+                          {
+                            class: "alarm_handled_btn",
+                            on: {
+                              click: async () => {
+                                let res = await  handleAlarm(item.Id);
+                                if (res.code == 200) {
+                                  this.common.go_alert("处理成功");
+                                  notify.close();
+                                }
+                              }
+                            }
+                          },
+                          "立即处理"
+                        )
+                      ])
+                    ])
+                  });
+                });
+            }
+          });
+        }
+        this.timer = setTimeout(() => {
+          this.getAlarm();
+        }, 30000);
+      }
+    },
     // 打开提醒消息列表
     openAlarmDialog() {
       this.alarmListDialog = true;
