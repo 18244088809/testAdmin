@@ -21,7 +21,7 @@
       </div>
       <div style="width:5px;height:100%;  background:#e0e3ea; "></div>
       <div style="width:90%;">
-        <el-table :data="classAllStuList">
+        <!-- <el-table :data="classAllStuList">
           <el-table-column prop="id" label="作业号" width="60"></el-table-column>
           <el-table-column prop="Realname" label="作业名称">
             <template slot-scope="scope">
@@ -36,7 +36,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
-        </el-table>
+        </el-table> -->
       </div>
     </div>
     <div class="around-center hgt60 bge0e3ea">

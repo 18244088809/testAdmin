@@ -15,17 +15,22 @@
     </div>
 
     <vxe-table
-      ref="timeTable" 
+      ref="timeTable"
       border
       :edit-rules="TimeTableRules"
-      @edit-disabled="editDisabledRow" 
+      @edit-disabled="editDisabledRow"
       :data="todayTimeTableList"
       :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:false,activeMethod: activeTeacherRow}"
     >
-      <vxe-table-column field="StartTime" title="上课时间" :edit-render="{type: 'default'}" width="120">
+      <vxe-table-column
+        field="StartTime"
+        title="计划上课时间"
+        :edit-render="{type: 'default'}"
+        width="120"
+      >
         <template v-slot:edit="{ row }">
           <el-time-select
-            placeholder="上课时间"
+            placeholder="计划上课时间"
             v-model="row.StartTime"
             :picker-options="{
       start: '08:00',
@@ -35,10 +40,10 @@
           ></el-time-select>
         </template>
       </vxe-table-column>
-      <vxe-table-column field="EndTime" title="下课时间" :edit-render="{type: 'default'}" width="120">
+      <vxe-table-column field="EndTime" title="计划下课时间" :edit-render="{type: 'default'}" width="120">
         <template v-slot:edit="{ row }">
           <el-time-select
-            placeholder="下课时间"
+            placeholder="计划下课时间"
             v-model=" row.EndTime"
             :picker-options="{
       start: '08:00',
@@ -48,7 +53,17 @@
           ></el-time-select>
         </template>
       </vxe-table-column>
-      <vxe-table-column field="BookLabel" title="上课科目" min-width="200" :edit-render="{type: 'default'}">
+            <vxe-table-column field="CourseNum" title="计划课时" :edit-render="{type: 'default'}" width="120">
+        <template v-slot:edit="{ row }">
+          <el-input-number v-model="row.CourseNum" :min="0" :step="0.5" placeholder="小时"></el-input-number>
+        </template>
+      </vxe-table-column>
+      <vxe-table-column
+        field="BookLabel"
+        title="上课科目"
+        min-width="200"
+        :edit-render="{type: 'default'}"
+      >
         <template v-slot:edit="{row,rowIndex}">
           <el-select
             v-model="row.BookLabel"
@@ -64,20 +79,28 @@
         </template>
       </vxe-table-column>
       <vxe-table-column field="TeacherLabel" title="授课老师" width="90"></vxe-table-column>
-      <vxe-table-column field="CourseNum" title="授课课时" :edit-render="{type: 'default'}" width="120">
-        <template v-slot:edit="{ row }">
-          <el-input-number v-model="row.CourseNum" :min="0" :step="0.5" placeholder="小时"></el-input-number>
-        </template>
-      </vxe-table-column>
-      <vxe-table-column field="Address" title="授课地址" min-width="100" :edit-render="{type: 'default'}" show-overflow>
+
+      <vxe-table-column
+        field="Address"
+        title="授课地址"
+        min-width="100"
+        :edit-render="{type: 'default'}"
+        show-overflow
+      >
         <template v-slot:edit="scope">
           <el-input v-model="scope.row.Address" @input="$refs.timeTable.updateStatus(scope)"></el-input>
         </template>
       </vxe-table-column>
-      <vxe-table-column title="操作" min-width="80"  >
+      <vxe-table-column title="操作" min-width="80">
         <template v-slot="{row,rowIndex}">
           <el-button type="warning" v-if="row.Id<0" @click="deleTimeTableRow(row,rowIndex)">删除</el-button>
-          <el-button v-else :disabled="row.TeacherID != $store.getters.manager.Id" type="primary" @click="openTimeTagDialog(row,rowIndex)">考勤</el-button>
+
+          <el-button
+            v-else-if="row.TeacherID != $store.getters.manager.Id"
+            type="primary"
+            @click="openTimeTagDialog(row,rowIndex)"
+          >查看考勤</el-button>
+          <el-button v-else type="primary" @click="openTimeTagDialog(row,rowIndex)">考勤</el-button>
         </template>
       </vxe-table-column>
     </vxe-table>
@@ -166,8 +189,8 @@ export default {
       TimeTableRules: {
         StartTime: [{ required: true, message: "上课时间不能为空" }],
         EndTime: [{ required: true, message: "下课时间不能为空" }],
+        CourseNum: [{ required: true, message: "计划课时不能为空" }],
         BookLabel: [{ required: true, message: "授课科目不能为空" }],
-        CourseNum: [{ required: true, message: "授课课时不能为空" }],
         Address: [{ required: true, message: "授课地址不能为空" }]
       },
       // 控制考勤记录模态框的显隐
@@ -231,7 +254,7 @@ export default {
         this.classAllStuList = res.data.StudentArray;
       }
     },
-     // 改变科目的时候自动获取老师和老师id
+    // 改变科目的时候自动获取老师和老师id
     changeSubject(val, row, rowIndex) {
       this.classAllSubject.forEach(item => {
         if (item.book_label == val) {
@@ -247,7 +270,7 @@ export default {
       let res = await getClassTeachers(this.formItemData.Id);
 
       if (res.data) {
-        this.classAllSubject = res.data ? res.data : []; 
+        this.classAllSubject = res.data ? res.data : [];
       }
     },
     // 根据月份获取数据
@@ -309,7 +332,7 @@ export default {
             this.formItemData.Id +
             "/" +
             this.common.dateFormatStr(this.showDate);
-          let res = await addClassDaily(urlParams,"", this.todayTimeTableList);
+          let res = await addClassDaily(urlParams, "", this.todayTimeTableList);
 
           res.title = res.title ? res.title.split(",") : [];
           this.calendarSelectData = res.title;
@@ -344,8 +367,8 @@ export default {
     },
     // 点击考勤，打开考勤模态框
     openTimeTagDialog(row, rowIndex) {
-      this.showTimeTagDialog = true; 
-      this.timeTableRow = row; 
+      this.showTimeTagDialog = true;
+      this.timeTableRow = row;
       this.timeTableRow.timeTableDate = this.common.dateFormatStr(
         this.showDate
       );

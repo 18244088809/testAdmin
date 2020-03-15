@@ -22,7 +22,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="目标人员">
+        <el-form-item label="接收人员">
           <el-select v-model="targetManagerID" placeholder="请选择管理员">
             <el-option
               v-for="(item) in platformTeacherOptions"
@@ -88,8 +88,16 @@ export default {
     },
     // 保存转移学生的提醒
     async changeManager() {
+      if (this.targetManagerID == "" || parseInt(this.targetManagerID) <= 0) {
+         this.$message({
+          message: "必须选择一个接收员",
+          type: "warning"
+        });
+        return;
+      }
       const res = await batchChangeManager(
-        this.targetPlatform + "/" + this.targetManagerID,"",
+        this.targetPlatform + "/" + this.targetManagerID,
+        "",
         this.customIds
       );
       if (res.code == 200) {

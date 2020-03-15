@@ -11,11 +11,12 @@
       style="padding:10px 10px 10px 10px"
       size="small"
       class="dialog-body-pad"
+      :disabled="isRightTeacher==false"
     >
       <p
         class="text-center m-b-20 color-c0c4cc font16"
         v-if="!isEditTimeTag"
-      >[{{timeTagFormData.TeacherLabel}}]考勤时间：{{common.dateFormat(timeTagFormData.Createtime)}}</p>
+      >于 {{common.dateFormat(timeTagFormData.Createtime)}} 日已完成考勤，不允许再修改。 </p>
       <el-form-item label="教教材目">
         <el-input v-model="timeTableRowData.BookLabel" disabled></el-input>
       </el-form-item>

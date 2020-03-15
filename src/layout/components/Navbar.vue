@@ -92,16 +92,20 @@ export default {
       notifyPromise: Promise.resolve()
     };
   },
+  created() {
+     setInterval(() => {
+      this.getAlarm();
+    }, 30000);
+  },
   mounted() {
     this.getAlarm();
+   
   },
   methods: {
     // 获取提醒，有提醒弹出弹框
     async getAlarm() {
       let res = await getSingleAlarm("");
-      // if (res.code == 200) {
-      res.title = res.title ? res.title : 0;
-      // this.$store.dispatch("Alarm", res.title);
+      res.title = res.title ? res.title : 0; 
       if (res.data && res.data.length > 0) {
         res.data.forEach((item, index) => {
           let isExist = this.allAlarmId.indexOf(item.Id);
@@ -124,6 +128,10 @@ export default {
                           class: "alarm_untreated_btn m-r-10",
                           on: {
                             click: async () => {
+                              this.$message({
+                                message: "存入你的未处理列表了",
+                                type: "warning"
+                              });
                               notify.close();
                             }
                           }
@@ -139,7 +147,7 @@ export default {
                               let res = await handleAlarm(item.Id);
                               if (res.code == 200) {
                                 this.$message({
-                                  message: "处理成功",
+                                  message: "不再提醒你这条消息",
                                   type: "success"
                                 });
                                 notify.close();
@@ -147,7 +155,7 @@ export default {
                             }
                           }
                         },
-                        "立即处理"
+                        "我知道了"
                       )
                     ])
                   ])
@@ -156,10 +164,6 @@ export default {
           }
         });
       }
-      this.timer = setTimeout(() => {
-        this.getAlarm();
-      }, 30000);
-      // }
     },
     // 打开提醒消息列表
     openAlarmDialog() {

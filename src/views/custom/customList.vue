@@ -659,16 +659,7 @@ export default {
     },
     // 更新客户列表数据-转移客户之后
     updateCustomList(rowsDatas) {
-      rowsDatas.forEach(row => {
-        this.customTableDataList.forEach(item => {
-          if (item.id == row.id) {
-            item.ManagerID = row.ManagerID;
-            item.ManagerLabel = row.ManagerLabel;
-            item.ManagerTel = row.ManagerTel;
-          }
-        });
-      });
-      this.$refs.refCustomListTable.clearSelection();
+       this.getCustomList();
     },
     // 更新客户列表数据
     updateCustomInfoList(type, rowData) {
