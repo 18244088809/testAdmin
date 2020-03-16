@@ -22,19 +22,8 @@
           <vxe-table-column field="SN" title="章节编号" width="100">
             <template v-slot="{ row }">{{row.SN}}</template>
           </vxe-table-column>
-          <vxe-table-column
-            field="Label"
-            title="名称"
-            placeholder="双击修改"
-            :edit-render="{name: 'input'}"
-          />
-          <vxe-table-column
-            field="Video"
-            title="视频地址"
-            placeholder="双击修改"
-            :edit-render="{name: 'input'}"
-          />
-
+          <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
+          <vxe-table-column field="Video" title="视频地址" :edit-render="{name: 'input'}" />
           <vxe-table-column field="Description" title="视频包含习题数量" />
           <vxe-table-column field="Taste" title="允许试读" width="80">
             <template v-slot="{ row}">
@@ -197,6 +186,7 @@ export default {
                   newRow.Jie = item.Jie;
                   newRow.TopicNo = rowNode.item.Children.length + 1;
                   newRow.SN = "第" + newRow.TopicNo + "点";
+                  newRow.Video = "";
                 }
                 newRow.Id =
                   this.subjectId +
@@ -241,6 +231,7 @@ export default {
       newItem.Zhang = this.chaperListOfBook.length + 1;
       newItem.Id = this.subjectId + "-" + newItem.Zhang;
       newItem.SN = "第" + newItem.Zhang + "章";
+
       this.chaperListOfBook.push(newItem);
     },
     // 批量删除

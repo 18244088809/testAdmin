@@ -4,16 +4,19 @@
       <div class="between-center">
         <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
         <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label="章">
-            <el-input-number v-model="searchQuestionZhang" :min="0" :max="1000" label="输入章"></el-input-number>
+          <el-form-item label="第">
+            <el-input-number v-model="currentItemData.Zhang"  controls-position="right"  :min="0" :max="1000" label="输入章"></el-input-number>章
           </el-form-item>
-          <el-form-item label="节">
-            <el-input-number v-model="searchQuestionJie" :min="0" :max="1000" label="输入节"></el-input-number>
+          <el-form-item label="第">
+            <el-input-number v-model="currentItemData.Jie"  controls-position="right"  :min="0" :max="1000" label="输入节"></el-input-number>节
+          </el-form-item>
+          <el-form-item label="第">
+            <el-input-number v-model="currentItemData.TopicNo"  controls-position="right"  :min="0" :max="1000" label="输入点"></el-input-number>知识点
           </el-form-item>
           <el-form-item label="题干">
             <el-input
               class="wid150"
-              v-model="searchQuestionContent"
+              v-model="currentItemData.QuestionContent"
               placeholder="输入题干内容查重"
               @keyup.native.enter="getQuesListOfBookZhangJie"
             ></el-input>
@@ -115,8 +118,9 @@ export default {
       // 每页数据的总条
       rows: 30,
       // 查询-搜索
-      searchQuestionZhang: 1, //搜索章
-      searchQuestionJie: 1, //搜索节
+      // searchQuestionZhang: 1, //搜索章
+      // searchQuestionJie: 1, //搜索节
+      // searchQuestionTopic:1,
       //搜索有没有相同的题干了.
       searchQuestionContent: "",
       // 科目名称
@@ -131,7 +135,11 @@ export default {
       ImgAddr: "",
       currentPlatform: {},
       // 模态框获得的单条数据
-      currentItemData: {},
+      currentItemData: {
+        TopicNo: 1,
+        Zhang: 1,
+        Jie: 1
+      },
       // 表单验证
       questionFormRules: {
         ZhangId: [{ required: true, message: "请填写章编号", trigger: "blur" }],
@@ -176,9 +184,10 @@ export default {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getQuestionOfBook("", {
         bookid: this.currentItemData.BookId,
-        question_content: this.searchQuestionContent,
-        zhang: this.searchQuestionZhang,
-        jie: this.searchQuestionJie,
+        question_content: this.currentItemData.QuestionContent,
+        zhang: this.currentItemData.Zhang,
+        jie: this.currentItemData.Jie,
+        topic: this.currentItemData.TopicNo,
         limit: this.rows,
         offset: offsetRow
       });
@@ -188,12 +197,18 @@ export default {
     // 打开试题的模态框-新增
     openAddQuestionDialog() {
       this.currentQuestionIndex = -1;
-      this.currentItemData = {
-        ZhangId:this.searchQuestionZhang,
-        JieId: this.searchQuestionJie,
-        QuestionType: 1,
-        QuestionScore: 1
-      };
+      this.currentItemData.QuestionScore = "";
+      this.currentItemData.QuestionContent = "";
+      this.currentItemData.QuestionType = 1;
+      this.currentItemData.A = "";
+      this.currentItemData.B = "";
+      this.currentItemData.C = "";
+      this.currentItemData.D = "";
+      this.currentItemData.F = "";
+      this.currentItemData.G = "";
+      this.currentItemData.H = "";
+      this.currentItemData.I = "";
+
       this.moreOperationDialog = true;
       this.currentItemData.BookId = parseInt(this.$route.query.Id);
     },

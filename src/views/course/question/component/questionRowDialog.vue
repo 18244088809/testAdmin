@@ -7,8 +7,8 @@
       :rules="questionFormRules"
     >
       <div class="between-center">
-        <el-form-item label="隶属于" class="flex_1"> 
-          <span> 第{{currentItemData.Zhang}} 章 - 第{{currentItemData.Jie}} 节 - 第{{currentItemData.TopicNo}} 点</span> 
+        <el-form-item label="隶属于" class="flex_1">
+          <span>第{{currentItemData.Zhang}} 章 - 第{{currentItemData.Jie}} 节 - 第{{currentItemData.TopicNo}} 知识点</span>
         </el-form-item>
 
         <el-form-item label="题型" class="flex_1" style="width:300px">
@@ -26,7 +26,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="分值" prop="QuestionScore" class="flex_1">
-          <el-input-number :min="1" v-model="currentItemData.QuestionScore" :step="0.5"></el-input-number>
+          <el-input-number
+            :min="1"
+            v-model="currentItemData.QuestionScore"
+            controls-position="right"
+            :step="0.5"
+          ></el-input-number>
         </el-form-item>
         <el-form-item class="flex_1 center">
           <el-radio v-model="State" :label="1">上架</el-radio>
@@ -37,6 +42,7 @@
         <el-input
           type="textarea"
           :rows="3"
+          @input="$forceUpdate()"
           placeholder="请输入内容"
           v-model="currentItemData.QuestionContent"
         ></el-input>
@@ -50,8 +56,15 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="作答提示" class="flex_1" prop="VideoAnalyse">
-        <el-input v-model="currentItemData.VideoAnalyse"></el-input>
+        <el-input
+          v-model="currentItemData.VideoAnalyse"
+          placeholder="请填写视频地址，如 http://www.te.com.cn/d.mp4 或 /test/video.mp4"
+        ></el-input>
       </el-form-item>
+      <!-- 添加选项 -->
+      <!-- <el-form-item label="选项操作" class="bg-eee">
+        
+      </el-form-item>-->
       <!-- 单选题,判断题 -->
       <el-form-item label="选项">
         <div v-show="currentItemData.QuestionType==1||currentItemData.QuestionType==3">
@@ -72,7 +85,7 @@
         </div>
         <!-- 多选题-编辑-->
         <div v-show="currentItemData.QuestionType==2">
-          <div class="flex_dom flex_wrap">
+          <div class="center flex_wrap" style="width:100%">
             <div
               :key="index"
               v-for="(option,index) in quesAnswerOptions"
@@ -84,11 +97,14 @@
           </div>
         </div>
       </el-form-item>
-      <el-form-item label="选项操作">
+
+      <el-form-item label="工具栏" class="bg-eee">
         <!-- 添加选项 -->
-        <div class="center flex_dom">
-          <el-button @click="addQuestionOption">添加选项</el-button>
-          <el-button @click="deleteQuestionOption">删除最后项</el-button>
+        <div class="between-center">
+          <div>
+            <el-button @click="addQuestionOption">添加选项</el-button>
+            <el-button @click="deleteQuestionOption">删除最后项</el-button>
+          </div>
           <el-upload
             :auto-upload="false"
             action
@@ -107,14 +123,6 @@
           >
             <span class="tag-read" :data-clipboard-text="ImgAddr" @click="copyText">{{ImgAddr}}</span>
           </el-tooltip>
-        </div>
-      </el-form-item>
-
-      <el-form-item>
-        <!-- 添加选项 -->
-
-        <div class="m-v-15 text-right">
-          <el-button @click="questionFormDialog = false">取 消</el-button>
           <el-button type="primary" @click="saveQuestion">确 认</el-button>
         </div>
       </el-form-item>
@@ -174,6 +182,9 @@ export default {
         ],
         QuestionContent: [
           { required: true, message: "请填写题干内容", trigger: "blur" }
+        ],
+        QuestionAnalyse: [
+          { required: true, message: "解析至少要写几个字", trigger: "blur" }
         ]
       }
     };
