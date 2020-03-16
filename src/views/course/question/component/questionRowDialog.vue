@@ -7,24 +7,26 @@
       :rules="questionFormRules"
     >
       <div class="between-center">
-        <el-form-item label="章" class="flex_1" prop="ZhangId">
-          <el-input-number :min="1" v-model="ZhangId" :disabled="currentItemData.Id>0"></el-input-number>
+        <el-form-item label="隶属于" class="flex_1"> 
+          <span> 第{{currentItemData.Zhang}} 章 - 第{{currentItemData.Jie}} 节 - 第{{currentItemData.TopicNo}} 点</span> 
         </el-form-item>
-        <el-form-item label="节" class="flex_1" prop="JieId">
-          <el-input-number :min="1" v-model="JieId" :disabled="currentItemData.Id>0"></el-input-number>
-        </el-form-item>
-        <el-form-item label="题型" class="flex_1">
-          <el-select v-model="QuestionType" :disabled="currentItemData.Id>0" placeholder="请选择题型">
+
+        <el-form-item label="题型" class="flex_1" style="width:300px">
+          <el-select
+            v-model="currentItemData.QuestionType"
+            :disabled="currentItemData.Id>0"
+            placeholder="请选择题型"
+          >
             <el-option
               :label="item.Label"
               :key="index"
               :value="item.ID"
-              v-for="(item,index) in common.AllQuestionTypes"
+              v-for="(item,index) in $store.getters.app.questionTypes"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="分值" prop="QuestionScore" class="flex_1">
-          <el-input-number :min="1" v-model="QuestionScore" :step="0.5"></el-input-number>
+          <el-input-number :min="1" v-model="currentItemData.QuestionScore" :step="0.5"></el-input-number>
         </el-form-item>
         <el-form-item class="flex_1 center">
           <el-radio v-model="State" :label="1">上架</el-radio>
@@ -39,7 +41,7 @@
           v-model="currentItemData.QuestionContent"
         ></el-input>
       </el-form-item>
-      <el-form-item label="解析答案" prop="QuestionAnalyse">
+      <el-form-item label="答案解析" prop="QuestionAnalyse">
         <el-input
           type="textarea"
           :rows="3"
@@ -47,9 +49,12 @@
           v-model="currentItemData.QuestionAnalyse"
         ></el-input>
       </el-form-item>
+      <el-form-item label="作答提示" class="flex_1" prop="VideoAnalyse">
+        <el-input v-model="currentItemData.VideoAnalyse"></el-input>
+      </el-form-item>
       <!-- 单选题,判断题 -->
       <el-form-item label="选项">
-        <div v-show="QuestionType==1||QuestionType==3">
+        <div v-show="currentItemData.QuestionType==1||currentItemData.QuestionType==3">
           <div class="center flex_wrap" style="width:100%">
             <div
               :key="index"
@@ -66,7 +71,7 @@
           </div>
         </div>
         <!-- 多选题-编辑-->
-        <div v-show="QuestionType==2">
+        <div v-show="currentItemData.QuestionType==2">
           <div class="flex_dom flex_wrap">
             <div
               :key="index"
@@ -127,7 +132,13 @@ export default {
     formItemData: {
       type: Object,
       default: function() {
-        return { Id: 0 };
+        return {
+          Id: 0,
+          Zhang: 1,
+          Jie: 1,
+          QuestionType: 1,
+          QuestionScore: 1
+        };
       }
     }
   },
@@ -142,10 +153,10 @@ export default {
       words: ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
       // 题型信息
       currentItemData: {},
-      ZhangId: 1,
-      JieId: 1,
-      QuestionType: 1,
-      QuestionScore: 1,
+      // Zhang: 1,
+      // Jie: 1,
+      // QuestionType: 1,
+      // QuestionScore: 1,
       State: 1,
       // 多选题答案
       quesCheckboxAnswer: [],
@@ -158,14 +169,11 @@ export default {
       ],
       // 表单验证
       questionFormRules: {
-        ZhangId: [{ required: true, message: '请填写章编号', trigger: "blur" }],
-        JieId: [{ required: true, message: '请填写节编号', trigger: "blur" }],
-        TopicId: [{ required: true, message: '请填写知识点', trigger: "blur" }],
         QuestionScore: [
-          { required: true, message: '请填写题的分值', trigger: "blur" }
+          { required: true, message: "请填写题的分值", trigger: "blur" }
         ],
         QuestionContent: [
-          { required: true, message: '请填写题干内容', trigger: "blur" }
+          { required: true, message: "请填写题干内容", trigger: "blur" }
         ]
       }
     };
@@ -244,11 +252,11 @@ export default {
     },
     // 修改数据
     saveQuestion() {
-      this.currentItemData.ZhangId = this.ZhangId;
-      this.currentItemData.JieId = this.JieId;
-      this.currentItemData.QuestionType = this.QuestionType;
+      // this.currentItemData.Zhang = this.Zhang;
+      // this.currentItemData.Jie = this.Jie;
+      // this.currentItemData.QuestionType = this.QuestionType;
       this.currentItemData.State = this.State;
-      this.currentItemData.QuestionScore = this.QuestionScore;
+      // this.currentItemData.QuestionScore = this.QuestionScore;
       this.$refs.refQuestionForm.validate(async valid => {
         if (valid) {
           if (!this.currentItemData.Options) {

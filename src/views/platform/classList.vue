@@ -86,7 +86,7 @@
     <!-- 弹出框 -->
     <div>
       <!-- 班级相关操作的模态框 -->
-      <my-dialog :visible.sync="moreOperationDialog" :closeShow="true" :title="classFormData.Label">
+      <my-dialog :visible.sync="moreOperationDialog"  :title="classFormData.Label">
         <div slot="left_content" class="p_both20 p-b-20">
           <class-row-detail
             :formItemData="classFormData"
@@ -126,7 +126,7 @@
       <!-- 班级相关操作的模态框 -->
       <my-dialog
         :visible.sync="classStudentsDialog"
-        :closeShow="true"
+        
         :title="'【'+classFormData.Label+'】学员作业'"
         :showLeft="false"
       >

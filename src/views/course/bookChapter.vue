@@ -1,6 +1,6 @@
 
 <template>
-  <div v-cloak class="font16 hgt_full">
+  <div v-cloak class="font16 hgt_full m-t-10">
     <div class="flex_column hgt_full">
       <div class="between-center m-b-15">
         <div>
@@ -19,15 +19,23 @@
           :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:true}"
         >
           <vxe-table-column type="seq" width="120" title="序号" tree-node />
-          <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
-          <vxe-table-column field="Video" title="视频地址" :edit-render="{name: 'input'}" />
+          <vxe-table-column field="SN" title="章节编号" width="100">
+            <template v-slot="{ row }">{{row.SN}}</template>
+          </vxe-table-column>
           <vxe-table-column
-            field="TopicNo"
+            field="Label"
+            title="名称"
+            placeholder="双击修改"
             :edit-render="{name: 'input'}"
-            title="视频编号"
-            width="130"
           />
-          <vxe-table-column field="Description" title="描述" :edit-render="{name: 'input'}" />
+          <vxe-table-column
+            field="Video"
+            title="视频地址"
+            placeholder="双击修改"
+            :edit-render="{name: 'input'}"
+          />
+
+          <vxe-table-column field="Description" title="视频包含习题数量" />
           <vxe-table-column field="Taste" title="允许试读" width="80">
             <template v-slot="{ row}">
               <select v-model="row.Taste" class="quanke">
@@ -36,18 +44,22 @@
               </select>
             </template>
           </vxe-table-column>
-          <vxe-table-column title="操作">
+          <vxe-table-column title="操作" width="200">
             <template v-slot="{ row }">
               <el-button
-                v-show="row.Zhang==1&&(row.Video==''||row.Video==null)"
+                v-if="row.Zhang>0&&row.Jie==0&&row.TopicNo==0"
                 type="primary"
                 @click="addChildNode(row,true)"
               >添加节</el-button>
               <el-button
-                v-show="row.Jie==1&&(row.Video==''||row.Video==null)"
-                type="success"
+                v-else-if="row.Jie>0&&row.TopicNo==0 "
+                type="warning"
                 @click="addChildNode(row,false)"
               >添加视频</el-button>
+              <div v-else>
+                <el-button type="info" @click="addQuestion(row,false)">添加试题</el-button>
+                <el-button type="success" @click="linkQuestion(row,false)">关联试题</el-button>
+              </div>
             </template>
           </vxe-table-column>
         </vxe-table>
@@ -58,6 +70,21 @@
         <el-button class="m-r-20" type="success" @click="createSubjectChapter">保存</el-button>
       </div>
     </div>
+
+    <my-dialog :visible.sync="addQuestionDialog" :showLeft="false" title="添加考题">
+      <div slot="right_content">
+        <question-row-dialog ref="addQusetionDialog" :formItemData="newQuestionItem"></question-row-dialog>
+      </div>
+    </my-dialog>
+    <my-dialog :visible.sync="linkQuestionDialog" :showLeft="false" title="关联考题">
+      <div slot="right_content">
+        <linkQuestion
+          ref="linkQusetionDialog"
+          @linkedQuestion="linkedQuestion"
+          :BookChapter="newQuestionItem"
+        ></linkQuestion>
+      </div>
+    </my-dialog>
   </div>
 </template>
 <script>
@@ -68,14 +95,26 @@ import {
   getBookVideo,
   createBookStructure
 } from "@/api/book";
+import myDialog from "@/components/myDialog/myDialog";
+import questionRowDialog from "@/views/course/question/component/questionRowDialog";
+import linkQuestion from "@/views/course/question/component/linkQuestion";
 export default {
   name: "bookChapter",
+  components: {
+    myDialog,
+    questionRowDialog,
+    linkQuestion
+  },
   data() {
     return {
       // 书名称
       subjectLabel: "",
       // 书的Id
       subjectId: "",
+      // 更多操作弹窗
+      addQuestionDialog: false,
+      linkQuestionDialog: false,
+      newQuestionItem: {},
       // 书的章节列表
       chaperListOfBook: [],
       //  列表的children数据
@@ -85,7 +124,7 @@ export default {
     };
   },
   mounted() {
-    this.subjectId = this.$router.currentRoute.query.Id; 
+    this.subjectId = this.$router.currentRoute.query.Id;
     this.getBookChapter();
   },
   methods: {
@@ -93,26 +132,52 @@ export default {
     editChapter(row) {
       this.$refs.chapterTreeTable.setActiveRow(row);
     },
+    //关联试题
+    linkQuestion(row, isZhang) {
+      this.newQuestionItem.BookId = this.subjectId;
+      this.newQuestionItem.Book = row;
+      this.linkQuestionDialog = true;
+    },
+    linkedQuestion() {
+      createBookStructure(this.subjectId, "", this.chaperListOfBook);
+    },
+    //直接添加试题
+    addQuestion(row, isZhang) {
+      this.addQuestionDialog = true;
+      this.newQuestionItem.BookId = this.subjectId;
+      this.newQuestionItem.Book = row;
+      console.log(row);
+      this.newQuestionItem = {
+        Zhang: row.Zhang,
+        Jie: row.Jie,
+        TopicNo: row.TopicNo,
+        QuestionType: 1,
+        QuestionScore: 1
+      };
+
+      //
+    },
     // 新增子级节点
     addChildNode(row, isZhang) {
       const that = this;
       const chapterTreeTable = that.$refs.chapterTreeTable;
       let labelStr = "";
       if (isZhang == true) {
-        labelStr = "新的节";
+        labelStr = "新的节(双击改名)";
       } else {
-        labelStr = "新的视频";
+        labelStr = "新的视频(双击改名)";
       }
       chapterTreeTable
         .createRow({
           Label: labelStr,
-          Id: new Date().getTime(),
+          Id: "",
           Children: [],
           Taste: 0,
           Video: "",
-          TopicNo: "",
+          TopicNo: 0,
           Zhang: 0,
-          Jie: 0
+          Jie: 0,
+          SN: ""
         })
         .then(newRow => {
           const rowNode = XEUtils.findTree(
@@ -122,14 +187,27 @@ export default {
           );
           if (rowNode) {
             rowNode.items.forEach((item, index) => {
-              if (isZhang == true) {
-                // 如果是章，那么设置为节
-                newRow.Jie = 1;
-              } else {
-                newRow.Jie = 0;
-              }
               if (item.Id == row.Id) {
+                newRow.Zhang = item.Zhang;
+                if (isZhang == true) {
+                  // 如果是章，那么设置为节
+                  newRow.Jie = rowNode.item.Children.length + 1;
+                  newRow.SN = "第" + newRow.Jie + "节";
+                } else {
+                  newRow.Jie = item.Jie;
+                  newRow.TopicNo = rowNode.item.Children.length + 1;
+                  newRow.SN = "第" + newRow.TopicNo + "点";
+                }
+                newRow.Id =
+                  this.subjectId +
+                  "-" +
+                  newRow.Zhang +
+                  "-" +
+                  newRow.Jie +
+                  "-" +
+                  newRow.TopicNo;
                 rowNode.items[index].Children.push(newRow);
+
                 chapterTreeTable
                   .refreshData()
                   .then(() => chapterTreeTable.setActiveRow(newRow));
@@ -138,39 +216,7 @@ export default {
           }
         });
     },
-    // 保存编辑
-    saveChapter(row) {
-      const that = this;
-      row.TBookID = that.subjectId;
-      row.Taste = parseInt(row.Taste);
-      row.TBookID = parseInt(row.TBookID);
-      row.Jie = parseInt(row.Jie);
-      row.Zhang = parseInt(row.Zhang);
-      that
-        .$confirm("确认修改吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-        .then(async () => {
-          if (row.Id > 0) {
-            // ID大于零代表修改，否则就是新增
-            const res = await editBookVideo(row.Id, row);
-            if (res.code == 200) {
-              that.cancelRowEvent();
-              that.common.go_alert("修改成功 !");
-            }
-          } else {
-            const res = await addBookVideo(row);
-            if (res.code == 200) {
-              that.cancelRowEvent();
-              that.common.go_alert("添加成功 !");
-              that.getBookChapter();
-            }
-          }
-        })
-        .catch(() => {});
-    },
+
     // 取消编辑
     cancelEditChapter(row, index) {
       this.$refs.chapterTreeTable.clearActived();
@@ -182,15 +228,19 @@ export default {
     // 新增章
     addChapter() {
       const newItem = {
-        Id: new Date().getTime(),
-        Label: "新的章",
+        Id: "",
+        Label: "新的章(双击改名)",
         Children: [],
         Taste: 0,
         Video: "",
-        TopicNo: "",
-        Zhang: 1,
-        Jie: 0
+        TopicNo: 0,
+        Zhang: 0,
+        Jie: 0,
+        SN: 0
       };
+      newItem.Zhang = this.chaperListOfBook.length + 1;
+      newItem.Id = this.subjectId + "-" + newItem.Zhang;
+      newItem.SN = "第" + newItem.Zhang + "章";
       this.chaperListOfBook.push(newItem);
     },
     // 批量删除

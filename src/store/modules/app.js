@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie'
 import { getLanguage } from '@/lang/index'
-import manager from './manager'
+import {  getQuestionTypes } from "@/api/question";
 import { getCollegeWithCourseKind } from '@/api/college'
-import { getAllTPlatform } from '@/api/platform'
+import { getAllTPlatform } from '@/api/platform' 
 const state = {
   sidebar: {
     opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
@@ -13,6 +13,7 @@ const state = {
   size: Cookies.get('size') || 'medium',
   platformList: [],//所有的平台列表
   collegeWithCourseKind: [],// 
+  questionTypes:[],
 }
 
 const mutations = {
@@ -47,6 +48,11 @@ const mutations = {
   SET_COLLEGEWITHCOURSEKIND: (state, data) => {
     state.collegeWithCourseKind = data
   },
+  SET_QUESTIONTYPES: (state, data) => {
+    state.questionTypes = data
+  },
+
+  
  
   PUSH_PLATFORM: (state, newItem) => {
     let hasIn = false;
@@ -79,6 +85,8 @@ const actions = {
   setSize({ commit }, size) {
     commit('SET_SIZE', size)
   },
+
+
   // getPlatformList
   getPlatformList({ commit }) {
     return new Promise((resolve, reject) => {
@@ -95,6 +103,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       getCollegeWithCourseKind('', { "include": 1 }, '').then(response => {
         commit('SET_COLLEGEWITHCOURSEKIND', response.data)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  // getQuestionTypes
+  getQuestionTypes({ commit }) {
+    return new Promise((resolve, reject) => {
+      getQuestionTypes('','', '').then(response => {
+        commit('SET_QUESTIONTYPES', response.data)
         resolve()
       }).catch(error => {
         reject(error)

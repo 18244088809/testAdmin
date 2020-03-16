@@ -2,27 +2,23 @@
   <div v-cloak class="font16 hgt_full">
     <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
     <div class="flex_column hgt_full">
-      <div class="flex_1 overflow_hide border-e0 m-t-20">
+      <div class="flex_1 overflow_hide ">
         <div class="hgt_100 overflow_auto">
-          <div class="p_both20 p-v-10">
+          <div class=" p-v-10">
             <div
               v-for="(item,index) in customTrackList"
               :key="index"
               class="m-v-10 radius3 border-e5ecf7"
             >
-              <div class="flex_mid p_both20 m-t-10">
-                <div class="m-l-15">
-                  <p class="font14 color-666">
-                    <span class="color-1f85aa">客户：{{ item.StudentLabel }}</span>
-                    <span class="font12 color-1f85aa">{{ item.StudentTel }}</span>
-                  </p>
-                  <p class="m-t-10 font14 color-666">
-                    <span>{{ item.ManagerLabel }}：{{ item.track_method }}</span>
-                    <span
-                      class="font12 m-l-10 color-666"
-                    >{{ common.dateFormat(item.Createtime, 2) }}</span>
-                  </p>
-                </div>
+              <div class="between-center marg20">
+                <p class=" font14 color-666">
+                  <span>{{ item.ManagerLabel }}：{{ item.track_method }}</span>
+                  <span class="font12 m-l-10 color-666">{{ common.dateFormat(item.Createtime, 2) }}</span>
+                </p>
+                <p class="font14 color-666 m-r-20">
+                  <span class="color-1f85aa">客户：{{ item.StudentLabel }}</span>
+                  <span class="font12 color-1f85aa">({{ item.StudentTel }})</span>
+                </p>
               </div>
               <p v-if="item.Kind==2" class="m-v-15 font14 color-666 p_both20">
                 <audio :src="item.Content" controls="controls">你的浏览器太老，不支持显示录音</audio>
@@ -35,23 +31,18 @@
                     :key="index"
                     class="marg10 flex_mid flex_wrap"
                   >
-                    <img
-                      v-if="img"
-                      class="wid20"
-                      :src="img"
-                      @click="onPreview(img)"
-                    />
+                    <img v-if="img" class="wid20" :src="img" @click="onPreview(img)" />
                   </div>
                 </div>
               </div>
-              <div  >
+              <div class="m-l-20">
                 <p
                   v-for="(replyItem,replyIndex) in item.Reply"
                   :key="replyIndex"
                   class="color-666 font14 m-b-10"
                 >
-                  <span class="color-1f85aa">{{ replyItem.ManagerLabel }}：</span>
-                  <span>{{ replyItem.Content }}</span>
+                  <span class="color-1f85aa">[{{ replyItem.ManagerLabel }}]评论：</span>
+                  <span class="color-red">{{ replyItem.Content }}</span>
                 </p>
               </div>
               <div class="bg-f5f9ff p-v-10 p_both20">
@@ -148,7 +139,7 @@ export default {
       this.showViewer = true;
       this.imageViewerSrc = src;
     },
-     // 关闭查看器
+    // 关闭查看器
     closeViewer() {
       this.showViewer = false;
     },

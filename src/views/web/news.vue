@@ -54,11 +54,11 @@
     <!-- 弹出框 -->
     <div>
       <my-dialog
-        :closeShow="true"
+        
         title="新闻详情编辑"
         :showLeft="false"
         :visible.sync="newsFormDialog"
-        :closeLeft="false"
+        
       >
         <div slot="right_content">
           <newsFormData

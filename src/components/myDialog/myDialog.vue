@@ -35,10 +35,7 @@ export default {
       type: Boolean,
       default: false
     },
-    closeShow: {
-      type: Boolean,
-      default: true
-    },
+
     showLeft: {
       type: Boolean,
       default: true

@@ -50,8 +50,8 @@
       <!-- 关联题库弹窗 -->
       <my-dialog
         :visible.sync="examRelevantQuestionDialog"
-        :closeShow="true"
-        :closeLeft="false"
+        
+        
         :title="currentHighFrequencyRow.Label"
       >
         <div slot="right_content">

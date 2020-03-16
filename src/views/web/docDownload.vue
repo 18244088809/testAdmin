@@ -60,11 +60,11 @@
     <!-- 弹出框 -->
     <div>
       <my-dialog
-        :closeShow="true"
+        
         title="资料详情编辑"
         :showLeft="false"
         :visible.sync="moreOperationDialog"
-        :closeLeft="false"
+        
       >
         <div slot="right_content">
           <docFormData

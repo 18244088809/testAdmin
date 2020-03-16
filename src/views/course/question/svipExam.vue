@@ -44,8 +44,8 @@
       <!-- 关联题库弹窗 -->
       <my-dialog
         :visible.sync="examRelevantQuestionDialog"
-        :closeShow="true"
-        :closeLeft="false"
+        
+        
         :title="currentSvipRow.Label"
       >
         <div slot="right_content">
