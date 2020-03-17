@@ -13,6 +13,7 @@
 
         <el-form-item label="题型" class="flex_1" style="width:300px">
           <el-select
+            @change="getQuestionRow"
             v-model="currentItemData.QuestionType"
             :disabled="currentItemData.Id>0"
             placeholder="请选择题型"
@@ -67,7 +68,7 @@
       </el-form-item>-->
       <!-- 单选题,判断题 -->
       <el-form-item label="选项">
-        <div v-show="currentItemData.QuestionType==1||currentItemData.QuestionType==3">
+        <div v-if="currentItemData.QuestionType==1||currentItemData.QuestionType==3">
           <div class="center flex_wrap" style="width:100%">
             <div
               :key="index"
@@ -84,7 +85,7 @@
           </div>
         </div>
         <!-- 多选题-编辑-->
-        <div v-show="currentItemData.QuestionType==2">
+        <div v-else-if="currentItemData.QuestionType==2">
           <div class="center flex_wrap" style="width:100%">
             <div
               :key="index"
@@ -95,6 +96,9 @@
               <el-input type="textarea" :rows="2" placeholder="请输入选项内容" v-model="option.content"></el-input>
             </div>
           </div>
+        </div>
+        <div v-else-if="currentItemData.QuestionType==4">
+          <div class="center flex_wrap" style="width:100%">不需要选项， 学员自己在答题框里写文字作答</div>
         </div>
       </el-form-item>
 
@@ -161,10 +165,6 @@ export default {
       words: ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
       // 题型信息
       currentItemData: {},
-      // Zhang: 1,
-      // Jie: 1,
-      // QuestionType: 1,
-      // QuestionScore: 1,
       State: 1,
       // 多选题答案
       quesCheckboxAnswer: [],
@@ -237,6 +237,9 @@ export default {
           }
         ];
       }
+      if (this.currentItemData.QuestionType == 4) {
+        this.currentItemData.QuestionAnswer = " ";
+      }
     },
     // 复制文本
     copyText() {
@@ -263,11 +266,7 @@ export default {
     },
     // 修改数据
     saveQuestion() {
-      // this.currentItemData.Zhang = this.Zhang;
-      // this.currentItemData.Jie = this.Jie;
-      // this.currentItemData.QuestionType = this.QuestionType;
       this.currentItemData.State = this.State;
-      // this.currentItemData.QuestionScore = this.QuestionScore;
       this.$refs.refQuestionForm.validate(async valid => {
         if (valid) {
           if (!this.currentItemData.Options) {
@@ -284,6 +283,19 @@ export default {
             this.currentItemData.QuestionAnswer = this.quesCheckboxAnswer.join(
               ""
             );
+          }
+          
+          if (this.currentItemData.QuestionType != 4) {
+            if (
+              !this.currentItemData.QuestionAnswer ||
+              this.currentItemData.QuestionAnswer == ""
+            ) {
+              this.$message({
+                message: "必须勾选一个正确答案",
+                type: "warning"
+              });
+              return;
+            }
           }
           // 修改数据
           if (this.currentItemData.Id > 0) {

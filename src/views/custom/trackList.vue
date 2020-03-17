@@ -10,15 +10,15 @@
               :key="index"
               class="m-v-10 radius3 border-e5ecf7"
             >
-              <div class="between-center marg20">
-                <p class=" font14 color-666">
+              <div class="flex_dom marg20">
+                <div class=" font14 color-666">
                   <span>{{ item.ManagerLabel }}：{{ item.track_method }}</span>
                   <span class="font12 m-l-10 color-666">{{ common.dateFormat(item.Createtime, 2) }}</span>
-                </p>
-                <p class="font14 color-666 m-r-20">
+                </div>
+                <div class="font14 color-666 m-l-20">
                   <span class="color-1f85aa">客户：{{ item.StudentLabel }}</span>
                   <span class="font12 color-1f85aa">({{ item.StudentTel }})</span>
-                </p>
+                </div>
               </div>
               <p v-if="item.Kind==2" class="m-v-15 font14 color-666 p_both20">
                 <audio :src="item.Content" controls="controls">你的浏览器太老，不支持显示录音</audio>
@@ -50,7 +50,7 @@
                   <textarea
                     v-model="item.replyContent"
                     cols="30"
-                    placeholder="输入点评文字"
+                    placeholder=""
                     rows="1"
                     class="yahei border-e0 radius3 wid_100 default-input input-focus default-textarea p-v-5 p_both10"
                   />

@@ -5,10 +5,10 @@
         <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="章">
-            <el-input-number v-model="searchQuestionZhang" :min="0" :max="1000" label="输入章"></el-input-number>
+            <el-input-number v-model="searchQuestionZhang"  controls-position="right" :min="0" :max="1000" label="输入章"></el-input-number>
           </el-form-item>
           <el-form-item label="节">
-            <el-input-number v-model="searchQuestionJie" :min="0" :max="1000" label="输入节"></el-input-number>
+            <el-input-number v-model="searchQuestionJie"  controls-position="right" :min="0" :max="1000" label="输入节"></el-input-number>
           </el-form-item>
           <el-form-item label="题干">
             <el-input
