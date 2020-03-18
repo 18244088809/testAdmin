@@ -44,18 +44,24 @@
             >{{ scope.row.Label }}</span>
           </template>
         </el-table-column>
+        <el-table-column prop="Label" label="所属学院" width="250" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span>{{ common.FormatSelect($store.getters.app.collegeWithCourseKind,scope.row.CollegeID)}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="Coursekind"
           label="所属课程类别"
           width="250"
           :show-overflow-tooltip="true"
         />
-        <el-table-column prop="Description" :show-overflow-tooltip="true" label="描述" />
+        
+
+        <el-table-column prop="Description" :show-overflow-tooltip="true" label="备注" />
         <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="scope">
             <el-button type="success" @click="addChapter(scope.$index, scope.row)">内容管理</el-button>
-            <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题管理</el-button>
-            <!-- <el-button type="info" @click="gotoBookExercisePage(scope.$index, scope.row)">学员作业</el-button> -->
+            <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题管理</el-button> 
           </template>
         </el-table-column>
       </el-table>
@@ -113,7 +119,7 @@ import myDialog from "@/components/myDialog/myDialog";
 import bookRowDetail from "@/views/course/component/bookRowDetail";
 import bookDownFile from "@/views/course/component/bookDownFile";
 import { queryBookList } from "@/api/book";
-
+import common from "@/utils/common";
 export default {
   name: "bookList",
   components: {
@@ -123,6 +129,7 @@ export default {
   },
   data() {
     return {
+      common,
       // 数据总条数
       allRows: 0,
       // 当前页数
@@ -180,7 +187,7 @@ export default {
     // 打开更多操作弹出框
     openMoreOptationDialog(index, row) {
       this.currentSubjectIndex = index;
-      this.customFormData = {...row}; 
+      this.customFormData = { ...row };
       this.moreOperationDialog = true;
       // this.$refs.refSubjectDetail.getSubjectRow(row);
     },
