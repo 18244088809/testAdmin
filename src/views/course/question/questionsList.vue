@@ -3,25 +3,65 @@
     <div class="flex_column hgt_full">
       <div class="between-center">
         <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
-        <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label="第">
-            <!-- <el-input-number
-              v-model="currentItemData.Zhang"
-              controls-position="right"
-              :min="0"
-              :max="1000"
-              label="输入章"
-            ></el-input-number>章 --> 
-<el-dropdown>
-  <span class="el-dropdown-link">
-    下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-  </span>
-  <el-dropdown-menu slot="dropdown">
-    <el-dropdown-item v-for="item in zhangOfBook" :key="item.Id" >{{item.Label}}</el-dropdown-item>
-    
-  </el-dropdown-menu>
-</el-dropdown>
+        <el-form :inline="true" class="demo-form-inline  ">
+          <el-form-item label="">
+            <el-dropdown @command="selectZhang">
+              <span class="el-dropdown-link">
+                {{zhangItem.SN+"("+zhangItem.Label+")"}}
+                <i
+                  class="el-icon-arrow-down el-icon--right"
+                ></i>
+              </span>
 
+              <el-dropdown-menu slot="dropdown">
+                 <el-dropdown-item  
+                  :command="{Label:'全部章',SN:'',Value:0}"
+                >全部章</el-dropdown-item>
+                <el-dropdown-item
+                  v-for="item in zhangOfBook"
+                  :key="item.Id"
+                  :command="item"
+                > {{item.SN+"("+item.Label+")"}}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+        
+            <el-dropdown @command="selectJie">
+              <span class="el-dropdown-link">
+                {{jieItem.SN+"("+jieItem.Label+")"}}
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+
+              <el-dropdown-menu slot="dropdown">
+                 <el-dropdown-item  
+                  :command="{Label:'全部节',SN:'',Value:0}"
+                >全部节</el-dropdown-item>
+                <el-dropdown-item
+                  v-for="item in jieOfBook"
+                  :key="item.Id"
+                  :command="item"
+                >{{item.SN+"("+item.Label+")"}}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+ 
+            <el-dropdown @command="selectTopic">
+              <span class="el-dropdown-link">
+                {{topicItem.SN+"("+topicItem.Label+")"}}
+                <i
+                  class="el-icon-arrow-down el-icon--right"
+                ></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                 <el-dropdown-item  
+                   :command="{Label:'全部知识点',SN:'',Value:0}"
+                >全部知识点</el-dropdown-item>
+                <el-dropdown-item
+                  v-for="item in topicOfBook"
+                  :key="item.Id"
+                  :command="item"
+                >{{item.SN+"("+item.Label+")"}}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <!-- 
  
           </el-form-item>
           <el-form-item label="第">
@@ -40,7 +80,7 @@
               :min="0"
               :max="1000"
               label="输入点"
-            ></el-input-number>知识点
+            ></el-input-number>知识点-->
           </el-form-item>
           <el-form-item label="题干">
             <el-input
@@ -125,7 +165,7 @@
 import myDialog from "@/components/myDialog/myDialog";
 import questionRowDialog from "@/views/course/question/component/questionRowDialog";
 import $ImgHttp from "@/api/ImgAPI";
-import { getBookVideo } from "@/api/book";
+import { bookChapter } from "@/api/book";
 import { getQuestionOfBook } from "@/api/question";
 import common from "@/utils/common";
 export default {
@@ -148,9 +188,18 @@ export default {
       // 每页数据的总条
       rows: 30,
       // 查询-搜索
-      // searchQuestionZhang: 1, //搜索章
-      // searchQuestionJie: 1, //搜索节
-      // searchQuestionTopic:1,
+      zhangItem: {
+        SN: "",
+        Label: "全部章"
+      }, //搜索章
+      jieItem: {
+        SN: "",
+        Label: "全部节"
+      }, //搜索节
+      topicItem: {
+        SN: "",
+        Label: "全部知识点"
+      },
       //搜索有没有相同的题干了.
       searchQuestionContent: "",
       // 科目名称
@@ -164,7 +213,7 @@ export default {
       zhangOfBook: [],
       jieOfBook: [],
       topicOfBook: [],
-      
+
       // 图片地址
       ImgAddr: "",
       currentPlatform: {},
@@ -218,20 +267,42 @@ export default {
         this.isbusy = false;
       }
     },
-
+    selectZhang(item) {
+      this.jieOfBook = item.Children;
+      this.zhangItem = item;
+      this.jieItem = {
+        SN: "",
+        Label: "全部节"
+      };
+      this.topicItem = {
+        SN: "",
+        Label: "全部知识点"
+      };
+    },
+    selectJie(item) {
+      this.topicOfBook = item.Children;
+      this.jieItem = item;
+      this.topicItem = {
+        SN: "",
+        Label: "全部知识点"
+      };
+    },
+    selectTopic(item) {
+      this.topicItem = item;
+    },
     async bookChapter() {
-      let res = await getBookVideo(this.currentItemData.BookId, "");
-      this.zhangOfBook = res.data ? res.data : {};
+      let res = await bookChapter(this.currentItemData.BookId, "");
+      this.zhangOfBook = res.data ? res.data.Children : [];
     },
     // 获取科目相关的试题列表
     async getQuesListOfBookZhangJie() {
-      let offsetRow = (this.nowPage - 1) * this.rows; 
+      let offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getQuestionOfBook("", {
         bookid: this.currentItemData.BookId,
         question_content: this.currentItemData.QuestionContent,
-        zhang: this.currentItemData.Zhang,
-        jie: this.currentItemData.Jie,
-        topic: this.currentItemData.TopicNo,
+        zhang: this.zhangItem.Value,
+        jie: this.jieItem.Value,
+        topic: this.topicItem.Value,
         limit: this.rows,
         offset: offsetRow
       });
@@ -290,6 +361,13 @@ export default {
 };
 </script>
 <style scope >
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
 .QuestionContentImg > img {
   height: 120px;
   width: auto;
