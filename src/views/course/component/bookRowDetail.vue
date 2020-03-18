@@ -14,30 +14,28 @@
           <el-input v-model="currentItemData.Label" :disabled="currentItemData.Id>0" />
         </el-tooltip>
       </el-form-item>
-      <el-form-item label="章节数" prop="Topic">
-        <el-input v-model.number="currentItemData.Topic" />
-      </el-form-item>
+
       <el-form-item label="描述">
         <el-input v-model="currentItemData.Description" />
       </el-form-item>
 
-      <el-form-item label="学院">
-        <el-select v-model="collegeIndex" placeholder="请选择学院" @change="collegeChange">
+      <el-form-item label="所属学院">
+        <el-select v-model="currentCollegeID" placeholder="请选择学院" @change="collegeChange">
           <el-option
             v-for="(item,index) in $store.getters.app.collegeWithCourseKind"
             :key="index"
             :label="item.Label"
-            :value="index"
+            :value="item.Id"
           />
         </el-select>
       </el-form-item>
       <el-form-item label="课程类别">
-        <el-select v-model="currentItemData.Coursekind" placeholder="请选择课程分类">
+        <el-select v-model="currentCourseKindID" placeholder="请选择课程分类" @change="courseKindChange">
           <el-option
             v-for="(item,index) in courseKindsOps"
             :key="index"
             :label="item.Label"
-            :value="item.Label"
+            :value="item.Id"
           />
         </el-select>
       </el-form-item>
@@ -79,41 +77,56 @@ export default {
   data() {
     return {
       currenteditEnable: this.editEnable,
-      // 选中的学院的index
-      collegeIndex: 0,
+      // 选中的学院
+      currentCollegeID: {},
+      currentCourseKindID: {},
       //  科目的基本数据
       currentItemData: {},
       courseKindsOps: [],
       // 表单验证
       subjectFormRules: {
-        Label: [{ required: true, message: '名称不能为空', trigger: "blur" }],
-        Topic: [{ required: true, message: '请输入章节数', trigger: "blur" }]
+        Label: [{ required: true, message: "名称不能为空", trigger: "blur" }],
+        Topic: [{ required: true, message: "请输入章节数", trigger: "blur" }]
       }
     };
   },
   watch: {
     formItemData(newvar) {
-      this.currentItemData = this.formItemData;
-        this.collegeChange(0);
+      this.setData();
     }
   },
 
   mounted() {
-    this.currentItemData = this.formItemData;
-    this.collegeChange(0);
+    this.setData();
   },
   methods: {
-    // 选中学院后回调选中课程类别
-    collegeChange(selVa) {
-      this.currentItemData.Coursekind = "";
-      if (this.$store.getters.app.collegeWithCourseKind[selVa].Children) {
-        this.courseKindsOps = [
-          ...this.$store.getters.app.collegeWithCourseKind[selVa].Children
-        ];
-        if (this.courseKindsOps.length > 0) {
-          this.currentItemData.Coursekind = this.courseKindsOps[0].Label;
+    setData() {
+      this.currentItemData = this.formItemData;
+      this.currentCollegeID = this.currentItemData.CollegeID;
+      this.currentCourseKindID = this.currentItemData.CoursekindID;
+      this.$store.getters.app.collegeWithCourseKind.forEach(college => {
+        if (college.Id == this.currentItemData.CollegeID) {
+          this.courseKindsOps = college.Children;
         }
-      }
+      });
+    },
+
+    // 选中学院后回调选中课程类别
+    collegeChange(collegeID) {
+      this.$store.getters.app.collegeWithCourseKind.forEach(college => {
+        if (college.Id == collegeID) {
+          this.currentCourseKindID = 0;
+          this.courseKindsOps = college.Children;
+        }
+      });
+    }, // 课程大类改变
+    courseKindChange(coursekindId) {
+      this.courseKindsOps.forEach(coursekind => {
+        if (coursekind.Id == coursekindId) {
+          this.currentItemData.Coursekind = coursekind.Label;
+          this.currentItemData.CoursekindID = coursekind.Id;
+        }
+      });
     },
     // 保存添加或编辑数据
     saveFormItemData() {
@@ -121,6 +134,8 @@ export default {
       this.$refs.currentForm.validate(async valid => {
         if (valid) {
           let res;
+          this.currentItemData.CollegeID = this.currentCollegeID;
+
           if (this.currentItemData.Id > 0) {
             // 编辑科目
             res = await editBook(
@@ -129,7 +144,7 @@ export default {
               this.currentItemData
             );
             this.isShowPlatformDialog = false;
-            this.formItemData = res.data;
+            this.currentItemData = res.data;
             this.$emit("itemModify", 1, res.data);
             this.$message({
               message: "修改成功",
@@ -139,7 +154,7 @@ export default {
             // 创建科目
             res = await addBook("", "", this.currentItemData);
             this.isShowPlatformDialog = false;
-            this.formItemData = res.data;
+            this.currentItemData = res.data;
             this.$emit("itemModify", 0, res.data);
             this.$message({
               message: "添加成功",
@@ -152,7 +167,7 @@ export default {
             type: "warning"
           });
         }
-        this.currenteditEnable = false; 
+        this.currenteditEnable = false;
       });
     },
     // 获取表单数据

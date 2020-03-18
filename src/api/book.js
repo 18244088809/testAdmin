@@ -83,3 +83,12 @@ export function SetBookInfo(url, param, data) {
     data
   })
 }
+// 获取教材的章节内容content
+export function BookChapter(url, param, data) {
+  return request({
+    url: '/book/bookChapter/' + url,
+    method: 'get',
+    params: param,
+    data
+  })
+}

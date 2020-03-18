@@ -44,7 +44,6 @@
             >{{ scope.row.Label }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="Topic" label="章节数" width="60" />
         <el-table-column
           prop="Coursekind"
           label="所属课程类别"
@@ -85,7 +84,7 @@
           <bookRowDetail @itemModify="updateListItem" :formItemData="customFormData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs  v-model="activeName">
+          <el-tabs v-model="activeName">
             <el-tab-pane id="xgxz" label="相关下载" name="xgxz">
               <bookDownFile :formItemData="customFormData" @subClickEvent="updateListItem" />
             </el-tab-pane>
@@ -101,6 +100,7 @@
           @itemModify="updateListItem"
           :editEnable="true"
           :formItemData="customFormData"
+          class="pad25"
         />
       </el-dialog>
     </div>
@@ -133,7 +133,7 @@ export default {
       searchBookCourseKind: "",
       // 查询内容
       searchContent: "",
-      activeName:"xgxz",
+      activeName: "xgxz",
       // 科目的列表数据
       subjectList: [],
       // 更多操作弹窗
@@ -180,7 +180,7 @@ export default {
     // 打开更多操作弹出框
     openMoreOptationDialog(index, row) {
       this.currentSubjectIndex = index;
-      this.customFormData = row;
+      this.customFormData = {...row}; 
       this.moreOperationDialog = true;
       // this.$refs.refSubjectDetail.getSubjectRow(row);
     },

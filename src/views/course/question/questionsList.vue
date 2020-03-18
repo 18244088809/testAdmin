@@ -5,13 +5,42 @@
         <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="第">
-            <el-input-number v-model="currentItemData.Zhang"  controls-position="right"  :min="0" :max="1000" label="输入章"></el-input-number>章
+            <!-- <el-input-number
+              v-model="currentItemData.Zhang"
+              controls-position="right"
+              :min="0"
+              :max="1000"
+              label="输入章"
+            ></el-input-number>章 --> 
+<el-dropdown>
+  <span class="el-dropdown-link">
+    下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
+  </span>
+  <el-dropdown-menu slot="dropdown">
+    <el-dropdown-item v-for="item in zhangOfBook" :key="item.Id" >{{item.Label}}</el-dropdown-item>
+    
+  </el-dropdown-menu>
+</el-dropdown>
+
+ 
           </el-form-item>
           <el-form-item label="第">
-            <el-input-number v-model="currentItemData.Jie"  controls-position="right"  :min="0" :max="1000" label="输入节"></el-input-number>节
+            <el-input-number
+              v-model="currentItemData.Jie"
+              controls-position="right"
+              :min="0"
+              :max="1000"
+              label="输入节"
+            ></el-input-number>节
           </el-form-item>
           <el-form-item label="第">
-            <el-input-number v-model="currentItemData.TopicNo"  controls-position="right"  :min="0" :max="1000" label="输入点"></el-input-number>知识点
+            <el-input-number
+              v-model="currentItemData.TopicNo"
+              controls-position="right"
+              :min="0"
+              :max="1000"
+              label="输入点"
+            ></el-input-number>知识点
           </el-form-item>
           <el-form-item label="题干">
             <el-input
@@ -96,6 +125,7 @@
 import myDialog from "@/components/myDialog/myDialog";
 import questionRowDialog from "@/views/course/question/component/questionRowDialog";
 import $ImgHttp from "@/api/ImgAPI";
+import { getBookVideo } from "@/api/book";
 import { getQuestionOfBook } from "@/api/question";
 import common from "@/utils/common";
 export default {
@@ -131,6 +161,10 @@ export default {
       currentQuestionIndex: null,
       // 科目的试题列表
       questionsListOfBook: [],
+      zhangOfBook: [],
+      jieOfBook: [],
+      topicOfBook: [],
+      
       // 图片地址
       ImgAddr: "",
       currentPlatform: {},
@@ -153,6 +187,11 @@ export default {
         ]
       }
     };
+  },
+  mounted() {
+    this.currentItemData.BookId = parseInt(this.$route.query.Id);
+    this.bookChapter();
+    this.getQuesListOfBookZhangJie();
   },
   methods: {
     // 复制文本
@@ -179,9 +218,14 @@ export default {
         this.isbusy = false;
       }
     },
+
+    async bookChapter() {
+      let res = await getBookVideo(this.currentItemData.BookId, "");
+      this.zhangOfBook = res.data ? res.data : {};
+    },
     // 获取科目相关的试题列表
     async getQuesListOfBookZhangJie() {
-      let offsetRow = (this.nowPage - 1) * this.rows;
+      let offsetRow = (this.nowPage - 1) * this.rows; 
       let res = await getQuestionOfBook("", {
         bookid: this.currentItemData.BookId,
         question_content: this.currentItemData.QuestionContent,
@@ -242,11 +286,6 @@ export default {
       this.nowPage = val;
       this.getQuesListOfBookZhangJie();
     }
-  },
-  mounted() {
-    this.currentItemData.BookId = parseInt(this.$route.query.Id);
-    // this.questionTypes();
-    this.getQuesListOfBookZhangJie();
   }
 };
 </script>
