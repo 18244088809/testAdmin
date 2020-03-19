@@ -134,12 +134,11 @@ export default {
     addQuestion(row, isZhang) {
       this.addQuestionDialog = true;
       this.newQuestionItem.BookId = this.subjectId;
-      this.newQuestionItem.Book = row;
-      console.log(row);
+      this.newQuestionItem.Book = row; 
       this.newQuestionItem = {
-        Zhang: row.Zhang,
-        Jie: row.Jie,
-        TopicNo: row.TopicNo,
+        ZhangId: row.Zhang,
+        JieId: row.Jie,
+        TopicId: row.TopicNo,
         QuestionType: 1,
         QuestionScore: 1
       };

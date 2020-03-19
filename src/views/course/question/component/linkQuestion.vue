@@ -1,35 +1,53 @@
 <template>
-  <div class="font16 hgt_full marg20">
+  <div class="font16 hgt_full m_both20 m-t-20">
+    <!-- <span class="m-b-10">试题出处:{{subjectLabel}}</span> -->
+    <el-form :inline="true" class="demo-form-inline">
+      <el-form-item label="试题出处:章">
+        <el-input-number
+          v-model="searchQuestionZhang"
+          controls-position="right"
+          :min="0"
+          :max="1000"
+          label="输入章"
+        ></el-input-number>
+      </el-form-item>
+      <el-form-item label="节">
+        <el-input-number
+          v-model="searchQuestionJie"
+          controls-position="right"
+          :min="0"
+          :max="1000"
+          label="输入节"
+        ></el-input-number>
+      </el-form-item>
+      <el-form-item label="知识点">
+        <el-input-number
+          v-model="searchQuestionTopic"
+          controls-position="right"
+          :min="0"
+          :max="1000"
+          label="输入知识点"
+        ></el-input-number>
+      </el-form-item>
+      <el-form-item label="题干">
+        <el-input
+          class="wid250"
+          v-model="searchQuestionContent"
+          placeholder="输入题干查找"
+          @keyup.native.enter="getQuesListOfBookZhangJie"
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="getQuesListOfBookZhangJie">查询</el-button>
+      </el-form-item>
+    </el-form>
     <div class="flex_column hgt_full">
-      <div class="between-center">
-        <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
-        <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label="章">
-            <el-input-number v-model="searchQuestionZhang"  controls-position="right" :min="0" :max="1000" label="输入章"></el-input-number>
-          </el-form-item>
-          <el-form-item label="节">
-            <el-input-number v-model="searchQuestionJie"  controls-position="right" :min="0" :max="1000" label="输入节"></el-input-number>
-          </el-form-item>
-          <el-form-item label="题干">
-            <el-input
-              class="wid250"
-              v-model="searchQuestionContent"
-              placeholder="输入题干查找"
-              @keyup.native.enter="getQuesListOfBookZhangJie"
-            ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="getQuesListOfBookZhangJie">查询</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-
       <el-table
         :data="questionsListOfBook"
         border
         tooltip-effect="light"
         style="width: 100%"
-        height="100%"
+        :height="tableHeight"
         ref="refElTabel"
         @selection-change="handleSelectionChange"
       >
@@ -59,7 +77,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="between-center m-v-15">
+    </div>
+      <div class="between-center  m-t-20">
         <el-button type="primary" @click="linkQuestion">确认关联</el-button>
         <div>
           <el-pagination
@@ -72,7 +91,6 @@
           ></el-pagination>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -104,6 +122,7 @@ export default {
       // 查询-搜索
       searchQuestionZhang: 1, //搜索章
       searchQuestionJie: 1, //搜索节
+      searchQuestionTopic: 1, //搜索知识点
       //搜索有没有相同的题干了.
       searchQuestionContent: "",
       // 模态框获得的单条数据
@@ -112,7 +131,8 @@ export default {
       subjectLabel: "",
       // 科目的试题列表
       questionsListOfBook: [],
-      multipleSelection: []
+      multipleSelection: [],
+      tableHeight:window.innerHeight - 200,
     };
   },
   watch: {
@@ -122,6 +142,7 @@ export default {
   },
   mounted() {
     this.currentItemData = this.BookChapter;
+    
   },
   methods: {
     handleSelectionChange(val) {
@@ -150,6 +171,7 @@ export default {
         question_content: this.searchQuestionContent,
         zhang: this.searchQuestionZhang,
         jie: this.searchQuestionJie,
+        topic: this.searchQuestionTopic,
         limit: this.rows,
         offset: offsetRow
       });

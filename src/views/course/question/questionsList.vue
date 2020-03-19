@@ -3,8 +3,8 @@
     <div class="flex_column hgt_full">
       <div class="between-center">
         <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
-        <el-form :inline="true" class="demo-form-inline  ">
-          <el-form-item label="">
+        <el-form :inline="true" class="demo-form-inline">
+          <el-form-item label>
             <el-dropdown @command="selectZhang">
               <span class="el-dropdown-link">
                 {{zhangItem.SN+"("+zhangItem.Label+")"}}
@@ -14,17 +14,15 @@
               </span>
 
               <el-dropdown-menu slot="dropdown">
-                 <el-dropdown-item  
-                  :command="{Label:'全部章',SN:'',Value:0}"
-                >全部章</el-dropdown-item>
+                <el-dropdown-item :command="{Label:'全部章',SN:'',Value:0}">全部章</el-dropdown-item>
                 <el-dropdown-item
                   v-for="item in zhangOfBook"
                   :key="item.Id"
                   :command="item"
-                > {{item.SN+"("+item.Label+")"}}</el-dropdown-item>
+                >{{item.SN+"("+item.Label+")"}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-        
+
             <el-dropdown @command="selectJie">
               <span class="el-dropdown-link">
                 {{jieItem.SN+"("+jieItem.Label+")"}}
@@ -32,9 +30,7 @@
               </span>
 
               <el-dropdown-menu slot="dropdown">
-                 <el-dropdown-item  
-                  :command="{Label:'全部节',SN:'',Value:0}"
-                >全部节</el-dropdown-item>
+                <el-dropdown-item :command="{Label:'全部节',SN:'',Value:0}">全部节</el-dropdown-item>
                 <el-dropdown-item
                   v-for="item in jieOfBook"
                   :key="item.Id"
@@ -42,7 +38,7 @@
                 >{{item.SN+"("+item.Label+")"}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
- 
+
             <el-dropdown @command="selectTopic">
               <span class="el-dropdown-link">
                 {{topicItem.SN+"("+topicItem.Label+")"}}
@@ -51,9 +47,7 @@
                 ></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                 <el-dropdown-item  
-                   :command="{Label:'全部知识点',SN:'',Value:0}"
-                >全部知识点</el-dropdown-item>
+                <el-dropdown-item :command="{Label:'全部知识点',SN:'',Value:0}">全部知识点</el-dropdown-item>
                 <el-dropdown-item
                   v-for="item in topicOfBook"
                   :key="item.Id"
@@ -61,31 +55,11 @@
                 >{{item.SN+"("+item.Label+")"}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <!-- 
- 
-          </el-form-item>
-          <el-form-item label="第">
-            <el-input-number
-              v-model="currentItemData.Jie"
-              controls-position="right"
-              :min="0"
-              :max="1000"
-              label="输入节"
-            ></el-input-number>节
-          </el-form-item>
-          <el-form-item label="第">
-            <el-input-number
-              v-model="currentItemData.TopicNo"
-              controls-position="right"
-              :min="0"
-              :max="1000"
-              label="输入点"
-            ></el-input-number>知识点-->
           </el-form-item>
           <el-form-item label="题干">
             <el-input
               class="wid150"
-              v-model="currentItemData.QuestionContent"
+              v-model="searchQuestionContent"
               placeholder="输入题干内容查重"
               @keyup.native.enter="getQuesListOfBookZhangJie"
             ></el-input>
@@ -107,7 +81,11 @@
         <el-table-column prop="Id" label="ID" width="60"></el-table-column>
         <el-table-column prop="QuestionContent" label="题干" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <div v-html="scope.row.QuestionContent" class="QuestionContentImg"></div>
+            <div
+              class="color-1f85aa font-w6 cursor"
+              v-html="scope.row.QuestionContent"
+              @click="openEditQuestionDialog(scope.$index, scope.row)"
+            ></div>
           </template>
         </el-table-column>
         <el-table-column prop="QuestionType" label="类型" width="95">
@@ -116,7 +94,10 @@
           </template>
         </el-table-column>
         <el-table-column prop="ManagerLabel" label="发布人" width="100"></el-table-column>
-        <el-table-column prop="QuestionScore" width="50" label="得分"></el-table-column>
+        <el-table-column prop="ZhangId" width="50" label="章"></el-table-column>
+        <el-table-column prop="JieId" width="50" label="节"></el-table-column>
+        <el-table-column prop="TopicId" width="80" label="知识点"></el-table-column>
+        <el-table-column prop="QuestionScore" width="50" label="分值"></el-table-column>
         <el-table-column prop="State" label="状态" width="70">
           <template slot-scope="scope">
             <el-tag v-show="scope.row.State==1">上架</el-tag>
@@ -126,11 +107,6 @@
         <el-table-column prop="State" label="错误/全部" width="90">
           <template slot-scope="scope">
             <span>{{scope.row.WrongNum}}/{{scope.row.AnswerNum}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="80">
-          <template slot-scope="scope">
-            <el-button type="primary" @click="openEditQuestionDialog(scope.$index, scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -299,7 +275,7 @@ export default {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getQuestionOfBook("", {
         bookid: this.currentItemData.BookId,
-        question_content: this.currentItemData.QuestionContent,
+        question_content: this.searchQuestionContent,
         zhang: this.zhangItem.Value,
         jie: this.jieItem.Value,
         topic: this.topicItem.Value,
@@ -330,8 +306,8 @@ export default {
     //  打开试题的模态框-编辑
     openEditQuestionDialog(index, row) {
       this.currentQuestionIndex = index;
+      this.currentItemData = {...row};
       this.moreOperationDialog = true;
-      this.currentItemData = row;
     },
     // 更新数据列表
     updateQuestionList(type, row) {

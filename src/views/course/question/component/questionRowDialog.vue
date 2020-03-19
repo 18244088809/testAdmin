@@ -8,7 +8,7 @@
     >
       <div class="between-center">
         <el-form-item label="隶属于" class="flex_1">
-          <span>第{{currentItemData.Zhang}} 章 - 第{{currentItemData.Jie}} 节 - 第{{currentItemData.TopicNo}} 知识点</span>
+          <span>第{{currentItemData.ZhangId}} 章 - 第{{currentItemData.JieId}} 节 - 第{{currentItemData.TopicId}} 知识点</span>
         </el-form-item>
 
         <el-form-item label="题型" class="flex_1" style="width:300px">
