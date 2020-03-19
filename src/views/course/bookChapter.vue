@@ -24,7 +24,7 @@
           </vxe-table-column>
           <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
           <vxe-table-column field="Video" title="视频地址" :edit-render="{name: 'input'}" />
-          <vxe-table-column field="Description" title="视频包含习题数量" />
+          <vxe-table-column field="Description" width="120" title="包含习题数量" />
           <vxe-table-column field="Taste" title="允许试读" width="80">
             <template v-slot="{ row}">
               <select v-model="row.Taste" class="quanke">
@@ -134,7 +134,7 @@ export default {
     addQuestion(row, isZhang) {
       this.addQuestionDialog = true;
       this.newQuestionItem.BookId = this.subjectId;
-      this.newQuestionItem.Book = row; 
+      this.newQuestionItem.Book = row;
       this.newQuestionItem = {
         ZhangId: row.Zhang,
         JieId: row.Jie,
@@ -251,10 +251,12 @@ export default {
           const res = await deleBookVideo({
             idlist: ids.toString()
           });
-          if (res.code == 200) {
+         
             that.getBookChapter();
-            that.common.go_alert("删除成功 !");
-          }
+            this.$message({
+              message: "操作成功",
+              type: "success"
+            }); 
         })
         .catch(() => {});
     },
@@ -285,9 +287,10 @@ export default {
               "",
               that.chaperListOfBook
             );
-            if (res.data == 200) {
-              that.common.go_alert("保存成功 !");
-            }
+            this.$message({
+              message: "操作成功",
+              type: "success"
+            });
           }
         })
         .catch(() => {});

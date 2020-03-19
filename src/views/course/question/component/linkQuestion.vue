@@ -1,8 +1,8 @@
 <template>
-  <div class="font16 hgt_full m_both20 m-t-20">
+  <div class="font16 hgt_full m-l-10 m-t-20">
     <!-- <span class="m-b-10">试题出处:{{subjectLabel}}</span> -->
     <el-form :inline="true" class="demo-form-inline">
-      <el-form-item label="试题出处:章">
+      <el-form-item label="章">
         <el-input-number
           v-model="searchQuestionZhang"
           controls-position="right"
@@ -78,19 +78,19 @@
         </el-table-column>
       </el-table>
     </div>
-      <div class="between-center  m-t-20">
-        <el-button type="primary" @click="linkQuestion">确认关联</el-button>
-        <div>
-          <el-pagination
-            background
-            @current-change=" currentPageChange"
-            :current-page.sync="nowPage"
-            :page-size="rows"
-            layout="total,prev, pager, next, jumper"
-            :total="allRows"
-          ></el-pagination>
-        </div>
+    <div class="between-center m-t-20">
+      <el-button type="primary" @click="linkQuestion">确认关联</el-button>
+      <div>
+        <el-pagination
+          background
+          @current-change=" currentPageChange"
+          :current-page.sync="nowPage"
+          :page-size="rows"
+          layout="total,prev, pager, next, jumper"
+          :total="allRows"
+        ></el-pagination>
       </div>
+    </div>
   </div>
 </template>
 
@@ -132,7 +132,7 @@ export default {
       // 科目的试题列表
       questionsListOfBook: [],
       multipleSelection: [],
-      tableHeight:window.innerHeight - 200,
+      tableHeight: window.innerHeight - 200
     };
   },
   watch: {
@@ -142,7 +142,6 @@ export default {
   },
   mounted() {
     this.currentItemData = this.BookChapter;
-    
   },
   methods: {
     handleSelectionChange(val) {
@@ -156,6 +155,10 @@ export default {
       this.BookChapter.Book.Children = questionIDS;
       this.BookChapter.Book.Description = questionIDS.length;
       this.$emit("linkedQuestion");
+      this.$message({
+        message: "操作成功",
+        type: "success"
+      });
     },
 
     // 分页获取数据
@@ -176,6 +179,16 @@ export default {
         offset: offsetRow
       });
       this.questionsListOfBook = res.data ? res.data : [];
+      this.$nextTick(() => {
+        this.questionsListOfBook.forEach(question => {
+          this.BookChapter.Book.Children.forEach(selectItem => {
+            if (question.Id == selectItem) {
+              this.$refs.refElTabel.toggleRowSelection(question, true);
+            }
+          });
+        });
+      });
+
       this.allRows = res.title;
     }
   }
