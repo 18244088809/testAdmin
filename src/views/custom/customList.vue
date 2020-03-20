@@ -32,12 +32,7 @@
           <div class="between-center flex_wrap">
             <div class="flex_1">
               <el-form-item label="客户类型">
-                <el-select
-                  v-model="searchTypeVal"
-                  class="wid110"
-                  placeholder="请选择类型"
-                  
-                >
+                <el-select v-model="searchTypeVal" class="wid110" placeholder="请选择类型">
                   <el-option
                     v-for="(item,index) in common.IntentionalCustomerType"
                     :key="index"
@@ -168,7 +163,7 @@
               <span class="color-1f85aa font-w6 cursor">{{ scope.row.ManagerLabel }}</span>
             </el-tooltip>
           </template>
-        </el-table-column> 
+        </el-table-column>
         <el-table-column prop="Kind" width="75" label="意向情况">
           <template slot-scope="scope">
             <span>{{ common.FormatSelect(common.IntentionalCustomerType,scope.row.Kind) }}</span>
@@ -659,7 +654,7 @@ export default {
     },
     // 更新客户列表数据-转移客户之后
     updateCustomList(rowsDatas) {
-       this.getCustomList();
+      this.getCustomList();
     },
     // 更新客户列表数据
     updateCustomInfoList(type, rowData) {
@@ -679,7 +674,7 @@ export default {
       } else if (type == 1) {
         this.$set(this.customTableDataList, this.currentCustomIndex, rowData);
       }
-       this.editDialog = false;
+      this.editDialog = false;
     },
     // 添加跟进记录后更新用户列表的最新跟进记录
     updateCustomRecentTrack(RecentTrack) {

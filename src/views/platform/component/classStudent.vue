@@ -63,7 +63,7 @@
         <el-button type="primary" @click="searchStudent" class="border0">查 询</el-button>
       </el-form-item>
     </el-form>
-    <div class="m-t-20" v-show="showSrarchStuResult">
+    <div class="m-t-20" v-show="showSearchStuResult">
       <p>备选学员：</p>
       <hr />
       <div class="m-t-20 center flex_wrap m-l-15">
@@ -192,7 +192,7 @@ export default {
       // 是否显示添加学员模块
       ShowSearchForm: false,
       // 是否显示搜索学员的搜索结果模块
-      showSrarchStuResult: false,
+      showSearchStuResult: false,
       // 获取班级的所有学员
       classAllStuList: [],
       // 复选框所选中的学员ID
@@ -207,7 +207,7 @@ export default {
     async getClassAllStuList() {
       this.serachStuList = [];
       this.ShowSearchForm = false;
-      this.showSrarchStuResult = false;
+      this.showSearchStuResult = false;
       let res = await getClassStu(this.formItemData.Id);
       this.classAllStuList = res.data ? res.data : [];
     },
@@ -230,18 +230,27 @@ export default {
         endDate: endDate,
         [this.seaechConditionVal]: this.searchContentVal
       });
-
-      if (res.code == 200) {
-        if (res.data) {
-          this.serachStuList = res.data;
-          this.showSrarchStuResult = true;
-        } else {
-          this.serachStuList = [];
-          this.$message({
-            message: "没有找到该学员",
-            type: "warning"
+      this.checkBoxAddStu = [];
+      if (res.data) {
+        this.serachStuList = res.data;
+        //将搜索出来的结果中，选中那些已经是本班学员的打钩
+        this.$nextTick(() => {
+          this.serachStuList.forEach(searchItem => {
+            this.classAllStuList.forEach(selectItem => {
+              if (searchItem.id == selectItem.id) {
+                this.checkBoxAddStu.push(searchItem.id);
+              }
+            });
           });
-        }
+        });
+
+        this.showSearchStuResult = true;
+      } else {
+        this.serachStuList = [];
+        this.$message({
+          message: "没有找到学员",
+          type: "warning"
+        });
       }
     },
     // 向班级添加学员
@@ -254,6 +263,7 @@ export default {
         return;
       }
       let newStu = [...this.checkBoxAddStu];
+      console.log("this.checkBoxAddStu:", this.checkBoxAddStu);
       if (this.classAllStuList.length > 0) {
         this.classAllStuList.forEach(stuItem => {
           let index = newStu.indexOf(stuItem.ID);
@@ -281,7 +291,7 @@ export default {
       this.serachStuList = [];
       this.stuSearchForm.searchPhone = "";
       this.ShowSearchForm = false;
-      this.showSrarchStuResult = false;
+      this.showSearchStuResult = false;
       this.classAllStuList = [];
       if (res.data && res.data.length > 0) {
         this.classAllStuList = res.data;
@@ -311,11 +321,15 @@ export default {
           type: "warning"
         });
       } else {
-        this.$confirm("删除后 此学生在本班级的作业也会被删除，你确定吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(async () => {
+        this.$confirm(
+          "删除后 此学生在本班级的作业也会被删除，你确定吗?",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        ).then(async () => {
           let res = await removeClassStudent(
             this.formItemData.Id,
             "",

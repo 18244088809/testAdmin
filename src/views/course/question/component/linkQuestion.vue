@@ -118,7 +118,7 @@ export default {
       // 当前页数
       nowPage: 1,
       // 每页数据的总条
-      rows: 30,
+      rows: 50,
       // 查询-搜索
       searchQuestionZhang: 1, //搜索章
       searchQuestionJie: 1, //搜索节

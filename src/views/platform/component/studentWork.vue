@@ -12,14 +12,17 @@
                 :content="'Tel:'+scope.row.Telephone"
                 placement="top"
               >
-                <span class="color-1f85aa font-w6 cursor">{{ scope.row.Realname }}</span>
+                <span
+                  class="color-1f85aa font-w6 cursor"
+                  @click="onClickStudent(scope.row)"
+                >{{ scope.row.Realname }}</span>
               </el-tooltip>
             </template>
           </el-table-column>
           <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
         </el-table>
       </div>
-      <div style="width:5px;height:100%;  background:#e0e3ea; "></div>
+      <div style="width:35px;height:100%;  background:#e0e3ea; "></div>
       <div style="width:90%;">
         <!-- <el-table :data="classAllStuList">
           <el-table-column prop="id" label="作业号" width="60"></el-table-column>
@@ -36,25 +39,8 @@
             </template>
           </el-table-column>
           <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
-        </el-table> -->
+        </el-table>-->
       </div>
-    </div>
-    <div class="around-center hgt60 bge0e3ea">
-      <el-button
-        type="warning"
-        :disabled="false"
-        v-show="!currenteditEnable"
-        class="m-l-40"
-        @click="currenteditEnable=true"
-      >编辑</el-button>
-      <el-button
-        type="primary"
-        :disabled="false"
-        v-show="currenteditEnable"
-        class="m-l-40"
-        @click="saveFormItemData"
-      >确 认</el-button>
-      <el-button v-show="currenteditEnable" @click="currenteditEnable=false">取 消</el-button>
     </div>
   </div>
 </template>
@@ -113,25 +99,27 @@ export default {
       // 表单验证
       ClassFormRules: {
         Label: [
-          { required: true, message: '班级名称不能为空', trigger: "blur" }
+          { required: true, message: "班级名称不能为空", trigger: "blur" }
         ]
       }
     };
   },
   watch: {
     formItemData(newvar) {
-      this.currentItemData = this.formItemData;
-      console.log(" this.currenteditEnable :", this.currenteditEnable);
-      this.getClassAllStuList();
+      this.setData();
     }
   },
   mounted() {
-    // if (isDate(this.searchGrade)) {
-    //   this.currentItemData.Grade = this.searchGrade.getFullYear();
-    // }
-    // this.currentItemData = this.formItemData;
+    this.setData();
   },
   methods: {
+    setData() {
+      this.currentItemData = this.formItemData;
+      this.getClassAllStuList();
+    },
+    onClickStudent(clickStudent) {
+      console.log("--------", clickStudent);
+    },
     // 获取班级的所有学员
     async getClassAllStuList() {
       this.serachStuList = [];
