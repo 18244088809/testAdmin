@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 获取课程列表-查询课程名称获取
 export function getCourseList(url, param, data) {
   return request({
-    url: '/course' + url,
+    url: '/course/list' + url,
     method: 'get',
     params: param,
     data
@@ -33,7 +33,7 @@ export function setCourseUpperShelf(url, param, data) {
 
 export function addCourse(url, param, data) {
   return request({
-    url: '/course' + url,
+    url: '/course/add' + url,
     method: 'post',
     params: param,
     data
@@ -42,7 +42,7 @@ export function addCourse(url, param, data) {
 // 编辑课程
 export function editCourse(url, param, data) {
   return request({
-    url: '/course/' + url,
+    url: '/course/update' + url,
     method: 'put',
     params: param,
     data
@@ -99,7 +99,7 @@ export function saveCoursePriceList(url, param, data) {
 
 export function addCourseKind(url, param, data) {
   return request({
-    url: '/course_kind/' + url,
+    url: '/course_kind/add' + url,
     method: 'post',
     params: param,
     data
@@ -108,7 +108,7 @@ export function addCourseKind(url, param, data) {
 // 编辑课程
 export function editCourseKind(url, param, data) {
   return request({
-    url: '/course_kind/' + url,
+    url: '/course_kind/update' + url,
     method: 'put',
     params: param,
     data
@@ -127,7 +127,7 @@ export function getAllCourseKind(url, param, data) {
 // 删除课程类别
 export function deleteCourseKind(url, param, data) {
   return request({
-    url: '/course_kind/' + url,
+    url: '/course_kind/delete' + url,
     method: 'delete',
     params: param,
     data

@@ -57,7 +57,7 @@ export function uploadFace(url, param, data) {
 // -----------------------------
 export function getManagerList(url, param, data) {
   return request({
-    url: '/manager' + url,
+    url: '/manager/list' + url,
     method: 'get',
     params: param,
     data
@@ -73,7 +73,7 @@ export function getLoginPhoneCode(url, param, data) {
 }
 export function editManager(url, param, data) {
   return request({
-    url: '/manager/' + url,
+    url: '/manager/update/' + url,
     method: 'put',
     params: param,
     data
@@ -81,7 +81,7 @@ export function editManager(url, param, data) {
 }
 export function addManager(url, param, data) {
   return request({
-    url: '/manager' + url,
+    url: '/manager/add' + url,
     method: 'post',
     params: param,
     data

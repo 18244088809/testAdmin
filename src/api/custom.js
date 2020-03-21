@@ -98,7 +98,7 @@ export function deleteBuyCourse(url, query, data) {
 // 获取客户信息列表
 export function getCustomInfoList(url, query, data) {
   return request({
-    url: '/student' + url,
+    url: '/student/list' + url,
     method: 'get',
     params: query,
     data
@@ -107,7 +107,7 @@ export function getCustomInfoList(url, query, data) {
 // 添加客户信息
 export function addCustomInfo(url, query, data) {
   return request({
-    url: '/student' + url,
+    url: '/student/add' + url,
     method: 'post',
     params: query,
     data

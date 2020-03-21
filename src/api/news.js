@@ -29,7 +29,7 @@ export function GetPlatformNews(url, param, data) {
 // 删除单条新闻数据
 export function deleNewsRow(url, param, data) {
   return request({
-    url: '/news/'+url,
+    url: '/news/delete/'+url,
     method: 'delete',
     params: param,
     data
@@ -47,7 +47,7 @@ export function editNewsRow(url, param, data) {
 // 添加单条新闻数据
 export function addNewsRow(url, param, data) {
   return request({
-    url: '/news'+url,
+    url: '/news/add'+url,
     method: 'post',
     params: param,
     data

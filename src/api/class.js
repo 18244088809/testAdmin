@@ -2,7 +2,7 @@ import request from '@/utils/request'
 // 获取所有班级
 export function getAllClass(url, param, data) {
   return request({
-    url: '/class'+url,
+    url: '/class/list'+url,
     method: 'get',
     params: param,
     data
@@ -11,7 +11,7 @@ export function getAllClass(url, param, data) {
 // 编辑班级的基本信息
 export function editClassInfo(url, param, data) {
   return request({
-    url: '/class/'+url,
+    url: '/class/update/'+url,
     method: 'put',
     params: param,
     data
@@ -20,7 +20,7 @@ export function editClassInfo(url, param, data) {
 // 添加班级的基本信息
 export function addClassInfo(url, param, data) {
   return request({
-    url: '/class'+url,
+    url: '/class/add'+url,
     method: 'post',
     params: param,
     data
@@ -29,7 +29,7 @@ export function addClassInfo(url, param, data) {
 // 获取某个班级的所有学员
 export function getOneClass(url, param, data) {
   return request({
-    url: '/class/'+url,
+    url: '/class/getone'+url,
     method: 'get',
     params: param,
     data

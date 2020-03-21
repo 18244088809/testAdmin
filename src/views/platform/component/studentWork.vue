@@ -1,7 +1,7 @@
 <template>
   <div class="flex_column pd0 marg0">
     <div style="display: flex;  flex-direction:row">
-      <div style="width:300px;">
+      <div style="width:300px;  background:#e0e3ea;">
         <el-table :data="classAllStuList" tooltip-effect="light">
           <el-table-column prop="id" label="学号" width="60"></el-table-column>
           <el-table-column prop="Realname" label="姓名">

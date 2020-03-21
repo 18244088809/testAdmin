@@ -2,7 +2,7 @@ import request from '@/utils/request'
 // 获取指定大类的科目列表
 export function queryBookList(url, param, data) {
   return request({
-    url: '/book' + url,
+    url: '/book/list' + url,
     method: 'get',
     params: param,
     data
@@ -12,7 +12,7 @@ export function queryBookList(url, param, data) {
 // 添加大类的科目数据
 export function addBook(url, param, data) {
   return request({
-    url: '/book' + url,
+    url: '/book/add' + url,
     method: 'post',
     params: param,
     data
@@ -22,7 +22,7 @@ export function addBook(url, param, data) {
 // 编辑大类的科目数据
 export function editBook(url, param, data) {
   return request({
-    url: '/book/' + url,
+    url: '/book/update' + url,
     method: 'put',
     params: param,
     data
@@ -31,7 +31,7 @@ export function editBook(url, param, data) {
 // 获取书章节知识点的视频
 export function getBookVideo(url, param, data) {
   return request({
-    url: '/book/' + url,
+    url: '/book/getone' + url,
     method: 'get',
     params: param,
     data
@@ -49,7 +49,7 @@ export function editBookVideo(url, param, data) {
 // 编辑书章节知识点的视频
 export function addBookVideo(url, param, data) {
   return request({
-    url: '/book/' + url,
+    url: '/book/add' + url,
     method: 'post',
     params: param,
     data

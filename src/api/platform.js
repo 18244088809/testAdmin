@@ -2,7 +2,7 @@ import request from '@/utils/request'
 // 获取列表
 export function queryPlatform(url, query, data) {
   return request({
-    url: '/platform/' + url,
+    url: '/platform/list' + url,
     method: 'get',
     params: query,
     data
