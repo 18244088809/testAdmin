@@ -42,7 +42,7 @@ export function addCourse(url, param, data) {
 // 编辑课程
 export function editCourse(url, param, data) {
   return request({
-    url: '/course/update' + url,
+    url: '/course/update/' + url,
     method: 'put',
     params: param,
     data

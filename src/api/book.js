@@ -22,7 +22,7 @@ export function addBook(url, param, data) {
 // 编辑大类的科目数据
 export function editBook(url, param, data) {
   return request({
-    url: '/book/update' + url,
+    url: '/book/update/' + url,
     method: 'put',
     params: param,
     data
@@ -31,7 +31,7 @@ export function editBook(url, param, data) {
 // 获取书章节知识点的视频
 export function getBookVideo(url, param, data) {
   return request({
-    url: '/book/getone' + url,
+    url: '/book/getone/' + url,
     method: 'get',
     params: param,
     data

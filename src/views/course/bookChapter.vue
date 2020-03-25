@@ -4,7 +4,8 @@
     <div class="flex_column hgt_full">
       <div class="between-center m-b-15">
         <div>
-          <span class="m-b-10">当前科目名称：{{ subjectLabel }}</span>
+          <span class="m-b-10">当前科目名称：{{ bookLabel }}</span>
+          <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的教授者</span>
         </div>
       </div>
       <div class="flex_1">
@@ -53,10 +54,11 @@
           </vxe-table-column>
         </vxe-table>
       </div>
-      <div class="between-center m-v-15">
-        <el-button type="primary" class="m-r-10" @click="addChapter">新增章</el-button>
+      <div class="between-center m-v-15"  >
+
+        <el-button type="primary"    class="m-r-10" @click="addChapter">新增章</el-button>
         <!-- <el-button type="danger" @click="deleteSelectItems">批量删除</el-button> -->
-        <el-button class="m-r-20" type="success" @click="createSubjectChapter">保存</el-button>
+        <el-button class="m-r-20"  v-show="editEnable"  type="success" @click="createSubjectChapter">保存</el-button>
       </div>
     </div>
 
@@ -87,6 +89,7 @@ import {
 import myDialog from "@/components/myDialog/myDialog";
 import questionRowDialog from "@/views/course/question/component/questionRowDialog";
 import linkQuestion from "@/views/course/question/component/linkQuestion";
+import { string } from "jszip/lib/support";
 export default {
   name: "bookChapter",
   components: {
@@ -97,12 +100,13 @@ export default {
   data() {
     return {
       // 书名称
-      subjectLabel: "",
+      bookLabel: "",
       // 书的Id
-      subjectId: "",
+      bookID: "",
       // 更多操作弹窗
       addQuestionDialog: false,
       linkQuestionDialog: false,
+      editEnable: false,
       newQuestionItem: {},
       // 书的章节列表
       chaperListOfBook: [],
@@ -113,7 +117,7 @@ export default {
     };
   },
   mounted() {
-    this.subjectId = this.$router.currentRoute.query.Id;
+    this.bookID = this.$router.currentRoute.query.Id;
     this.getBookChapter();
   },
   methods: {
@@ -123,17 +127,17 @@ export default {
     },
     //关联试题
     linkQuestion(row, isZhang) {
-      this.newQuestionItem.BookId = this.subjectId;
+      this.newQuestionItem.BookId = this.bookID;
       this.newQuestionItem.Book = row;
       this.linkQuestionDialog = true;
     },
     linkedQuestion() {
-      createBookStructure(this.subjectId, "", this.chaperListOfBook);
+      createBookStructure(this.bookID, "", this.chaperListOfBook);
     },
     //直接添加试题
     addQuestion(row, isZhang) {
       this.addQuestionDialog = true;
-      this.newQuestionItem.BookId = this.subjectId;
+      this.newQuestionItem.BookId = this.bookID;
       this.newQuestionItem.Book = row;
       this.newQuestionItem = {
         ZhangId: row.Zhang,
@@ -188,7 +192,7 @@ export default {
                   newRow.Video = "";
                 }
                 newRow.Id =
-                  this.subjectId +
+                  this.bookID +
                   "-" +
                   newRow.Zhang +
                   "-" +
@@ -228,7 +232,7 @@ export default {
         SN: 0
       };
       newItem.Zhang = this.chaperListOfBook.length + 1;
-      newItem.Id = this.subjectId + "-" + newItem.Zhang;
+      newItem.Id = this.bookID + "-" + newItem.Zhang;
       newItem.SN = "第" + newItem.Zhang + "章";
 
       this.chaperListOfBook.push(newItem);
@@ -251,25 +255,33 @@ export default {
           const res = await deleBookVideo({
             idlist: ids.toString()
           });
-         
-            that.getBookChapter();
-            this.$message({
-              message: "操作成功",
-              type: "success"
-            }); 
+
+          that.getBookChapter();
+          this.$message({
+            message: "操作成功",
+            type: "success"
+          });
         })
         .catch(() => {});
     },
     // 获取章节列表
     async getBookChapter() {
-      const res = await getBookVideo(this.subjectId, {
+      const res = await getBookVideo(this.bookID, {
         limit: 100000,
         offset: 0
       });
       if (res.data.Content) {
         this.chaperListOfBook = JSON.parse(res.data.Content);
       }
-      this.subjectLabel = res.title;
+      this.bookLabel = res.title;
+      this.editEnable = false;
+      let myTeachBookIDS = this.$store.getters.manager.TeachBooks.split(",");
+      myTeachBookIDS.forEach(id => {
+        if (id == this.bookID) {
+      console.log("==========myTeachBookIDS:",myTeachBookIDS)
+          this.editEnable = true;
+        }
+      });
     },
     // 生成科目章节
     createSubjectChapter: function() {
@@ -283,7 +295,7 @@ export default {
         .then(async () => {
           if (that.chaperListOfBook.length > 0) {
             const res = await createBookStructure(
-              that.subjectId,
+              that.bookID,
               "",
               that.chaperListOfBook
             );

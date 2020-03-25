@@ -29,7 +29,7 @@ export function addClassInfo(url, param, data) {
 // 获取某个班级的所有学员
 export function getOneClass(url, param, data) {
   return request({
-    url: '/class/getone'+url,
+    url: '/class/getone/'+url,
     method: 'get',
     params: param,
     data
