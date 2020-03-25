@@ -30,6 +30,11 @@ export default {
       default: function() {
         return { Id: 0 };
       }
+    },
+    // 表单数据
+    currentPlatform: {
+      type: Number,
+      default: 0
     }
   },
   name: "setRight",
@@ -59,18 +64,20 @@ export default {
   watch: {
     formItemData(newval) {
       this.currentFormData = this.formItemData;
-      this.getAllManagerPower();
+      this.getAllManagerRight();
     }
   },
   mounted() {
     this.currentFormData = this.formItemData;
-    this.getAllManagerPower();
+    this.getAllManagerRight();
   },
   methods: {
     // 打开模态框时获取所有的权限选择
-    async getAllManagerPower(index) {
+    async getAllManagerRight(index) {
       this.managerRightsMap = [];
-      let res = await getManagerRight(this.currentFormData.Id);
+      let res = await getManagerRight(this.currentFormData.Id, {
+        platform: this.currentPlatform
+      });
       if (res.code == 200) {
         this.managerRightsMap = res.data ? res.data : [];
       }
@@ -88,14 +95,16 @@ export default {
     async saveRight() {
       let res = await setManagerRight(
         this.currentFormData.Id,
-        "",
+        {
+          platform: this.currentPlatform
+        },
         this.currentManagerRights
       );
       if (res.code == 200) {
-      this.$message({
-        message: "操作成功",
-        type: "success"
-      }); 
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
         this.$emit("subClickEvent", 0, res.data);
       }
     }

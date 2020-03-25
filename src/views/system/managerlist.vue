@@ -110,7 +110,7 @@
       <div slot="right_content" class="p_both20 p-b-20">
         <el-tabs v-model="activElTab" >
           <el-tab-pane label="权限设置" name="qxsz" id="qxsz">
-            <set-right :formItemData="currentRowData"></set-right>
+            <set-right :formItemData="currentRowData" :currentPlatform="currentPlatform"></set-right>
           </el-tab-pane>
           <el-tab-pane label="所教科目" name="sjkm" id="sjkm">
             <teacherBook :formItemData="currentRowData" @subClickEvent="updateTeacherList"></teacherBook>

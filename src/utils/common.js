@@ -311,6 +311,7 @@ export default {
 
   // 意向客户客户类型
   IntentionalCustomerType: [
+    
     {
       value: 0,
       Label: '全部客户'
