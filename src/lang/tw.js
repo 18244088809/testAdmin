@@ -89,8 +89,7 @@ export default {
     username: '賬號',
     password: '密碼',
     any: '隨便填',
-    thirdparty: '第三方登錄',
-    thirdpartyTips: '本地不能模擬，請結合自己業務進行模擬！！！'
+    code: '验证码'
   },
   documentation: {
     documentation: '文檔',

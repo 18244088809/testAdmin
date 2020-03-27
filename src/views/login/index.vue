@@ -51,30 +51,31 @@
           </span>
         </el-form-item>
       </el-tooltip>
-
+      <el-form-item prop="captcha" style="width: 60%;float: left;">
+        <span class="svg-container">
+          <svg-icon icon-class="captcha" />
+        </span>
+        <el-input
+          ref="captcha"
+          v-model="loginForm.captcha"
+          :placeholder="$t('login.code')"
+          name="captcha"
+          type="text"
+          tabindex="3"
+          autocomplete="off"
+          style=" width: 75%;"
+          @keyup.enter.native="handleLogin"
+        />
+      </el-form-item>
+      <div class="login-code" style=" width: 38%;height: 48px;float: right;">
+        <img style="height: 48px;width: 100%;" :src="codeUrl" @click="getCode" />
+      </div>
       <el-button
         :loading="loading"
         type="primary"
         style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin"
       >{{ $t('login.logIn') }}</el-button>
-
-      <!-- <div style="position:relative">
-        <div class="tips">
-          <span>{{ $t('login.username') }} : admin</span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">
-            {{ $t('login.username') }} : editor
-          </span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          {{ $t('login.thirdparty') }}
-        </el-button>
-      </div>-->
     </el-form>
 
     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
@@ -89,7 +90,7 @@
 
 <script>
 import LangSelect from "@/components/LangSelect";
-// import { login } from "@/api/manager";
+import { getCodeImg } from "@/api/manager";
 import crypto from "crypto";
 export default {
   name: "Login",
@@ -101,7 +102,9 @@ export default {
       } else {
         callback();
       }
+      codeUrl: "";
     };
+
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error("The password can not be less than 6 digits"));
@@ -109,16 +112,24 @@ export default {
         callback();
       }
     };
+    const validateCaptha = (rule, value, callback) => { 
+      if (value.length != 4) {
+        callback(new Error(this.$t("login.code") ));
+      } else {
+        callback();
+      }
+    };
     return {
+      codeUrl: "",
       loginForm: {
         tel: "13551322482",
-        password: ""
+        password: "",
+        captcha:""
       },
       loginRules: {
         tel: [{ required: true, trigger: "blur", validator: validateUsername }],
-        password: [
-          { required: true, trigger: "blur", validator: validatePassword }
-        ]
+        password: [  { required: true, trigger: "blur", validator: validatePassword } ],
+        captcha: [ { required: true, trigger: "blur", validator: validateCaptha }  ]
       },
       passwordType: "password",
       capsTooltip: false,
@@ -141,6 +152,7 @@ export default {
     }
   },
   created() {
+    this.getCode();
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
@@ -148,12 +160,19 @@ export default {
       this.$refs.username.focus();
     } else if (this.loginForm.password === "") {
       this.$refs.password.focus();
+    }else if (this.loginForm.captcha === "") {
+      this.$refs.captcha.focus();
     }
   },
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    getCode() {
+      getCodeImg(this.loginForm.tel).then(res => {
+        this.codeUrl = res.data;
+      });
+    },
     checkCapslock(e) {
       const { key } = e;
       this.capsTooltip = key && key.length === 1 && key >= "A" && key <= "Z";
@@ -174,10 +193,12 @@ export default {
           this.loading = true;
           const submitData = {};
           Object.assign(submitData, this.loginForm);
+          console.log(submitData, " ======= ",this.loginForm)
           // 加密
           const md5 = crypto.createHash("md5");
           md5.update(submitData.password);
           submitData.password = md5.digest("hex");
+            submitData.captcha = this.loginForm.captcha;
           this.$store
             .dispatch("manager/login", submitData)
             .then(() => {
@@ -191,10 +212,10 @@ export default {
               this.$router.push({
                 path: this.redirect || "/",
                 query: this.otherQuery
-              }); 
+              });
             })
             .catch(err => {
-             return false;
+              return false;
             });
         } else {
           return false;

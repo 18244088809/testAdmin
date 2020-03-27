@@ -52,7 +52,14 @@ export function uploadFace(url, param, data) {
     data
   })
 } 
-
+export function getCodeImg(url, param, data) {
+  return request({
+    url: '/manager/getCaptcha/' + url,
+    method: 'post',
+    params: param,
+    data
+  })
+} 
 
 // -----------------------------
 export function getManagerList(url, param, data) {

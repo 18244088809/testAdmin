@@ -51,7 +51,7 @@ export default {
         course: "课程相关权限",
         exercise: "考试相关权限",
         manager: "管理员相关权限",
-        news: "新闻相关权限",
+        website: "加盟校官网管理权限",
         student: "学员相关权限",
         system: "系统相关权限"
       },
