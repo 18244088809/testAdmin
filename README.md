@@ -47,7 +47,7 @@
 3.    [在线API文档地址 http://edudoc.todear.net:8990](在线API文档地址http://edudoc.todear.net:8990)
 
  #### 预览图
-![登录页](https://images.gitee.com/uploads/images/2020/0223/214411_af0efc0b_870483.png "登录页") 
+![登录页](https://images.gitee.com/uploads/images/2020/0327/152009_9afb3de7_870483.png "登录页") 
 
 ## 登录页面。支持多语言选择
 
