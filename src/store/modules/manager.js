@@ -54,7 +54,7 @@ const actions = {
   logout({ commit, dispatch }) {
     return new Promise((resolve) => {
       commit('SET_TOKEN', '')
-      commit('SET_MANAGER', {})
+      commit('SET_MANAGER',null)
       removeToken()
       resetRouter()
       dispatch('tagsView/delAllViews', null, { root: true })

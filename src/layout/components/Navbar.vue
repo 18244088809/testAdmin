@@ -46,7 +46,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <my-dialog :visible.sync="alarmListDialog"  title="消息中心" :showLeft="false">
+    <my-dialog :visible.sync="alarmListDialog" title="消息中心" :showLeft="false">
       <div slot="right_content" class="bg-f5f9ff hgt_100">
         <alarmList ref="refAlarmList"></alarmList>
       </div>
@@ -93,19 +93,22 @@ export default {
     };
   },
   created() {
-     setInterval(() => {
+    setInterval(() => {
       this.getAlarm();
     }, 30000);
   },
   mounted() {
     this.getAlarm();
-   
   },
   methods: {
     // 获取提醒，有提醒弹出弹框
     async getAlarm() {
+      if (this.$store.getters.manager == null) {
+        return;
+      }
+
       let res = await getSingleAlarm("");
-      res.title = res.title ? res.title : 0; 
+      res.title = res.title ? res.title : 0;
       if (res.data && res.data.length > 0) {
         res.data.forEach((item, index) => {
           let isExist = this.allAlarmId.indexOf(item.Id);

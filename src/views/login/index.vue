@@ -25,6 +25,7 @@
           type="text"
           tabindex="1"
           autocomplete="on"
+          @blur="onTelBlurHandler"
         />
       </el-form-item>
 
@@ -152,7 +153,7 @@ export default {
     }
   },
   created() {
-    this.getCode();
+    // this.getCode();
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
@@ -187,13 +188,18 @@ export default {
         this.$refs.password.focus();
       });
     },
+    onTelBlurHandler(){
+      if (this.loginForm.tel.length!=11) {
+        return
+      } 
+      this.getCode()
+    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
           const submitData = {};
-          Object.assign(submitData, this.loginForm);
-          console.log(submitData, " ======= ",this.loginForm)
+          Object.assign(submitData, this.loginForm); 
           // 加密
           const md5 = crypto.createHash("md5");
           md5.update(submitData.password);
