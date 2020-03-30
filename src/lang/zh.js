@@ -22,7 +22,7 @@ export default {
     managerList: '员工教师',
     managerLogs: '员工日志',
     news: '新闻管理',
-    active: '竞赛活动',
+    active: '活动展示',
     teacher: '优秀老师',
     linker:'友情链接',
     classList: '班级列表',
@@ -35,7 +35,8 @@ export default {
     svipExam: 'vip考卷',
     taskExam: '任务模考',
     achievementAnalysis: '成绩分析',
-    personalData:"个人设置"
+    personalData:"个人设置",
+    guest:"拜访客户"
   },
   navbar: {
     dashboard: '首页',

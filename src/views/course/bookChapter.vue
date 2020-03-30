@@ -25,7 +25,7 @@
           </vxe-table-column>
           <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
           <vxe-table-column field="Video" title="视频地址" :edit-render="{name: 'input'}" />
-          <vxe-table-column field="Description" width="120" title="包含习题数量" />
+          <vxe-table-column field="Description" width="150" title="备注" />
           <vxe-table-column field="Taste" title="允许试读" width="80">
             <template v-slot="{ row}">
               <select v-model="row.Taste" class="quanke">
@@ -54,17 +54,25 @@
           </vxe-table-column>
         </vxe-table>
       </div>
-      <div class="between-center m-v-15"  >
-
-        <el-button type="primary"    class="m-r-10" @click="addChapter">新增章</el-button>
+      <div class="between-center m-v-15">
+        <el-button type="primary" class="m-r-10" @click="addChapter">新增章</el-button>
         <!-- <el-button type="danger" @click="deleteSelectItems">批量删除</el-button> -->
-        <el-button class="m-r-20"  v-show="editEnable"  type="success" @click="createSubjectChapter">保存</el-button>
+        <el-button
+          class="m-r-20"
+          v-show="editEnable"
+          type="success"
+          @click="createSubjectChapter"
+        >保存</el-button>
       </div>
     </div>
 
     <my-dialog :visible.sync="addQuestionDialog" :showLeft="false" title="添加考题">
       <div slot="right_content">
-        <question-row-dialog ref="addQusetionDialog" :formItemData="newQuestionItem"></question-row-dialog>
+        <question-row-dialog
+          ref="addQusetionDialog"
+          :formItemData="newQuestionItem"
+          @subClickEvent="chapterAddQuestionOK"
+        ></question-row-dialog>
       </div>
     </my-dialog>
     <my-dialog :visible.sync="linkQuestionDialog" :showLeft="false" title="关联考题">
@@ -102,7 +110,7 @@ export default {
       // 书名称
       bookLabel: "",
       // 书的Id
-      bookID: "",
+      bookID: 0,
       // 更多操作弹窗
       addQuestionDialog: false,
       linkQuestionDialog: false,
@@ -117,7 +125,7 @@ export default {
     };
   },
   mounted() {
-    this.bookID = this.$router.currentRoute.query.Id;
+    this.bookID = parseInt(this.$router.currentRoute.query.Id);
     this.getBookChapter();
   },
   methods: {
@@ -128,7 +136,7 @@ export default {
     //关联试题
     linkQuestion(row, isZhang) {
       this.newQuestionItem.BookId = this.bookID;
-      this.newQuestionItem.Book = row;
+      this.newQuestionItem = row;
       this.linkQuestionDialog = true;
     },
     linkedQuestion() {
@@ -137,17 +145,31 @@ export default {
     //直接添加试题
     addQuestion(row, isZhang) {
       this.addQuestionDialog = true;
-      this.newQuestionItem.BookId = this.bookID;
-      this.newQuestionItem.Book = row;
       this.newQuestionItem = {
+        BookId: this.bookID,
         ZhangId: row.Zhang,
         JieId: row.Jie,
         TopicId: row.TopicNo,
         QuestionType: 1,
-        QuestionScore: 1
+        QuestionScore: 1,
+        BookChapter: row
       };
 
       //
+    },
+    chapterAddQuestionOK(type, exerciseQuestion, bookChapter) {
+      const rowNode = XEUtils.findTree(
+        this.chaperListOfBook,
+        item => item.Id === bookChapter.Id,
+        this.treeConfig
+      );
+      if (rowNode) {
+       
+        if (!rowNode.item.Questions) {
+          rowNode.item.Questions = [];
+        }
+        rowNode.item.Questions.push(exerciseQuestion.Id);
+      } 
     },
     // 新增子级节点
     addChildNode(row, isZhang) {
@@ -164,6 +186,7 @@ export default {
           Label: labelStr,
           Id: "",
           Children: [],
+          Questions:[],
           Taste: 0,
           Video: "",
           TopicNo: 0,
@@ -277,8 +300,7 @@ export default {
       this.editEnable = false;
       let myTeachBookIDS = this.$store.getters.manager.TeachBooks.split(",");
       myTeachBookIDS.forEach(id => {
-        if (id == this.bookID) {
-      console.log("==========myTeachBookIDS:",myTeachBookIDS)
+        if (id == this.bookID) { 
           this.editEnable = true;
         }
       });

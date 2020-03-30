@@ -414,23 +414,23 @@ export default {
   docRights: [
     {
       value: 0,
-      Label: '公开资料'
+      Label: '公开级别'
     },
     {
       value: 1,
-      Label: '内部资料'
+      Label: '内部级别'
     },
     {
       value: 2,
-      Label: '隐秘资料'
+      Label: '隐秘级别'
     },
     {
       value: 3,
-      Label: '保密资料'
+      Label: '保密级别'
     },
     {
       value: 4,
-      Label: '绝密资料'
+      Label: '绝密级别'
     }
   ],
   docRightmarks: {
@@ -438,34 +438,64 @@ export default {
       style: {
         color: "#27C91E"
       },
-      label: "公开资料"
+      label: "公开级别"
     },
     1: {
       style: {
         color: "#A6B750"
       },
-      label: "内部资料"
+      label: "内部级别"
     },
     2: {
       style: {
         color: "#D7CB45"
       },
-      label: "隐秘资料"
+      label: "隐秘级别"
     },
     3: {
       style: {
         color: "#E88E4D"
       },
-      label: "保密资料"
+      label: "保密级别"
     },
     4: {
       style: {
         color: "#ff0000"
       },
-      label: "绝密资料"
+      label: "绝密级别"
     }
   },
-
+ // 资料类型的选项
+ docKindList: [         
+  {
+    value: 1,
+    Label: "教研资料"
+  },
+  {
+    value: 2,
+    Label: "培训资料"
+  },
+  {
+    value: 3,
+    Label: "运营资料"
+  },
+  {
+    value: 4,
+    Label: "竞赛资料"
+  },
+  {
+    value: 5,
+    Label: "广告资料"
+  },
+  {
+    value: 6,
+    Label: "宣传资料"
+  },
+  {
+    value: 7,
+    Label: "其他资料"
+  }
+],
   AllQuestionTypes: [], // 所有题的类型
   // 根据类型变化返回一些数据的Label
   FormatSelect(options, typeId) {

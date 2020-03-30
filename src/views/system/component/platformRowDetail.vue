@@ -96,10 +96,18 @@ export default {
     }
   },
   methods: {
-    // 保存客户信息
+    // 保存信息
     async savecurrentFormData() {
       this.$refs.formUI.validate(async valid => {
         if (valid) {
+          if (this.currentItemData.MaxPerYear>this.currentItemData.MaxAllYear){
+             this.$message({
+                  message: "年度招生人数必须小于总招生人数",
+                  type: "warning"
+                });
+            return
+          }
+
           this.currentItemData.MasterID = this.masterID;
           if (this.currentItemData.Id == null || this.currentItemData.Id == 0) {
             // 新增

@@ -3,9 +3,9 @@
     <div class="flex_column hgt_full">
       <el-tabs @tab-click="handleClick">
         <el-tab-pane
-          v-for="item in $store.getters.app.collegeWithCourseKind"
+          v-for="item in common.docKindList"
           :label="item.Label"
-          :key="item.Id"
+          :key="item.value"
         ></el-tab-pane>
       </el-tabs>
       <el-table

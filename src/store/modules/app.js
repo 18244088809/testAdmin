@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 import { getLanguage } from '@/lang/index'
 import {  getQuestionTypes } from "@/api/question";
 import { getCollegeWithCourseKind } from '@/api/college'
-import { getAllTPlatform } from '@/api/platform' 
+import { queryPlatform } from '@/api/platform' 
 const state = {
   sidebar: {
     opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
@@ -90,7 +90,7 @@ const actions = {
   // getPlatformList
   getPlatformList({ commit }) {
     return new Promise((resolve, reject) => {
-      getAllTPlatform('', '', '').then(response => {
+      queryPlatform('', '', '').then(response => {
         commit('SET_PLATFORMLIST', response.data);  
         resolve()
       }).catch(error => {

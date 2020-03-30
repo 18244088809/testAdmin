@@ -152,8 +152,8 @@ export default {
       this.multipleSelection.forEach(item => {
         questionIDS.push(item.Id);
       });
-      this.BookChapter.Book.Children = questionIDS;
-      this.BookChapter.Book.Description = questionIDS.length;
+      this.BookChapter.Questions = questionIDS;
+      this.BookChapter.Description = "包含(" + questionIDS.length + ")道随堂练习题";
       this.$emit("linkedQuestion");
       this.$message({
         message: "操作成功",
@@ -180,8 +180,8 @@ export default {
       });
       this.questionsListOfBook = res.data ? res.data : [];
       this.$nextTick(() => {
-        this.questionsListOfBook.forEach(question => {
-          this.BookChapter.Book.Children.forEach(selectItem => {
+        this.questionsListOfBook.forEach(question => {  
+          this.BookChapter.Questions.forEach(selectItem => { 
             if (question.Id == selectItem) {
               this.$refs.refElTabel.toggleRowSelection(question, true);
             }

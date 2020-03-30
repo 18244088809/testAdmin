@@ -53,13 +53,7 @@
     </div>
     <!-- 弹出框 -->
     <div>
-      <my-dialog
-        
-        title="新闻详情编辑"
-        :showLeft="false"
-        :visible.sync="newsFormDialog"
-        
-      >
+      <my-dialog title="新闻详情编辑" :showLeft="false" :visible.sync="newsFormDialog">
         <div slot="right_content">
           <newsFormData
             ref="newsForm"
@@ -92,15 +86,15 @@ export default {
       newsKindOptions: [
         {
           value: 1,
-          Label: "校园新闻"
+          Label: "新闻"
         },
         {
           value: 2,
-          Label: "行业新闻"
+          Label: "学校展示"
         },
         {
           value: 3,
-          Label: "其他新闻"
+          Label: "最新活动"
         }
       ],
       // 新闻的数据列表

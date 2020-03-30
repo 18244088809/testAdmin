@@ -298,8 +298,7 @@ import {
   getTrackList,
   getCustomBuyCouseRecord,
   addCustomBuyCourseRecord,
-  customAllowDoExercise,
-  deleteBuyCourse,
+  customAllowDoExercise, 
   getCustomInfoList,
   addCustomInfo,
   editCustomInfo,
@@ -318,10 +317,7 @@ import {
   setNewPlatformWorks,
   getPlatformAboutWorkers,
   getPlatformWorkers,
-  setPlatformMaster,
-  getWorkersCustomList,
-  addWorkersCustom,
-  editWorkersCustom
+  setPlatformMaster 
 } from "@/api/platform";
 import customRowDetail from "@/views/custom/component/customRowDetail";
 import customSendSmsDialog from "@/views/custom/component/customSendSmsDialog";

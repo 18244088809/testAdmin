@@ -88,43 +88,4 @@ export function setPlatformMaster(url, query, data) {
     data
   })
 }
-//   ----------------销售人员的客户数据---------------------
-// 获取客户信息列表
-
-export function getWorkersCustomList(url, query, data) {
-  return request({
-    url: '/platform/getWorkersStudentList/' + url,
-    method: 'get',
-    params: query,
-    data
-  })
-}
-
-// 添加客户信息
-export function addWorkersCustom(url, query, data) {
-  return request({
-    url: '/platform/addStudentOfWorker/' + url,
-    method: 'post',
-    params: query,
-    data
-  })
-}
-// 编辑客户信息
-export function editWorkersCustom(url, query, data) {
-  return request({
-    url: '/platform/updateMyStudentComments/' + url,
-    method: 'put',
-    params: query,
-    data
-  })
-}
-
-// 获取所有平台的信息
-export function getAllTPlatform(url, param, data) {
-  return request({
-    url: '/platform/getAllTPlatform' + url,
-    method: 'get',
-    params: param,
-    data
-  })
-}
+ 

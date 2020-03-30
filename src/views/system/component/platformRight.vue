@@ -4,13 +4,13 @@
       <span class="marg20">请选择该分校对以下资料库的权限等级。 默认为绿色0值表示该校区拥有下载公开资料的权限。最右边表示该校区拥有所有下载权限包括绝密资料</span>
       <br />
 
-      <div v-for="(item,index) in $store.getters.app.collegeWithCourseKind" :key="item.Id">
+      <div v-for="(item,index) in common.docKindList" :key="item.Id">
         <el-form  >
           <el-form-item label-width="100px" :label="'('+(index+1)+')'+item.Label+'：'">
             <el-slider
               style="width:100%;"
               class="m-l-40"
-              v-model="platformRights[item.Id]"
+              v-model="platformRights[item.value]"
               :format-tooltip="formatTooltipFunc"
               :marks="common.docRightmarks"
               :min="0"

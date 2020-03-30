@@ -148,6 +148,7 @@ export default {
           Id: 0,
           Zhang: 1,
           Jie: 1,
+          BookId: 0,
           QuestionType: 1,
           QuestionScore: 1
         };
@@ -284,7 +285,7 @@ export default {
               ""
             );
           }
-          
+
           if (this.currentItemData.QuestionType != 4) {
             if (
               !this.currentItemData.QuestionAnswer ||
@@ -297,22 +298,39 @@ export default {
               return;
             }
           }
+          if (!this.currentItemData.Questions) {
+            this.currentItemData.Questions = [];
+          }
+
+          let res;
           // 修改数据
           if (this.currentItemData.Id > 0) {
-            let res = await editQuestion(
+            res = await editQuestion(
               this.currentItemData.Id,
               "",
               this.currentItemData
             );
             if (res.code == 200) {
-              this.$emit("subClickEvent", 1, res.data);
+              this.$emit(
+                "subClickEvent",
+                1,
+                res.data,
+                this.currentItemData.BookChapter
+              );
             }
           } else if (!this.currentItemData.Id || this.currentItemData.Id == 0) {
-            let res = await addQuestion("", "", this.currentItemData);
+            res = await addQuestion("", "", this.currentItemData);
             if (res.code == 200) {
-              this.$emit("subClickEvent", 0, res.data);
+              this.$emit(
+                "subClickEvent",
+                0,
+                res.data,
+                this.currentItemData.BookChapter
+              );
             }
           }
+          this.currentItemData.Questions.push(res.data.Id);
+       
           this.$message({
             message: "操作成功",
             type: "success"

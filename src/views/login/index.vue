@@ -157,13 +157,13 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
-    if (this.loginForm.tel === "") {
+    // if (this.loginForm.tel === "") {
       this.$refs.username.focus();
-    } else if (this.loginForm.password === "") {
-      this.$refs.password.focus();
-    }else if (this.loginForm.captcha === "") {
-      this.$refs.captcha.focus();
-    }
+    // } else if (this.loginForm.password === "") {
+    //   this.$refs.password.focus();
+    // }else if (this.loginForm.captcha === "") {
+    //   this.$refs.captcha.focus();
+    // }
   },
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)

@@ -22,7 +22,7 @@ export default {
     managerList: '用户列表',
     managerLogs: '用户日志',
     news: '新闻管理',
-    active: '竞赛活动',
+    active: '活动展示',
     teacher: '优秀老师',
     linker:'友情链接',
     classList: '班级列表',
@@ -73,7 +73,8 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '國際化',
     externalLink: '外鏈',
-    profile: '個人中心'
+    profile: '個人中心',
+    guest:"拜访客户"
   },
   navbar: {
     dashboard: '首頁',

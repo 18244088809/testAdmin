@@ -32,11 +32,11 @@
           >禁止网课</el-checkbox>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="100" fixed="right">
+      <!-- <el-table-column label="操作" width="100" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" @click="deleteBuyCourseRecord(scope.row.Id,scope.$index)">删除</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <div>
       <el-button type="primary" class="m-v-15" @click="addBuyCourse()">手动添加购买记录</el-button>
