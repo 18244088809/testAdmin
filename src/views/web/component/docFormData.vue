@@ -32,32 +32,36 @@
                 :max="5"
               ></el-slider>
             </el-form-item>
-            <el-form-item label="附件地址" style="width:50%;">
-              <el-upload
-                style="width:100%;"
-                :multiple="false"
-                :on-change="uploadEnclosure"
-                :show-file-list="false"
-                :auto-upload="false"
-                action
-              >
-                <el-input placeholder="点击选择附件" v-model="currentItemData.Downfile"></el-input>
-              </el-upload>
-            </el-form-item>
+            <div class="flex_dom">
+               <el-form-item label="资料类别">
+                <el-select v-model="currentItemData.KindID" placeholder="请选择类别">
+                  <el-option
+                    :label="item.Label"
+                    :key="index"
+                    :value="item.value"
+                    v-for="(item,index) in common.docKindList"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="附件地址" style="width:50%;">
+                <el-upload
+                  style="width:100%;"
+                  :multiple="false"
+                  :on-change="uploadEnclosure"
+                  :show-file-list="false"
+                  :auto-upload="false"
+                  action
+                >
+                  <el-input placeholder="点击选择附件" v-model="currentItemData.Downfile"></el-input>
+                </el-upload>
+              </el-form-item>
+             
+            </div>
+            
           </div>
-          <div class="flex_dom m-t-20"  >
-            <el-form-item label="标题" prop="Title" style="width:100%" >
+          <div class="flex_dom m-t-20">
+            <el-form-item label="标题" prop="Title" style="width:100%">
               <el-input placeholder="请输入内容" v-model="currentItemData.Title"></el-input>
-            </el-form-item>
-            <el-form-item label="资料类别"  >
-               <el-select v-model="currentItemData.KindID" placeholder="请选择类别">
-                <el-option
-                  :label="item.Label"
-                  :key="index"
-                  :value="item.value"
-                  v-for="(item,index) in common.docKindList"
-                ></el-option>
-              </el-select>
             </el-form-item>
           </div>
         </div>
@@ -106,7 +110,7 @@ export default {
   data() {
     return {
       common,
-     
+
       // 表单验证
       newsFormRules: {
         Title: [{ required: true, message: "标题不能为空", trigger: "blur" }]

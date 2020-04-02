@@ -1,8 +1,14 @@
 <template>
-  <div class="flex_column pd0 marg0">
-    <div style="display: flex;  flex-direction:row">
-      <div style="width:300px;  background:#e0e3ea;">
-        <el-table :data="classAllStuList" tooltip-effect="light">
+  <div class="flex_dom hgt_100 pd0 marg0 wid_100" >
+    <div class="flex_dom  hgt_100 wid_100" >
+      <div class="flex_dom  hgt_100" style="width:350px;   ">
+        <el-table
+          :data="classAllStuList"
+          ref="studentsTable"
+          tooltip-effect="light"
+        >
+          <!-- @selection-change="selectionCustomChange"
+          <el-table-column type="selection" width="10" /> -->
           <el-table-column prop="id" label="学号" width="60"></el-table-column>
           <el-table-column prop="Realname" label="姓名">
             <template slot-scope="scope">
@@ -12,34 +18,31 @@
                 :content="'Tel:'+scope.row.Telephone"
                 placement="top"
               >
-                <span
-                  class="color-1f85aa font-w6 cursor"
-                  @click="onClickStudent(scope.row)"
-                >{{ scope.row.Realname }}</span>
+                <span class="color-1f85aa font-w6">{{ scope.row.Realname }}</span>
               </el-tooltip>
             </template>
           </el-table-column>
           <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
         </el-table>
       </div>
-      <div style="width:35px;height:100%;  background:#e0e3ea; "></div>
-      <div style="width:90%;">
-        <!-- <el-table :data="classAllStuList">
-          <el-table-column prop="id" label="作业号" width="60"></el-table-column>
-          <el-table-column prop="Realname" label="作业名称">
-            <template slot-scope="scope">
-              <el-tooltip
-                class="item"
-                effect="dark"
-                :content="'Tel:'+scope.row.Telephone"
-                placement="top"
-              >
-                <span class="color-1f85aa font-w6 cursor">{{ scope.row.Realname }}</span>
-              </el-tooltip>
-            </template>
-          </el-table-column>
-          <el-table-column prop="Sex" label="性别" width="50"></el-table-column>
-        </el-table>-->
+      <div style="width:15px; background:#e0e3ea; "></div>
+
+      <div slot="right_content" class="p-l-10 p-b-20 wid_100">
+        <div class="center">
+          <el-button type="success" @click="activElTab='fszy'">发送作业</el-button>
+          <el-button type="primary" @click="activElTab='pgzy'">批改作业</el-button>
+          <el-button type="info" @click="activElTab='xyzp'">学员作品</el-button>
+          <el-button type="warning" @click="activElTab='xyzp'">留言消息</el-button>
+        </div>
+        <hr />
+        <sendStudentExercise v-show="activElTab=='fszy'" :studentIDS="selectedStudentIDList" />
+        <sendStudentExercise v-show="activElTab=='pgzy'" :studentIDS="selectedStudentIDList" />
+        <sendStudentExercise v-show="activElTab=='xyzp'" :studentIDS="selectedStudentIDList" />
+        <!-- <el-tabs v-model="activElTab">
+          <el-tab-pane id="fszy" label="发送作业" name="fszy"></el-tab-pane>
+          <el-tab-pane id="pgzy" label="批改作业" name="pgzy"></el-tab-pane>
+          <el-tab-pane id="xyzp" label="学员作品" name="xyzp"></el-tab-pane>
+        </el-tabs>-->
       </div>
     </div>
   </div>
@@ -59,12 +62,19 @@ import {
   getTimeTag,
   addClassStu,
   getClassStu,
-  handOutTask,
-  getAllClassTaskRecord
+  sendStudentsExercise,
+  getClassMateWorks,
+  getSendExerciseOfClassRecord,
+  getExerciseByBookChapter
 } from "@/api/class";
 import common from "@/utils/common";
+import sendStudentExercise from "@/views/platform/component/sendStudentExercise";
+
 import { isDate } from "xe-utils/methods";
 export default {
+  components: {
+    sendStudentExercise
+  },
   props: {
     // 校区的表单数据
     formItemData: {
@@ -85,6 +95,8 @@ export default {
   data() {
     return {
       common,
+      // 当前所在tab页
+      activElTab: "fszy",
       searchGrade: new Date(),
       currenteditEnable: this.editEnable,
       // 控制班级弹出框
@@ -93,9 +105,12 @@ export default {
       createClassTime: null,
       // 获取班级的所有学员
       classAllStuList: [],
+      //考卷列表
+      exerciseList: [],
       // 创建人
       createPerson: null,
       currentItemData: this.formItemData,
+      selectedStudentIDList: [],
       // 表单验证
       ClassFormRules: {
         Label: [
@@ -117,17 +132,49 @@ export default {
       this.currentItemData = this.formItemData;
       this.getClassAllStuList();
     },
-    onClickStudent(clickStudent) {
-      console.log("--------", clickStudent);
+
+    // 获取选中的学生
+    selectionCustomChange(val) {
+      this.selectedStudentIDList = [];
+      val.forEach(item => {
+        this.selectedStudentIDList.push(item.id);
+      });
+    },
+    // 获取班级的所有学员
+    async getAllMyExercise() {
+      let res = await getExerciseByBookChapter(this.formItemData.Id);
+      that.exerciseList = res.data ? res.data : [];
     },
     // 获取班级的所有学员
     async getClassAllStuList() {
       this.serachStuList = [];
       this.ShowSearchForm = false;
       this.showSrarchStuResult = false;
+      let that = this;
       let res = await getClassStu(this.formItemData.Id);
+      that.classAllStuList = res.data ? res.data : [];
+
+      that.$nextTick(function() {
+        this.$refs.studentsTable.toggleAllSelection();
+      });
+    },
+
+    async sendStudentsExercise(studentid) {
+      let res = await sendStudentsExercise(studentid, "", this.classAllStuList);
       this.classAllStuList = res.data ? res.data : [];
     },
+    async getSendExerciseOfClassRecord(studentid) {
+      let res = await getSendExerciseOfClassRecord(studentid);
+      this.classAllStuList = res.data ? res.data : [];
+    },
+    async getClassMateWorks(studentid) {
+      this.serachStuList = [];
+      this.ShowSearchForm = false;
+      this.showSrarchStuResult = false;
+      let res = await getClassMateWorks(studentid, "");
+      this.classAllStuList = res.data ? res.data : [];
+    },
+
     // 添加或编辑数据
     saveFormItemData() {
       this.currentItemData.PlatformID = parseInt(this.platform);

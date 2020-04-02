@@ -130,8 +130,8 @@
         :title="'【'+classFormData.Label+'】学员作业'"
         :showLeft="false"
       >
-        <div slot="right_content">
-          <studentWork :formItemData="classFormData"></studentWork>
+        <div slot="right_content" class="flex_dom hgt_100  "  >
+          <studentWork :formItemData="classFormData" ></studentWork>
           <!-- <el-tabs v-model="activeClassTabs">
             
              <el-tab-pane label="本班学员作业" name="xyzy" id="xyzy">

@@ -1,31 +1,38 @@
 <template>
   <div>
-    <div class="marg20  ">
-    <span   >打钩了的校区被禁止售卖这门课程。</span>
-    <hr/>
+    <div class="marg20">
+      <span>打钩了的校区被禁止售卖这门课程。</span>
+      <hr />
     </div>
     <div class="flex_wrap flex_mid p-b-5 border-b-e0">
-      <div
-        v-for="item in $store.getters.app.platformList"
-        :key="item.Id"
-        class="quan_xian_item m-b-10"
-      >
+      <div v-for="item in platforms" :key="item.Id" class="quan_xian_item m-b-10">
         <el-checkbox
           @change="checked=>changeRight(checked,item)"
           v-model="item.Selected"
         >{{item.Label}}</el-checkbox>
       </div>
     </div>
-      <div class="around-center m-v-15">
+    <div class="around-center m-v-15">
       <el-button type="primary" @click="saveRight">保 存</el-button>
     </div>
   </div>
 </template>
 <script>
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
-import { addCourse, editCourse } from "@/api/course";
+import {
+  addCourse,
+  editCourse,
+  getForbiddenSellPlatform,
+  setForbiddenSellPlatform
+} from "@/api/course";
 import common from "@/utils/common";
 export default {
+  props: {
+    currentFormData: Object,
+    default: function() {
+      return { Id: 0 };
+    }
+  },
   components: {
     myImageViewer
   },
@@ -41,20 +48,26 @@ export default {
       // 显示图片查看器
       showViewer: false,
       // 学院默认选中第一项
-      collegeIndex: 0
+      collegeIndex: 0,
       //
+      platforms: []
     };
   },
-
+  mounted() {
+    this.platforms = [];
+    let forbiddenPlatformList = this.currentFormData.ForbiddenPlatform.split(
+      ","
+    );
+    this.$store.getters.app.platformList.forEach(platform => {
+      forbiddenPlatformList.forEach(forbiddenPlatform => {
+        if (platform.Id == forbiddenPlatform) {
+          platform.Selected = true;
+        }
+      });
+      this.platforms.push(platform);
+    });
+  },
   methods: {
-    // 打开模态框时获取所有的权限选择
-    async getAllManagerPower(index) {
-      this.managerRightsMap = [];
-      let res = await getManagerRight(this.currentFormData.Id);
-      if (res.code == 200) {
-        this.managerRightsMap = res.data ? res.data : [];
-      }
-    },
     changeRight(checked, itemObj) {
       let item = { index: itemObj.Value };
       if (checked) {
@@ -62,20 +75,27 @@ export default {
       } else {
         item.Selected = -1;
       }
-      this.currentManagerRights[itemObj.Value] = item;
+      this.platforms[itemObj.Value] = item;
     },
     //保存用户的权限设置
     async saveRight() {
-      let res = await setManagerRight(
+      let platformIDS = [];
+      this.platforms.forEach(item => {
+        if (item.Selected == 1) {
+          platformIDS.push(item.Id.toString());
+        }
+      });
+
+      let res = await setForbiddenSellPlatform(
         this.currentFormData.Id,
         "",
-        this.currentManagerRights
+        platformIDS
       );
       if (res.code == 200) {
- this.$message({
-              message: "操作成功",
-              type: "success"
-            });
+        this.$message({
+          message: "操作成功",
+          type: "success"
+        });
         this.$emit("subClickEvent", 0, res.data);
       }
     }

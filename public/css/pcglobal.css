@@ -497,7 +497,7 @@ a,a:link{text-decoration:none;color: #333}
 .line4{text-overflow: ellipsis;overflow: hidden;text-overflow: -o-ellipsis-lastline;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 4;-webkit-box-orient: vertical;}
 
 /*flex布局*/
-.flex_dom{display: flex!important;display: -webkit-box!important;display: -webkit-flex!important;}
+.flex_dom{display: flex!important; display: -webkit-box!important;display: -webkit-flex!important;}
 .flex_column{display: flex!important;display: -webkit-box!important;display: -webkit-flex!important;flex-direction: column;-webkit-flex-direction: column;}
 .flex_1{flex: 1;-webkit-flex:1;display: block;min-width: 0;}
 .flex_2{flex: 2;-webkit-flex:2;display: block;min-width: 0;}

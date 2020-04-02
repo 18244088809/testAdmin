@@ -133,3 +133,13 @@ export function deleteCourseKind(url, param, data) {
     data
   })
 }
+// 设置禁售校区
+export function setForbiddenSellPlatform(url, param, data) {
+  return request({
+    url: '/course/setForbiddenSellPlatform/' + url,
+    method: 'put',
+    params: param,
+    data
+  })
+}
+

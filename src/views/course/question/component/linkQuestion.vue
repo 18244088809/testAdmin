@@ -96,7 +96,7 @@
 
 <script>
 import $ImgHttp from "@/api/ImgAPI";
-import { getQuestionOfBook } from "@/api/question";
+import { getQuestionOfBook } from "@/api/exercise";
 import common from "@/utils/common";
 export default {
   props: {

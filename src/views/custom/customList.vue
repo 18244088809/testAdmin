@@ -102,7 +102,7 @@
             >{{ scope.row.Realname }}</span>
           </template>
         </el-table-column>
-        <el-table-column type="selection" width="40" />
+        <el-table-column type="selection" width="30" />
         <el-table-column prop="id" width="80" label="编号" />
         <el-table-column label="提醒" width="50">
           <template slot-scope="scope">
@@ -430,7 +430,7 @@ export default {
       customScoreEntry: [],
 
       // 获取选中的学生ID
-      mulSelectionCustomId: [],
+      selectedStudentIDList: [],
       // 是否是本站的管理员
       isPlatformMaster: false,
       // ------------------------电话
@@ -632,21 +632,22 @@ export default {
 
     // 获取选中的学生
     selectionCustomChange(val) {
-      this.mulSelectionCustomId = [];
+      this.selectedStudentIDList = [];
       val.forEach(item => {
-        this.mulSelectionCustomId.push(item.id);
+        this.selectedStudentIDList.push(item.id);
       });
+   
     },
     // 转移学员的管理员到其他管理名下
     changeManager() {
-      if (this.mulSelectionCustomId.length <= 0) {
+      if (this.selectedStudentIDList.length <= 0) {
         this.$message({
           message: "你还没有勾选学员",
           type: "warning"
         });
         return;
       }
-      this.$refs.refChangeManager.getCustomIds(this.mulSelectionCustomId);
+      this.$refs.refChangeManager.getCustomIds(this.selectedStudentIDList);
     },
     // 更新客户列表数据-转移客户之后
     updateCustomList(rowsDatas) {

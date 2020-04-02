@@ -142,7 +142,7 @@ import myDialog from "@/components/myDialog/myDialog";
 import questionRowDialog from "@/views/course/question/component/questionRowDialog";
 import $ImgHttp from "@/api/ImgAPI";
 import { bookChapter } from "@/api/book";
-import { getQuestionOfBook } from "@/api/question";
+import { getQuestionOfBook } from "@/api/exercise";
 import common from "@/utils/common";
 export default {
   name: "questionsList",

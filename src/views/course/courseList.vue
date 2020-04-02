@@ -120,22 +120,22 @@
       <my-dialog
         :visible.sync="moreOperationDialog"
         :close-show="true"
-        :title="customFormData.Label"
+        :title="currentItemData.Label"
       >
         <!-- 展示校区的基本信息 -->
         <div slot="left_content" class="p_both20 p-b-20">
-          <course-row-detail @itemModify="updateListItem" :formItemData="customFormData" />
+          <course-row-detail @itemModify="updateListItem" :formItemData="currentItemData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
           <el-tabs v-model="activeName">
             <!-- <el-tab-pane id="travelBrochure" label="宣传资料" name="travelBrochure">
-              <courseTravelBrochure :travel-brochure-data="customFormData" />
+              <courseTravelBrochure :travel-brochure-data="currentItemData" />
             </el-tab-pane>-->
             <el-tab-pane id="priceSetting" label="价格设定" name="priceSetting">
-              <course-price-tab :formItemData="customFormData" />
+              <course-price-tab :formItemData="currentItemData" />
             </el-tab-pane>
             <el-tab-pane id="smxq" label="禁售校区" name="smxq">
-              <courseSellPlatform  />
+              <courseSellPlatform :currentFormData="currentItemData" />
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -144,17 +144,17 @@
       <el-dialog
         :visible.sync="editDialog"
         width="600px"
-        :title="customFormData.Id>0?'编辑'+customFormData.Label:'新增课程'"
+        :title="currentItemData.Id>0?'编辑'+currentItemData.Label:'新增课程'"
       >
         <course-row-detail
           @subClickEvent="updateListItem"
           :courseKindIdProp="searchCourseKindId"
           :editEnable="true"
-          :formItemData="customFormData"
+          :formItemData="currentItemData"
         />
         <div></div>
       </el-dialog>
-      <!-- <course-row-dialog :travel-brochure-data="customFormData" :visible.sync="editDialog" @subClickEvent="updataCourseList" /> -->
+      <!-- <course-row-dialog :travel-brochure-data="currentItemData" :visible.sync="editDialog" @subClickEvent="updataCourseList" /> -->
     </div>
   </div>
 </template>
@@ -187,7 +187,7 @@ import {
 } from "@/api/course";
 
 import { getCollegeWithCourseKind } from "@/api/college";
-import { getExamList } from "@/api/question";
+import { getExerciseByBookChapter } from "@/api/exercise";
 
 export default {
   name: "courseList",
@@ -227,7 +227,7 @@ export default {
       // 当前操作课程的索引
       currentCourseIndex: null,
       // 课程的表单数据
-      customFormData: {}
+      currentItemData: {}
     };
   },
   mounted() {
@@ -321,9 +321,9 @@ export default {
     // 切换tabs标签页在调用函数
     changDialogTab(tab) {
       if (tab.$attrs.id == "travelBrochure") {
-        // this.$refs.travelBrochure.getTravelBrochure(this.customFormData.Id);
+        // this.$refs.travelBrochure.getTravelBrochure(this.currentItemData.Id);
       } else if (tab.$attrs.id == "priceSetting") {
-        // this.$refs.refCoursePriceTab.getCourseRow(this.customFormData);
+        // this.$refs.refCoursePriceTab.getCourseRow(this.currentItemData);
       }
     },
     // 添加或编辑之后更新列表数据
@@ -339,8 +339,8 @@ export default {
     openMoreOptationDialog(index, row) {
       this.moreOperationDialog = true;
       this.currentCourseIndex = index;
-      this.customFormData = row;
-      // this.$refs.travelBrochure.getTravelBrochure(this.customFormData.Id);
+      this.currentItemData = row;
+      // this.$refs.travelBrochure.getTravelBrochure(this.currentItemData.Id);
       // this.$refs.refCourseDetail.getCourseRowData(row);
     },
     // 打开课程的模态框
@@ -354,7 +354,7 @@ export default {
         return;
       }
       this.editDialog = true;
-      this.customFormData = {};
+      this.currentItemData = {};
     },
     // 更新课程列表
     updataCourseList(type, row) {
@@ -362,7 +362,7 @@ export default {
         this.courseList.unshift(row);
       } else {
         this.courseList.splice(this.currentCourseIndex, 1, row);
-        this.customFormData = row;
+        this.currentItemData = row;
         // this.$refs.refCourseDetail.getCourseRowData(row);
       }
     },

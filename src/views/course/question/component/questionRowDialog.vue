@@ -136,7 +136,7 @@
 
 <script>
 import $ImgHttp from "@/api/ImgAPI";
-import { editQuestion, addQuestion } from "@/api/question";
+import { editQuestion, addQuestion } from "@/api/exercise";
 import common from "@/utils/common";
 export default {
   props: {

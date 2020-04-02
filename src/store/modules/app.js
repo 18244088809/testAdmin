@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 import { getLanguage } from '@/lang/index'
-import {  getQuestionTypes } from "@/api/question";
+import {  getQuestionTypes } from "@/api/exercise";
 import { getCollegeWithCourseKind } from '@/api/college'
 import { queryPlatform } from '@/api/platform' 
 const state = {
@@ -51,8 +51,7 @@ const mutations = {
   SET_QUESTIONTYPES: (state, data) => {
     state.questionTypes = data
   },
-
-  
+ 
  
   PUSH_PLATFORM: (state, newItem) => {
     let hasIn = false;

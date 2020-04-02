@@ -67,7 +67,7 @@ import myDialog from "@/components/myDialog/myDialog";
 import questionTypeNav from "@/views/course/question/component/questionTypeNav";
 import relatedQuestions from "@/views/course/question/component/relatedQuestions";
 import examForm from "@/views/course/question/component/examForm";
-import { getExamList} from "@/api/question";
+import { getExerciseByBookChapter} from "@/api/exercise";
 export default {
   name: "mockExam",
   components: {
@@ -101,7 +101,7 @@ export default {
     async getExerciseByHighFrequency() {
       let urlParams = this.subjectId + "/" + 3;
       let offsetRow = (this.nowPage - 1) * this.rows;
-      let res = await  getExamList(urlParams, {
+      let res = await  getExerciseByBookChapter(urlParams, {
         limit: this.rows,
         offset: offsetRow
       });

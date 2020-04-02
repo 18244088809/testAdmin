@@ -108,16 +108,16 @@ export function getClassStu(url, param, data) {
   })
 }
 // 分发作业
-export function handOutTask(url, param, data) {
+export function sendStudentsExercise(url, param, data) {
   return request({
     url: '/class/sendStudentsExercise/'+url,
-    method: 'put',
+    method: 'post',
     params: param,
     data
   })
 }
 // 获取分发记录-全班
-export function getAllClassTaskRecord(url, param, data) {
+export function getSendExerciseOfClassRecord(url, param, data) {
   return request({
     url: '/class/getSendExerciseOfClassRecord/'+url,
     method: 'get',
@@ -136,3 +136,12 @@ export function removeClassStudent(url, param, data) {
 }
 
 
+// 获取某个学员的作业
+export function getClassMateWorks(url, query, data) {
+  return request({
+    url: '/class/getClassMateWorks/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}

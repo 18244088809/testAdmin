@@ -27,7 +27,7 @@
   </div>
 </template>
 <script>
-import { getSubjectChapter} from "@/api/question";
+import { getSubjectChapter} from "@/api/exercise";
 import questionTypeNav from "@/views/course/question/component/questionTypeNav";
 export default {
   name: "chapterExercises",

@@ -47,7 +47,7 @@ export function getSubjectChapter(url, param, data) {
   })
 }
 // 组卷模考-获取组卷模考列表
-export function getExamList(url, param, data) {
+export function getExerciseByBookChapter(url, param, data) {
   return request({
     url: '/exercise/getExerciseByBookChapter/' + url,
     method: 'get',
@@ -59,7 +59,7 @@ export function getExamList(url, param, data) {
 
 export function addExam(url, param, data) {
   return request({
-    url: '/exercise?public=' + url,
+    url: '/exercise' + url,
     method: 'post',
     params: param,
     data
@@ -106,6 +106,15 @@ export function getDoWrongQuseStuList(url, param, data) {
 export function getTopWrongQuseList(url, param, data) {
   return request({
     url: '/exercise/getTopWrongNumQuestionByChapter/' + url,
+    method: 'get',
+    params: param,
+    data
+  })
+}
+// 获取高频错题的数据
+export function getExerciseOfTeacher(url, param, data) {
+  return request({
+    url: '/exercise/getExerciseOfTeacher/' + url,
     method: 'get',
     params: param,
     data
