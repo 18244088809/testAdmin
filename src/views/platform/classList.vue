@@ -99,6 +99,9 @@
             <el-tab-pane label="本班学员" name="bbxy" id="bbxy">
               <classStudent  :formItemData="classFormData"></classStudent>
             </el-tab-pane>
+             <el-tab-pane label="所开课程" name="skkc" id="skkc">
+              <classCourse :formItemData="classFormData"></classCourse>
+            </el-tab-pane>
             <el-tab-pane label="任课老师" name="rkls" id="rkls">
               <classTeacher :formItemData="classFormData"></classTeacher>
             </el-tab-pane>
@@ -106,6 +109,7 @@
             <el-tab-pane label="课程表" name="kcb" id="kcb">
               <SchoolTimeTable :formItemData="classFormData"></SchoolTimeTable>
             </el-tab-pane>
+            
           </el-tabs>
         </div>
       </my-dialog>
@@ -147,6 +151,7 @@ import classRowDetail from "@/views/platform/component/classRowDetail";
 import classTeacher from "@/views/platform/component/classTeacher";
 import classStudent from "@/views/platform/component/classStudent";
 import studentWork from "@/views/platform/component/studentWork";
+import classCourse from "@/views/platform/component/classCourse";
 import SchoolTimeTable from "@/views/platform/component/schoolTimeTable";
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
@@ -175,7 +180,8 @@ export default {
     SchoolTimeTable,
     classTeacher,
     studentWork,
-    classStudent
+    classStudent,
+    classCourse
   },
   data() {
     return {

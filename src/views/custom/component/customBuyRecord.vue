@@ -36,7 +36,7 @@
         <template slot-scope="scope">
           <el-button type="primary" @click="deleteBuyCourseRecord(scope.row.Id,scope.$index)">删除</el-button>
         </template>
-      </el-table-column> -->
+      </el-table-column>-->
     </el-table>
     <div>
       <el-button type="primary" class="m-v-15" @click="addBuyCourse()">手动添加购买记录</el-button>
@@ -216,19 +216,19 @@ export default {
       }
     };
   },
-  watch: {
-    customData(newval) {
-      this.customBuyCourseList = [];
-      this.customItemData = this.customData;
-      this.getBuyCouseRecord();
-    }
-  },
-  mounted() {
+  // watch: {
+  //   customData(newval) {
+  //     this.customBuyCourseList = [];
+  //     this.customItemData = this.customData;
+  //     this.getBuyCouseRecord();
+  //   }
+  // },
+  mounted() {},
+  fire() {
     this.customBuyCourseList = [];
     this.customItemData = this.customData;
     this.getBuyCouseRecord();
   },
-
   methods: {
     // 根据选中的学院获取课程类别
     collegeChange(selVa) {

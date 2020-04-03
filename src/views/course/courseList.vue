@@ -127,10 +127,7 @@
           <course-row-detail @itemModify="updateListItem" :formItemData="currentItemData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activeName">
-            <!-- <el-tab-pane id="travelBrochure" label="宣传资料" name="travelBrochure">
-              <courseTravelBrochure :travel-brochure-data="currentItemData" />
-            </el-tab-pane>-->
+          <el-tabs v-model="activeName" @tab-click="onChangeTabs"> 
             <el-tab-pane id="priceSetting" label="价格设定" name="priceSetting">
               <course-price-tab :formItemData="currentItemData" />
             </el-tab-pane>
@@ -195,7 +192,7 @@ export default {
     myDialog,
     myImageViewer,
     courseTravelBrochure,
-    coursePriceTab, 
+    coursePriceTab,
     courseSellPlatform,
     courseRowDetail
   },
@@ -234,6 +231,9 @@ export default {
     this.getAllCollegeWithCourseKind();
   },
   methods: {
+    onChangeTabs(item) {
+      item.$children[0].fire();
+    },
     // 图片预览
     onPreview(src) {
       this.showViewer = true;
@@ -310,9 +310,9 @@ export default {
           );
           if (res.code == 200) {
             this.$message({
-          message: "设置成功",
-          type: "success"
-        });  
+              message: "设置成功",
+              type: "success"
+            });
             this.$set(this.courseList, index, res.data);
           }
         })
@@ -331,7 +331,7 @@ export default {
       if (type == 0) {
         this.courseList.push(rowData);
       } else if (type == 1) {
-        this.$set(this.courseList, this.currentCourseIndex, rowData); 
+        this.$set(this.courseList, this.currentCourseIndex, rowData);
       }
       this.editDialog = false;
     },
@@ -346,11 +346,10 @@ export default {
     // 打开课程的模态框
     openCourseDialog(type) {
       if (!this.searchCourseKindId || this.searchCourseKindId == 0) {
-        
         this.$message({
           message: "没有选择课程类别",
           type: "warning"
-        });  
+        });
         return;
       }
       this.editDialog = true;

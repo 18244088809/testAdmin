@@ -1,14 +1,10 @@
 <template>
-  <div class="flex_dom hgt_100 pd0 marg0 wid_100" >
-    <div class="flex_dom  hgt_100 wid_100" >
-      <div class="flex_dom  hgt_100" style="width:350px;   ">
-        <el-table
-          :data="classAllStuList"
-          ref="studentsTable"
-          tooltip-effect="light"
-        >
+  <div class="flex_dom hgt_100 pd0 marg0 wid_100">
+    <div class="flex_dom hgt_100 wid_100">
+      <div class="flex_dom hgt_100" style="width:350px;   ">
+        <el-table :data="classAllStuList" ref="studentsTable" tooltip-effect="light">
           <!-- @selection-change="selectionCustomChange"
-          <el-table-column type="selection" width="10" /> -->
+          <el-table-column type="selection" width="10" />-->
           <el-table-column prop="id" label="学号" width="60"></el-table-column>
           <el-table-column prop="Realname" label="姓名">
             <template slot-scope="scope">
@@ -32,12 +28,17 @@
           <el-button type="success" @click="activElTab='fszy'">发送作业</el-button>
           <el-button type="primary" @click="activElTab='pgzy'">批改作业</el-button>
           <el-button type="info" @click="activElTab='xyzp'">学员作品</el-button>
-          <el-button type="warning" @click="activElTab='xyzp'">留言消息</el-button>
+          <el-button type="warning" @click="activElTab='lyxx'">留言消息</el-button>
         </div>
         <hr />
-        <sendStudentExercise v-show="activElTab=='fszy'" :studentIDS="selectedStudentIDList" />
-        <sendStudentExercise v-show="activElTab=='pgzy'" :studentIDS="selectedStudentIDList" />
-        <sendStudentExercise v-show="activElTab=='xyzp'" :studentIDS="selectedStudentIDList" />
+        <sendStudentExercise v-show="activElTab=='fszy'" ref="fszy" :studentIDS="classAllStuList" />
+        <receiveStudentExercise
+          v-show="activElTab=='xyzp'"
+          ref="xyzp"
+          :studentIDS="classAllStuList"
+        />
+        <handOutWorks v-show="activElTab=='pgzy'" ref="pgzy" :studentIDS="classAllStuList" />
+        <sendMessage v-show="activElTab=='lyxx'" ref="lyxx" :studentIDS="classAllStuList" />
         <!-- <el-tabs v-model="activElTab">
           <el-tab-pane id="fszy" label="发送作业" name="fszy"></el-tab-pane>
           <el-tab-pane id="pgzy" label="批改作业" name="pgzy"></el-tab-pane>
@@ -69,11 +70,17 @@ import {
 } from "@/api/class";
 import common from "@/utils/common";
 import sendStudentExercise from "@/views/platform/component/sendStudentExercise";
+import receiveStudentExercise from "@/views/platform/component/receiveStudentExercise";
+import handOutWorks from "@/views/platform/component/handOutWorks";
+import sendMessage from "@/views/platform/component/sendMessage";
 
 import { isDate } from "xe-utils/methods";
 export default {
   components: {
-    sendStudentExercise
+    sendStudentExercise,
+    receiveStudentExercise,
+    handOutWorks,
+    sendMessage
   },
   props: {
     // 校区的表单数据

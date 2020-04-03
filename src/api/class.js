@@ -145,3 +145,32 @@ export function getClassMateWorks(url, query, data) {
     data
   })
 }
+
+// 获取某个学员的作业
+export function addClassCourse(url, query, data) {
+  return request({
+    url: '/class/addClassCourse/' + url,
+    method: 'post',
+    params: query,
+    data
+  })
+}
+
+// 获取某个学员的作业
+export function removeClassCourse(url, query, data) {
+  return request({
+    url: '/class/removeClassCourse/' + url,
+    method: 'post',
+    params: query,
+    data
+  })
+}
+// 获取某个学员的作业
+export function getClassCourse(url, query, data) {
+  return request({
+    url: '/class/getClassCourse/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}

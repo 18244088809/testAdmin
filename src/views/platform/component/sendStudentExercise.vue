@@ -1,7 +1,27 @@
 <template>
   <div>
-    <el-form style="padding:10px 0px 0px 0px" label-width="80px" size="small">
-      <el-form-item label="班级名称" prop="Label"></el-form-item>
+    选择试卷所属的学院和类别
+    <el-form style="padding:10px 0px 0px 0px" label-width="80px" size="small" :inline="true">
+     <el-form-item label="所属学院">
+        <el-select v-model="currentCollegeID" placeholder="请选择学院" @change="collegeChange">
+          <el-option
+            v-for="(item,index) in $store.getters.app.collegeWithCourseKind"
+            :key="index"
+            :label="item.Label"
+            :value="item.Id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="课程类别">
+        <el-select v-model="currentCourseKindID" placeholder="请选择课程分类" @change="courseKindChange">
+          <el-option
+            v-for="(item,index) in courseKindsOps"
+            :key="index"
+            :label="item.Label"
+            :value="item.Id"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
     <div class="around-center hgt60 bge0e3ea">
       <el-button type="warning" class="m-l-40">编辑</el-button>
@@ -42,36 +62,37 @@ export default {
   data() {
     return {
       common,
-      searchGrade: new Date(),
-      currenteditEnable: this.editEnable,
-      // 控制班级弹出框
-      isShowClassDialog: false,
-      // 创建班级的时间
-      createClassTime: null,
-      // 创建人
-      createPerson: null,
-      currentItemData: this.formItemData,
-      // 表单验证
-      ClassFormRules: {
-        Label: [
-          { required: true, message: "班级名称不能为空", trigger: "blur" }
-        ]
-      }
+      // 选中的学院
+      currentCollegeID: {},
+      currentCourseKindID: {},
+      //  科目的基本数据
+      currentItemData: {},
+      courseKindsOps: [],
     };
   },
-  watch: {
-    formItemData(newvar) {
-      this.currentItemData = this.formItemData;
-      console.log(" this.currenteditEnable :", this.currenteditEnable);
-    }
-  },
+ 
   mounted() {
-    if (isDate(this.searchGrade)) {
-      this.currentItemData.Grade = this.searchGrade.getFullYear();
-    }
-    this.currentItemData = this.formItemData;
+   
   },
   methods: {
+
+     // 选中学院后回调选中课程类别
+    collegeChange(collegeID) {
+      this.$store.getters.app.collegeWithCourseKind.forEach(college => {
+        if (college.Id == collegeID) {
+          this.currentCourseKindID = 0;
+          this.courseKindsOps = college.Children;
+        }
+      });
+    }, // 课程大类改变
+    courseKindChange(coursekindId) {
+      this.courseKindsOps.forEach(coursekind => {
+        if (coursekind.Id == coursekindId) {
+          this.currentItemData.Coursekind = coursekind.Label;
+          this.currentItemData.CoursekindID = coursekind.Id;
+        }
+      });
+    },
     // 添加或编辑数据
     saveFormItemData() {
       console.log("====studentIDS:===", this.studentIDS);

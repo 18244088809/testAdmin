@@ -262,8 +262,7 @@ export default {
         });
         return;
       }
-      let newStu = [...this.checkBoxAddStu];
-      console.log("this.checkBoxAddStu:", this.checkBoxAddStu);
+      let newStu = [...this.checkBoxAddStu]; 
       if (this.classAllStuList.length > 0) {
         this.classAllStuList.forEach(stuItem => {
           let index = newStu.indexOf(stuItem.ID);

@@ -42,7 +42,7 @@
         :key="index"
         class="m-v-10 radius3 border-e5ecf7"
       >
-        <div class="flex_mid p_both20 m-t-10"> 
+        <div class="flex_mid p_both20 m-t-10">
           <img
             v-if="item.ManagerFace"
             class="wid20"
@@ -67,12 +67,12 @@
               v-for="(img,index) in item.ImageList"
               :key="index"
               class="marg10 flex_mid flex_wrap"
-            > 
+            >
               <img v-if="img" class="wid20" :src="img" @click="onPreview(img)" />
             </div>
           </div>
         </div>
-        <div >
+        <div>
           <p
             v-for="(replyItem,replyIndex) in item.Reply"
             :key="replyIndex"
@@ -155,14 +155,17 @@ export default {
       currentReplyIndex: null
     };
   },
-  watch: {
-    customData(newvar) {
-      this.customFormData = this.customData;
-      this.customTrackList = [];
-      this.getCustomId(this.customData.id);
-    }
-  },
+  // watch: {
+  //   customData(newvar) {
+  //     this.customFormData = this.customData;
+  //     this.customTrackList = [];
+  //     this.getCustomId(this.customData.id);
+  //   }
+  // },
   mounted() {
+    this.fire();
+  },
+  fire() {
     this.customFormData = this.customData;
     this.getCustomId(this.customData.id);
   },

@@ -30,12 +30,14 @@
       <el-button type="primary" @click="addCustomContract">签订合同</el-button>
     </div>
     <!-- 合同弹出框 -->
- 
 
-
-    <custom-contract-dialog  :visible.sync="editDialog"
-        width="600px" 
-        :title="customRowData.Id>0?'编辑'+customRowData.Label:'新增'" ref="refContractDialog" @updateContractData="updateContractList" />
+    <custom-contract-dialog
+      :visible.sync="editDialog"
+      width="600px"
+      :title="customRowData.Id>0?'编辑'+customRowData.Label:'新增'"
+      ref="refContractDialog"
+      @updateContractData="updateContractList"
+    />
   </div>
 </template>
 
@@ -64,7 +66,7 @@ export default {
   },
   data() {
     return {
-       // 更多操作弹窗
+      // 更多操作弹窗
       moreOperationDialog: false,
       // 更多操作弹窗
       editDialog: false,
@@ -79,12 +81,13 @@ export default {
   },
 
   mounted() { 
-    // this.getContractList();
   },
-
+  fire() {
+     this.getContractList();
+  },
   methods: {
     // 获取合同信息列表
-    async getContractList() { 
+    async getContractList() {
       // 初始化数据
       this.customContractList = [];
       const res = await getCustomContract(this.customRowData.id);

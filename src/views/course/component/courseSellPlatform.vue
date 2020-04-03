@@ -54,20 +54,23 @@ export default {
     };
   },
   mounted() {
-    this.platforms = [];
-    let forbiddenPlatformList = this.currentFormData.ForbiddenPlatform.split(
-      ","
-    );
-    this.$store.getters.app.platformList.forEach(platform => {
-      forbiddenPlatformList.forEach(forbiddenPlatform => {
-        if (platform.Id == forbiddenPlatform) {
-          platform.Selected = true;
-        }
-      });
-      this.platforms.push(platform);
-    });
+    
   },
   methods: {
+    fire() {
+      this.platforms = [];
+      let forbiddenPlatformList = this.currentFormData.ForbiddenPlatform.split(
+        ","
+      );
+      this.$store.getters.app.platformList.forEach(platform => {
+        forbiddenPlatformList.forEach(forbiddenPlatform => {
+          if (platform.Id == forbiddenPlatform) {
+            platform.Selected = true;
+          }
+        });
+        this.platforms.push(platform);
+      });
+    },
     changeRight(checked, itemObj) {
       let item = { index: itemObj.Value };
       if (checked) {

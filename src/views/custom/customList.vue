@@ -239,7 +239,7 @@
           <custom-row-detail :formItemData="customFormData" :platform="currentPlatform" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activElTab">
+          <el-tabs v-model="activElTab" @tab-click="onChangeTabs">
             <el-tab-pane id="gjjl" label="跟进记录" name="gjjl">
               <custom-track :custom-data="customFormData" @subClickEvent="updateCustomRecentTrack" />
             </el-tab-pane>
@@ -298,7 +298,7 @@ import {
   getTrackList,
   getCustomBuyCouseRecord,
   addCustomBuyCourseRecord,
-  customAllowDoExercise, 
+  customAllowDoExercise,
   getCustomInfoList,
   addCustomInfo,
   editCustomInfo,
@@ -317,7 +317,7 @@ import {
   setNewPlatformWorks,
   getPlatformAboutWorkers,
   getPlatformWorkers,
-  setPlatformMaster 
+  setPlatformMaster
 } from "@/api/platform";
 import customRowDetail from "@/views/custom/component/customRowDetail";
 import customSendSmsDialog from "@/views/custom/component/customSendSmsDialog";
@@ -463,6 +463,9 @@ export default {
   },
 
   methods: {
+    onChangeTabs(item) {
+      item.$children[0].fire();
+    },
     // 图片预览
     onPreview(src) {
       this.showViewer = true;
@@ -636,7 +639,6 @@ export default {
       val.forEach(item => {
         this.selectedStudentIDList.push(item.id);
       });
-   
     },
     // 转移学员的管理员到其他管理名下
     changeManager() {
