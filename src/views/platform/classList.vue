@@ -86,7 +86,7 @@
     <!-- 弹出框 -->
     <div>
       <!-- 班级相关操作的模态框 -->
-      <my-dialog :visible.sync="moreOperationDialog"  :title="classFormData.Label">
+      <my-dialog :visible.sync="moreOperationDialog" :title="classFormData.Label">
         <div slot="left_content" class="p_both20 p-b-20">
           <class-row-detail
             :formItemData="classFormData"
@@ -95,16 +95,16 @@
           ></class-row-detail>
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activeClassTabs">
+          <el-tabs v-model="activeClassTabs" @tab-click="onChangeTabs">
             <el-tab-pane label="本班学员" name="bbxy" id="bbxy">
-              <classStudent :formItemData="classFormData"></classStudent>
+              <classStudent  :formItemData="classFormData"></classStudent>
             </el-tab-pane>
             <el-tab-pane label="任课老师" name="rkls" id="rkls">
               <classTeacher :formItemData="classFormData"></classTeacher>
             </el-tab-pane>
 
             <el-tab-pane label="课程表" name="kcb" id="kcb">
-              <SchoolTimeTable :formItemData="classFormData" ></SchoolTimeTable>
+              <SchoolTimeTable :formItemData="classFormData"></SchoolTimeTable>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -126,12 +126,11 @@
       <!-- 班级相关操作的模态框 -->
       <my-dialog
         :visible.sync="classStudentsDialog"
-        
         :title="'【'+classFormData.Label+'】学员作业'"
         :showLeft="false"
       >
-        <div slot="right_content" class="flex_dom hgt_100  "  >
-          <studentWork :formItemData="classFormData" ></studentWork>
+        <div slot="right_content" class="flex_dom hgt_100">
+          <studentWork :formItemData="classFormData"></studentWork>
           <!-- <el-tabs v-model="activeClassTabs">
             
              <el-tab-pane label="本班学员作业" name="xyzy" id="xyzy">
@@ -211,6 +210,9 @@ export default {
     };
   },
   methods: {
+    onChangeTabs(item) { 
+        item.$children[0].fire(); 
+    },
     // 获取所有班级的列表
     async getAllClass() {
       let that = this;
@@ -242,14 +244,13 @@ export default {
     },
     // 打开更多操作模态框
     openMoreOptationDialog(index, row) {
-      this.classFormData = { ...row };
-
+      this.classFormData = { ...row }; 
       this.classFormData.OpenTime = row.OpenTime * 1000;
       this.classFormData.Endtime = row.Endtime * 1000;
-      this.classFormData.Createtime = row.Createtime * 1000;
-
-      this.moreOperationDialog = true; 
+      this.classFormData.Createtime = row.Createtime * 1000; 
+      this.moreOperationDialog = true;
       this.currentIndex = index;
+     
     },
     //打开班级信息模态框
     createClass(type) {

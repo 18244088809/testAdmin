@@ -199,12 +199,12 @@ export default {
       selectExistStudents: []
     };
   },
-  mounted() {
-    this.getClassAllStuList();
+  mounted() { 
+    this.fire();
   },
   methods: {
     // 获取班级的所有学员
-    async getClassAllStuList() {
+    async fire() {
       this.serachStuList = [];
       this.ShowSearchForm = false;
       this.showSearchStuResult = false;

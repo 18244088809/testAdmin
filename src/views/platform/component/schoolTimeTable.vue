@@ -218,18 +218,10 @@ export default {
     }
   },
   mounted() {
-    this.getClassRow();
+ 
   },
   methods: {
-    // 获取所有的老师
-    async getAllTeachers() {
-      let res = await getAllTeacher("", {
-        status: 1,
-        role: 0,
-        simple: 1
-      });
-      this.teacherOptionList = res.data ? res.data : [];
-    },
+     
     // 禁止编辑以前添加的老师
     editDisabledRow({ row, column }) {
       this.$message({
@@ -238,7 +230,7 @@ export default {
       });
     },
     //获取班级的基本信息
-    getClassRow() {
+    fire() {
       this.getClassSubjectData();
       this.getTimeTable();
       this.getClassAllStuList();

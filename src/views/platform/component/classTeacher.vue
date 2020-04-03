@@ -60,7 +60,7 @@
           <template v-slot="{ row,rowIndex }">
             <el-button v-if="row.id<0" type="warning" @click="deleTeacherRow(row,rowIndex)">删除</el-button>
             <el-tooltip v-else effect="dark" content="已经添加的授课老师不允许删除，可以忽略" placement="top-start">
-              <el-button  >删除</el-button>
+              <el-button>删除</el-button>
             </el-tooltip>
           </template>
         </vxe-table-column>
@@ -174,11 +174,12 @@ export default {
       showImgUrl: ""
     };
   },
-  mounted() {
-    this.getPlatformTeacher();
-    this.getClassTeachers();
-  },
+  mounted() {},
   methods: {
+    fire() {
+      this.getPlatformTeacher();
+      this.getClassTeachers();
+    },
     // 获取所有的老师
     async getPlatformTeacher() {
       let res = await getPlatformTeacher("", {
