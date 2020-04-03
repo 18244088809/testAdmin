@@ -94,7 +94,7 @@ import {
   addClassDaily,
   addTimeTag,
   getTimeTag,
-  addClassStu,
+  addClassStudent,
   getClassStu,
   handOutTask,
   getAllClassTaskRecord,
@@ -280,7 +280,7 @@ export default {
         this.checkBoxAddStu = [];
         return;
       }
-      let res = await addClassStu(this.formItemData.Id, "", newStu);
+      let res = await addClassStudent(this.formItemData.Id, "", newStu);
 
       this.$message({
         message: "操作成功",
@@ -322,7 +322,7 @@ export default {
         });
       } else {
         this.$confirm(
-          "删除后 此学生在本班级的作业也会被删除，你确定吗?",
+          "你确定删除吗?",
           "提示",
           {
             confirmButtonText: "确定",

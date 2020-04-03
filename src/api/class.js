@@ -89,8 +89,8 @@ export function getTimeTag(url, param, data) {
     data
   })
 }
-// 添加班级学生
-export function addClassStu(url, param, data) {
+// 设置班级学生
+export function addClassStudent(url, param, data) {
   return request({
     url: '/class/addClassStudent/'+url,
     method: 'post',
@@ -129,7 +129,7 @@ export function getSendExerciseOfClassRecord(url, param, data) {
 export function removeClassStudent(url, param, data) {
   return request({
     url: '/class/removeClassStudent/'+url,
-    method: 'delete',
+    method: 'post',
     params: param,
     data
   })
