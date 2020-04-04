@@ -53,7 +53,7 @@
           ></el-time-select>
         </template>
       </vxe-table-column>
-            <vxe-table-column field="CourseNum" title="计划课时" :edit-render="{type: 'default'}" width="120">
+      <vxe-table-column field="CourseNum" title="计划课时" :edit-render="{type: 'default'}" width="120">
         <template v-slot:edit="{ row }">
           <el-input-number v-model="row.CourseNum" :min="0" :step="0.5" placeholder="小时"></el-input-number>
         </template>
@@ -152,6 +152,7 @@ import {
   resetPasswordManager,
   getTeachBook
 } from "@/api/manager";
+import { getPlatformWorkers } from "@/api/platform";
 import TimeTagForm from "./timeTagForm";
 import common from "@/utils/common";
 export default {
@@ -217,11 +218,8 @@ export default {
       deep: true
     }
   },
-  mounted() {
- 
-  },
+  mounted() {},
   methods: {
-     
     // 禁止编辑以前添加的老师
     editDisabledRow({ row, column }) {
       this.$message({
@@ -231,7 +229,7 @@ export default {
     },
     //获取班级的基本信息
     fire() {
-      this.getClassSubjectData();
+      this.getPlatformWorkers();
       this.getTimeTable();
       this.getClassAllStuList();
     },
@@ -258,8 +256,10 @@ export default {
       this.todayTimeTableList.splice(rowIndex, 1, row);
     },
     // 获取班级的授课老师
-    async getClassSubjectData() {
-      let res = await getClassTeachers(this.formItemData.Id);
+    async getPlatformWorkers() {
+      let res = await getPlatformWorkers(this.formItemData.PlatformID, {
+        onlyLive: true
+      });
 
       if (res.data) {
         this.classAllSubject = res.data ? res.data : [];

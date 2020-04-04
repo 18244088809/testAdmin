@@ -102,9 +102,9 @@
              <el-tab-pane label="所开课程" name="skkc" id="skkc">
               <classCourse :formItemData="classFormData"></classCourse>
             </el-tab-pane>
-            <el-tab-pane label="任课老师" name="rkls" id="rkls">
+            <!-- <el-tab-pane label="任课老师" name="rkls" id="rkls">
               <classTeacher :formItemData="classFormData"></classTeacher>
-            </el-tab-pane>
+            </el-tab-pane> -->
 
             <el-tab-pane label="课程表" name="kcb" id="kcb">
               <SchoolTimeTable :formItemData="classFormData"></SchoolTimeTable>

@@ -1,6 +1,6 @@
 <template>
   <div class="p_both10 p-t-5">
-    <el-form :inline="true" class="demo-form-inline m-b-5">
+    <!-- <el-form :inline="true" class="demo-form-inline m-b-5">
       <el-form-item label="课程类别">
         <el-input
           v-model="searchBookCourseKindLabel"
@@ -14,7 +14,7 @@
       <el-form-item>
         <el-button type="primary" @click="searchSubmit">查询</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
     <!-- 科目列表 -->
     <div>
       <el-table
@@ -45,8 +45,7 @@
   </div>
 </template>
 <script>
-import { setTeachBook } from "@/api/manager";
-import { queryBookList } from "@/api/book";
+import { setTeachBook,getTeachBook } from "@/api/manager"; 
 import { string } from "jszip/lib/support";
 export default {
   props: {
@@ -68,7 +67,7 @@ export default {
       // 当前页数
       nowPage: 1,
       // 每页数据的总条
-      rows: 10,
+      rows: 1000,
       // 科目的表格数据
       bookList: [],
       // 条件查询-科目名称
@@ -91,6 +90,9 @@ export default {
   created() {
     this.currentFormData = this.formItemData;
     this.getTeacherRowData();
+  },
+  mounted(){
+    this.searchSubmit();
   },
   methods: {
     // 父组件触发的方法，获取老师的信息
@@ -125,11 +127,10 @@ export default {
     async getAllBookList() {
       let that = this;
       this.nowPageBookId = [];
-      let res = await queryBookList("", {
+      let res = await getTeachBook(this.currentFormData.Id, {
         limit: that.rows,
-        offset: (that.nowPage - 1) * that.rows,
-        label: that.searchContent,
-        coursekind: that.searchBookCourseKindLabel
+        offset: (that.nowPage - 1) * that.rows, 
+        withOtherBooks:true
       });
       if (res.code == 200) {
         that.allRows = res.title;
@@ -173,8 +174,8 @@ export default {
         message: "操作成功",
         type: "success"
       }); 
-        this.currentFormData = res.data;
-        this.$emit("subClickEvent", 1, res.data);
+        // this.currentFormData = res.data;
+        // this.$emit("subClickEvent", 1, res.data);
       }
     }
   }

@@ -112,7 +112,7 @@
           <el-tab-pane label="权限设置" name="qxsz" id="qxsz">
             <set-right :formItemData="currentRowData" :currentPlatform="currentPlatform"></set-right>
           </el-tab-pane>
-          <el-tab-pane label="所教科目" name="sjkm" id="sjkm">
+          <el-tab-pane label="所教科目" v-if="currentPlatform==0" name="sjkm" id="sjkm">
             <teacherBook :formItemData="currentRowData" @subClickEvent="updateTeacherList"></teacherBook>
           </el-tab-pane>
         </el-tabs>

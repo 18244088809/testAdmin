@@ -5,7 +5,7 @@
       :disabled="currenteditEnable==false"
       :rules="teacherFormRules"
       ref="formUI"
-      style="padding:50px 0px 0px 0px"
+      style="padding:20px 10px 10px 10px"
       label-width="80px"
       size="small"
     >
