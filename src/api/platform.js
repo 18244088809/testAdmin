@@ -49,7 +49,7 @@ export function setNewPlatformWorks(url, query, data) {
 }
 
 // 获取的工作人员所在的校区
-export function getPlatformAboutWorkers(url, query, data) {
+export function getPlatformOfManager(url, query, data) {
   return request({
     url: '/platform/getPlatformOfManager/' + url,
     method: 'get',
@@ -57,17 +57,7 @@ export function getPlatformAboutWorkers(url, query, data) {
     data
   })
 }
-
-// 获取的工作人员
-export function getPlatformWorkers(url, query, data) {
-  return request({
-    url: '/platform/getPlatformWorkers/' + url,
-    method: 'get',
-    params: query,
-    data
-  })
-}
-
+ 
 // 获取的某个校区的所有工作人员
 export function getAllManagerOfPlatform(url, query, data) {
   return request({

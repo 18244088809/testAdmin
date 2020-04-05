@@ -315,8 +315,7 @@ import {
   updatePlatform,
   setPlatformWorker,
   setNewPlatformWorks,
-  getPlatformAboutWorkers,
-  getPlatformWorkers,
+  getAllManagerOfPlatform, 
   setPlatformMaster
 } from "@/api/platform";
 import customRowDetail from "@/views/custom/component/customRowDetail";
@@ -455,7 +454,7 @@ export default {
     // 因为客户管理和我的校区应用的是同一个页面所有让当路由有参数是就代表但是我的校区
     if (this.currentPlatform > 0) {
       // 获取该校区下所属我的所有销售成员
-      this.getPlatformWorkers(this.currentPlatform);
+      this.getAllManagerOfPlatform(this.currentPlatform);
     } else {
       // 客户管理-直接获取客户列表
       this.getCustomList();
@@ -476,8 +475,8 @@ export default {
       this.showViewer = false;
     },
     // 我的校区-根据当前登录用户选择的校区获取该校区下所属自己的销售
-    async getPlatformWorkers(platformId) {
-      const res = await getPlatformWorkers(platformId);
+    async getAllManagerOfPlatform(platformId) {
+      const res = await getAllManagerOfPlatform(platformId);
       if (res.code == 200) {
         // 默认查看自己的客户
         this.searchWorkerId = this.$store.getters.manager.Id;

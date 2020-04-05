@@ -92,3 +92,15 @@ export function bookChapter(url, param, data) {
     data
   })
 }
+
+
+// 设置教材的编辑老师
+export function setBookEditors(url, param, data) {
+  return request({
+    url: '/book/setBookEditors/' + url,
+    method: 'post',
+    params: param,
+    data
+  })
+}
+

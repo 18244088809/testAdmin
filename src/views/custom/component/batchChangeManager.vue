@@ -44,7 +44,7 @@
 </template>
 <script>
 import { batchChangeManager } from "@/api/custom";
-import { getPlatformTeacher } from "@/api/manager";
+import { getSamePlatformTeachers } from "@/api/manager";
 import common from "@/utils/common";
 export default {
   name: "",
@@ -79,7 +79,7 @@ export default {
     // 获取平台老师
     async getTeacherOfPlatform() {
       this.platformTeacherOptions = [];
-      const res = await getPlatformTeacher("", {
+      const res = await getSamePlatformTeachers("", {
         platform: this.targetPlatform
       });
       if (res.code == 200) {

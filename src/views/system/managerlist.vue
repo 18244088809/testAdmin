@@ -111,10 +111,7 @@
         <el-tabs v-model="activElTab" >
           <el-tab-pane label="权限设置" name="qxsz" id="qxsz">
             <set-right :formItemData="currentRowData" :currentPlatform="currentPlatform"></set-right>
-          </el-tab-pane>
-          <el-tab-pane label="所教科目" v-if="currentPlatform==0" name="sjkm" id="sjkm">
-            <teacherBook :formItemData="currentRowData" @subClickEvent="updateTeacherList"></teacherBook>
-          </el-tab-pane>
+          </el-tab-pane> 
         </el-tabs>
       </div>
     </my-dialog>
@@ -128,8 +125,7 @@
       <teacher-row-detail
         :editEnable="true"
         :formItemData="currentRowData"
-        @subClickEvent="updateTeacherList"
-      />
+        @subClickEvent="updateTeacherList" />
     </el-dialog>
   </div>
 </template>
@@ -145,15 +141,13 @@ import {
 import { getAllManagerOfPlatform } from "@/api/platform";
 import myDialog from "@/components/myDialog/myDialog";
 import teacherRowDetail from "@/views/system/component/teacherRowDetail";
-import setRight from "@/views/system/component/setRight";
-import teacherBook from "@/views/system/component/teacherBook";
+import setRight from "@/views/system/component/setRight"; 
 export default {
   name: "managerList",
   components: {
     myDialog,
     teacherRowDetail,
-    setRight,
-    teacherBook
+    setRight 
   },
   data() {
     return {

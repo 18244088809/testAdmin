@@ -141,5 +141,13 @@ export function setForbiddenSellPlatform(url, param, data) {
     params: param,
     data
   })
+} 
+// 获取某些课程的所属教材列表
+export function getBooksOfCourses(url, param, data) {
+  return request({
+    url: '/course/getBooksOfCourses/' + url,
+    method: 'post',
+    params: param,
+    data
+  })
 }
-

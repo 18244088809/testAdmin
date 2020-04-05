@@ -147,8 +147,7 @@
   </div>
 </template> 
 <script>
-import classRowDetail from "@/views/platform/component/classRowDetail";
-import classTeacher from "@/views/platform/component/classTeacher";
+import classRowDetail from "@/views/platform/component/classRowDetail"; 
 import classStudent from "@/views/platform/component/classStudent";
 import studentWork from "@/views/platform/component/studentWork";
 import classCourse from "@/views/platform/component/classCourse";
@@ -177,8 +176,7 @@ export default {
   components: {
     myDialog,
     classRowDetail,
-    SchoolTimeTable,
-    classTeacher,
+    SchoolTimeTable, 
     studentWork,
     classStudent,
     classCourse

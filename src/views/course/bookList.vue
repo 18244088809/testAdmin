@@ -94,6 +94,9 @@
             <el-tab-pane id="xgxz" label="相关下载" name="xgxz">
               <bookDownFile :formItemData="customFormData" @subClickEvent="updateListItem" />
             </el-tab-pane>
+             <el-tab-pane id="jcbw" label="教材编委教师" name="jcbw">
+              <bookTeacher :formItemData="customFormData" @subClickEvent="updateListItem" />
+            </el-tab-pane>
           </el-tabs>
         </div>
       </my-dialog>
@@ -118,6 +121,7 @@ import Layout from "@/layout";
 import myDialog from "@/components/myDialog/myDialog";
 import bookRowDetail from "@/views/course/component/bookRowDetail";
 import bookDownFile from "@/views/course/component/bookDownFile";
+import bookTeacher from "@/views/course/component/bookTeacher";
 import { queryBookList } from "@/api/book";
 import common from "@/utils/common";
 export default {
@@ -125,7 +129,8 @@ export default {
   components: {
     myDialog,
     bookRowDetail,
-    bookDownFile
+    bookDownFile,
+    bookTeacher
   },
   data() {
     return {

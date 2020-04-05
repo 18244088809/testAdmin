@@ -70,15 +70,31 @@
             @change="(val)=>{return changeSubject(val, row,rowIndex)}"
           >
             <el-option
-              v-for="(item,index) in classAllSubject"
+              v-for="(item,index) in classAllBooks"
               :key="index"
-              :label="item.book_label"
-              :value="item.book_label"
+              :label="item.label"
+              :value="item.bookid"
             ></el-option>
           </el-select>
         </template>
       </vxe-table-column>
-      <vxe-table-column field="TeacherLabel" title="授课老师" width="90"></vxe-table-column>
+      <vxe-table-column
+        field="TeacherLabel"
+        title="授课老师"
+        width="90"
+        :edit-render="{type: 'default'}"
+      >
+        <template v-slot:edit="{row}">
+          <el-select v-model="row.TeacherLabel">
+            <el-option
+              v-for="(item,index) in classAllTeacher"
+              :key="index"
+              :label="item.Realname"
+              :value="item.Id"
+            ></el-option>
+          </el-select>
+        </template>
+      </vxe-table-column>
 
       <vxe-table-column
         field="Address"
@@ -131,20 +147,10 @@
 </template>
 <script>
 import {
-  getAllClass,
-  editClassInfo,
-  addClassInfo,
-  getOneClass,
-  setClassTeacher,
-  getClassTeachers,
   getTimeTableByMonth,
   addClassDaily,
   addTimeTag,
-  getTimeTag,
-  addClassStu,
-  getClassStu,
-  handOutTask,
-  getAllClassTaskRecord
+  getTimeTag
 } from "@/api/class";
 import {
   getManagerList,
@@ -152,7 +158,8 @@ import {
   resetPasswordManager,
   getTeachBook
 } from "@/api/manager";
-import { getPlatformWorkers } from "@/api/platform";
+import { getAllManagerOfPlatform } from "@/api/platform";
+import { getBooksOfCourses } from "@/api/course";
 import TimeTagForm from "./timeTagForm";
 import common from "@/utils/common";
 export default {
@@ -170,12 +177,12 @@ export default {
   data() {
     return {
       common,
-      teacherList: [],
+      classAllTeacher: [],
       // 已经添加课表的日期
       calendarSelectData: [],
 
       // 课程所有的科目
-      classAllSubject: [],
+      classAllBooks: [],
       //  某一月课程表数据
       MonthTimeTableList: {},
       //  某一天课程表数据
@@ -197,9 +204,7 @@ export default {
       // 控制考勤记录模态框的显隐
       showTimeTagDialog: false,
       // 单条课程表的数据
-      timeTableRow: {},
-      // 班级的学生列表
-      classAllStuList: []
+      timeTableRow: {}
     };
   },
   watch: {
@@ -229,40 +234,38 @@ export default {
     },
     //获取班级的基本信息
     fire() {
-      this.getPlatformWorkers();
       this.getTimeTable();
-      this.getClassAllStuList();
+      this.getAllManagerOfPlatform();
+      this.getBooksOfCourses();
     },
-    // 获取班级的所有学员-添加考勤记录的时候用
-    async getClassAllStuList() {
-      let res = await getOneClass(this.formItemData.Id, {
-        withStudent: "1"
-      });
 
-      this.classAllStuList = [];
-      if (res.data.StudentArray) {
-        this.classAllStuList = res.data.StudentArray;
-      }
-    },
     // 改变科目的时候自动获取老师和老师id
     changeSubject(val, row, rowIndex) {
-      this.classAllSubject.forEach(item => {
-        if (item.book_label == val) {
-          row.TeacherID = item.teacher_id;
-          row.BookID = item.book_id;
-          row.TeacherLabel = item.teacher_label;
+      this.classAllBooks.forEach(item => {
+        if (item.bookid == val) {
+          row.BookLabel = item.label;
         }
       });
-      this.todayTimeTableList.splice(rowIndex, 1, row);
     },
     // 获取班级的授课老师
-    async getPlatformWorkers() {
-      let res = await getPlatformWorkers(this.formItemData.PlatformID, {
+    async getBooksOfCourses() {
+      let res = await getBooksOfCourses(
+        "",
+        "",
+        this.formItemData.CourseList.split(",")
+      );
+      if (res.data) {
+        this.classAllBooks = res.data ? res.data : [];
+      }
+    },
+    // 获取班级的授课老师
+    async getAllManagerOfPlatform() {
+      let res = await getAllManagerOfPlatform(this.formItemData.PlatformID, {
         onlyLive: true
       });
 
       if (res.data) {
-        this.classAllSubject = res.data ? res.data : [];
+        this.classAllTeacher = res.data ? res.data : [];
       }
     },
     // 根据月份获取数据
@@ -275,15 +278,13 @@ export default {
         "/" +
         nowSelectDayObj[1];
       let res = await getTimeTableByMonth(urlParams);
-      if (res.code == 200) {
-        res.title = res.title ? res.title.split(",") : [];
-        this.calendarSelectData = res.title;
-        res.data = res.data ? res.data : {};
-        this.nowTimeTableOfDay = "";
-        this.nowTimeTableOfDay = nowSelectDayObj[0] + "-" + nowSelectDayObj[1];
-        this.MonthTimeTableList = res.data;
-        this.getTimeTableSelectDay();
-      }
+      res.title = res.title ? res.title.split(",") : [];
+      this.calendarSelectData = res.title;
+      res.data = res.data ? res.data : {};
+      this.nowTimeTableOfDay = "";
+      this.nowTimeTableOfDay = nowSelectDayObj[0] + "-" + nowSelectDayObj[1];
+      this.MonthTimeTableList = res.data;
+      this.getTimeTableSelectDay();
     },
     // 点击日历获取数据
     getTimeTableSelectDay() {

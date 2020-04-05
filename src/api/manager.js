@@ -110,22 +110,6 @@ export function resetPasswordManager(url, param, data) {
     data
   })
 }
-export function setTeachBook(url, param, data) {
-  return request({
-    url: '/manager/setTeachBook/' + url,
-    method: 'put',
-    params: param,
-    data
-  })
-}
-export function getTeachBook(url, param, data) {
-  return request({
-    url: '/manager/getTeachBook/' + url,
-    method: 'get',
-    params: param,
-    data
-  })
-}
 export function getManagerRight(url, param, data) {
   return request({
     url: '/manager/getRight/withLabel/' + url,
@@ -150,7 +134,7 @@ export function getAllTeacher(url, param, data) {
     data
   })
 }
-export function getPlatformTeacher(url, param, data) {
+export function getSamePlatformTeachers(url, param, data) {
   return request({
     url: '/manager/samePlatfromWorkers/mine' + url,
     method: 'get',
