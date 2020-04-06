@@ -84,8 +84,11 @@
         width="90"
         :edit-render="{type: 'default'}"
       >
-        <template v-slot:edit="{row}">
-          <el-select v-model="row.TeacherLabel">
+        <template v-slot:edit="{row,rowIndex}">
+          <el-select
+            v-model="row.TeacherID"
+            @change="(val)=>{return changeTeacher(val, row,rowIndex)}"
+          >
             <el-option
               v-for="(item,index) in classAllTeacher"
               :key="index"
@@ -109,7 +112,7 @@
       </vxe-table-column>
       <vxe-table-column title="操作" min-width="80">
         <template v-slot="{row,rowIndex}">
-          <el-button type="warning" v-if="row.Id<0" @click="deleTimeTableRow(row,rowIndex)">删除</el-button>
+          <el-button type="warning" v-if="row.Id<0" @click="deleclassDailyData(row,rowIndex)">删除</el-button>
 
           <el-button
             v-else-if="row.TeacherID != $store.getters.manager.Id"
@@ -134,13 +137,13 @@
         :visible.sync="showTimeTagDialog"
         :append-to-body="true"
         width="740px"
-        :title="'['+timeTableRow.TeacherLabel+'] 老师的考勤'"
+        :title="'['+classDailyData.TeacherLabel+'] 老师的考勤'"
       >
-        <TimeTagForm
-          :timeTableRowData="timeTableRow"
+        <classCheck
+          :classDaily="classDailyData"
           v-if="showTimeTagDialog"
-          @subClickEvent="closeTimeTagDialog"
-        ></TimeTagForm>
+          @subAddClassCheckEvent="closeTimeTagDialog"
+        ></classCheck>
       </el-dialog>
     </div>
   </div>
@@ -149,8 +152,8 @@
 import {
   getTimeTableByMonth,
   addClassDaily,
-  addTimeTag,
-  getTimeTag
+  addClassCheck,
+  getClassDaily
 } from "@/api/class";
 import {
   getManagerList,
@@ -160,7 +163,7 @@ import {
 } from "@/api/manager";
 import { getAllManagerOfPlatform } from "@/api/platform";
 import { getBooksOfCourses } from "@/api/course";
-import TimeTagForm from "./timeTagForm";
+import classCheck from "./classCheck";
 import common from "@/utils/common";
 export default {
   name: "schoolTimeTable",
@@ -172,7 +175,7 @@ export default {
     }
   },
   components: {
-    TimeTagForm
+    classCheck
   },
   data() {
     return {
@@ -181,6 +184,7 @@ export default {
       // 已经添加课表的日期
       calendarSelectData: [],
 
+      currentCheckIndex: 0,
       // 课程所有的科目
       classAllBooks: [],
       //  某一月课程表数据
@@ -204,7 +208,7 @@ export default {
       // 控制考勤记录模态框的显隐
       showTimeTagDialog: false,
       // 单条课程表的数据
-      timeTableRow: {}
+      classDailyData: {}
     };
   },
   watch: {
@@ -239,7 +243,7 @@ export default {
       this.getBooksOfCourses();
     },
 
-    // 改变科目的时候自动获取老师和老师id
+    // 改变科目的时候
     changeSubject(val, row, rowIndex) {
       this.classAllBooks.forEach(item => {
         if (item.bookid == val) {
@@ -247,8 +251,24 @@ export default {
         }
       });
     },
+    // 改变任课老师的时候
+    changeTeacher(val, row, rowIndex) {
+      this.classAllTeacher.forEach(item => {
+        if (item.Id == val) {
+          row.TeacherLabel = item.Realname;
+        }
+      });
+    },
+
     // 获取班级的授课老师
     async getBooksOfCourses() {
+      if (this.formItemData.CourseList == "") {
+        this.$message({
+          message: "请先给这个班级添加课程",
+          type: "warning"
+        });
+        return;
+      }
       let res = await getBooksOfCourses(
         "",
         "",
@@ -310,7 +330,7 @@ export default {
       this.todayTimeTableList.push(newItem);
     },
     // id小于0的行可以删除
-    deleTimeTableRow(row, rowIndex) {
+    deleclassDailyData(row, rowIndex) {
       this.todayTimeTableList.splice(rowIndex, 1);
     },
 
@@ -360,16 +380,19 @@ export default {
     },
     // 点击考勤，打开考勤模态框
     openTimeTagDialog(row, rowIndex) {
-      this.showTimeTagDialog = true;
-      this.timeTableRow = row;
-      this.timeTableRow.timeTableDate = this.common.dateFormatStr(
+      this.currentCheckIndex = rowIndex;
+      this.classDailyData = this.todayTimeTableList[this.currentCheckIndex];
+      // console.log(    this.currentCheckIndex,"=====", this.classDailyData);
+      this.classDailyData.timeTableDate = this.common.dateFormatStr(
         this.showDate
       );
-      this.timeTableRow.stuList = this.classAllStuList;
+      this.showTimeTagDialog = true;
     },
     // 关闭考勤记录弹窗
-    closeTimeTagDialog() {
+    closeTimeTagDialog(dailyData) {
       this.showTimeTagDialog = false;
+      this.classDailyData = dailyData;
+      this.todayTimeTableList[this.currentCheckIndex] = dailyData;
     }
   }
 };

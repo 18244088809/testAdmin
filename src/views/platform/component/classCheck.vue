@@ -4,9 +4,9 @@
     <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
     <p class="marg10 color-red" v-show="isRightTeacher==false">您不是本课程的授课老师，不允许填写下面的考勤资料。</p>
     <el-form
-      :model="timeTagFormData"
-      :rules="timetagRules"
-      ref="timeTagElForm"
+      :model="classCheck"
+      :rules="ClassCheckRules"
+      ref="ClassCheckElForm"
       label-width="100px"
       style="padding:10px 10px 10px 10px"
       size="small"
@@ -15,30 +15,36 @@
     >
       <p
         class="text-center m-b-20 color-c0c4cc font16"
-        v-if="!isEditTimeTag"
-      >于 {{common.dateFormat(timeTagFormData.Createtime)}} 日已完成考勤，不允许再修改。 </p>
+        v-if="!editEnable"
+      >于 {{common.dateFormat(classCheck.Createtime)}} 日已完成考勤，不允许再修改。</p>
       <el-form-item label="教教材目">
-        <el-input v-model="timeTableRowData.BookLabel" disabled></el-input>
+        <el-input v-model="classDaily.BookLabel" disabled></el-input>
       </el-form-item>
       <el-form-item label="上课时间">
+         
         <el-input v-model="classTime" disabled></el-input>
       </el-form-item>
       <el-form-item label="计划课时">
-        <el-input v-model="timeTableRowData.CourseNum" disabled></el-input>
+        <el-input v-model="classDaily.CourseNum" disabled></el-input>
       </el-form-item>
       <el-form-item label="实际课时" prop="ShiJi">
+        <span v-if="!editEnable">{{classCheck.ShiJi}}</span>
         <el-input
-          v-model.number="timeTagFormData.ShiJi"
-          :disabled="!isEditTimeTag||!isRightTeacher"
+          v-else
+          v-model.number="classCheck.ShiJi"
+          :disabled="!isRightTeacher"
           placeholder="请输入实际上课课时"
         ></el-input>
       </el-form-item>
-      <el-form-item label="选择缺勤学员">
+      <el-form-item v-if="!editEnable" label="缺勤学员">
+        <div class="flex_mid flex_wrap">{{classCheck.Check}}</div>
+      </el-form-item>
+      <el-form-item v-else label="选择缺勤学员">
         <div class="flex_mid flex_wrap">
-          <el-checkbox-group v-model="missClaaStuList" :disabled="timeTagFormData.Createtime>0">
+          <el-checkbox-group v-model="missClaaStuList" :disabled="classCheck.Createtime>0">
             <el-checkbox
               :key="item.ID"
-              :label="item.ID"
+              :label="item"
               v-for="item in classAllStuList"
             >{{item.Realname}}</el-checkbox>
           </el-checkbox-group>
@@ -47,11 +53,7 @@
 
       <el-form-item label="考勤照片" prop="Dianmingbiao">
         <div class="flex_dom flex_wrap">
-          <div
-            class="relative marg15"
-            v-for="(item,index) in timeTagFormData.Dianmingbiao"
-            :key="index"
-          >
+          <div class="relative marg15" v-for="(item,index) in classCheck.Dianmingbiao" :key="index">
             <el-tooltip class="item cursor" effect="dark" :content="item.Label" placement="top">
               <img
                 v-if="item.ImgSrc"
@@ -60,47 +62,49 @@
                 @click="onPreview(item.ImgSrc)"
               />
             </el-tooltip>
-            <div class="between-center m-v-5 wid80">
+            <div v-if="editEnable" class="between-center m-v-5 wid80">
               <el-upload
                 :auto-upload="false"
                 action
-                v-if="isEditTimeTag"
                 :show-file-list="false"
-                :on-change="function(file, fileList){return updateTimeTagImg(file, fileList,index)}"
+                :on-change="function(file, fileList){return updateClassCheckImg(file, fileList,index)}"
               >
                 <i class="el-icon-edit color-333"></i>
               </el-upload>
             </div>
-            <div v-if="isEditTimeTag" class="deleImgIcon cursor" @click="deleTimeTagImg(index)">
+            <div v-if="editEnable" class="deleImgIcon cursor" @click="deleClassCheckImg(index)">
               <img src="/assets/slice/deleteIcon.png" alt />
             </div>
           </div>
           <el-upload
             :auto-upload="false"
             action
-            v-if="isEditTimeTag&&isRightTeacher"
+            v-if="editEnable&&isRightTeacher"
             class="avatar-uploader"
             :show-file-list="false"
-            :on-change="uploadTimeTagImg"
+            :on-change="uploadClassCheckImg"
           >
             <i class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </div>
       </el-form-item>
-      <el-form-item label="教学进度(页)" prop="Jindu">
-        <div class="center">
+      <el-form-item label="教学进度" prop="Jindu">
+        <span v-if="!editEnable">{{classCheck.Jindu}}</span>
+        <div class="center" v-else>
           <el-input
-            v-model="timeTagFormData.Jindu"
-            :disabled="!isEditTimeTag||!isRightTeacher"
+            v-model="classCheck.Jindu"
+            :disabled="!isRightTeacher"
             placeholder="请输入教学进度，例如30-20页"
           ></el-input>
         </div>
       </el-form-item>
       <el-form-item label="教学内容" prop="JiaoxueNeirong">
+        <span v-if="!editEnable">{{classCheck.JiaoxueNeirong}}</span>
         <el-input
-          v-model="timeTagFormData.JiaoxueNeirong"
+          v-else
+          v-model="classCheck.JiaoxueNeirong"
           type="textarea"
-          :disabled="!isEditTimeTag||!isRightTeacher"
+          :disabled=" !isRightTeacher"
           :rows="4"
           placeholder="请输入教学内容"
         ></el-input>
@@ -111,11 +115,11 @@
         <el-button
           @click="cancleOperation"
           class="m-r-30"
-        >{{isEditTimeTag&&isRightTeacher?'取 消':'关 闭'}}</el-button>
+        >{{editEnable&&isRightTeacher?'取 消':'关 闭'}}</el-button>
         <el-button
           type="primary"
-          v-if="isEditTimeTag&&isRightTeacher"
-          @click="saveClassTimeTag"
+          v-if="editEnable&&isRightTeacher"
+          @click="saveClassCheck"
           class="m-l-40"
         >保 存</el-button>
       </div>
@@ -133,24 +137,23 @@ import {
   getClassTeachers,
   getTimeTableByMonth,
   addClassDaily,
-  addTimeTag,
-  getTimeTag,
+  addClassCheck,
+  getClassDaily,
   addClassStu,
   getClassStu,
   handOutTask,
   getAllClassTaskRecord
 } from "@/api/class";
 import common from "@/utils/common";
-
 import $ImgAPI from "@/api/ImgAPI";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 export default {
-  name: "timeTagForm",
+  name: "ClassCheckForm",
   components: {
     myImageViewer
   },
   props: {
-    timeTableRowData: {
+    classDaily: {
       type: Object,
       default: () => {}
     }
@@ -163,17 +166,17 @@ export default {
       // 显示图片查看器
       showViewer: false,
       // 考勤记录的表单数据
-      timeTagFormData: {
+      classCheck: {
         Dianmingbiao: []
       },
       // 课堂考勤的表单验证
-      timetagRules: {
+      ClassCheckRules: {
         ShiJi: [
           { required: true, message: "实际课时不能为空", trigger: "blur" }
         ],
-        Dianmingbiao: [
-          { required: true, message: "必须上传考勤表", trigger: "blur" }
-        ],
+        // Dianmingbiao: [
+        //   { required: true, message: "必须上传考勤表", trigger: "blur" }
+        // ],
         Jindu: [{ required: true, message: "教学进度必填", trigger: "blur" }],
         JiaoxueNeirong: [
           { required: true, message: "教学内容必填", trigger: "blur" }
@@ -194,7 +197,7 @@ export default {
       // 是否显示搜索学生的模块
       isShowSearchStuDIv: false,
       // 考勤记录是否可以编辑
-      isEditTimeTag: true,
+      editEnable: true,
       // 判断是不是当前老师在操作考勤，非本老师只可以查看
       isRightTeacher: true
     };
@@ -209,61 +212,9 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
-    // 获取班级的所有学员
-    async getClassAllStuList() {
-      let res = await getOneClass(this.timeTableRowData.ClassID, {
-        withStudent: "1"
-      });
-      if (res.code == 200) {
-        this.classAllStuList = [];
-        if (res.data.StudentArray) {
-          this.classAllStuList = res.data.StudentArray;
-        }
-      }
-    },
-    // 查找学员
-    searchStudent() {
-      let searchStuName = this.searchStudentName.trim();
-      let reg = new RegExp(searchStuName, "g");
-      this.searchResultStuList = this.classAllStuList.filter(item => {
-        if (item.Realname.match(reg)) {
-          return item;
-        }
-      });
-      if (this.searchResultStuList.length == 0) {
-        this.$message({
-          message: "没有找到该学生",
-          type: "warning"
-        });
-      }
-      this.searchStudentName = "";
-    },
-    // 从搜索结果中添加缺课学生
-    addAbsenceStu(stuName, index) {
-      if (this.isRightTeacher == false) {
-        this.$message({
-          message: "您不是本课程的授课老师，不能替别人打考勤",
-          type: "warning"
-        });
-        return;
-      }
-      if (
-        this.missClaaStuList.length == 0 ||
-        this.missClaaStuList.indexOf(stuName) == -1
-      ) {
-        this.missClaaStuList.push(stuName);
-      }
-      this.timeTagFormData.ShidaoNumber =
-        this.planStudentNum - this.missClaaStuList.length;
-    },
-    // 删除缺勤学员
-    deleAbsenceStu(index) {
-      this.missClaaStuList.splice(index, 1);
-      this.timeTagFormData.ShidaoNumber =
-        this.planStudentNum - this.missClaaStuList.length;
-    },
+
     // 考勤表的图片上传
-    async uploadTimeTagImg(file) {
+    async uploadClassCheckImg(file) {
       let that = this;
       let res = await $ImgAPI.UploadImg("courseTime", file.raw);
       if (res.code == 200) {
@@ -272,7 +223,7 @@ export default {
           type: "success"
         });
         let ImgItem = { ImgSrc: res.data, Label: file.raw.name };
-        that.timeTagFormData.Dianmingbiao.push(ImgItem);
+        that.classCheck.Dianmingbiao.push(ImgItem);
       } else {
         that.$message({
           message: res.title,
@@ -281,7 +232,7 @@ export default {
       }
     },
     // 更换考勤表的图片
-    async updateTimeTagImg(file, fileList, index) {
+    async updateClassCheckImg(file, fileList, index) {
       let that = this;
       let res = await $ImgAPI.UploadImg("courseTime", file.raw);
       if (res.code == 200) {
@@ -290,7 +241,7 @@ export default {
           type: "success"
         });
         let ImgItem = { ImgSrc: res.data, Label: file.raw.name };
-        that.timeTagFormData.Dianmingbiao.splice(index, 1, ImgItem);
+        that.classCheck.Dianmingbiao.splice(index, 1, ImgItem);
       } else {
         that.$message({
           message: res.title,
@@ -299,61 +250,58 @@ export default {
       }
     },
     // 删除考勤表的图片
-    deleTimeTagImg(index) {
-      this.timeTagFormData.Dianmingbiao.splice(index, 1);
+    deleClassCheckImg(index) {
+      this.classCheck.Dianmingbiao.splice(index, 1);
     },
     // 保存考勤记录
-    saveClassTimeTag() {
-      this.$refs.timeTagElForm.validate(async valid => {
+    saveClassCheck() {
+      this.$refs.ClassCheckElForm.validate(async valid => {
         if (valid) {
-          let Obg = { ...this.timeTagFormData };
-          Obg.Dianmingbiao = JSON.stringify(Obg.Dianmingbiao);
-          Obg.QueqingStudent = this.missClaaStuList.join(",");
-          Obg.planStudentNum = this.planStudentNum;
-          let res = await addTimeTag(this.timeTableRowData.Id, "", Obg);
+          let checkObj = { ...this.classCheck };
+          checkObj.Dianmingbiao = JSON.stringify(checkObj.Dianmingbiao);
+          // console.log("------this.missClaaStuList:---", this.missClaaStuList);
+          let temp = [];
+          this.missClaaStuList.forEach(item => {
+            temp.push(item.id);
+            if (checkObj.Check) {
+              checkObj.Check = checkObj.Check + "," + item.Realname;
+            } else {
+              checkObj.Check = item.Realname;
+            }
+          });
+          checkObj.QueqingStudent = temp.join(",");
+          checkObj.planStudentNum = this.classAllStuList.length;
+          checkObj.ShidaoNumber = this.planStudentNum - temp.length;
+
+          let res = await addClassCheck(this.classDaily.Id, "", checkObj);
           if (res.code == 200) {
             this.$message({
               message: "操作成功",
               type: "success"
             });
-            // this.isEditTimeTag = false;
-            // this.timeTagFormData = {};
-            // if (res.data.QueqingStudent) {
-            //   this.missClaaStuList = res.data.QueqingStudent.split(",");
-            // }
-            // res.data.Dianmingbiao = JSON.parse(res.data.Dianmingbiao);
-            // this.timeTagFormData = res.data;
-            this.$emit("subClickEvent");
+            this.$emit("subAddClassCheckEvent", res.data);
           }
+          this.editEnable = false;
         } else {
           return false;
         }
       });
     },
     // 获取考勤记录
-    async getClassTimeTag() {
-      // 初始化赋值
-      this.classTime =
-        this.timeTableRowData.StartTime + "-" + this.timeTableRowData.EndTime;
-      this.classAllStuList = this.timeTableRowData.stuList;
-      this.planStudentNum = this.classAllStuList.length;
-      // this.timeTagFormData.ShidaoNumber = this.classAllStuList.length;
-      let res = await getTimeTag(this.timeTableRowData.Id);
-      if (res.data != null && res.data.Createtime > 0) {
-        this.isEditTimeTag = false;
-        if (res.data.QueqingStudent) {
-          let temp = res.data.QueqingStudent.split(",");
-          temp.forEach(element => {
-            this.missClaaStuList.push(parseInt(element));
-          });
-        }
-        if (res.data.Dianmingbiao) {
-          res.data.Dianmingbiao = JSON.parse(res.data.Dianmingbiao);
-        }
-
-        this.timeTagFormData = res.data;
+    async getClassDaily() {
+     
+      this.classAllStuList = this.classDaily.stuList;
+      this.planStudentNum = 0;
+      if (this.classAllStuList) {
+        this.planStudentNum = this.classAllStuList.length;
       }
+      this.classCheck = JSON.parse(this.classDaily.Check);
     },
+    async getClassStudent() {
+      let res = await getClassStu(this.classDaily.ClassID);
+      this.classAllStuList = res.data ? res.data : [];
+    },
+
     // 关闭考勤记录模态框
     cancleOperation() {
       this.$emit("subClickEvent");
@@ -361,12 +309,18 @@ export default {
   },
 
   mounted() {
-    if (this.timeTableRowData.TeacherID == this.$store.getters.manager.Id) {
+    if (this.classDaily.TeacherID == this.$store.getters.manager.Id) {
       this.isRightTeacher = true;
     } else {
       this.isRightTeacher = false;
     }
-    this.getClassTimeTag();
+     this.classTime = this.classDaily.StartTime + '-' + this.classDaily.EndTime;
+    this.editEnable = !this.classDaily.Check;
+    if (!this.editEnable) {
+      this.getClassDaily();
+    } else {
+      this.getClassStudent();
+    }
   }
 };
 </script>  

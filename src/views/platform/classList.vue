@@ -107,7 +107,7 @@
             </el-tab-pane> -->
 
             <el-tab-pane label="课程表" name="kcb" id="kcb">
-              <SchoolTimeTable :formItemData="classFormData"></SchoolTimeTable>
+              <classDaily :formItemData="classFormData"></classDaily>
             </el-tab-pane>
             
           </el-tabs>
@@ -151,7 +151,7 @@ import classRowDetail from "@/views/platform/component/classRowDetail";
 import classStudent from "@/views/platform/component/classStudent";
 import studentWork from "@/views/platform/component/studentWork";
 import classCourse from "@/views/platform/component/classCourse";
-import SchoolTimeTable from "@/views/platform/component/schoolTimeTable";
+import classDaily from "@/views/platform/component/classDaily";
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
 import {
@@ -163,8 +163,8 @@ import {
   getClassTeachers,
   getTimeTableByMonth,
   addClassDaily,
-  addTimeTag,
-  getTimeTag,
+  addClassCheck,
+  getClassDaily,
   addClassStu,
   getClassStu,
   handOutTask,
@@ -176,7 +176,7 @@ export default {
   components: {
     myDialog,
     classRowDetail,
-    SchoolTimeTable, 
+    classDaily, 
     studentWork,
     classStudent,
     classCourse

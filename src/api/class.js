@@ -72,7 +72,7 @@ export function addClassDaily(url, param, data) {
   })
 }
 // 添加课程表对应的考勤数据
-export function addTimeTag(url, param, data) {
+export function addClassCheck(url, param, data) {
   return request({
     url: '/class/addClassCheck/'+url,
     method: 'post',
@@ -81,9 +81,9 @@ export function addTimeTag(url, param, data) {
   })
 }
 // 获取课程表对应的考勤数据
-export function getTimeTag(url, param, data) {
+export function getClassDaily(url, param, data) {
   return request({
-    url: '/class/getClassCheck/'+url,
+    url: '/class/getClassDaily/'+url,
     method: 'get',
     params: param,
     data
