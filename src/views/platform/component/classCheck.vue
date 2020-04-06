@@ -295,7 +295,8 @@ export default {
       if (this.classAllStuList) {
         this.planStudentNum = this.classAllStuList.length;
       }
-      this.classCheck = JSON.parse(this.classDaily.Check);
+      this.classCheck = JSON.parse(this.classDaily.Check); 
+      this.classCheck.Dianmingbiao = JSON.parse(this.classCheck.Dianmingbiao);
     },
     async getClassStudent() {
       let res = await getClassStu(this.classDaily.ClassID);
@@ -316,6 +317,7 @@ export default {
     }
      this.classTime = this.classDaily.StartTime + '-' + this.classDaily.EndTime;
     this.editEnable = !this.classDaily.Check;
+  
     if (!this.editEnable) {
       this.getClassDaily();
     } else {
