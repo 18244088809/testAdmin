@@ -129,7 +129,7 @@ import {
   deleCustomContract,
   updateCustomContract
 } from "@/api/contract";
-import customContractDialog from "@/views/custom/component/customContractDialog";
+import customContractDialog from "@/views/student/component/customContractDialog";
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
 export default {

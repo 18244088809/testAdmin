@@ -43,7 +43,7 @@
   </el-dialog>
 </template>
 <script>
-import { batchChangeManager } from "@/api/custom";
+import { batchChangeManager } from "@/api/student";
 import { getAllManagerOfPlatform } from "@/api/platform";
 import common from "@/utils/common";
 export default {

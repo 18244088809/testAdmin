@@ -88,16 +88,16 @@ import {
   getCustomBuyCouseRecord,
   addCustomBuyCourseRecord,
   customAllowDoExercise, 
-  getCustomInfoList,
-  addCustomInfo,
-  editCustomInfo,
-  resetCustomPassword,
-  setCustomAccountStatus,
+  getStudentList,
+  addStudent,
+  editStudent,
+  resetStudentPassword,
+  setStudentStatus,
   checkTelephone,
   setStar,
   batchChangeManager,
   getStudentStatustByStudent
-} from "@/api/custom";
+} from "@/api/student";
 import common from "@/utils/common";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 export default {

@@ -96,7 +96,7 @@ export function deleteBuyCourse(url, query, data) {
 //   ----------------学员个人信息相关操作---------------------
 
 // 获取学员信息列表
-export function getCustomInfoList(url, query, data) {
+export function getStudentList(url, query, data) {
   return request({
     url: '/student/list' + url,
     method: 'get',
@@ -105,7 +105,7 @@ export function getCustomInfoList(url, query, data) {
   })
 }
 // 添加学员信息
-export function addCustomInfo(url, query, data) {
+export function addStudent(url, query, data) {
   return request({
     url: '/student/add' + url,
     method: 'post',
@@ -114,7 +114,7 @@ export function addCustomInfo(url, query, data) {
   })
 }
 // 修改学员信息
-export function editCustomInfo(url, query, data) {
+export function editStudent(url, query, data) {
   return request({
     url: '/student/update/' + url,
     method: 'put',
@@ -123,7 +123,7 @@ export function editCustomInfo(url, query, data) {
   })
 }
 // 重置学员密码
-export function resetCustomPassword(url, query, data) {
+export function resetStudentPassword(url, query, data) {
   return request({
     url: '/student/resetpswd/' + url,
     method: 'put',
@@ -132,7 +132,7 @@ export function resetCustomPassword(url, query, data) {
   })
 }
 // 禁用或启用学员账户
-export function setCustomAccountStatus(url, query, data) {
+export function setStudentStatus(url, query, data) {
   return request({
     url: '/student/setState/' + url,
     method: 'put',

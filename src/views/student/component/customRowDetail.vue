@@ -151,7 +151,7 @@
         <el-button
           type="danger"
           v-show="currentItemData.id>0&&currenteditEnable"
-          @click="resetCustomPassword(currentItemData.id)"
+          @click="resetStudentPassword(currentItemData.id)"
         >重置密码</el-button>
       </div>
     </div>
@@ -172,15 +172,15 @@ import {
   addCustomBuyCourseRecord,
   customAllowDoExercise,
   deleteBuyCourse,
-  getCustomInfoList,
-  addCustomInfo,
-  editCustomInfo,
-  resetCustomPassword,
-  setCustomAccountStatus,
+  getStudentList,
+  addStudent,
+  editStudent,
+  resetStudentPassword,
+  setStudentStatus,
   checkTelephone,
   setStar,
   batchChangeManager
-} from "@/api/custom";
+} from "@/api/student";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 import $ImgHttp from "@/api/ImgAPI";
 import crypto from "crypto";
@@ -321,7 +321,7 @@ export default {
       this.showViewer = false;
     },
     // 重置学员密码
-    resetCustomPassword(studentid) {
+    resetStudentPassword(studentid) {
       const that = this;
       that
         .$confirm("确认重置该账户密码?", "提示", {
@@ -330,7 +330,7 @@ export default {
           type: "warning"
         })
         .then(async () => {
-          const res = await resetCustomPassword(studentid);
+          const res = await resetStudentPassword(studentid);
           if (res.code == 200) {
             that.$alert("当前密码是:" + res.title, "密码", {
               confirmButtonText: "确定"
@@ -396,7 +396,7 @@ export default {
 
           if (this.currentItemData.id == null || this.currentItemData.id == 0) {
             // 新增
-            let res = await addCustomInfo("", "", this.currentItemData);
+            let res = await addStudent("", "", this.currentItemData);
 
             this.isShowPlatformDialog = false;
             this.currentItemData = res.data;
@@ -408,7 +408,7 @@ export default {
             this.$emit("updateListData", 0, res.data);
           } else {
             // 修改
-            let res = await editCustomInfo("", "", this.currentItemData);
+            let res = await editStudent("", "", this.currentItemData);
 
             this.isShowPlatformDialog = false;
             this.$message({

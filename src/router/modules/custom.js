@@ -3,10 +3,10 @@
 import Layout from '@/layout'
 
 const customRouter = {
-  path: '/custom',
+  path: '/student',
   component: Layout,
   redirect: 'noRedirect',
-  name: 'custom',
+  name: 'student',
   meta: {
     title: 'customManage',
     icon: 'peoples'
@@ -15,7 +15,7 @@ const customRouter = {
   children: [
     {
       path: 'list',
-      component: () => import('@/views/custom/customList'),
+      component: () => import('@/views/student/studentList'),
       name: 'customList',
       meta: {
         title: 'customList',
@@ -25,7 +25,7 @@ const customRouter = {
     },
     {
       path: 'trackList',
-      component: () => import('@/views/custom/trackList'),
+      component: () => import('@/views/student/trackList'),
       name: 'trackList',
       meta: {
         title: 'trackList',
@@ -35,7 +35,7 @@ const customRouter = {
     },
     {
       path: 'contractList',
-      component: () => import('@/views/custom/contractList'),
+      component: () => import('@/views/student/contractList'),
       name: 'contractList',
       meta: {
         title: 'contractList',

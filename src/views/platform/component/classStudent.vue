@@ -112,15 +112,15 @@ import {
   addCustomBuyCourseRecord,
   customAllowDoExercise,
   deleteBuyCourse,
-  getCustomInfoList,
-  addCustomInfo,
-  editCustomInfo,
-  resetCustomPassword,
-  setCustomAccountStatus,
+  getStudentList,
+  addStudent,
+  editStudent,
+  resetStudentPassword,
+  setStudentStatus,
   checkTelephone,
   setStar,
   batchChangeManager
-} from "@/api/custom";
+} from "@/api/student";
 import common from "@/utils/common";
 export default {
   name: "ClassStudent",
@@ -221,7 +221,7 @@ export default {
       }
       // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
-      let res = await getCustomInfoList("", {
+      let res = await getStudentList("", {
         limit: this.rows,
         offset: offsetRow,
         kind: this.searchTypeVal,

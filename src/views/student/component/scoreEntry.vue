@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import { getStudentScore } from "@/api/custom";
+import { getStudentScore } from "@/api/student";
 
 // import $StudentStatusSubjectHttp from "@/service/StudentStatusSubjectAPI";
 // import $StudentScoreHttp from "@/service/StudentScoreAPI";

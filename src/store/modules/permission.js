@@ -148,7 +148,7 @@ const actions = {
               ,
               {
                 path: 'list/' + platform.Id,
-                component: () => import('@/views/custom/customList'),
+                component: () => import('@/views/student/studentList'),
                 name: 'customList' + index.toString(10),
                 meta: { title: 'platformCustom', icon: 'student' }
               },
@@ -160,7 +160,7 @@ const actions = {
               },
               {
                 path: 'contractList/' + platform.Id,
-                component: () => import('@/views/custom/contractList'),
+                component: () => import('@/views/student/contractList'),
                 name: 'contractList' + index.toString(10),
                 meta: { title: 'contractList', icon: 'contract' }
               }

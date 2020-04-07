@@ -49,7 +49,7 @@ import {
   deleCustomContract,
   updateCustomContract
 } from "@/api/contract";
-import customContractDialog from "@/views/custom/component/customContractDialog";
+import customContractDialog from "@/views/student/component/customContractDialog";
 import common from "@/utils/common";
 export default {
   props: {

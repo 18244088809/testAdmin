@@ -183,14 +183,14 @@
               size="mini"
               v-show="scope.row.status==1"
               type="info"
-              @click="setCustomAccountStatus(scope.$index, scope.row,0)"
+              @click="setStudentStatus(scope.$index, scope.row,0)"
             >禁用</el-button>
             <el-button
               style="margin:0px"
               v-show="scope.row.status==0"
               type="success"
               size="mini"
-              @click="setCustomAccountStatus(scope.$index, scope.row,1)"
+              @click="setStudentStatus(scope.$index, scope.row,1)"
             >启用</el-button>
             <el-button
               style="margin:0px"
@@ -299,15 +299,15 @@ import {
   getCustomBuyCouseRecord,
   addCustomBuyCourseRecord,
   customAllowDoExercise,
-  getCustomInfoList,
-  addCustomInfo,
-  editCustomInfo,
-  resetCustomPassword,
-  setCustomAccountStatus,
+  getStudentList,
+  addStudent,
+  editStudent,
+  resetStudentPassword,
+  setStudentStatus,
   checkTelephone,
   setStar,
   batchChangeManager
-} from "@/api/custom";
+} from "@/api/student";
 
 import {
   queryPlatform,
@@ -318,16 +318,16 @@ import {
   getAllManagerOfPlatform, 
   setPlatformMaster
 } from "@/api/platform";
-import customRowDetail from "@/views/custom/component/customRowDetail";
-import customSendSmsDialog from "@/views/custom/component/customSendSmsDialog";
-import customTrack from "@/views/custom/component/customTrack";
-import customBuyRecord from "@/views/custom/component/customBuyRecord";
-import customContractDialog from "@/views/custom/component/customContractDialog";
-import customContractList from "@/views/custom/component/customContractList";
-import addAlarmDialog from "@/views/custom/component/addAlarmDialog";
-import batchChangeManagerView from "@/views/custom/component/batchChangeManager";
-import alarmList from "@/views/custom/component/alarmList";
-import scoreEntry from "@/views/custom/component/scoreEntry";
+import customRowDetail from "@/views/student/component/customRowDetail";
+import customSendSmsDialog from "@/views/student/component/customSendSmsDialog";
+import customTrack from "@/views/student/component/customTrack";
+import customBuyRecord from "@/views/student/component/customBuyRecord";
+import customContractDialog from "@/views/student/component/customContractDialog";
+import customContractList from "@/views/student/component/customContractList";
+import addAlarmDialog from "@/views/student/component/addAlarmDialog";
+import batchChangeManagerView from "@/views/student/component/batchChangeManager";
+import alarmList from "@/views/student/component/alarmList";
+import scoreEntry from "@/views/student/component/scoreEntry";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 import myDialog from "@/components/myDialog/myDialog";
 import Tinymce from "@/components/Tinymce";
@@ -510,7 +510,7 @@ export default {
       }
       if (this.currentPlatform) {
         // 校区-学员数据
-        res = await getCustomInfoList("", {
+        res = await getStudentList("", {
           platformManager: this.searchWorkerId,
           limit: this.rows,
           offset: offsetRow,
@@ -524,7 +524,7 @@ export default {
         });
       } else {
         // 学员管理-学员数据
-        res = await getCustomInfoList("", {
+        res = await getStudentList("", {
           limit: this.rows,
           offset: offsetRow,
           kind: this.searchTypeVal,
@@ -582,7 +582,7 @@ export default {
       );
     },
     // 禁用或启用学员的账户
-    setCustomAccountStatus(index, row, status) {
+    setStudentStatus(index, row, status) {
       const that = this;
       let msg;
       if (status == 0) {
@@ -597,7 +597,7 @@ export default {
           type: "warning"
         })
         .then(async () => {
-          const res = await setCustomAccountStatus(
+          const res = await setStudentStatus(
             row.id,
             { status: status },
             false,
