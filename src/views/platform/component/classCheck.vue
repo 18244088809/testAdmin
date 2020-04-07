@@ -174,9 +174,9 @@ export default {
         ShiJi: [
           { required: true, message: "实际课时不能为空", trigger: "blur" }
         ],
-        // Dianmingbiao: [
-        //   { required: true, message: "必须上传考勤表", trigger: "blur" }
-        // ],
+        Dianmingbiao: [
+          { required: true, message: "必须上传考勤表或者现场照片", trigger: "blur" }
+        ],
         Jindu: [{ required: true, message: "教学进度必填", trigger: "blur" }],
         JiaoxueNeirong: [
           { required: true, message: "教学内容必填", trigger: "blur" }
@@ -258,8 +258,7 @@ export default {
       this.$refs.ClassCheckElForm.validate(async valid => {
         if (valid) {
           let checkObj = { ...this.classCheck };
-          checkObj.Dianmingbiao = JSON.stringify(checkObj.Dianmingbiao);
-          // console.log("------this.missClaaStuList:---", this.missClaaStuList);
+          checkObj.Dianmingbiao = JSON.stringify(checkObj.Dianmingbiao); 
           let temp = [];
           this.missClaaStuList.forEach(item => {
             temp.push(item.id);

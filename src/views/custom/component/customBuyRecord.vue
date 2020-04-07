@@ -336,8 +336,7 @@ export default {
     saveBuyCourseRecord() {
       this.$refs.refbuyCourse.validate(valid => {
         if (valid) {
-          const that = this;
-          console.log(that.customItemData);
+          const that = this; 
           that.customBuyCourseList = [];
           that
             .$confirm("确认添加吗", "提示", {

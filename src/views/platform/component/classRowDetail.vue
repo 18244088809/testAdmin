@@ -143,8 +143,7 @@ export default {
   },
   watch: {
     formItemData(newvar) {
-      this.currentItemData = this.formItemData;
-      console.log(" this.currenteditEnable :", this.currenteditEnable);
+      this.currentItemData = this.formItemData; 
     }
   },
   mounted() {
