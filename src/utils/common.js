@@ -289,7 +289,7 @@ export default {
   },
 
 
-  // 客户推广渠道
+  // 学员推广渠道
   channelList: [
 
     {
@@ -302,23 +302,23 @@ export default {
       Label: '转介绍'
     },
     {
-      Label: '地推客户'
+      Label: '地推学员'
     },
     {
       Label: '其他渠道'
     }
   ],
 
-  // 意向客户客户类型
+  // 意向学员学员类型
   IntentionalCustomerType: [
     
     {
       value: 0,
-      Label: '全部客户'
+      Label: '全部学员'
     },
     {
       value: 1,
-      Label: '普通客户'
+      Label: '普通学员'
     },
     {
       value: 2,
@@ -333,7 +333,7 @@ export default {
       Label: '彻底抛弃'
     }
   ],
-  // 客户签订合同- 优惠类型
+  // 学员签订合同- 优惠类型
   costomPreferentialType: [
     {
       value: 0,
@@ -348,7 +348,7 @@ export default {
       Label: '特殊申请优惠'
     }
   ],
-  // 客户签订合同- 支付方式
+  // 学员签订合同- 支付方式
   costomPaymentMethod: [
     {
       value: 0,

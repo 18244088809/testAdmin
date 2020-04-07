@@ -71,7 +71,7 @@ export default {
   },
   mounted() {},
   methods: {
-    // 获取客户的基本信息
+    // 获取学员的基本信息
     getCustomInfo(row) {
       this.alarmFormData = {
         Content: "",

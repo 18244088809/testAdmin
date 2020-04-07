@@ -41,7 +41,7 @@
             <el-form-item label="内容">
               <el-input
                 v-model="searchNameOrTel"
-                placeholder="请输入客户姓名或电话"
+                placeholder="请输入学员姓名或电话"
                 class="wid160"
                 @input="$forceUpdate()"
                 @keyup.enter.native="searchSubmit"
@@ -82,8 +82,8 @@
           </template>
         </el-table-column>
         <el-table-column prop="PlatformLabel" width="110" label="归属校区" />
-        <el-table-column prop="StudentLabel" width="120" label="客户姓名" fixed />
-        <el-table-column prop="Telephone" width="120" label="客户电话" />
+        <el-table-column prop="StudentLabel" width="120" label="学员姓名" fixed />
+        <el-table-column prop="Telephone" width="120" label="学员电话" />
 
         <el-table-column prop="CourseLabel" width="220" label="报名课程" :show-overflow-tooltip="true" />
         <el-table-column prop="CoursePrice" width="70" label="课程价格" />
@@ -146,7 +146,7 @@ export default {
       nowPage: 1,
       // 每页数据的总条
       rows: 40,
-      // 查询内容-客户姓名或电话
+      // 查询内容-学员姓名或电话
       searchNameOrTel: "",
       // 查询内容-签订日期
       searchDate: null,
@@ -154,16 +154,16 @@ export default {
       currentPlatform: 0, // 0 代表全部
       // 控制合同订单模态框
       contractFormDialog: false,
-      // 合同表单需要的客户信息
+      // 合同表单需要的学员信息
       contractFormData: {},
-      // 客户合同信息列表
+      // 学员合同信息列表
       contractList: [],
-      // 对客户合同的操作，1-立即报名，2-续报课程，0-查看详情
+      // 对学员合同的操作，1-立即报名，2-续报课程，0-查看详情
       contractOperationType: 1,
       // 当前操作的合同index
       currentContractIndex: null,
       platformworklabel: "", // 招生老师名字,
-      // 客户的姓名
+      // 学员的姓名
       customName: "",
       // 保存选中的合同列表
       mulSelectContract: ""
@@ -199,8 +199,8 @@ export default {
           "报名时间",
           "合同名称",
           "归属校区",
-          "客户姓名",
-          "客户电话",
+          "学员姓名",
+          "学员电话",
           "报名课程",
           "课程价格",
           "实收学费",

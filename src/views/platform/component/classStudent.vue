@@ -149,11 +149,11 @@ export default {
       queryEndDate: null,
       // 查询客户所选条件值
       seaechConditionVal: "",
-      // 查询客户内容的值
+      // 查询学员内容的值
       searchContentVal: "",
       // 搜索学生的类型-条件查询
       searchTypeVal: "realname",
-      // 查询客户的条件选项
+      // 查询学员的条件选项
       searchCustomOptions: [
         {
           value: "realname",

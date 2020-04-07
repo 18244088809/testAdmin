@@ -31,7 +31,7 @@
           </div>
           <div class="between-center flex_wrap">
             <div class="flex_1">
-              <el-form-item label="客户类型">
+              <el-form-item label="学员类型">
                 <el-select v-model="searchTypeVal" class="wid110" placeholder="请选择类型">
                   <el-option
                     v-for="(item,index) in common.IntentionalCustomerType"
@@ -84,7 +84,7 @@
           </div>
         </el-form>
       </div>
-      <!-- 客户显示列表 -->
+      <!-- 学员显示列表 -->
       <el-table
         ref="refCustomListTable"
         :data="customTableDataList"
@@ -211,8 +211,8 @@
       </el-table>
       <div class="between-center m-v-15">
         <div class="between-center m-l-10">
-          <el-button type="primary" @click="openItemDialog()">新增客户</el-button>
-          <el-button type="warning" @click="changeManager">客户移交</el-button>
+          <el-button type="primary" @click="openItemDialog()">新增学员</el-button>
+          <el-button type="warning" @click="changeManager">学员移交</el-button>
         </div>
         <div>
           <el-pagination
@@ -227,7 +227,7 @@
       </div>
     </div>
     <div>
-      <!-- 客户更多操作弹出框 -->
+      <!-- 学员更多操作弹出框 -->
 
       <my-dialog
         :visible.sync="moreOperationDialog"
@@ -372,7 +372,7 @@ export default {
       qxRole: "",
       // 搜索学生的类型-条件查询
       searchTypeVal: 0,
-      // 查询客户的条件选项
+      // 查询学员的条件选项
       searchCustomOptions: [
         {
           value: "realname",
@@ -388,16 +388,16 @@ export default {
           Label: "备注"
         }
       ],
-      // 查询客户所选条件值
+      // 查询学员所选条件值
       seaechConditionVal: "",
-      // 查询客户内容的值
+      // 查询学员内容的值
       searchContentVal: "",
-      // 筛选客户-全部，公海，意向，成单
+      // 筛选学员-全部，公海，意向，成单
       searchHasbuy: 0,
       // 日期选择-日期筛选
       queryEndDate: null,
-      queryFromLabel: false, // 是否根据这个客户的录入员进行查询
-      // 存放客户列表数据-table
+      queryFromLabel: false, // 是否根据这个学员的录入员进行查询
+      // 存放学员列表数据-table
       customTableDataList: [],
       // 数据总条数-分页
       allRows: 0,
@@ -405,9 +405,9 @@ export default {
       nowPage: 1,
       // 每页数据的总条-分页
       rows: 40,
-      // 单条客户的数据
+      // 单条学员的数据
       customFormData: {},
-      // 客户更多操作的弹出框
+      // 学员更多操作的弹出框
       customMoreOperationDialog: false,
       // 当前所在tab页
       activElTab: "gjjl",
@@ -423,7 +423,7 @@ export default {
       currentStudentid: 0,
       addStudentBuyCourseDialog: false,
       addStudentBuyCourseFormData: {},
-      // 客户的跟进记录列表
+      // 学员的跟进记录列表
       customTracksData: [],
       // 用户成绩录入的列表信息
       customScoreEntry: [],
@@ -451,12 +451,12 @@ export default {
     this.qxRole = sessionStorage.ROLE;
     let paths = this.$router.currentRoute.path.split("/");
     this.currentPlatform = parseInt(paths[paths.length - 1]);
-    // 因为客户管理和我的校区应用的是同一个页面所有让当路由有参数是就代表但是我的校区
+    // 因为学员管理和我的校区应用的是同一个页面所有让当路由有参数是就代表但是我的校区
     if (this.currentPlatform > 0) {
       // 获取该校区下所属我的所有销售成员
       this.getAllManagerOfPlatform(this.currentPlatform);
     } else {
-      // 客户管理-直接获取客户列表
+      // 学员管理-直接获取学员列表
       this.getCustomList();
     }
   },
@@ -478,19 +478,19 @@ export default {
     async getAllManagerOfPlatform(platformId) {
       const res = await getAllManagerOfPlatform(platformId);
       if (res.code == 200) {
-        // 默认查看自己的客户
+        // 默认查看自己的学员
         this.searchWorkerId = this.$store.getters.manager.Id;
         this.myWorkerList = res.data ? res.data : [];
         this.isPlatformMaster = res.title;
       }
       this.getCustomList();
     },
-    // 条件查询客户
+    // 条件查询学员
     searchSubmit() {
       this.nowPage = 1;
       this.getCustomList();
     },
-    // 获取客户列表-tableData
+    // 获取学员列表-tableData
     async getCustomList() {
       const that = this;
       this.listLoading = true;
@@ -499,7 +499,7 @@ export default {
       let res;
       let notInKind = 0; // sql中标识为   kind!=
       // if (this.searchTypeVal == 0) {
-      //   // 选择全部客户的时候， 要排除kind=4 的公海客户
+      //   // 选择全部学员的时候， 要排除kind=4 的公海学员
       //   notInKind = 4;
       // }
       let startDate;
@@ -509,7 +509,7 @@ export default {
         endDate = parseInt(this.queryEndDate[1] / 1000 + 3600 * 24 - 1);
       }
       if (this.currentPlatform) {
-        // 校区-客户数据
+        // 校区-学员数据
         res = await getCustomInfoList("", {
           platformManager: this.searchWorkerId,
           limit: this.rows,
@@ -523,7 +523,7 @@ export default {
           [this.seaechConditionVal]: this.searchContentVal
         });
       } else {
-        // 客户管理-客户数据
+        // 学员管理-学员数据
         res = await getCustomInfoList("", {
           limit: this.rows,
           offset: offsetRow,
@@ -561,14 +561,14 @@ export default {
       return this.common.dateFormat(cellValue, 2);
     },
 
-    // 设置重点客户
+    // 设置重点学员
     async setCustomStar(val, row, rowIndex) {
       const res = await setStar(row.id);
       if (res.code == 200) {
         this.customTableDataList[rowIndex].Star = res.data;
       }
     },
-    // 新增客户合同-办理报名
+    // 新增学员合同-办理报名
     addCustomContract(index, row) {
       this.$refs.refContractDialog.getContractFormData(
         {
@@ -581,7 +581,7 @@ export default {
         1
       );
     },
-    // 禁用或启用客户的账户
+    // 禁用或启用学员的账户
     setCustomAccountStatus(index, row, status) {
       const that = this;
       let msg;
@@ -650,11 +650,11 @@ export default {
       }
       this.$refs.refChangeManager.getCustomIds(this.selectedStudentIDList);
     },
-    // 更新客户列表数据-转移客户之后
+    // 更新学员列表数据-转移学员之后
     updateCustomList(rowsDatas) {
       this.getCustomList();
     },
-    // 更新客户列表数据
+    // 更新学员列表数据
     updateCustomInfoList(type, rowData) {
       // type=0添加，type=1修改，
       // 显示第一章图片格式化
@@ -698,7 +698,7 @@ export default {
         const content = res.data.Description
           ? res.data.Description
           : "暂无描述";
-        this.$alert("客户描述：" + content, res.data.Realname + "来电", {
+        this.$alert("学员描述：" + content, res.data.Realname + "来电", {
           confirmButtonText: "知道了"
         }).catch(() => {});
       }
@@ -969,7 +969,7 @@ export default {
         }
       }
     },
-    // 收到客户发回来的短信
+    // 收到学员发回来的短信
     async receiveSMS(msg) {
       const res = await receiveSmsTrack(msg.phone, msg.content);
     },

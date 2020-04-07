@@ -11,7 +11,7 @@
           height="100%"
         >
           <el-table-column prop="Id" label="ID" width="50"></el-table-column>
-          <el-table-column prop="Title" label="竞赛标题" :show-overflow-tooltip="true">
+          <el-table-column prop="Title" label="新闻标题" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span
                 class="color-1f85aa font-w6 cursor"
@@ -19,9 +19,15 @@
               >{{ scope.row.Title }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="竞赛类型" width="100">
+          <el-table-column label="新闻类型" width="100">
             <template slot-scope="scope">
-              <span>{{common.FormatSelect(kindList,scope.row.KindID)}}</span>
+              <span>{{common.FormatSelect(newsKindOptions,scope.row.KindID)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="是否公共" width="100">
+            <template slot-scope="scope">
+              <span v-if="scope.row.Platform==0">公共新闻</span>
+              <span v-else>校区新闻</span>
             </template>
           </el-table-column>
           <el-table-column prop="Creattime" :formatter="TimeFormatter" label="发布时间" width="130"></el-table-column>
@@ -34,7 +40,7 @@
         </el-table>
       </div>
       <div class="between-center m-v-15">
-        <el-button type="primary" @click="newsAdd">发布竞赛消息</el-button>
+        <el-button type="primary" @click="newsAdd">添加新闻</el-button>
         <el-pagination
           background
           @current-change=" currentPageChange"
@@ -47,21 +53,15 @@
     </div>
     <!-- 弹出框 -->
     <div>
-      <my-dialog
-        
-        title="竞赛详情编辑"
-        :showLeft="false"
-        :visible.sync="newsFormDialog"
-        
-      >
+      <my-dialog title="新闻详情编辑" :showLeft="false" :visible.sync="newsFormDialog">
         <div slot="right_content">
-          <activeFormData
+          <newsFormData
             ref="newsForm"
+            :kindList="newsKindOptions"
             :platform="currentPlatform"
-            :formItemData="newsFormData"
+            :formItemData="currentItemData"
             @updateRowData="updateNewsList"
-            :kindList="kindList"
-          ></activeFormData>
+          ></newsFormData>
         </div>
       </my-dialog>
     </div>
@@ -71,37 +71,33 @@
 <script>
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
-import activeFormData from "@/views/web/component/activeFormData";
-import { getActive, deleNewsRow } from "@/api/news";
+import newsFormData from "@/views/platform/web/component/newsFormData";
+import { GetPlatformNews, deleNewsRow } from "@/api/news";
 export default {
   name: "newsList",
   components: {
     myDialog,
-    activeFormData
+    newsFormData
   },
   data() {
     return {
       common,
-      // 竞赛类型的选项
-      kindList: [
+      // 新闻类型的选项
+      newsKindOptions: [
         {
           value: 1,
-          Label: "常规竞赛"
+          Label: "新闻"
         },
         {
           value: 2,
-          Label: "初级竞赛"
+          Label: "学校展示"
         },
         {
           value: 3,
-          Label: "中级竞赛"
-        },
-        {
-          value: 4,
-          Label: "高级竞赛"
+          Label: "最新活动"
         }
       ],
-      // 竞赛的数据列表
+      // 新闻的数据列表
       newsListTable: [],
       // 数据总条数
       allRows: 0,
@@ -109,26 +105,26 @@ export default {
       nowPage: 1,
       // 每页数据的总条
       rows: 30,
-      currentPlatform:0,
       // 显示隐藏模态框
       newsFormDialog: false,
       // 模态框获得的单条数据
-      newsFormData: null,
+      currentItemData: null,
       // 当前索引
-      currentNewsIndex: null
+      currentNewsIndex: null,
+      currentPlatform: 0
     };
   },
   methods: {
-    // 获取竞赛的数据列表
-    async getNewsList() {
+    // 获取新闻的数据列表
+    async GetPlatformNews() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
-        needPublic:true,
+        needPublic: false,
         content: 1,
         limit: this.rows,
         offset: offsetRow
       };
-      let res = await getActive(this.currentPlatform, newParams);
+      let res = await GetPlatformNews(this.currentPlatform, newParams);
       if (res.code == 200) {
         this.newsListTable = [];
         if (res.data) {
@@ -140,9 +136,9 @@ export default {
     // 分页获取数据
     currentPageChange(val) {
       this.nowPage = val;
-      this.getNewsList();
+      this.GetPlatformNews();
     },
-    // 删除竞赛数据
+    // 删除新闻数据
     deleteNewsRow: function(index, row) {
       this.$confirm("你确定要删除吗？删了之后找不回来哦", "提示", {
         confirmButtonText: "确定",
@@ -153,7 +149,7 @@ export default {
           this.currentNewsIndex = index;
           let res = await deleNewsRow(row.Id);
           if (res.code == 200) {
-            this.getNewsList();
+            this.GetPlatformNews();
           }
         })
         .catch(() => {});
@@ -162,26 +158,26 @@ export default {
     openMoreOptationDialog(index, row) {
       this.newsFormDialog = true;
       this.currentNewsIndex = index;
-      this.newsFormData = row;
+      this.currentItemData = row;
     },
     // 显示列表的时候格式化时间
     TimeFormatter(row, column, cellValue) {
       return this.common.dateFormat(cellValue, 2);
     },
-    // 点击新增竞赛
+    // 点击新增新闻
     newsAdd() {
       this.newsFormDialog = true;
-      this.newsFormData = {
-        icon: "/upload/icon/defaultActive.jpg",
+      this.currentItemData = {
+        icon: "/upload/icon/defaultnews.png",
         Id: 0,
         Downfile: "",
         Title: "",
         Description: "",
-        Content: "",
-        KindId: null
+        Content: "没有写任何内容",
+        KindId: 1
       };
     },
-    // 编辑或者添加之后更新表格数据-竞赛列表
+    // 编辑或者添加之后更新表格数据-新闻列表
     updateNewsList(rowData, isType) {
       // isType编辑还是添加
       if (isType == 1) {
@@ -199,18 +195,11 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    this.getNewsList();
+    this.GetPlatformNews();
   }
 };
 </script>
 <style scope >
-.el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
 .selectStyle {
   border: none;
   appearance: none;

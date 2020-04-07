@@ -84,7 +84,7 @@ export default {
     this.currentFormData = this.formItemData;
   },
   methods: {
-    // 保存客户信息
+    // 保存学员信息
     async savecurrentFormData() {
       this.$refs.formUI.validate(async valid => {
         if (valid) {

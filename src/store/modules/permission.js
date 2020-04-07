@@ -90,57 +90,57 @@ const actions = {
               {
                 path: 'web',
                 redirect: 'noRedirect',
-                component: () => import('@/views/web/container'), // Parent router-view
+                component: () => import('@/views/platform/web/container'), // Parent router-view
                 name: 'web' + platform.Id.toString(10),
                 meta: { title: 'web', icon: "website" },
                 children: [
                   {
                     path: 'banner/' + platform.Id.toString(10),
-                    component: () => import('@/views/web/banner'),
+                    component: () => import('@/views/platform/web/banner'),
                     name: 'banner' + index.toString(10),
                     meta: { title: 'banner', icon: "banner" }
                   },
                   {
                     path: 'docDownload/' + platform.Id.toString(10),
                     name: 'docDownload' + index.toString(10),
-                    component: () => import('@/views/web/docDownload'),
+                    component: () => import('@/views/platform/web/docDownload'),
                     meta: { title: 'docDownload', icon: "download" }
                   },
                   {
                     path: 'news/' + platform.Id.toString(10),
                     name: 'newsList' + index.toString(10),
-                    component: () => import('@/views/web/news'),
+                    component: () => import('@/views/platform/web/news'),
                     meta: { title: 'news', icon: "news" }
                   },
                   // {
                   //   path: 'active/' + platform.Id.toString(10),
                   //   name: 'active' + index.toString(10),
-                  //   component: () => import('@/views/web/active'),
+                  //   component: () => import('@/views/platform/web/active'),
                   //   meta: { title: 'active', icon: "active" }
                   // },
                   // {
                   //   path: 'business/' + platform.Id.toString(10),
                   //   name: 'business' + index.toString(10),
-                  //   component: () => import('@/views/web/business'),
+                  //   component: () => import('@/views/platform/web/business'),
                   //   meta: { title: 'business', icon: "business" }
                   // },
                   {
                     path: 'teacher/' + platform.Id.toString(10),
                     name: 'teacher' + index.toString(10),
-                    component: () => import('@/views/web/teacher'),
+                    component: () => import('@/views/platform/web/teacher'),
                     meta: { title: 'teacher', icon: "hotteacher" }
                   },
                   {
                     path: 'linker/' + platform.Id.toString(10),
                     name: 'linker' + index.toString(10),
-                    component: () => import('@/views/web/linker'),
+                    component: () => import('@/views/platform/web/linker'),
                     meta: { title: 'linker', icon: "linker" }
                   }
                 ]
               },
               {
                 path: 'managers/' + platform.Id,
-                component: () => import('@/views/system/managerlist'),
+                component: () => import('@/views/manager/managerlist'),
                 name: 'managerList' + index.toString(10),
                 meta: { title: 'managerList', icon: "user" },
 

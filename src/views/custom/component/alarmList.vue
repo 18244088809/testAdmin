@@ -31,7 +31,7 @@ export default {
       nowPage: 1,
       // 每页数据的总条
       rows: 10,
-      // 客户合同信息列表
+      // 学员合同信息列表
       alarmList: []
     }
   },

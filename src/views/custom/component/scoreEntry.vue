@@ -120,7 +120,7 @@ export default {
   name: "ScoreEntry",
   data() {
     return {
-      // 客户的Id
+      // 学员的Id
       customId: null,
       // 专业的选项数据
       majorOptions: [],

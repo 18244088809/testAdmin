@@ -80,8 +80,8 @@
 <script>
  
 import {
-  getSamePlatformTeachers
-} from "@/api/manager";
+  getAllManagerOfPlatform
+} from "@/api/platform";
 import common from "@/utils/common";
 export default {
   name: "ClassTeacher",
@@ -106,16 +106,16 @@ export default {
         searchPhone: "",
         searchName: ""
       },
-       queryFromLabel: false, // 是否根据这个客户的录入员进行查询
+       queryFromLabel: false, // 是否根据这个学员的录入员进行查询
       // 日期选择-日期筛选
       queryEndDate: null,
-      // 查询客户所选条件值
+      // 查询学员所选条件值
       seaechConditionVal: "",
-      // 查询客户内容的值
+      // 查询学员内容的值
       searchContentVal: "",
       // 搜索学生的类型-条件查询
       searchTypeVal: "realname",
-      // 查询客户的条件选项
+      // 查询学员的条件选项
       searchCustomOptions: [
         {
           value: "realname",
@@ -174,7 +174,7 @@ export default {
    
       // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
-      let res = await getSamePlatformTeachers("", {
+      let res = await getAllManagerOfPlatform("", {
         limit: this.rows,
         offset: offsetRow,
         kind: this.searchTypeVal,

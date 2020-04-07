@@ -1,5 +1,5 @@
 <template>
-  <!-- --------------------客户的跟进记录模块----------------------- -->
+  <!-- --------------------学员的跟进记录模块----------------------- -->
 
   <div class="p_both10 p-t-5">
     <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
@@ -141,15 +141,15 @@ export default {
       imageViewerSrc: "",
       // 显示图片查看器
       showViewer: false,
-      // 客户
+      // 学员
       customFormData: {},
-      // 跟进客户的方式
+      // 跟进学员的方式
       trackMethod: "邀约上门",
       //  跟进记录的内容
       trackContent: "",
       // 存上传的跟进图片
       trackImgList: [],
-      // 该客户所有的跟进记录
+      // 该学员所有的跟进记录
       customTrackList: [],
       // 当前回复跟进数据的索引
       currentReplyIndex: null
@@ -179,7 +179,7 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
-    // 获取客户的单条数据
+    // 获取学员的单条数据
     getCustomId(id) {
       this.customFormData.id = id;
       this.getCustomtTracks();
@@ -205,7 +205,7 @@ export default {
         });
       }
     },
-    // 获取客户的跟进记录
+    // 获取学员的跟进记录
     async getCustomtTracks() {
       const res = await getCustomTracks(this.customFormData.id);
       if (res.code == 200) {
@@ -217,7 +217,7 @@ export default {
         });
       }
     },
-    // 提交客户的跟进信息
+    // 提交学员的跟进信息
     async submitCustomTrack() {
       if (this.trackContent.length < 3) {
         this.$message({

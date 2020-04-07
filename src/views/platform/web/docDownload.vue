@@ -83,7 +83,7 @@
 <script>
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
-import docFormData from "@/views/web/component/docFormData";
+import docFormData from "@/views/platform/web/component/docFormData";
 import { getDocument, deleNewsRow } from "@/api/news";
 export default {
   name: "newsList",

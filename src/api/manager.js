@@ -134,11 +134,4 @@ export function getAllTeacher(url, param, data) {
     data
   })
 }
-export function getSamePlatformTeachers(url, param, data) {
-  return request({
-    url: '/manager/samePlatfromWorkers/mine' + url,
-    method: 'get',
-    params: param,
-    data
-  })
-}
+ 

@@ -63,7 +63,7 @@
     <div v-else class="websocket-error">
       <h4 class="title">呼叫中心连接异常</h4>
       <p class="text">1. 请检查话机盒子是否已连接，相关线缆是否插牢；</p>
-      <p class="text">2. 请检查call应用是否已经安装并启用（客户端下载地址:  ）；</p>
+      <p class="text">2. 请检查call应用是否已经安装并启用（学员端下载地址:  ）；</p>
       <p class="text">3. 如以上问题排查后，问题仍未解决，请联系管理员或客服解决。</p>
     </div>
     <audio ref="ring" loop>
@@ -104,7 +104,7 @@ export default {
       currentStatus: 0, // 当前状态 0空闲, 1来电, 2呼叫中, 3通话中
       callForm: {
         phoneNum: '', // 电话号码
-        customerName: '' // 客户
+        customerName: '' // 学员
       },
       refInfos: {}, // 号码关联信息
       isWebsocketWorking: false, // websocket链接状态
@@ -262,7 +262,7 @@ export default {
         // 格式化电话号码
         const tel = phoneNum.replace(/[\s, \-, (, )]/g, '')
 
-        // 获取客户信息
+        // 获取学员信息
         this.getCustomerInfo(tel)
 
         sendData.message = {
@@ -332,7 +332,7 @@ export default {
         this.currentStatus = type
 
         this.$set(this.callForm, 'phoneNum', message.phoneNumber)
-        // 获取客户信息
+        // 获取学员信息
         this.getCustomerInfo(message.phoneNumber)
 
       // 挂断
@@ -363,7 +363,7 @@ export default {
         this.currentStatus = 3
         console.log('接听通话')
 
-      // 获取客户端软硬件信息
+      // 获取学员端软硬件信息
       } else if (type === 101) {
         this.sendClientInfo(message)
         return
@@ -418,7 +418,7 @@ export default {
       })
     },
 
-    // 获取客户信息
+    // 获取学员信息
     getCustomerInfo(phoneNum) {
       const url = '/callcenter/findRef.do'
       const params = {
@@ -431,7 +431,7 @@ export default {
           refType: data.result.refType
         }
         this.phoneNumForShow = data.result.hiddenRefMobile
-        // 设置客户名
+        // 设置学员名
         if (this.refInfos.refType === 3) {
           this.callForm.customerName = `${data.result.customerName}(${this.refInfos.refName})`
         } else {
@@ -542,12 +542,12 @@ export default {
       }
     },
 
-    // 发送客户端信息
+    // 发送学员端信息
     sendClientInfo(clientInfo) {
       const params = Object.assign({ moduleType: 305 }, clientInfo)
       const url = '/callcenter/account/updateAccount.do'
       api.post(url, params, (data) => {
-        console.log('发送客户端信息成功')
+        console.log('发送学员端信息成功')
       })
     }
   }

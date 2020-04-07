@@ -36,7 +36,7 @@ export default {
     taskExam: '任务模考',
     achievementAnalysis: '成绩分析',
     personalData:"个人设置",
-    guest:"拜访客户"
+    guest:"拜访学员"
   },
   navbar: {
     dashboard: '首页',
@@ -70,10 +70,10 @@ export default {
   },
 
   Custom: {
-    Title: '客户学员',
-    New: '新增客户',
-    Update: '修改客户',
-    Disable: '禁用客户'
+    Title: '学员',
+    New: '新增学员',
+    Update: '修改学员',
+    Disable: '禁用学员'
   },
   components: {
     documentation: '文档',

@@ -74,7 +74,7 @@ export default {
     i18n: '多言語',
     externalLink: '外部リンク',
     profile: 'プロフィール',
-    guest:"拜访客户"
+    guest:"拜访学员"
   },
   navbar: {
     dashboard: 'トップ',
@@ -106,12 +106,12 @@ export default {
     confirm: '確認',
     cancel: 'キャンセル'
   },
-  customList: '客户列表',
+  customList: '学员列表',
   Custom: {
-    Title: '客户学员',
-    New: '新增客户',
-    Update: '修改客户',
-    Disable: '禁用客户'
+    Title: '学员',
+    New: '新增学员',
+    Update: '修改学员',
+    Disable: '禁用学员'
   },
   components: {
     documentation: 'ドキュメント',

@@ -39,17 +39,17 @@ import bookRouter from './modules/book'
 export const constantRoutes = [
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/manager/login'),
     hidden: true
   },
   {
     path: '/404',
-    component: () => import('@/views/error-page/404'),
+    component: () => import('@/views/system/404'),
     hidden: true
   },
   {
     path: '/401',
-    component: () => import('@/views/error-page/401'),
+    component: () => import('@/views/system/401'),
     hidden: true
   },
   {
@@ -61,7 +61,7 @@ export const constantRoutes = [
       {
         path: 'dashboard',
 
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/system/dashboard/index'),
         name: 'Dashboard',
         meta: { title: 'dashboard', icon: 'dashboard', affix: true }
       }
@@ -75,7 +75,7 @@ export const constantRoutes = [
       {
         hidden: true,
         path: 'personalData',
-        component: () => import('@/views/profile/personalData'),
+        component: () => import('@/views/manager/personalData'),
         name: 'personalData',
         meta: { title: 'personalData', icon: 'dashboard' }
       }
@@ -112,7 +112,7 @@ export const asyncRoutes = [
       , {
         path: 'docUpload',
         name: 'docUpload',
-        component: () => import('@/views/web/docDownload'),
+        component: () => import('@/views/platform/web/docDownload'),
         meta: { title: 'docUpload', icon: "docUpload" }
       }, {
         path: 'guest',
@@ -131,7 +131,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'platforList',
-        component: () => import('@/views/system/platform'),
+        component: () => import('@/views/platform/platform'),
         name: 'platforList',
         meta: { title: 'platform', icon: 'tree-table' }
       }
@@ -146,7 +146,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'managerList',
-        component: () => import('@/views/system/managerlist'),
+        component: () => import('@/views/manager/managerlist'),
         name: 'managerList',
         meta: { title: 'managerList', icon: "user" }
       }

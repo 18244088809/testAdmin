@@ -14,32 +14,32 @@ const webRouter = {
   children: [
     {
       path: 'banner',
-      component: () => import('@/views/web/banner'), // Parent router-view
+      component: () => import('@/views/platform/web/banner'), // Parent router-view
       name: 'banner',
       meta: { title: 'banner',icon:"website" }
     },
     {
       path: 'docDownload',
       name: 'docDownload',
-      component: () => import('@/views/web/docDownload'),
+      component: () => import('@/views/platform/web/docDownload'),
       meta: { title: 'docDownload' ,icon:"download"}
     },
     {
       path: 'news',
       name: 'newsList',
-      component: () => import('@/views/web/news'),
+      component: () => import('@/views/platform/web/news'),
       meta: { title: 'news' ,icon:"guide"}
     },
     {
       path: 'jingsai',
       name: 'jingsai',
-      component: () => import('@/views/web/jingsai'),
+      component: () => import('@/views/platform/web/jingsai'),
       meta: { title: 'jingsai',icon:"guide" }
     },
     {
       path: 'teacher',
       name: 'teacher',
-      component: () => import('@/views/web/teacher'),
+      component: () => import('@/views/platform/web/teacher'),
       meta: { title: 'teacher' ,icon:"guide"}
     }
   ]

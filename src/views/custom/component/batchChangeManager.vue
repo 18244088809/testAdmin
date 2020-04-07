@@ -44,7 +44,7 @@
 </template>
 <script>
 import { batchChangeManager } from "@/api/custom";
-import { getSamePlatformTeachers } from "@/api/manager";
+import { getAllManagerOfPlatform } from "@/api/platform";
 import common from "@/utils/common";
 export default {
   name: "",
@@ -59,7 +59,7 @@ export default {
       platformTeacherOptions: [],
       // 目标人员id
       targetManagerID: "",
-      // 转移客户的ID
+      // 转移学员的ID
       customIds: []
     };
   },
@@ -79,7 +79,7 @@ export default {
     // 获取平台老师
     async getTeacherOfPlatform() {
       this.platformTeacherOptions = [];
-      const res = await getSamePlatformTeachers("", {
+      const res = await getAllManagerOfPlatform("", {
         platform: this.targetPlatform
       });
       if (res.code == 200) {

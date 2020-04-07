@@ -23,7 +23,7 @@
             placeholder="请填写合同名称"
           />
         </el-form-item>
-        <el-form-item label="客户姓名">
+        <el-form-item label="学员姓名">
           <el-input v-model="currentItemData.StudentLabel" disabled placeholder="真实姓名" />
         </el-form-item>
         <el-form-item label="身份证">
@@ -278,7 +278,7 @@ export default {
       common,
       // 显示合同弹出框
       isShowContractDialog: false,
-      // 添加客户合同的默认数据
+      // 添加学员合同的默认数据
       currentItemData: {},
       // 预览图片的图片地址
       imageViewerSrc: "",
@@ -376,7 +376,7 @@ export default {
         2
       );
     },
-    // 客户合同图片上传
+    // 学员合同图片上传
     async uploadContractImg(file) {
       let that = this;
       const res = await $ImgAPI.UploadImg("contract", file.raw);

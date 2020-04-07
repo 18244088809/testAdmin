@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-//   ----------------客户-合同相关操作---------------------
+//   ----------------学员-合同相关操作---------------------
 // 获取合同列表
 export function getContractList(url, query, data) {
   return request({
@@ -9,7 +9,7 @@ export function getContractList(url, query, data) {
     data
   })
 }
-// 获取客户的合同数据
+// 获取学员的合同数据
 export function getCustomContract(url, query, data) {
   return request({
     url: '/contract/getContractByStudent/' + url,
@@ -18,7 +18,7 @@ export function getCustomContract(url, query, data) {
     data
   })
 }
-// 添加客户合同
+// 添加学员合同
 export function addCustomContract(url, query, data) {
   return request({
     url: '/contract/addContract' + url,
@@ -27,7 +27,7 @@ export function addCustomContract(url, query, data) {
     data
   })
 }
-// 删除客户合同
+// 删除学员合同
 export function deleCustomContract(url, query, data) {
   return request({
     url: '/contract/deleteContract/' + url,
@@ -36,7 +36,7 @@ export function deleCustomContract(url, query, data) {
     data
   })
 }
-// 更新客户合同
+// 更新学员合同
 export function updateCustomContract(url, query, data) {
   return request({
     url: '/contract/update/' + url,

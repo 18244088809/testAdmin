@@ -34,9 +34,9 @@
 export default {
   data() {
     return {
-      // 是否显示客户模态框
+      // 是否显示学员模态框
       showSendSMSDialog: false,
-      // 客户信息表单数据
+      // 学员信息表单数据
       customInfo: {},
       // 发送短信的内容。包括电话和短信内容
       sendSmsMSG: {}
@@ -45,7 +45,7 @@ export default {
   mounted() {},
 
   methods: {
-    // 获取客户的单条数据
+    // 获取学员的单条数据
     getCustomRowData(row) {
       // 初始化数据
       this.showSendSMSDialog = true;

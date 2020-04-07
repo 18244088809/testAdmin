@@ -1,6 +1,6 @@
 
 <template>
-  <!-- --------------------客户的跟进记录模块----------------------- -->
+  <!-- --------------------学员的跟进记录模块----------------------- -->
   <div class="p_both10">
     <el-table :data="customBuyCourseList" border tooltip-effect="dark" style="width: 100%">
       <el-table-column prop="CourseImage" width="90" label="课程logo">
@@ -179,9 +179,9 @@ export default {
     return {
       common,
       sendSMS: true,
-      // 客户Id
+      // 学员Id
       customID: null,
-      // 该客户所有的购买记录
+      // 该学员所有的购买记录
       customBuyCourseList: [],
       // 添加购买记录弹出框
       addBuyCourseDialog: false,
@@ -281,7 +281,7 @@ export default {
       }
     },
 
-    // 获取客户的购买记录
+    // 获取学员的购买记录
     async getBuyCouseRecord() {
       if (this.customItemData.id && this.customItemData.id > 0) {
         const res = await getCustomBuyCouseRecord("", {

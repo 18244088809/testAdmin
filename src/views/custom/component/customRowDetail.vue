@@ -10,20 +10,20 @@
       label-width="80px"
       size="small"
     >
-      <el-form-item label="客户姓名" prop="Realname" class="flex_1">
+      <el-form-item label="学员姓名" prop="Realname" class="flex_1">
         <div class="flex_dom">
-          <el-input v-model="currentItemData.Realname" placeholder="请输入客户姓名" />
+          <el-input v-model="currentItemData.Realname" placeholder="请输入学员姓名" />
           <el-select v-model="currentItemData.Sex" style="width:140px" placeholder="性别">
             <el-option label="男" value="男" />
             <el-option label="女" value="女" />
           </el-select>
         </div>
       </el-form-item>
-      <el-form-item label="客户电话" prop="Telephone" class="flex_1">
+      <el-form-item label="学员电话" prop="Telephone" class="flex_1">
         <el-input
           v-model="currentItemData.Telephone"
           :disabled="currentItemData.id>0"
-          placeholder="请输入客户电话"
+          placeholder="请输入学员电话"
           @blur="checkRepeatPhone"
         />
       </el-form-item>
@@ -34,10 +34,10 @@
         <el-input v-model="rePassword" type="password" @blur="checkPswd" placeholder="请再次输入密码" />
       </el-form-item>
       <el-form-item label="身份证" prop="Idcard">
-        <el-input v-model="currentItemData.Idcard" placeholder="请输入客户身份证" />
+        <el-input v-model="currentItemData.Idcard" placeholder="请输入学员身份证" />
       </el-form-item>
-      <el-form-item label="客户微信">
-        <el-input v-model="currentItemData.Wechat" placeholder="请输入客户微信号" />
+      <el-form-item label="学员微信">
+        <el-input v-model="currentItemData.Wechat" placeholder="请输入学员微信号" />
       </el-form-item>
       <el-form-item label="图片"> 
         <div class="flex_dom flex_wrap">
@@ -61,8 +61,8 @@
           </el-upload>
         </div>
       </el-form-item>
-      <el-form-item label="客户QQ" prop="Qq">
-        <el-input v-model="currentItemData.Qq" placeholder="请输入客户QQ号" />
+      <el-form-item label="学员QQ" prop="Qq">
+        <el-input v-model="currentItemData.Qq" placeholder="请输入学员QQ号" />
       </el-form-item>
       <el-form-item label="当前学历">
         <el-select v-model="currentItemData.Education" placeholder="请选择学历">
@@ -119,7 +119,7 @@
           v-model="currentItemData.Description"
           type="textarea"
           :rows="3"
-          placeholder="客户描述~ 只用来记录。不用来查询"
+          placeholder="学员描述~ 只用来记录。不用来查询"
         />
       </el-form-item>
       <el-form-item label="数据备注">
@@ -234,7 +234,7 @@ export default {
       ],
       customInfoRules: {
         Realname: [
-          { required: true, message: '请输入客户姓名', trigger: "blur" }
+          { required: true, message: '请输入学员姓名', trigger: "blur" }
         ],
 
         Qq: [
@@ -244,7 +244,7 @@ export default {
             trigger: "blur"
           }
         ],
-        Sex: [{ required: true, message: '请选择客户性别', trigger: "blur" }],
+        Sex: [{ required: true, message: '请选择学员性别', trigger: "blur" }],
         Telephone: [
           { required: true, message: '请输入电话号码', trigger: "blur" },
           {
@@ -267,7 +267,7 @@ export default {
       ],
       // 创建日期的字段
       createTime: "",
-      // 存放客户图片的数组
+      // 存放学员图片的数组
       customImgArr: [],
       // 存放平台老师的的数组
       platformTeacherOptions: [],
@@ -320,7 +320,7 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
-    // 重置客户密码
+    // 重置学员密码
     resetCustomPassword(studentid) {
       const that = this;
       that
@@ -345,7 +345,7 @@ export default {
         const res = await checkTelephone(this.currentItemData.Telephone);
         if (res.code == 200) {
           if (res.data && res.title != "ok") {
-            const mes = `<span class='color-1f85aa'>${res.title}${res.data.ManagerLabel}</span>的客户<span class='color-1f85aa'>${res.data.Realname}</span>已使用过该号码`;
+            const mes = `<span class='color-1f85aa'>${res.title}${res.data.ManagerLabel}</span>的学员<span class='color-1f85aa'>${res.data.Realname}</span>已使用过该号码`;
             this.$alert(mes, "提示", {
               confirmButtonText: "确定",
               type: "warning",
@@ -356,7 +356,7 @@ export default {
         }
       }
     },
-    // 客户资料图片上传
+    // 学员资料图片上传
     async uploadCustomImg(file) {
       let res = await $ImgHttp.UploadImg("custom", file.raw);
       if (res.code == 200) {
@@ -367,12 +367,12 @@ export default {
         this.customImgArr.push(res.data);
       }
     },
-    // 删除客户资料的图片
+    // 删除学员资料的图片
     deleCustomImg(index) {
       this.customImgArr.splice(index, 1);
     },
 
-    // 保存客户信息
+    // 保存学员信息
     async saveFormItemData() {
       if (this.checkPswd() == false) {
         return;

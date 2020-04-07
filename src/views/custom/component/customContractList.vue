@@ -71,9 +71,9 @@ export default {
       // 更多操作弹窗
       editDialog: false,
       common,
-      // 客户合同信息列表
+      // 学员合同信息列表
       customContractList: [],
-      // 客户的个人信息
+      // 学员的个人信息
       customRowData: this.customData,
       // 当前操作合同的索引
       currentContractIndex: null
@@ -95,7 +95,7 @@ export default {
         this.customContractList = res.data ? res.data : [];
       }
     },
-    // 新增客户合同
+    // 新增学员合同
     addCustomContract() {
       this.$refs.refContractDialog.getContractFormData(
         {

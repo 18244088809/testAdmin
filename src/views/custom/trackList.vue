@@ -16,7 +16,7 @@
                   <span class="font12 m-l-10 color-666">{{ common.dateFormat(item.Createtime, 2) }}</span>
                 </div>
                 <div class="font14 color-666 m-l-20">
-                  <span class="color-1f85aa">客户：{{ item.StudentLabel }}</span>
+                  <span class="color-1f85aa">学员：{{ item.StudentLabel }}</span>
                   <span class="font12 color-1f85aa">({{ item.StudentTel }})</span>
                 </div>
               </div>
@@ -120,7 +120,7 @@ export default {
       rows: 10,
       // 存上传的跟进图片
       trackImgList: [],
-      // 该客户所有的跟进记录
+      // 该学员所有的跟进记录
       customTrackList: [],
       // 当前回复跟进数据的索引
       currentReplyIndex: null
@@ -142,7 +142,7 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
-    // 获取客户的跟进记录
+    // 获取学员的跟进记录
     getCustomtTracks() {
       const offsetRow = (this.nowPage - 1) * this.rows;
       getTrackList(0, {
