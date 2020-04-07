@@ -106,7 +106,7 @@
         <el-table-column prop="id" width="80" label="编号" />
         <el-table-column label="提醒" width="50">
           <template slot-scope="scope">
-            <i class="el-icon-bell font20" @click="addAlarm(scope.$index, scope.row)" />
+            <i class="el-icon-bell font20" @click="sendMessage(scope.$index, scope.row)" />
           </template>
         </el-table-column>
         <el-table-column width="50" label="关注">
@@ -324,9 +324,8 @@ import customTrack from "@/views/student/component/customTrack";
 import customBuyRecord from "@/views/student/component/customBuyRecord";
 import customContractDialog from "@/views/student/component/customContractDialog";
 import customContractList from "@/views/student/component/customContractList";
-import addAlarmDialog from "@/views/student/component/addAlarmDialog";
-import batchChangeManagerView from "@/views/student/component/batchChangeManager";
-import alarmList from "@/views/student/component/alarmList";
+import addAlarmDialog from "@/views/manager/components/addAlarmDialog";
+import batchChangeManagerView from "@/views/student/component/batchChangeManager"; 
 import scoreEntry from "@/views/student/component/scoreEntry";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 import myDialog from "@/components/myDialog/myDialog";
@@ -346,8 +345,7 @@ export default {
     customContractList,
     scoreEntry,
     customTrack,
-    customBuyRecord,
-    alarmList,
+    customBuyRecord, 
     addAlarmDialog,
     batchChangeManagerView
   },
@@ -707,9 +705,13 @@ export default {
     getScoreEntry(id) {
       this.$refs.scoreEntryComponent.getScoreEntryData(id);
     },
-    // 点击添加提醒弹出模态框
-    addAlarm(index, row) {
-      this.$refs.refAlarmForm.getCustomInfo(row);
+  
+     // 发送留言消息
+    sendMessage(index, row) {
+      this.$refs.refAlarmForm.setTarget(
+        0,
+         row.Realname + "(" + row.Sex + ")-" + row.Telephone + "的跟进提醒"
+      );
     },
     // -----------------------------------------------电话
 

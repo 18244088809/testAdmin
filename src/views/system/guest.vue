@@ -70,6 +70,7 @@ export default {
     async  getAllGuest() {
       let res =  await listSchoolTeacher("");
       this.guestList = res.data;
+      this.allRows = res.title;
     }
   }
 };

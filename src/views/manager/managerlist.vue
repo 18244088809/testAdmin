@@ -1,9 +1,9 @@
 <template>
   <div class="font16 hgt_full" v-cloak>
-    <div class="flex_column hgt_full ">
+    <div class="flex_column hgt_full">
       <!-- 查询表单 -->
       <div class="p-t-20">
-        <el-form :inline="true"> 
+        <el-form :inline="true">
           <el-form-item>
             <el-input
               placeholder="请输入搜索内容"
@@ -32,53 +32,54 @@
         </el-form>
       </div>
       <!-- 用户列表 -->
-      
-        <el-table
-          height="100%"
-          :data="teacherList"
-          tooltip-effect="light"
-          border
-          style="width: 100%"
-          ref="refElTabel"
-        >
-          <el-table-column width="80" label="头像">
-            <template slot-scope="scope">
-              <img :src="scope.row.face" class="wid28" />
-            </template>
-          </el-table-column>
-          <el-table-column prop="Id" label="ID" width="50"></el-table-column>
-          <el-table-column label="姓名" width="120">
-            <template slot-scope="scope">
-              <span
-                class="color-1f85aa font-w6 cursor"
-                @click="openMoreOperationDialog(scope.$index, scope.row)"
-              >{{scope.row.Realname}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="role" label="身份" width="80">
-            <template slot-scope="scope">
-              <span>{{common.FormatSelect(common.managerRoleList,scope.row.role)}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="Sex" width="50" label="性别"></el-table-column>
-          <el-table-column prop="tel" label="电话号码" width="100"></el-table-column>
-          <el-table-column prop="info" label="个人描述" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="操作" width="180">
-            <template slot-scope="scope">
-              <el-button type="danger" @click="resetPassword(scope.$index, scope.row)">重置密码</el-button>
-              <el-button
-                v-show="scope.row.Status==1"
-                type="info"
-                @click="setTeacherStatus(scope.$index, scope.row,0)"
-              >禁用</el-button>
-              <el-button
-                v-show="scope.row.Status==0"
-                type="success"
-                @click="setTeacherStatus(scope.$index, scope.row,1)"
-              >启用</el-button>
-            </template>
-          </el-table-column>
-        </el-table> 
+
+      <el-table
+        height="100%"
+        :data="teacherList"
+        tooltip-effect="light"
+        border
+        style="width: 100%"
+        ref="refElTabel"
+      >
+        <el-table-column width="80" label="头像">
+          <template slot-scope="scope">
+            <img :src="scope.row.face" class="wid28" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="Id" label="ID" width="50"></el-table-column>
+        <el-table-column label="姓名" width="120">
+          <template slot-scope="scope">
+            <span
+              class="color-1f85aa font-w6 cursor"
+              @click="openMoreOperationDialog(scope.$index, scope.row)"
+            >{{scope.row.Realname}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="role" label="身份" width="80">
+          <template slot-scope="scope">
+            <span>{{common.FormatSelect(common.managerRoleList,scope.row.role)}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="Sex" width="50" label="性别"></el-table-column>
+        <el-table-column prop="tel" label="电话号码" width="100"></el-table-column>
+        <el-table-column prop="info" label="个人描述" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="操作" width="280">
+          <template slot-scope="scope">
+            <el-button type="danger" @click="resetPassword(scope.$index, scope.row)">重置密码</el-button>
+            <el-button
+              v-show="scope.row.Status==1"
+              type="info"
+              @click="setTeacherStatus(scope.$index, scope.row,0)"
+            >禁用</el-button>
+            <el-button
+              v-show="scope.row.Status==0"
+              type="success"
+              @click="setTeacherStatus(scope.$index, scope.row,1)"
+            >启用</el-button>
+            <el-button type="warning" @click="sendMessage(scope.$index, scope.row)">给他留言</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <!-- 用户操作 -->
       <div class="between-center m-v-15">
         <el-button type="primary" @click="openNewItem()">新增用户</el-button>
@@ -108,14 +109,14 @@
         <teacher-row-detail v-bind:formItemData="currentRowData" />
       </div>
       <div slot="right_content" class="p_both20 p-b-20">
-        <el-tabs v-model="activElTab" >
+        <el-tabs v-model="activElTab">
           <el-tab-pane label="权限设置" name="qxsz" id="qxsz">
             <set-right :formItemData="currentRowData" :currentPlatform="currentPlatform"></set-right>
-          </el-tab-pane> 
+          </el-tab-pane>
         </el-tabs>
       </div>
     </my-dialog>
-
+    <addAlarmDialog ref="refAlarmForm" />
     <!-- 新增校区信息弹出框 -->
     <el-dialog
       :visible.sync="editDialog"
@@ -125,7 +126,8 @@
       <teacher-row-detail
         :editEnable="true"
         :formItemData="currentRowData"
-        @subClickEvent="updateTeacherList" />
+        @subClickEvent="updateTeacherList"
+      />
     </el-dialog>
   </div>
 </template>
@@ -141,13 +143,15 @@ import {
 import { getAllManagerOfPlatform } from "@/api/platform";
 import myDialog from "@/components/myDialog/myDialog";
 import teacherRowDetail from "@/views/system/component/teacherRowDetail";
-import setRight from "@/views/system/component/setRight"; 
+import setRight from "@/views/system/component/setRight";
+import addAlarmDialog from "@/views/manager/components/addAlarmDialog";
 export default {
   name: "managerList",
   components: {
     myDialog,
     teacherRowDetail,
-    setRight 
+    setRight,
+    addAlarmDialog
   },
   data() {
     return {
@@ -204,24 +208,24 @@ export default {
       let res;
       if (this.currentPlatform > 0) {
         res = await getAllManagerOfPlatform(this.currentPlatform, {
-          simple: false 
+          simple: false
         });
       } else {
-        res = await getManagerList("", { 
+        res = await getManagerList("", {
           limit: this.rows,
           offset: offsetRow,
           role: this.searchRoleVal,
           [searchCondition]: searchVal
         });
-     }
+      }
 
-      // 获取数据的总条数 
-        this.allRows = 0;
-        this.teacherList = [];
-        if (res.data) {
-          this.allRows = res.title;
-          this.teacherList = res.data;
-        } 
+      // 获取数据的总条数
+      this.allRows = 0;
+      this.teacherList = [];
+      if (res.data) {
+        this.allRows = res.title;
+        this.teacherList = res.data;
+      }
     },
 
     // 分页获取数据
@@ -259,6 +263,14 @@ export default {
     openNewItem() {
       this.editDialog = true;
       this.currentRowData = {};
+    },
+
+    // 发送留言消息
+    sendMessage(index, row) {
+      this.$refs.refAlarmForm.setTarget(
+        row.Id,
+        from.Realname + "(" + from.Sex + ")" + from.tel + " 对你说:"
+      );
     },
     // 重置密码
     resetPassword(index, row) {
@@ -303,14 +315,13 @@ export default {
       } else if (type == 1) {
         this.currentRowData = { ...rowData };
         this.$set(this.teacherList, this.currentTeacherIndex, rowData);
-        
       }
       this.editDialog = false;
     }
   },
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform =  parseInt(paths[paths.length - 1]);
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }

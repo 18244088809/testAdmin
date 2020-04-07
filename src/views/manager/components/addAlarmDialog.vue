@@ -3,7 +3,7 @@
     :close-on-click-modal="false"
     :visible.sync="isShowAlarmDialog"
     width="740px"
-    title="添加提醒"
+    :title="formTitle"
   >
     <div class="alarmFormCss">
       <el-form
@@ -55,6 +55,8 @@ export default {
         ExeTime: null,
         Title: ""
       },
+      alarmTargetID:0,//接受者.0 表示发给自己
+      formTitle: "发送提醒",
       // 控制提醒表单的显隐
       isShowAlarmDialog: false,
       // 表单验证
@@ -72,14 +74,15 @@ export default {
   mounted() {},
   methods: {
     // 获取学员的基本信息
-    getCustomInfo(row) {
+    setTarget(targetid,title) {
+      this.alarmTargetID = targetid;
+      let from = this.$store.getters.manager;
       this.alarmFormData = {
         Content: "",
         ExeTime: null,
-        Title: ""
+        Title: title
       };
-      this.alarmFormData.Title =
-        row.Realname + "(" + row.Sex + ")-" + row.Telephone + "的跟进提醒";
+     
       this.isShowAlarmDialog = true;
     },
     // 保存添加的提醒
@@ -92,7 +95,7 @@ export default {
               this.alarmFormData.ExeTime.getTime() / 1000
             );
           }
-          const res = await addAlarm("", "", this.alarmFormData);
+          const res = await addAlarm(this.alarmTargetID, "", this.alarmFormData);
 
           res.title = res.title ? res.title : 0;
           this.$store.dispatch("Alarm", res.title);
@@ -100,7 +103,6 @@ export default {
             message: "操作成功",
             type: "success"
           });
-          this.$emit("subClickEvent");
           this.isShowAlarmDialog = false;
         } else {
           return false;

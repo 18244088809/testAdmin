@@ -12,7 +12,7 @@ export function getAlarmList(url, query, data) {
 // 添加提醒
 export function addAlarm(url, query, data) {
   return request({
-    url: '/alarm/addAlarm'+url,
+    url: '/alarm/addAlarm/'+url,
     method: 'post',
     params: query,
     data
