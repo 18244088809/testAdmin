@@ -120,7 +120,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="Description" width="100" label="描述" :show-overflow-tooltip="true" />
-        <el-table-column prop="Platform" width="110" label="归属校区">
+        <el-table-column prop="Platform" width="150" label="归属校区">
           <template
             slot-scope="scope"
           >{{ common.FormatSelect($store.getters.app.platformList,scope.row.Platform) }}</template>
@@ -170,14 +170,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="Createtime" width="130" :formatter="TimeFormatter" label="录入时间" />
-        <el-table-column prop="Comments" width="200" label="备注" :show-overflow-tooltip="true" />
+        <el-table-column prop="Comments" label="备注" :show-overflow-tooltip="true" />
         <el-table-column label="操作" width="150" fixed="right">
           <template slot-scope="scope">
-            <!-- <el-button
-              type="danger"
-              style="margin:0px;"
-              @click="addCustomContract(scope.$index, scope.row)"
-            >办理报名</el-button>-->
             <el-button
               style="margin:0px"
               size="mini"
@@ -200,12 +195,6 @@
               size="mini"
               @click="callTelephone($event,scope.row)"
             >打电话</el-button>
-            <!-- <el-button
-              :disabled="connectTelStatus<=0"
-              size="mini"
-              style="margin:0px"
-              @click="openSendSMSDialog(scope.row)"
-            >发短信</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -315,7 +304,7 @@ import {
   updatePlatform,
   setPlatformWorker,
   setNewPlatformWorks,
-  getAllManagerOfPlatform, 
+  getAllManagerOfPlatform,
   setPlatformMaster
 } from "@/api/platform";
 import customRowDetail from "@/views/student/component/customRowDetail";
@@ -325,7 +314,7 @@ import customBuyRecord from "@/views/student/component/customBuyRecord";
 import customContractDialog from "@/views/student/component/customContractDialog";
 import customContractList from "@/views/student/component/customContractList";
 import addAlarmDialog from "@/views/manager/components/addAlarmDialog";
-import batchChangeManagerView from "@/views/student/component/batchChangeManager"; 
+import batchChangeManagerView from "@/views/student/component/batchChangeManager";
 import scoreEntry from "@/views/student/component/scoreEntry";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 import myDialog from "@/components/myDialog/myDialog";
@@ -345,7 +334,7 @@ export default {
     customContractList,
     scoreEntry,
     customTrack,
-    customBuyRecord, 
+    customBuyRecord,
     addAlarmDialog,
     batchChangeManagerView
   },
@@ -705,12 +694,13 @@ export default {
     getScoreEntry(id) {
       this.$refs.scoreEntryComponent.getScoreEntryData(id);
     },
-  
-     // 发送留言消息
+
+    // 发送留言消息
     sendMessage(index, row) {
       this.$refs.refAlarmForm.setTarget(
         0,
-         row.Realname + "(" + row.Sex + ")-" + row.Telephone + "的跟进提醒"
+        "给自己发送提醒",
+        row.Realname + "(" + row.Sex + ")-" + row.Telephone + "的跟进提醒"
       );
     },
     // -----------------------------------------------电话

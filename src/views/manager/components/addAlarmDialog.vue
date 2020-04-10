@@ -1,18 +1,17 @@
 <template>
   <el-dialog
     :close-on-click-modal="false"
-    :visible.sync="isShowAlarmDialog"
-    width="740px"
+    :visible.sync="isShowAlarmDialog" 
+    width="440px"
     :title="formTitle"
   >
-    <div class="alarmFormCss">
+    <div class="alarmFormCss pad20 ">
       <el-form
         ref="refAlarmForm"
         :model="alarmFormData"
-        :rules="alarmFormRules"
-        class="dialog-body-pad"
+        :rules="alarmFormRules" 
         size="small"
-        label-width="100px"
+        label-width="80px"
       >
         <el-form-item label="标题" prop="Title">
           <el-input v-model="alarmFormData.Title" />
@@ -74,9 +73,9 @@ export default {
   mounted() {},
   methods: {
     // 获取学员的基本信息
-    setTarget(targetid,title) {
+    setTarget(targetid,formTitle,title) {
       this.alarmTargetID = targetid;
-      let from = this.$store.getters.manager;
+      this.formTitle= formTitle;
       this.alarmFormData = {
         Content: "",
         ExeTime: null,

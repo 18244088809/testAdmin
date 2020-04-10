@@ -267,8 +267,10 @@ export default {
 
     // 发送留言消息
     sendMessage(index, row) {
+       let from = this.$store.getters.manager;
       this.$refs.refAlarmForm.setTarget(
         row.Id,
+        "给["+row.Realname+"]发送提醒",
         from.Realname + "(" + from.Sex + ")" + from.tel + " 对你说:"
       );
     },

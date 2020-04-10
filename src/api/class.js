@@ -111,15 +111,15 @@ export function getClassStu(url, param, data) {
 export function sendStudentsExercise(url, param, data) {
   return request({
     url: '/class/sendStudentsExercise/'+url,
-    method: 'post',
+    method: 'put',
     params: param,
     data
   })
 }
 // 获取分发记录-全班
-export function getSendExerciseOfClassRecord(url, param, data) {
+export function getClassFinishExercise(url, param, data) {
   return request({
-    url: '/class/getSendExerciseOfClassRecord/'+url,
+    url: '/class/getClassFinishExercise/'+url,
     method: 'get',
     params: param,
     data

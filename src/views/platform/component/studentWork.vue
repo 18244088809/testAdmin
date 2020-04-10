@@ -25,20 +25,23 @@
 
       <div slot="right_content" class="p-l-10 p-b-20 wid_100">
         <div class="center">
-          <el-button type="success" @click="activElTab='fszy'">发送作业</el-button>
-          <el-button type="primary" @click="activElTab='pgzy'">批改作业</el-button>
-          <el-button type="info" @click="activElTab='xyzp'">学员作品</el-button>
-          <el-button type="warning" @click="activElTab='lyxx'">留言消息</el-button>
+          <el-tabs  @tab-click="onChangeTabs">
+            <el-tab-pane id="fkj" label="发考卷" name="fkj">
+              <sendStudentExercise ref="fkj" :classItem="formItemData" :studentIDS="classAllStuList" />
+            </el-tab-pane>
+            <el-tab-pane id="gkj" label="改考卷" name="gkj">
+              <receiveStudentExercise ref="gkj"  :classItem="formItemData" :studentIDS="classAllStuList" />
+            </el-tab-pane>
+            <el-tab-pane id="fzy" label="发作业" name="fzy">
+              <handOutWorks ref="fzy" :classItem="formItemData"  :studentIDS="classAllStuList" />
+            </el-tab-pane>
+            <el-tab-pane id="gzy" label="改作业" name="gzy"></el-tab-pane>
+            <el-tab-pane id="fly" label="发通知" name="fly">
+              <sendMessage ref="fly" :classItem="formItemData"  :studentIDS="classAllStuList" />
+            </el-tab-pane>
+          </el-tabs>
         </div>
-        <hr />
-        <sendStudentExercise v-show="activElTab=='fszy'" ref="fszy" :studentIDS="classAllStuList" />
-        <receiveStudentExercise
-          v-show="activElTab=='xyzp'"
-          ref="xyzp"
-          :studentIDS="classAllStuList"
-        />
-        <handOutWorks v-show="activElTab=='pgzy'" ref="pgzy" :studentIDS="classAllStuList" />
-        <sendMessage v-show="activElTab=='lyxx'" ref="lyxx" :studentIDS="classAllStuList" />
+
         <!-- <el-tabs v-model="activElTab">
           <el-tab-pane id="fszy" label="发送作业" name="fszy"></el-tab-pane>
           <el-tab-pane id="pgzy" label="批改作业" name="pgzy"></el-tab-pane>
@@ -64,8 +67,7 @@ import {
   addClassStu,
   getClassStu,
   sendStudentsExercise,
-  getClassMateWorks,
-  getSendExerciseOfClassRecord,
+  getClassMateWorks, 
   getExerciseByBookChapter
 } from "@/api/class";
 import common from "@/utils/common";
@@ -83,7 +85,7 @@ export default {
     sendMessage
   },
   props: {
-    // 校区的表单数据
+    // 班级数据
     formItemData: {
       type: Object,
       default: function() {
@@ -102,8 +104,7 @@ export default {
   data() {
     return {
       common,
-      // 当前所在tab页
-      activElTab: "fszy",
+      // 当前所在tab页 
       searchGrade: new Date(),
       currenteditEnable: this.editEnable,
       // 控制班级弹出框
@@ -135,6 +136,9 @@ export default {
     this.setData();
   },
   methods: {
+    onChangeTabs(item) {
+      item.$children[0].fire();
+    },
     setData() {
       this.currentItemData = this.formItemData;
       this.getClassAllStuList();
@@ -166,12 +170,8 @@ export default {
       });
     },
 
-    async sendStudentsExercise(studentid) {
-      let res = await sendStudentsExercise(studentid, "", this.classAllStuList);
-      this.classAllStuList = res.data ? res.data : [];
-    },
-    async getSendExerciseOfClassRecord(studentid) {
-      let res = await getSendExerciseOfClassRecord(studentid);
+    async getClassFinishExercise(studentid) {
+      let res = await getClassFinishExercise(studentid);
       this.classAllStuList = res.data ? res.data : [];
     },
     async getClassMateWorks(studentid) {

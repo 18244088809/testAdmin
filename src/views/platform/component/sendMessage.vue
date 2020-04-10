@@ -31,6 +31,12 @@ import common from "@/utils/common";
 import { isDate } from "xe-utils/methods";
 export default {
   props: {
+      classItem: {
+      type: Object,
+      default: {
+        Id: 0
+      }
+    },
     // 校区的表单数据
     studentIDS: {
       type: Array,
@@ -59,19 +65,14 @@ export default {
       }
     };
   },
-  watch: {
-    formItemData(newvar) {
-      this.currentItemData = this.formItemData;
-      console.log(" this.currenteditEnable :", this.currenteditEnable);
-    }
-  },
+ 
   mounted() {
-    if (isDate(this.searchGrade)) {
-      this.currentItemData.Grade = this.searchGrade.getFullYear();
-    }
-    this.currentItemData = this.formItemData;
+     
   },
   methods: {
+    fire(){
+
+    },
     // 添加或编辑数据
     saveFormItemData() {
       console.log("====studentIDS:===", this.studentIDS);

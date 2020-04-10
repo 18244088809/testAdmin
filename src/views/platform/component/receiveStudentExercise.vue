@@ -1,12 +1,53 @@
 <template>
   <div>
-    <el-form style="padding:10px 0px 0px 0px" label-width="80px" size="small">
-      <el-form-item label="班级名称" prop="Label"></el-form-item>
-    </el-form>
-    <div class="around-center hgt60 bge0e3ea">
-      <el-button type="warning" class="m-l-40">编辑</el-button>
-      <el-button type="primary" :disabled="false" class="m-l-40" @click="saveFormItemData">确 认</el-button>
+    <el-table
+      tooltip-effect="light"
+      :data="studentDoExerciseList"
+      border
+      style="width: 100%"
+      height="100%"
+      ref="refElTabel"
+    >
+      <el-table-column prop="Id" label="ID" width="50"></el-table-column>
+      <el-table-column prop="Label" label="试卷名称" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StudentLabel" label="学员姓名" width="100"></el-table-column>
+      <el-table-column prop="Examtime" label="开始时间" width="110"></el-table-column>
+      <el-table-column prop="Examtime" label="结束时间" width="110"></el-table-column>
+      <el-table-column prop="Examtime" label="得分" width="110"></el-table-column>
+      <el-table-column width="110" fixed="right">
+        <template slot-scope="scope">
+          <el-button
+            type="success"
+            style="margin:0px;"
+            @click="seeWrongQuestion(scope.$index, scope.row)"
+          >查看错题</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="between-center m-v-10">
+      <el-button type="primary" @click="sendToStudents()">确定发送</el-button>
+      <div>
+        <el-pagination
+          background
+          @current-change=" currentPageChange"
+          :current-page.sync="nowPage"
+          :page-size="rows"
+          layout="total,prev, pager, next, jumper"
+          :total="allRows"
+        ></el-pagination>
+      </div>
     </div>
+
+    <el-dialog
+      :visible.sync="studentDoExerciseDailog"
+      :title="'【'+studentDoExercise.Label+'】试卷详情'"
+      :showLeft="false"
+    >
+      <div slot="right_content" class="flex_dom hgt_100">
+        <studentWrongQuestions :studentDoExercise="studentDoExercise"></studentWrongQuestions>
+      
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -25,12 +66,23 @@ import {
   addClassStu,
   getClassStu,
   handOutTask,
-  getAllClassTaskRecord
+  getClassFinishExercise
 } from "@/api/class";
 import common from "@/utils/common";
+import studentWrongQuestions from "@/views/platform/component/studentWrongQuestions"; 
 import { isDate } from "xe-utils/methods";
 export default {
+  components: { 
+studentWrongQuestions
+
+  },
   props: {
+    classItem: {
+      type: Object,
+      default: {
+        Id: 0
+      }
+    },
     // 校区的表单数据
     studentIDS: {
       type: Array,
@@ -42,41 +94,48 @@ export default {
   data() {
     return {
       common,
-      searchGrade: new Date(),
-      currenteditEnable: this.editEnable,
-      // 控制班级弹出框
-      isShowClassDialog: false,
-      // 创建班级的时间
-      createClassTime: null,
-      // 创建人
-      createPerson: null,
+      // 数据总条数
+      allRows: 0,
+      // 当前页数
+      nowPage: 1,
+      // 每页数据的总条
+      rows: 50,
       currentItemData: this.formItemData,
       // 表单验证
       ClassFormRules: {
         Label: [
           { required: true, message: "班级名称不能为空", trigger: "blur" }
         ]
-      }
+      },
+      studentDoExercise:{},
+      studentDoExerciseList: [],
+      studentDoExerciseDailog: false,
+      currentIndex: 0
     };
   },
-  watch: {
-    formItemData(newvar) {
-      this.currentItemData = this.formItemData;
-      console.log(" this.currenteditEnable :", this.currenteditEnable);
-    }
-  },
-  mounted() {
-    if (isDate(this.searchGrade)) {
-      this.currentItemData.Grade = this.searchGrade.getFullYear();
-    }
-    this.currentItemData = this.formItemData;
-  },
+
   methods: {
-    // 添加或编辑数据
-    saveFormItemData() {
-      console.log("====studentIDS:===", this.studentIDS);
+    async fire() {
+      let offsetRow = (this.nowPage - 1) * this.rows;
+      let res = await getClassFinishExercise(this.classItem.Id, {
+        limit: this.rows,
+        offset: offsetRow
+      });
+      this.studentDoExerciseList = res.data ? res.data : [];
+    },
+    // 分页获取数据
+    currentPageChange(val) {
+      this.nowPage = val;
+      this.fire();
+    },
+
+    // 查看这个学员的错题
+    seeWrongQuestion(index, row) {
+      this.studentDoExercise = { ...row };
+
+      this.studentDoExerciseDailog = true;
+      this.currentIndex = index;
     }
-  },
-  mounted() {}
+  }
 };
 </script>  
