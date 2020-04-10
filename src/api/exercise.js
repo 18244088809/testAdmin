@@ -131,3 +131,14 @@ export function getClassExercise(url, param, data) {
   })
 }
 
+
+// 获取某个学员的错误考卷里的考题
+export function getStudentWrongQuestions(url, param, data) {
+  return request({
+    url: '/exercise/getStudentWrongQuestions/' + url,
+    method: 'get',
+    params: param,
+    data
+  })
+}
+

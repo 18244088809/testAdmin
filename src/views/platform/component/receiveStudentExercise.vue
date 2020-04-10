@@ -8,12 +8,12 @@
       height="100%"
       ref="refElTabel"
     >
-      <el-table-column prop="Id" label="ID" width="50"></el-table-column>
+      <el-table-column prop="ID" label="ID" width="50"></el-table-column>
       <el-table-column prop="Label" label="试卷名称" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StudentLabel" label="学员姓名" width="100"></el-table-column>
-      <el-table-column prop="Examtime" label="开始时间" width="110"></el-table-column>
-      <el-table-column prop="Examtime" label="结束时间" width="110"></el-table-column>
-      <el-table-column prop="Examtime" label="得分" width="110"></el-table-column>
+      <el-table-column prop="StartTime" label="开始时间" width="110"></el-table-column>
+      <el-table-column prop="EndTime" label="结束时间" width="110"></el-table-column>
+      <el-table-column prop="Score" label="得分" width="50"></el-table-column>
       <el-table-column width="110" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -40,13 +40,12 @@
 
     <el-dialog
       :visible.sync="studentDoExerciseDailog"
-      :title="'【'+studentDoExercise.Label+'】试卷详情'"
-      :showLeft="false"
-    >
-      <div slot="right_content" class="flex_dom hgt_100">
+      :title="'【'+studentDoExercise.Label+'】试卷详情'" 
+      height="500px"
+    > 
         <studentWrongQuestions :studentDoExercise="studentDoExercise"></studentWrongQuestions>
       
-      </div>
+      
     </el-dialog>
   </div>
 </template>
@@ -131,8 +130,7 @@ studentWrongQuestions
 
     // 查看这个学员的错题
     seeWrongQuestion(index, row) {
-      this.studentDoExercise = { ...row };
-
+      this.studentDoExercise = { ...row }; 
       this.studentDoExerciseDailog = true;
       this.currentIndex = index;
     }
