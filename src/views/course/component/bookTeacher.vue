@@ -22,15 +22,7 @@
       label-width="100px"
       class="m-t-20"
     >
-      <el-form-item label="是否离职">
-        <el-switch
-          v-model="queryFromLabel"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          :inactive-text="queryFromLabel?'在职':'离职'"
-          @change="searchTeacher"
-        />
-      </el-form-item>
+      
       <el-form-item prop="searchPhone">
         <el-input
           v-model="searchContentVal"
@@ -64,24 +56,23 @@
       <div class="m-t-20 center flex_wrap m-l-15">
         <el-checkbox-group v-model="checkBoxAddStu">
           <el-checkbox
-            :label="item.id"
+            :label="item.Id"
             class="m-b-5"
-            :key="item.id"
+            :key="item.Id"
             v-for="item in serachStuList"
-          >{{item.Realname}}（{{item.Telephone}}）</el-checkbox>
+          >{{item.Realname}}（{{item.Tel}}）</el-checkbox>
         </el-checkbox-group>
       </div>
       <div class="m-t-30 center-end">
-        <el-button type="primary" @click="addTeacherToClass" class="border0">确定</el-button>
+        <el-button type="primary" @click="addTeacherToBook" class="border0">确定</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
- 
-import {
-  getAllManagerOfPlatform
-} from "@/api/platform";
+import { getAllManagerOfPlatform } from "@/api/platform";
+import { setBookEditors } from "@/api/book";
+
 import common from "@/utils/common";
 export default {
   name: "ClassTeacher",
@@ -106,7 +97,7 @@ export default {
         searchPhone: "",
         searchName: ""
       },
-       queryFromLabel: false, // 是否根据这个学员的录入员进行查询
+      queryFromLabel: false, // 是否根据这个学员的录入员进行查询
       // 日期选择-日期筛选
       queryEndDate: null,
       // 查询学员所选条件值
@@ -166,15 +157,14 @@ export default {
   },
   methods: {
     // 获取班级的所有老师
-    async fire() { 
-      this.searchTeacher()
+    async fire() {
+      this.searchTeacher();
     },
     // 查找老师
     async searchTeacher() {
-   
       // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
-      let res = await getAllManagerOfPlatform( this.currentPlatform, { });
+      let res = await getAllManagerOfPlatform(this.currentPlatform, {onlyLive:true});
       this.checkBoxAddStu = [];
       if (res.data) {
         this.serachStuList = res.data;
@@ -198,8 +188,8 @@ export default {
         });
       }
     },
-    // 向班级添加老师
-    async addTeacherToClass() {
+    // 添加老师
+    async addTeacherToBook() {
       if (this.checkBoxAddStu.length < 1) {
         this.$message({
           message: "还没有选中要添加的老师",
@@ -224,7 +214,7 @@ export default {
         this.checkBoxAddStu = [];
         return;
       }
-      let res = await addClassTeacher(this.formItemData.Id, "", newStu);
+      let res = await setBookEditors(this.formItemData.Id, "", newStu);
 
       this.$message({
         message: "操作成功",
