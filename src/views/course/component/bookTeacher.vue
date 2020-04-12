@@ -1,58 +1,7 @@
 <template>
   <div class="p_both10 p-t-5">
-    <div class="flex_wrap flex_mid p-b-5 border-b-e0">
-      <div v-for="item in classAllStuList" :key="item.id" class="quan_xian_item m-b-10">
-        <el-checkbox
-          @change="checked=>changeSelectStu(checked,item)"
-          v-model="item.Selected"
-        >{{item.Realname}}</el-checkbox>
-      </div>
-      <p v-if="!classAllStuList||classAllStuList.length==0">本教材没有编辑老师.请搜索添加教师</p>
-      <el-button
-        v-else
-        @click="removeClassTeacher"
-        type="danger"
-        :disabled="selectExistTeachers.length==0"
-      >移除选中的老师</el-button>
-    </div>
-    <el-form
-      :inline="true"
-      :model="stuSearchForm"
-      :rules="stuSearchFormRules"
-      label-width="100px"
-      class="m-t-20"
-    >
-      
-      <el-form-item prop="searchPhone">
-        <el-input
-          v-model="searchContentVal"
-          placeholder="请输入搜索内容"
-          class="input-with-select"
-          @keyup.enter.native="searchTeacher"
-        >
-          <el-select
-            slot="prepend"
-            v-model="seaechConditionVal"
-            placeholder="请选择查询条件"
-            class="wid90"
-          >
-            <el-option
-              v-for="(item,index) in searchCustomOptions"
-              :key="index"
-              :label="item.Label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-input>
-      </el-form-item>
-
-      <el-form-item label-width="30px">
-        <el-button type="primary" @click="searchTeacher" class="border0">查 询</el-button>
-      </el-form-item>
-    </el-form>
-    <div class="m-t-20" v-show="showSearchStuResult">
-      <p>备选老师：</p>
-      <hr />
+     
+    <div class="m-t-20" v-show="showSearchStuResult"> 
       <div class="m-t-20 center flex_wrap m-l-15">
         <el-checkbox-group v-model="checkBoxAddStu">
           <el-checkbox
@@ -157,7 +106,7 @@ export default {
   },
   methods: {
     // 获取班级的所有老师
-    async fire() {
+      fire() {
       this.searchTeacher();
     },
     // 查找老师
@@ -168,12 +117,13 @@ export default {
       this.checkBoxAddStu = [];
       if (res.data) {
         this.serachStuList = res.data;
+        let editors = this.formItemData.Editors.split(",");
         //将搜索出来的结果中，选中那些已经是本班老师的打钩
         this.$nextTick(() => {
           this.serachStuList.forEach(searchItem => {
-            this.classAllStuList.forEach(selectItem => {
-              if (searchItem.id == selectItem.id) {
-                this.checkBoxAddStu.push(searchItem.id);
+            editors.forEach(selectItem => {
+              if (searchItem.Id == selectItem) {
+                this.checkBoxAddStu.push(searchItem.Id);
               }
             });
           });
@@ -220,17 +170,7 @@ export default {
         message: "操作成功",
         type: "success"
       });
-      // 清空搜索和选中的老师数据
-      this.checkBoxAddStu = [];
-      this.serachStuList = [];
-      this.stuSearchForm.searchPhone = "";
-      this.ShowSearchForm = false;
-      this.showSearchStuResult = false;
-      this.classAllStuList = [];
-      if (res.data && res.data.length > 0) {
-        this.classAllStuList = res.data;
-      }
-      this.selectExistTeachers = [];
+      
     },
     // 当复选框发生改变时获取所选中的项
     changeSelectStu(checked, item) {

@@ -164,12 +164,11 @@ export default {
         this.treeConfig
       );
       if (rowNode) {
-       
         if (!rowNode.item.Questions) {
           rowNode.item.Questions = [];
         }
         rowNode.item.Questions.push(exerciseQuestion.Id);
-      } 
+      }
     },
     // 新增子级节点
     addChildNode(row, isZhang) {
@@ -186,7 +185,7 @@ export default {
           Label: labelStr,
           Id: "",
           Children: [],
-          Questions:[],
+          Questions: [],
           Taste: 0,
           Video: "",
           TopicNo: 0,
@@ -298,9 +297,9 @@ export default {
       }
       this.bookLabel = res.title;
       this.editEnable = false;
-      let myTeachBookIDS = this.$store.getters.manager.TeachBooks.split(",");
-      myTeachBookIDS.forEach(id => {
-        if (id == this.bookID) { 
+      let editorList = res.data.Editors.split(","); 
+      editorList.forEach(editorid => { 
+        if (editorid == this.$store.getters.manager.Id) {
           this.editEnable = true;
         }
       });
