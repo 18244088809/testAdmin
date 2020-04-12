@@ -301,9 +301,7 @@ import {
 import {
   queryPlatform,
   addPlatform,
-  updatePlatform,
-  setPlatformWorker,
-  setNewPlatformWorks,
+  updatePlatform,  
   getAllManagerOfPlatform,
   setPlatformMaster
 } from "@/api/platform";

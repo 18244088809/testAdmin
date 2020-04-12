@@ -1,0 +1,99 @@
+<template>
+  <div class="p_both10 setright">
+    <div class="flex_wrap flex_mid p-b-5 border-b-e0">
+      <div v-for="item in platforms" :key="item.Id" class="quan_xian_item m-b-10">
+        <el-checkbox
+          @change="checked=>changePlatform(checked,item)"
+          v-model="item.Selected"
+        >{{item.Label}}</el-checkbox>
+      </div>
+    </div>
+    <div class="around-center m-v-15">
+      <el-button type="primary" @click="savePlatforms">保 存</el-button>
+    </div>
+  </div>
+</template>
+<script>
+import { getPlatforms, setPlatform } from "@/api/manager";
+
+export default {
+  props: {
+    // 表单数据
+    formItemData: {
+      type: Object,
+      default: function() {
+        return { Id: 0 };
+      }
+    },
+    // 表单数据
+    currentPlatform: {
+      type: Number,
+      default: 0
+    }
+  },
+  name: "setPlatform",
+  data() {
+    return { 
+      platforms: [],
+      myPlatforms: [],
+      removePlatforms:[]
+    };
+  },
+
+  methods: {
+    fire() {
+      this.getManagerPlatforms();
+    },
+    // 打开模态框时获取所有的权限选择
+    async getManagerPlatforms(index) {
+      this.managerRightsMap = [];
+      let res = await getPlatforms(this.formItemData.Id, "");
+
+      this.myPlatforms = res.data ? res.data : [];
+
+       this.platforms=Object.assign(this.$store.getters.app.platformList);
+      this.platforms.forEach(platform => {
+        this.myPlatforms.forEach(hasPlatform => {
+          if (platform.Id == hasPlatform) {
+            platform.Selected = true;
+          }
+        }); 
+      });
+    },
+    changePlatform(checked, itemObj) {
+       
+      if (checked == false) {
+        
+        this.removePlatforms.push(itemObj.Id)
+      } 
+    this.$forceUpdate();
+    },
+    //保存用户的权限设置
+    async savePlatforms() {
+      let selectedIDS = [];
+      this.platforms.forEach(platform => {
+        if (platform.Selected == true) {
+          selectedIDS.push(platform.Id);
+        }
+      });
+      let res = await setPlatform(this.formItemData.Id, {remove:this.removePlatforms.join(",")}, selectedIDS);
+      this.$message({
+        message: "操作成功",
+        type: "success"
+      });
+    }
+  }
+};
+</script>  
+<style scoped>
+.splitLine {
+  width: 2px;
+  height: 14px;
+  background-color: #1890ff;
+  border-radius: 1px;
+  display: inline-block;
+}
+.quan_xian_item {
+  width: calc(100% / 4);
+}
+</style>

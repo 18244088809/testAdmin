@@ -174,13 +174,7 @@ export default {
    
       // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
-      let res = await getAllManagerOfPlatform("", {
-        limit: this.rows,
-        offset: offsetRow,
-        kind: this.searchTypeVal,
-        platform: this.currentPlatform, 
-        [this.seaechConditionVal]: this.searchContentVal
-      });
+      let res = await getAllManagerOfPlatform( this.currentPlatform, { });
       this.checkBoxAddStu = [];
       if (res.data) {
         this.serachStuList = res.data;

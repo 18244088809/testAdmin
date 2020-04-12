@@ -32,7 +32,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="归属校区" prop="platformSelect">
+      <!-- <el-form-item label="归属校区" prop="platformSelect">
         <el-select
           multiple
           v-model="currentFormData.platformSelect"
@@ -47,7 +47,7 @@
             v-for="(item,index) in $store.getters.app.platformList"
           ></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="性别">
         <el-radio v-model="currentFormData.Sex" :disabled="currentFormData.Id>0" label="男">男</el-radio>
         <el-radio v-model="currentFormData.Sex" :disabled="currentFormData.Id>0" label="女">女</el-radio>
@@ -92,6 +92,10 @@ import { editManager, addManager } from "@/api/manager";
 import common from "@/utils/common";
 export default {
   props: {
+    platform:{
+      type:Number,
+      default:0
+    },
     // 校区的表单数据
     formItemData: {
       type: Object,
@@ -153,12 +157,12 @@ export default {
       this.$refs.formUI.validate(async valid => {
         if (valid) {
           this.currentFormData.MasterID = this.masterID;
-          this.currentFormData.Platform = this.currentFormData.platformSelect.join(
-            ","
-          );
+          // this.currentFormData.Platform = this.currentFormData.platformSelect.join(
+          //   ","
+          // );
           if (this.currentFormData.Id == null || this.currentFormData.Id == 0) {
             // 新增
-            let res = await addManager("", "", this.currentFormData);
+            let res = await addManager(this.platform, "", this.currentFormData);
             if (res.code == 200) {
               // 添加成功之后要触发父组件信息列表修改
               this.isShowPlatformDialog = false;
@@ -172,7 +176,7 @@ export default {
           } else {
             // 修改
             let res = await editManager(
-              this.currentFormData.Id,
+              this.currentFormData.Id+"/"+this.platform,
               "",
               this.currentFormData
             );

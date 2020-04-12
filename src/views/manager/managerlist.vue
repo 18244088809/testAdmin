@@ -109,7 +109,10 @@
         <teacher-row-detail v-bind:formItemData="currentRowData" />
       </div>
       <div slot="right_content" class="p_both20 p-b-20">
-        <el-tabs v-model="activElTab">
+        <el-tabs   @tab-click="onChangeTabs">
+          <el-tab-pane label="管辖校区" name="gxxq" id="gxxq">
+            <myPlatform :formItemData="currentRowData" :currentPlatform="currentPlatform"></myPlatform>
+          </el-tab-pane>
           <el-tab-pane label="权限设置" name="qxsz" id="qxsz">
             <set-right :formItemData="currentRowData" :currentPlatform="currentPlatform"></set-right>
           </el-tab-pane>
@@ -124,7 +127,7 @@
       :title="currentRowData.Id>0?'编辑'+currentRowData.Label:'新增'"
     >
       <teacher-row-detail
-        :editEnable="true"
+        :editEnable="true" :platform="currentPlatform"
         :formItemData="currentRowData"
         @subClickEvent="updateTeacherList"
       />
@@ -142,8 +145,9 @@ import {
 } from "@/api/manager";
 import { getAllManagerOfPlatform } from "@/api/platform";
 import myDialog from "@/components/myDialog/myDialog";
-import teacherRowDetail from "@/views/system/component/teacherRowDetail";
-import setRight from "@/views/system/component/setRight";
+import teacherRowDetail from "@/views/manager/components/teacherRowDetail";
+import setRight from "@/views/manager/components/setRight";
+import myPlatform from "@/views/manager/components/myPlatform";
 import addAlarmDialog from "@/views/manager/components/addAlarmDialog";
 export default {
   name: "managerList",
@@ -151,9 +155,10 @@ export default {
     myDialog,
     teacherRowDetail,
     setRight,
-    addAlarmDialog
+    addAlarmDialog,
+    myPlatform
   },
-  data() {
+  data() { 
     return {
       common,
       // 搜索用户条件选择的选项
@@ -200,6 +205,9 @@ export default {
     };
   },
   methods: {
+     onChangeTabs(item) { 
+        item.$children[0].fire(); 
+    },
     // 获取用户信息的列表
     async getAllManagerOfPlatform() {
       let offsetRow = (this.nowPage - 1) * this.rows;

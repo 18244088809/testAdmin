@@ -88,7 +88,7 @@ export function editManager(url, param, data) {
 }
 export function addManager(url, param, data) {
   return request({
-    url: '/manager/add' + url,
+    url: '/manager/add/' + url,
     method: 'post',
     params: param,
     data
@@ -135,3 +135,20 @@ export function getAllTeacher(url, param, data) {
   })
 }
  
+export function getPlatforms(url, param, data) {
+  return request({
+    url: '/manager/getPlatforms/' + url,
+    method: 'get',
+    params: param,
+    data
+  })
+}
+export function setPlatform(url, param, data) {
+  return request({
+    url: '/manager/setPlatform/' + url,
+    method: 'put',
+    params: param,
+    data
+  })
+}
+
