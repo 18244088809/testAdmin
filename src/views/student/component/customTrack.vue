@@ -155,15 +155,10 @@ export default {
       currentReplyIndex: null
     };
   },
-  // watch: {
-  //   customData(newvar) {
-  //     this.customFormData = this.customData;
-  //     this.customTrackList = [];
-  //     this.getCustomId(this.customData.id);
-  //   }
-  // },
-  mounted() {
-    this.fire();
+  watch: {
+    customData(newval) {
+      this.fire();
+    }
   },
   fire() {
     this.customFormData = this.customData;

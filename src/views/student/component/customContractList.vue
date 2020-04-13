@@ -79,9 +79,11 @@ export default {
       currentContractIndex: null
     };
   },
-
-  mounted() { 
-  },
+ watch: {
+    customRowData(newval) {
+      this.fire();
+    }
+  }, 
   fire() {
      this.getContractList();
   },

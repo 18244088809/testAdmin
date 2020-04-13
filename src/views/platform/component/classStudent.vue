@@ -199,8 +199,10 @@ export default {
       selectExistStudents: []
     };
   },
-  mounted() { 
-    this.fire();
+ watch: {
+    formItemData(newval) {
+      this.fire();
+    }
   },
   methods: {
     // 获取班级的所有学员

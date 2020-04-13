@@ -40,12 +40,10 @@
 
     <el-dialog
       :visible.sync="studentDoExerciseDailog"
-      :title="'【'+studentDoExercise.Label+'】试卷详情'" 
+      :title="'【'+studentDoExercise.Label+'】试卷详情'"
       height="500px"
-    > 
-        <studentWrongQuestions :studentDoExercise="studentDoExercise"></studentWrongQuestions>
-      
-      
+    >
+      <studentWrongQuestions :studentDoExercise="studentDoExercise"></studentWrongQuestions>
     </el-dialog>
   </div>
 </template>
@@ -68,12 +66,11 @@ import {
   getClassFinishExercise
 } from "@/api/class";
 import common from "@/utils/common";
-import studentWrongQuestions from "@/views/platform/component/studentWrongQuestions"; 
+import studentWrongQuestions from "@/views/platform/component/studentWrongQuestions";
 import { isDate } from "xe-utils/methods";
 export default {
-  components: { 
-studentWrongQuestions
-
+  components: {
+    studentWrongQuestions
   },
   props: {
     classItem: {
@@ -106,13 +103,17 @@ studentWrongQuestions
           { required: true, message: "班级名称不能为空", trigger: "blur" }
         ]
       },
-      studentDoExercise:{},
+      studentDoExercise: {},
       studentDoExerciseList: [],
       studentDoExerciseDailog: false,
       currentIndex: 0
     };
   },
-
+  watch: {
+    classItem(newval) {
+      this.fire();
+    }
+  },
   methods: {
     async fire() {
       let offsetRow = (this.nowPage - 1) * this.rows;
@@ -130,7 +131,7 @@ studentWrongQuestions
 
     // 查看这个学员的错题
     seeWrongQuestion(index, row) {
-      this.studentDoExercise = { ...row }; 
+      this.studentDoExercise = { ...row };
       this.studentDoExerciseDailog = true;
       this.currentIndex = index;
     }

@@ -64,12 +64,14 @@ export default {
       searchSubjectContent: ""
     };
   },
-
-  mounted() {
-    this.fire();
+  watch: {
+    formItemData(newval) {
+      this.fire();
+    }
   },
+
   methods: {
-      fire() {
+    fire() {
       this.currentItemData = this.formItemData;
       this.getCoursePrice();
     },

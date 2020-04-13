@@ -33,40 +33,47 @@ export default {
   },
   name: "setPlatform",
   data() {
-    return { 
+    return {
       platforms: [],
       myPlatforms: [],
-      removePlatforms:[]
+      removePlatforms: []
     };
   },
-
+  watch: {
+    formItemData(newval) {
+      this.fire();
+    }
+  },
+ 
   methods: {
     fire() {
       this.getManagerPlatforms();
     },
     // 打开模态框时获取所有的权限选择
     async getManagerPlatforms(index) {
-      this.managerRightsMap = [];
       let res = await getPlatforms(this.formItemData.Id, "");
-
+      this.platforms = [];
       this.myPlatforms = res.data ? res.data : [];
-
-       this.platforms=Object.assign(this.$store.getters.app.platformList);
-      this.platforms.forEach(platform => {
-        this.myPlatforms.forEach(hasPlatform => {
-          if (platform.Id == hasPlatform) {
-            platform.Selected = true;
-          }
-        }); 
+      this.$nextTick(() => {
+        this.platforms = this.$store.getters.app.platformList.slice(
+          0,
+          this.$store.getters.app.platformList.length - 1
+        );
+        this.platforms.forEach(platform => {
+          platform.Selected = false;
+          this.myPlatforms.forEach(hasPlatform => {
+            if (platform.Id == hasPlatform) {
+              platform.Selected = true;
+            }
+          });
+        });
       });
     },
     changePlatform(checked, itemObj) {
-       
       if (checked == false) {
-        
-        this.removePlatforms.push(itemObj.Id)
-      } 
-    this.$forceUpdate();
+        this.removePlatforms.push(itemObj.Id);
+      }
+      this.$forceUpdate();
     },
     //保存用户的权限设置
     async savePlatforms() {
@@ -76,7 +83,11 @@ export default {
           selectedIDS.push(platform.Id);
         }
       });
-      let res = await setPlatform(this.formItemData.Id, {remove:this.removePlatforms.join(",")}, selectedIDS);
+      let res = await setPlatform(
+        this.formItemData.Id,
+        { remove: this.removePlatforms.join(",") },
+        selectedIDS
+      );
       this.$message({
         message: "操作成功",
         type: "success"

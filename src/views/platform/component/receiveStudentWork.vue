@@ -112,7 +112,11 @@ studentWrongQuestions
       currentIndex: 0
     };
   },
-
+ watch: {
+    classItem(newval) {
+      this.fire();
+    }
+  },
   methods: {
     async fire() {
       let offsetRow = (this.nowPage - 1) * this.rows;

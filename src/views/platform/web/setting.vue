@@ -2,9 +2,34 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
-        
+        <el-form label-width="90px" :model="siteItem" style="width:100%">
+          <div class="flex_dom">
+            <el-form-item label="本校logo" >
+              <el-upload
+                :auto-upload="false"
+                action  style="width:100px"
+                :show-file-list="false"
+                :on-change="function(file, fileList){return uploadBannerImg(file,fileList)}"
+              >
+                <img v-if="siteItem.image" :src="siteItem.image" style="width: auto; height:80px" />
+                <i
+                  v-else
+                  slot="default"
+                  class="el-icon-plus"
+                  style="width:80px; height:80px"
+                >&nbsp;点击上传</i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="视频介绍" style="width:100%">
+            <el-input v-model="siteItem.content" placeholder="说明"></el-input>
+          </el-form-item>
+          </div>
+          <el-form-item label="视频介绍" style="width:100%">
+            <el-input v-model="siteItem.content" placeholder="说明"></el-input>
+          </el-form-item>
+        </el-form>
       </div>
-      <div class="m-v-15"> 
+      <div class="m-v-15">
         <el-button type="success" @click="saveBannerList">确定</el-button>
       </div>
     </div>
@@ -12,30 +37,33 @@
 </template>
 
 <script>
+
 import { GetIndexItem, SetIndexItem } from "@/api/website";
 import $ImgHttp from "@/api/ImgAPI";
+import cosSDK from 'cos-js-sdk-v5'
 export default {
   name: "webBanner",
   data() {
     return {
       // banner列表
-      dataList: [],
+      siteItem: {},
+      dataList:[],
       currentPlatform: 0
     };
   },
 
   methods: {
     async GetIndexBanner() {
-      let res = await GetIndexItem(this.currentPlatform + "/banner", "");
+      let res = await GetIndexItem(this.currentPlatform + "/webSetting", "");
       if (res.code == 200) {
         this.dataList = res.data ? res.data : [];
       }
     },
     // 图片上传
-    async uploadBannerImg(file, fileList, index) {
-      let res = await $ImgHttp.UploadImg("banner", file.raw);
+    async uploadBannerImg(file, fileList) {
+      let res = await $ImgHttp.UploadImg("webSetting", file.raw);
       if (res.code == 200) {
-        this.dataList[index].image = res.data;
+        this.siteItem.image = res.data;
         this.$message({
           message: "上传成功",
           type: "success"
@@ -46,9 +74,9 @@ export default {
     // 保存banner列表
     async saveBannerList() {
       let res = await SetIndexItem(
-        this.currentPlatform + "/banner",
+        this.currentPlatform + "/webSetting",
         "",
-        this.dataList
+        this.siteItem
       );
       if (res.code == 200) {
         this.$message({
@@ -78,11 +106,10 @@ export default {
   },
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform = parseInt( paths[paths.length - 1]);
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    this.GetIndexBanner();
   }
 };
 </script>
@@ -99,7 +126,7 @@ export default {
   position: relative;
   box-sizing: border-box;
   border-radius: 5px;
-  border:1px dashed rgba(46,84,56,0.2);
+  border: 1px dashed rgba(46, 84, 56, 0.2);
 }
 .cardBorder >>> .el-upload {
   width: 100%;

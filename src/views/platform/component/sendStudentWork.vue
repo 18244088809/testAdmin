@@ -68,7 +68,11 @@ export default {
       exerciseList: []
     };
   },
-
+ watch: {
+    classItem(newval) {
+      this.fire();
+    }
+  },
   methods: {
     fire() {
       this.getThisClassExercise();

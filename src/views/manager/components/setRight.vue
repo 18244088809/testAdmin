@@ -63,15 +63,15 @@ export default {
   },
   watch: {
     formItemData(newval) {
-      this.currentFormData = this.formItemData;
-      this.getAllManagerRight();
+      this.fire();
     }
   },
-  mounted() {
-    this.currentFormData = this.formItemData;
-    this.getAllManagerRight();
-  },
+
   methods: {
+    fire() {
+      this.currentFormData = this.formItemData;
+      this.getAllManagerRight();
+    },
     // 打开模态框时获取所有的权限选择
     async getAllManagerRight(index) {
       this.managerRightsMap = [];

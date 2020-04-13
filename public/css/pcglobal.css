@@ -28,7 +28,7 @@ a,a:link{text-decoration:none;color: #333}
 .bgimg_mid{background-position: center; background-repeat: no-repeat;}
 .overflow_auto{overflow: auto;-webkit-overflow-scrolling: touch;overflow-scrolling: touch; }
 .overflow_hide{overflow: hidden;}
-
+.cursorPoint{cursor:pointer}
 /*字体和背景颜色库*/
 .bg-fff{background-color: #fff!important;}
 .bg-ccc{background-color: #cccccc!important;}

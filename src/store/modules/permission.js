@@ -95,6 +95,12 @@ const actions = {
                 meta: { title: 'web', icon: "website" },
                 children: [
                   {
+                    path: 'setting/' + platform.Id.toString(10),
+                    name: 'setting' + index.toString(10),
+                    component: () => import('@/views/platform/web/setting'),
+                    meta: { title: 'setting', icon: "nested" }
+                  },
+                  {
                     path: 'banner/' + platform.Id.toString(10),
                     component: () => import('@/views/platform/web/banner'),
                     name: 'banner' + index.toString(10),
@@ -112,12 +118,7 @@ const actions = {
                     component: () => import('@/views/platform/web/news'),
                     meta: { title: 'news', icon: "news" }
                   },
-                  // {
-                  //   path: 'active/' + platform.Id.toString(10),
-                  //   name: 'active' + index.toString(10),
-                  //   component: () => import('@/views/platform/web/active'),
-                  //   meta: { title: 'active', icon: "active" }
-                  // },
+                 
                   // {
                   //   path: 'business/' + platform.Id.toString(10),
                   //   name: 'business' + index.toString(10),

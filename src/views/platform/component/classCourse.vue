@@ -88,12 +88,14 @@ export default {
       selectExistCourse: []
     };
   },
-  mounted() {
-    this.fire();
+  watch: {
+    formItemData(newval) {
+      this.fire();
+    }
   },
   methods: {
     // 获取班级的所有学员
-    async fire() {
+     async fire() {
       this.searchCourseList = []; 
       this.showSearchStuResult = false;
       let res = await getClassCourse(this.formItemData.Id);

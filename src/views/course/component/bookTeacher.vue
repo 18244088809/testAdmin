@@ -1,7 +1,6 @@
 <template>
   <div class="p_both10 p-t-5">
-     
-    <div class="m-t-20" v-show="showSearchStuResult"> 
+    <div class="m-t-20" v-show="showSearchStuResult">
       <div class="m-t-20 center flex_wrap m-l-15">
         <el-checkbox-group v-model="checkBoxAddStu">
           <el-checkbox
@@ -101,19 +100,23 @@ export default {
       selectExistTeachers: []
     };
   },
-  mounted() {
-    this.fire();
+  watch: {
+    currentPlatform(newval) {
+      this.fire();
+    }
   },
   methods: {
     // 获取班级的所有老师
-      fire() {
+    fire() {
       this.searchTeacher();
     },
     // 查找老师
     async searchTeacher() {
       // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
-      let res = await getAllManagerOfPlatform(this.currentPlatform, {onlyLive:true});
+      let res = await getAllManagerOfPlatform(this.currentPlatform, {
+        onlyLive: true
+      });
       this.checkBoxAddStu = [];
       if (res.data) {
         this.serachStuList = res.data;
@@ -170,7 +173,6 @@ export default {
         message: "操作成功",
         type: "success"
       });
-      
     },
     // 当复选框发生改变时获取所选中的项
     changeSelectStu(checked, item) {

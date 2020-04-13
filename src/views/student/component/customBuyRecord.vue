@@ -216,14 +216,11 @@ export default {
       }
     };
   },
-  // watch: {
-  //   customData(newval) {
-  //     this.customBuyCourseList = [];
-  //     this.customItemData = this.customData;
-  //     this.getBuyCouseRecord();
-  //   }
-  // },
-  mounted() {},
+ watch: {
+    customData(newval) {
+      this.fire();
+    }
+  }, 
   fire() {
     this.customBuyCourseList = [];
     this.customItemData = this.customData;

@@ -53,9 +53,12 @@ export default {
       platforms: []
     };
   },
-  mounted() {
-    
+  watch: {
+    currentFormData(newval) {
+      this.fire();
+    }
   },
+
   methods: {
     fire() {
       this.platforms = [];
