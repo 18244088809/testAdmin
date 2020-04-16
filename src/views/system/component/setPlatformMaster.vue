@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-radio-group v-model="currentPlatform.MasterID" :disabled="!currenteditEnable">
-      <el-radio :label="item.Id" :key="item.Id"   v-for="item in managerList">{{item.Realname}}</el-radio>
+      <el-radio :label="item.Id" :key="item.Id" v-for="item in managerList">{{item.Realname}}</el-radio>
     </el-radio-group>
 
     <div class="around-center hgt60 bge0e3ea">
@@ -45,36 +45,35 @@ export default {
   },
   data() {
     return {
-      currentPlatform:{},
+      currentPlatform: {},
       currenteditEnable: false,
-      managerList: [],
-      
+      managerList: []
     };
   },
   watch: {
     formItemData(newvar) {
-      this.currentPlatform = this.formItemData;
-      this.getAllManagerOfThisPlatform();
+      this.fire();
     }
   },
-  mounted() {
-    this.currentPlatform = this.formItemData;
-  
-    this.getAllManagerOfThisPlatform();
-  },
+  mounted() {},
   methods: {
+    fire() {
+      this.currentPlatform = this.formItemData;
+
+      this.getAllManagerOfThisPlatform();
+    },
     async getAllManagerOfThisPlatform() {
       let res = await getAllManagerOfPlatform(this.currentPlatform.Id, "");
       this.managerList = res.data;
     },
     // 添加或编辑数据
     async saveFormItemData() {
-      console.log(this.formItemData,this.currentPlatform);
+      console.log(this.formItemData, this.currentPlatform);
       let res = await setPlatformMaster(
         this.formItemData.Id,
-        { masterid: this.currentPlatform.MasterID,add:1 },
+        { masterid: this.currentPlatform.MasterID, add: 1 },
         ""
-      ); 
+      );
       this.currentPlatform = res.data;
       this.$message({
         message: "修改成功",

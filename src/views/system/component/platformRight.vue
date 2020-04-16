@@ -64,13 +64,16 @@ export default {
   },
   watch: {
     formItemData(newvar) {
-      this.setData();
+      this.fire();
     }
   },
   mounted() {
-    this.setData();
+   
   },
   methods: {
+    fire() {
+       this.setData();
+    },
     setData() {
       this.currentPlatform = this.formItemData;
       let index = 0;

@@ -228,7 +228,7 @@
           <custom-row-detail :formItemData="customFormData" :platform="currentPlatform" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activElTab" @tab-click="onChangeTabs">
+          <el-tabs   @tab-click="onChangeTabs">
             <el-tab-pane id="gjjl" label="跟进记录" name="gjjl">
               <custom-track :custom-data="customFormData" @subClickEvent="updateCustomRecentTrack" />
             </el-tab-pane>

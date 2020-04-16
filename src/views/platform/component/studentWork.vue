@@ -41,12 +41,7 @@
             </el-tab-pane>
           </el-tabs>
         </div>
-
-        <!-- <el-tabs v-model="activElTab">
-          <el-tab-pane id="fszy" label="发送作业" name="fszy"></el-tab-pane>
-          <el-tab-pane id="pgzy" label="批改作业" name="pgzy"></el-tab-pane>
-          <el-tab-pane id="xyzp" label="学员作品" name="xyzp"></el-tab-pane>
-        </el-tabs>-->
+ 
       </div>
     </div>
   </div>

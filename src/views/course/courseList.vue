@@ -127,7 +127,7 @@
           <course-row-detail @itemModify="updateListItem" :formItemData="currentItemData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activeName" @tab-click="onChangeTabs"> 
+          <el-tabs  @tab-click="onChangeTabs"> 
             <el-tab-pane id="priceSetting" label="价格设定" name="priceSetting">
               <course-price-tab :formItemData="currentItemData" />
             </el-tab-pane>

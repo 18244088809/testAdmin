@@ -52,7 +52,7 @@
         <collegeRowDetail :formItemData="currentRowData" />
       </div>
       <div slot="right_content" class="p_both20 p-b-20">
-        <el-tabs v-model="activElTab">
+        <el-tabs  @tab-click="onChangeTabs">
           <el-tab-pane label="所含课程类别" name="qxsz" id="qxsz">
             <courseKind :collegePropItem="currentRowData" />
           </el-tab-pane>
@@ -131,6 +131,9 @@ export default {
     };
   },
   methods: {
+    onChangeTabs(item) {
+      item.$children[0].fire();
+    },
     addCollege() {
       this.editDialog = true;
       this.currentRowData = {};

@@ -46,7 +46,7 @@
         <platformRowDetail :formItemData="customFormData" />
       </div>
       <div slot="right_content" class="p_both20 p-b-20">
-        <el-tabs v-model="activeName">
+        <el-tabs  @tab-click="onChangeTabs">
           <el-tab-pane id="zlxzqx" label="资料下载权限" name="zlxzqx">
             <platformRight :formItemData="customFormData" />
           </el-tab-pane>
@@ -97,6 +97,9 @@ export default {
     this.getAllPlatform();
   },
   methods: {
+     onChangeTabs(item) {
+      item.$children[0].fire();
+    },
     formatStudentNumber(studentnum) {
       if (studentnum == 0) {
         return "没有上限";

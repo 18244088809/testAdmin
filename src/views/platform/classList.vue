@@ -95,7 +95,7 @@
           ></class-row-detail>
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activeClassTabs" @tab-click="onChangeTabs">
+          <el-tabs   @tab-click="onChangeTabs">
             <el-tab-pane label="本班学员" name="bbxy" id="bbxy">
               <classStudent  :formItemData="classFormData"></classStudent>
             </el-tab-pane>

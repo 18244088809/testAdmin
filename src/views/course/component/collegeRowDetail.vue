@@ -62,10 +62,10 @@ export default {
       // 表单验证
       platFormInfoRules: {
         Label: [
-          { required: true, message: '校区名称不能为空', trigger: "blur" }
+          { required: true, message: "校区名称不能为空", trigger: "blur" }
         ],
         Telephone: [
-          { required: true, message: '请输入电话号码', trigger: "blur" },
+          { required: true, message: "请输入电话号码", trigger: "blur" },
           {
             pattern: /^\d{11}$/,
             message: "请输入正确的手机号",
@@ -77,13 +77,16 @@ export default {
   },
   watch: {
     formItemData(newval) {
-      this.currentFormData = this.formItemData;
+      this.fire();
     }
   },
   created() {
-    this.currentFormData = this.formItemData;
+    this.fire();
   },
   methods: {
+    fire() {
+      this.currentFormData = this.formItemData;
+    },
     // 保存学员信息
     async savecurrentFormData() {
       this.$refs.formUI.validate(async valid => {
@@ -103,7 +106,7 @@ export default {
               this.$message({
                 message: "修改成功",
                 type: "success"
-              }); 
+              });
             } else {
               res = await addCollege("", "", this.currentFormData);
               this.currentFormData = res.data;
