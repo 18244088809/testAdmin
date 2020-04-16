@@ -4,28 +4,60 @@
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
         <el-form label-width="90px" :model="siteItem" style="width:100%">
           <div class="flex_dom">
-            <el-form-item label="本校logo" >
+            <el-form-item label="本校logo">
               <el-upload
                 :auto-upload="false"
-                action  style="width:100px"
+                action
+                style="width:150px;height:150px"
                 :show-file-list="false"
                 :on-change="function(file, fileList){return uploadBannerImg(file,fileList)}"
               >
-                <img v-if="siteItem.image" :src="siteItem.image" style="width: auto; height:80px" />
+                <img v-if="siteItem.image" :src="siteItem.image" style="width: auto; height:130px" />
                 <i
                   v-else
                   slot="default"
                   class="el-icon-plus"
-                  style="width:80px; height:80px"
+                  style="width:130px; height:130px "
                 >&nbsp;点击上传</i>
               </el-upload>
             </el-form-item>
-            <el-form-item label="视频介绍" style="width:100%">
-            <el-input v-model="siteItem.content" placeholder="说明"></el-input>
-          </el-form-item>
+            <el-form-item label="宣传视频" style="width:100%">
+              <el-upload
+                :auto-upload="false"
+                action
+                style="width:150px;height:150px"
+                :show-file-list="false"
+                :on-change="function(file, fileList){return uploadVideo(file,fileList)}"
+              >
+                <video
+                  v-if="siteItem.webSiteVideo"
+                  :src="siteItem.webSiteVideo"
+                  controls="controls"
+                  style="width: auto; height:130px"
+                >您的浏览器不支持 video 标签预览。</video>
+
+                <i
+                  v-else
+                  slot="default"
+                  class="el-icon-plus"
+                  style="width:130px; height:130px "
+                >{{ videoProgress}}</i>
+              </el-upload>
+            </el-form-item>
           </div>
-          <el-form-item label="视频介绍" style="width:100%">
-            <el-input v-model="siteItem.content" placeholder="说明"></el-input>
+          <div class="flex_dom">
+            <el-form-item label="年招生上限" style="width:100%">
+              <label>{{platform.MaxPerYear}}</label>
+            </el-form-item>
+            <el-form-item label="总招生上限" style="width:100%">
+              <label>{{platform.MaxAllYear}}</label>
+            </el-form-item>
+          </div>
+          <el-form-item label="校区介绍" style="width:100%">
+            <el-input v-model="platform.Description" placeholder="说明"></el-input>
+          </el-form-item>
+          <el-form-item label="办公地址" style="width:100%">
+            <el-input v-model="platform.Address" placeholder="说明"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -37,18 +69,25 @@
 </template>
 
 <script>
-
+import platformRowDetail from "@/views/system/component/platformRowDetail";
 import { GetIndexItem, SetIndexItem } from "@/api/website";
+import { getCosTempKey } from "@/api/cos";
+
 import $ImgHttp from "@/api/ImgAPI";
-import cosSDK from 'cos-js-sdk-v5'
+import cosSDK from "cos-js-sdk-v5";
 export default {
   name: "webBanner",
+  components: {
+    platformRowDetail
+  },
   data() {
     return {
       // banner列表
       siteItem: {},
-      dataList:[],
-      currentPlatform: 0
+      platform: {},
+      dataList: [],
+      currentPlatform: 0,
+      videoProgress: "点击上传"
     };
   },
 
@@ -63,7 +102,7 @@ export default {
     async uploadBannerImg(file, fileList) {
       let res = await $ImgHttp.UploadImg("webSetting", file.raw);
       if (res.code == 200) {
-        this.siteItem.image = res.data;
+        this.siteItem.logo = res.data;
         this.$message({
           message: "上传成功",
           type: "success"
@@ -85,6 +124,78 @@ export default {
         });
       }
     },
+    // getTempKey
+    async getTempKey() {
+      let BucketValue = "book-1300492412";
+      let NameValue = "bee.txt";
+
+      let res = await getCosTempKey("", {
+        bucket: BucketValue,
+        name: NameValue
+      });
+      var cos = new cosSDK({
+        getAuthorization: function(options, callback) {
+          callback({
+            TmpSecretId: res.data.Credentials.TmpSecretId,
+            TmpSecretKey: res.data.Credentials.TmpSecretKey,
+            XCosSecurityToken: res.data.Credentials.Token,
+            ExpiredTime: res.data.ExpiredTime // SDK 在 ExpiredTime 时间前，不会再次调用 getAuthorization
+          });
+        }
+      });
+      cos.getObject(
+        {
+          Bucket: BucketValue /* 必须 */,
+          Region: res.data.Region /* 存储桶所在地域，必须字段 */,
+          Key: NameValue /* 必须 */
+        },
+        function(err, data) {
+          console.log(err || data.Body);
+        }
+      );
+    },
+    async uploadVideo(file, fileList) {
+      let NameValue = this.currentPlatform + "-video.mp4";
+      let that = this;
+      let res = await getCosTempKey("", {
+        kind: "video",
+        name: NameValue
+      });
+      var cos = new cosSDK({
+        getAuthorization: function(options, callback) {
+          callback({
+            TmpSecretId: res.data.Credentials.TmpSecretId,
+            TmpSecretKey: res.data.Credentials.TmpSecretKey,
+            XCosSecurityToken: res.data.Credentials.Token,
+            ExpiredTime: res.data.ExpiredTime
+          });
+        }
+      });
+      that.videoProgress = "准备上传%";
+      cos.putObject(
+        {
+          Bucket: res.data.Bucket,
+          Region: res.data.Region,
+          Key: NameValue,
+          StorageClass: "STANDARD",
+          Body: file.raw, // 上传文件对象
+          onProgress: function(progressData) {
+            that.videoProgress = "上传进度:" + progressData.percent * 100 + "%";
+          }
+        },
+        function(err, data) {
+          if (!err) {
+            that.$message({
+              message: "上传成功",
+              type: "success"
+            });
+          } else {
+            console.log("cos上传错误:", err);
+          }
+        }
+      );
+    },
+
     // 添加banner
     addBannerItem() {
       this.dataList.unshift({});
@@ -110,6 +221,7 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
+    this.getTempKey();
   }
 };
 </script>

@@ -25,7 +25,7 @@
           </vxe-table-column>
           <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
           <vxe-table-column field="Video" title="视频地址" :edit-render="{name: 'input'}" />
-          <vxe-table-column field="Description" width="150" title="备注" />
+        
           <vxe-table-column field="Taste" title="允许试读" width="80">
             <template v-slot="{ row}">
               <select v-model="row.Taste" class="quanke">
@@ -47,6 +47,7 @@
                 @click="addChildNode(row,false)"
               >添加视频</el-button>
               <div v-else>
+                 <el-button type="info" @click="uploadVideo(row,false)">上传视频</el-button>
                 <el-button type="info" @click="addQuestion(row,false)">添加试题</el-button>
                 <el-button type="success" @click="linkQuestion(row,false)">关联试题</el-button>
               </div>
@@ -141,6 +142,9 @@ export default {
     },
     linkedQuestion() {
       createBookStructure(this.bookID, "", this.chaperListOfBook);
+    },
+    uploadVideo(row, isZhang) {
+
     },
     //直接添加试题
     addQuestion(row, isZhang) {

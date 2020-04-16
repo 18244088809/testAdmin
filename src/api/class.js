@@ -174,3 +174,24 @@ export function getClassCourse(url, query, data) {
     data
   })
 }
+// 分发作业给学员
+export function sendStudentsWorks(url, query, data) {
+  return request({
+    url: '/class/sendStudentsWorks/' + url,
+    method: 'put',
+    params: query,
+    data
+  })
+}
+// 分发作业给学员
+export function getClassOldWorks(url, query, data) {
+  return request({
+    url: '/class/getClassOldWorks/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
+
+
+

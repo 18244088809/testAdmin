@@ -159,7 +159,6 @@ import {
   getManagerList,
   getAllTeacher,
   resetPasswordManager,
-  getTeachBook
 } from "@/api/manager";
 import { getAllManagerOfPlatform } from "@/api/platform";
 import { getBooksOfCourses } from "@/api/course";

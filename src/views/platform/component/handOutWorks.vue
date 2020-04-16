@@ -1,81 +1,124 @@
 <template>
   <div>
-    <el-form style="padding:10px 0px 0px 0px" label-width="80px" size="small">
-      <el-form-item label="班级名称" prop="Label"></el-form-item>
+    <el-form :inline="true"  >
+      <el-form-item label="作业名称:" >
+        <el-input placeholder="输入这次作业的名字 以便区别" v-model="workName" />
+      </el-form-item>
+      <el-form-item>
+        <el-upload
+          :auto-upload="false"
+          action
+          multiple
+          class="flex_dom"
+          :show-file-list="true"
+          :file-list="fileList"
+          :on-change="uploadBannerImg"
+        >
+          <el-button size="small" type="primary">上传作业</el-button>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="success" class="m-l-10"   @click="sendToStudents">发给学员</el-button>
+      </el-form-item>
     </el-form>
-    <div class="around-center hgt60 bge0e3ea">
-      <el-button type="warning" class="m-l-40">编辑</el-button>
-      <el-button type="primary" :disabled="false" class="m-l-40" @click="saveFormItemData">确 认</el-button>
-    </div>
+    <div class="around-center"></div>
+    <el-table
+      tooltip-effect="light"
+      :data="oldWorkList"
+      border
+      style="width: 100%"
+      height="100%"
+      ref="refElTabel"
+    >
+      <el-table-column prop="WorkName" label="作业记录" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="TeacherLabel" label="老师" width="110"></el-table-column>
+      <el-table-column prop="Createtime" label="发送时间" :formatter="TimeFormatter" width="110"></el-table-column>
+    </el-table>
+    <div>
+          <el-pagination
+            background
+            :current-page.sync="nowPage"
+            :page-size="rows"
+            layout="total,prev, pager, next, jumper"
+            :total="allRows"
+            @current-change=" getClassOldWorks"
+          />
+        </div>
   </div>
 </template>
 
 <script>
-import {
-  getAllClass,
-  editClassInfo,
-  addClassInfo,
-  getOneClass,
-  setClassTeacher,
-  getClassTeachers,
-  getTimeTableByMonth,
-  addClassDaily,
-  addClassCheck,
-  getClassDaily,
-  addClassStu,
-  getClassStu,
-  handOutTask,
-  getAllClassTaskRecord
-} from "@/api/class";
+import { getClassOldWorks, sendStudentsWorks } from "@/api/class";
+import $ImgHttp from "@/api/ImgAPI";
 import common from "@/utils/common";
 import { isDate } from "xe-utils/methods";
 export default {
   props: {
-      classItem: {
+    classItem: {
       type: Object,
       default: {
         Id: 0
-      }
-    },
-    // 校区的表单数据
-    studentIDS: {
-      type: Array,
-      default: function() {
-        return [];
       }
     }
   },
   data() {
     return {
       common,
-      searchGrade: new Date(),
-      currenteditEnable: this.editEnable,
-      // 控制班级弹出框
-      isShowClassDialog: false,
-      // 创建班级的时间
-      createClassTime: null,
-      // 创建人
-      createPerson: null,
-      currentItemData: this.formItemData,
-      // 表单验证
-      ClassFormRules: {
-        Label: [
-          { required: true, message: "班级名称不能为空", trigger: "blur" }
-        ]
-      }
+      workName: "",
+      fileList: [],
+       // 数据总条数-分页
+      allRows: 0,
+      // 当前页数-分页
+      nowPage: 1,
+      // 每页数据的总条-分页
+      rows: 40,
+      // 单条学员的数据
+      customFormData: {},
+      //这个班级曾经发过的作业
+      oldWorkList: []
     };
   },
-  
-  mounted() {
-    
+  watch: {
+    classItem(newval) {
+      this.fire();
+    }
   },
+
+  mounted() {},
   methods: {
     fire() {
-     
+      this.getClassOldWorks();
+    },
+    // 图片上传
+    async uploadBannerImg(file, fileList) {
+      let res = await $ImgHttp.UploadImg(
+        "studentWork?attach=" + file.name,
+        file.raw
+      );
+      this.fileList.push({ name: res.title, url: res.data });
+      this.$message({
+        message: "上传成功",
+        type: "success"
+      });
+      this.$forceUpdate();
+    },
+     // 格式化显示时间
+    TimeFormatter(row, column, cellValue) {
+      return this.common.dateFormat(cellValue, 2);
     },
     // 添加或编辑数据
-    saveFormItemData() {
-      console.log("====studentIDS:===", this.studentIDS);
+    async sendToStudents() {
+      let res = await sendStudentsWorks(this.classItem.Id, {workname:this.workName}, this.fileList);
+      this.$message({
+        message: "发送成功",
+        type: "success"
+      });
+    },
+    async getClassOldWorks() {
+      let res = await getClassOldWorks(this.classItem.Id, "");
+      this.oldWorkList = res.data;
+      this.allRows = res.title;
     }
   },
   mounted() {}
