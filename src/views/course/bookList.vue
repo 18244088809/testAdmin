@@ -55,13 +55,12 @@
           width="250"
           :show-overflow-tooltip="true"
         />
-        
 
         <el-table-column prop="Description" :show-overflow-tooltip="true" label="备注" />
         <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="scope">
             <el-button type="success" @click="addChapter(scope.$index, scope.row)">内容管理</el-button>
-            <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题管理</el-button> 
+            <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -90,12 +89,12 @@
           <bookRowDetail @itemModify="updateListItem" :formItemData="customFormData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activeName"  @tab-click="onChangeTabs">
+          <el-tabs v-model="activeName" @tab-click="onChangeTabs">
             <el-tab-pane id="xgxz" label="相关下载" name="xgxz">
               <bookDownFile :formItemData="customFormData" @subClickEvent="updateListItem" />
             </el-tab-pane>
-             <el-tab-pane id="jcbw" label="教材编委教师" name="jcbw">
-              <bookTeacher :formItemData="customFormData" @subClickEvent="updateListItem" />
+            <el-tab-pane id="jcbw" label="教材编委教师" name="jcbw">
+              <bookTeacher :formItemData="customFormData" @updateEditors="updateEditors" />
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -162,7 +161,7 @@ export default {
     this.getBookList();
   },
   methods: {
-     onChangeTabs(item) {
+    onChangeTabs(item) {
       item.$children[0].fire();
     },
     // 条件搜索
@@ -203,6 +202,15 @@ export default {
     openSubjectDialog(type) {
       this.editDialog = true;
       this.customFormData = {};
+    },
+
+    updateEditors( editors) {
+      console.log("----1---",editors);
+
+      this.subjectList[this.currentSubjectIndex].Editors = editors;
+      console.log("---2----", this.subjectList[this.currentSubjectIndex]);
+
+     //  this.$set(this.subjectList, this.currentSubjectIndex, rowData);
     },
     // 添加或编辑之后更新列表数据
     updateListItem(type, rowData) {

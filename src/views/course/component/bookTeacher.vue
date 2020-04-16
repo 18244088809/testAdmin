@@ -112,30 +112,31 @@ export default {
     },
     // 查找老师
     async searchTeacher() {
+      let that = this;
       // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getAllManagerOfPlatform(this.currentPlatform, {
         onlyLive: true
       });
-      this.checkBoxAddStu = [];
+      that.checkBoxAddStu = [];
       if (res.data) {
-        this.serachStuList = res.data;
-        let editors = this.formItemData.Editors.split(",");
+        that.serachStuList = res.data;
+        let editors = that.formItemData.Editors.split(",");
         //将搜索出来的结果中，选中那些已经是本班老师的打钩
-        this.$nextTick(() => {
-          this.serachStuList.forEach(searchItem => {
+        that.$nextTick(() => {
+          that.serachStuList.forEach(searchItem => {
             editors.forEach(selectItem => {
               if (searchItem.Id == selectItem) {
-                this.checkBoxAddStu.push(searchItem.Id);
+                that.checkBoxAddStu.push(searchItem.Id);
               }
             });
           });
         });
 
-        this.showSearchStuResult = true;
+        that.showSearchStuResult = true;
       } else {
-        this.serachStuList = [];
-        this.$message({
+        that.serachStuList = [];
+        that.$message({
           message: "没有找到老师",
           type: "warning"
         });
@@ -143,6 +144,7 @@ export default {
     },
     // 添加老师
     async addTeacherToBook() {
+      let that = this;
       if (this.checkBoxAddStu.length < 1) {
         this.$message({
           message: "还没有选中要添加的老师",
@@ -168,7 +170,7 @@ export default {
         return;
       }
       let res = await setBookEditors(this.formItemData.Id, "", newStu);
-
+      that.$emit("updateEditors", newStu.join(","));
       this.$message({
         message: "操作成功",
         type: "success"
