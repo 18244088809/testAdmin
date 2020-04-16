@@ -1,6 +1,8 @@
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 import $ from 'jquery'
+import { getCosTempKey } from "@/api/cos";
+import cosSDK from "cos-js-sdk-v5";
 export default {
   go_alert: function (msg) {
     $('body').append(`
@@ -311,7 +313,7 @@ export default {
 
   // 意向学员学员类型
   IntentionalCustomerType: [
-    
+
     {
       value: 0,
       Label: '全部学员'
@@ -465,37 +467,37 @@ export default {
       label: "绝密级别"
     }
   },
- // 资料类型的选项
- docKindList: [         
-  {
-    value: 1,
-    Label: "教研资料"
-  },
-  {
-    value: 2,
-    Label: "培训资料"
-  },
-  {
-    value: 3,
-    Label: "运营资料"
-  },
-  {
-    value: 4,
-    Label: "竞赛资料"
-  },
-  {
-    value: 5,
-    Label: "广告资料"
-  },
-  {
-    value: 6,
-    Label: "宣传资料"
-  },
-  {
-    value: 7,
-    Label: "其他资料"
-  }
-],
+  // 资料类型的选项
+  docKindList: [
+    {
+      value: 1,
+      Label: "教研资料"
+    },
+    {
+      value: 2,
+      Label: "培训资料"
+    },
+    {
+      value: 3,
+      Label: "运营资料"
+    },
+    {
+      value: 4,
+      Label: "竞赛资料"
+    },
+    {
+      value: 5,
+      Label: "广告资料"
+    },
+    {
+      value: 6,
+      Label: "宣传资料"
+    },
+    {
+      value: 7,
+      Label: "其他资料"
+    }
+  ],
   AllQuestionTypes: [], // 所有题的类型
   // 根据类型变化返回一些数据的Label
   FormatSelect(options, typeId) {
@@ -506,7 +508,7 @@ export default {
         if (item.Id == typeId) {
           title = item.Label
           return
-        } else if (item.value == typeId) { 
+        } else if (item.value == typeId) {
           title = item.Label
           return
         } else if (item.ID == typeId) {
@@ -580,5 +582,35 @@ export default {
       return ("文件仅支持jpg/jpeg/png/gif/pdf/doc/docx/xls/xlsx/ppt/pptx/rar/zip等格式!");
     }
     return isRightType;
+  },
+  async uploadCosFile(file, kind, filename, progressFunc, finishFun) {
+    let res = await getCosTempKey("", {
+      kind: kind,
+      name: filename
+    });
+    var cos = new cosSDK({
+      getAuthorization: function (options, callback) {
+        callback({
+          TmpSecretId: res.data.Credentials.TmpSecretId,
+          TmpSecretKey: res.data.Credentials.TmpSecretKey,
+          XCosSecurityToken: res.data.Credentials.Token,
+          ExpiredTime: res.data.ExpiredTime
+        });
+      }
+    });
+    cos.putObject(
+      {
+        Bucket: res.data.Bucket,
+        Region: res.data.Region,
+        Key: filename,
+        StorageClass: "STANDARD",
+        Body: file.raw, // 上传文件对象
+        onProgress: function (progressData) { progressFunc(progressData) },
+      },
+      function (err, data) {
+        //http://platform-1301573799.cos.ap-chengdu.myqcloud.com/platform-167-logo.png
+        finishFun(err, data,res.data.Bucket+".cos."+res.data.Region+".myqcloud.com/"+filename);
+      }
+    );
   },
 }

@@ -24,14 +24,31 @@
             <template v-slot="{ row }">{{row.SN}}</template>
           </vxe-table-column>
           <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
-          <vxe-table-column field="Video" title="视频地址" :edit-render="{name: 'input'}" />
-        
+          <vxe-table-column title="视频地址">
+            <template v-slot="{ row}">
+              <div style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
+                <el-upload
+                  :auto-upload="false"
+                  action
+                  style="width:100%"
+                  :show-file-list="false"
+                  :on-change="function(file){return uploadVideo(file,row)}"
+                >
+                  <el-button type="info">上传视频</el-button>
+                  <el-input v-model="row.Video" />
+                </el-upload>
+              </div>
+            </template>
+          </vxe-table-column>
+
           <vxe-table-column field="Taste" title="允许试读" width="80">
             <template v-slot="{ row}">
-              <select v-model="row.Taste" class="quanke">
-                <option :value="0">否</option>
-                <option :value="1">是</option>
-              </select>
+              <div v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
+                <select v-model="row.Taste" class="quanke">
+                  <option :value="0">否</option>
+                  <option :value="1">是</option>
+                </select>
+              </div>
             </template>
           </vxe-table-column>
           <vxe-table-column title="操作" width="200">
@@ -47,7 +64,6 @@
                 @click="addChildNode(row,false)"
               >添加视频</el-button>
               <div v-else>
-                 <el-button type="info" @click="uploadVideo(row,false)">上传视频</el-button>
                 <el-button type="info" @click="addQuestion(row,false)">添加试题</el-button>
                 <el-button type="success" @click="linkQuestion(row,false)">关联试题</el-button>
               </div>
@@ -99,6 +115,7 @@ import myDialog from "@/components/myDialog/myDialog";
 import questionRowDialog from "@/views/course/question/component/questionRowDialog";
 import linkQuestion from "@/views/course/question/component/linkQuestion";
 import { string } from "jszip/lib/support";
+import common from "@/utils/common";
 export default {
   name: "bookChapter",
   components: {
@@ -143,8 +160,43 @@ export default {
     linkedQuestion() {
       createBookStructure(this.bookID, "", this.chaperListOfBook);
     },
-    uploadVideo(row, isZhang) {
-
+    uploadVideo(file, row) {
+      if (this.editEnable == false) {
+        this.$message({
+          message: "你不是本教材编委，不能编辑内容",
+          type: "error"
+        });
+        return;
+      }
+      let NameValue =
+        this.bookID +
+        "-" +
+        row.Zhang +
+        "-" +
+        row.Jie +
+        "-" +
+        row.TopicNo +
+        "-video.mp4";
+      let that = this;
+      let res = common.uploadCosFile(
+        file,
+        "video",
+        NameValue,
+        function(progressData) {
+          row.Video = "上传进度:" + progressData.percent * 100 + "%";
+        },
+        function(err, data, fileURL) {
+          if (!err) {
+            that.$message({
+              message: "上传成功",
+              type: "success"
+            });
+          } else {
+            console.log("cos上传错误:", err);
+          }
+          row.Video = fileURL;
+        }
+      );
     },
     //直接添加试题
     addQuestion(row, isZhang) {
@@ -301,8 +353,8 @@ export default {
       }
       this.bookLabel = res.title;
       this.editEnable = false;
-      let editorList = res.data.Editors.split(","); 
-      editorList.forEach(editorid => { 
+      let editorList = res.data.Editors.split(",");
+      editorList.forEach(editorid => {
         if (editorid == this.$store.getters.manager.Id) {
           this.editEnable = true;
         }

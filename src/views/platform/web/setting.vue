@@ -5,20 +5,14 @@
         <el-form label-width="90px" :model="siteItem" style="width:100%">
           <div class="flex_dom">
             <el-form-item label="本校logo">
+              <img ref="platformLogo" style="width: 130px; height:130px" />
               <el-upload
                 :auto-upload="false"
                 action
-                style="width:150px;height:150px"
                 :show-file-list="false"
                 :on-change="function(file, fileList){return uploadBannerImg(file,fileList)}"
               >
-                <img v-if="siteItem.image" :src="siteItem.image" style="width: auto; height:130px" />
-                <i
-                  v-else
-                  slot="default"
-                  class="el-icon-plus"
-                  style="width:130px; height:130px "
-                >&nbsp;点击上传</i>
+                <i slot="default" class="el-icon-plus"  >&nbsp;点击上传</i>
               </el-upload>
             </el-form-item>
             <el-form-item label="宣传视频" style="width:100%">
@@ -27,7 +21,7 @@
                 action
                 style="width:150px;height:150px"
                 :show-file-list="false"
-                :on-change="function(file, fileList){return uploadVideo(file,fileList)}"
+                :on-change="function(file, fileList){return uploadVideoFunc(file,fileList)}"
               >
                 <video
                   v-if="siteItem.webSiteVideo"
@@ -72,7 +66,7 @@
 import platformRowDetail from "@/views/system/component/platformRowDetail";
 import { GetIndexItem, SetIndexItem } from "@/api/website";
 import { getCosTempKey } from "@/api/cos";
-
+import common from "@/utils/common";
 import $ImgHttp from "@/api/ImgAPI";
 import cosSDK from "cos-js-sdk-v5";
 export default {
@@ -126,11 +120,10 @@ export default {
     },
     // getTempKey
     async getTempKey() {
-      let BucketValue = "book-1300492412";
-      let NameValue = "bee.txt";
-
+      let that = this;
+      let NameValue = "platform-" + that.currentPlatform + "-logo.png";
       let res = await getCosTempKey("", {
-        bucket: BucketValue,
+        kind: "platform",
         name: NameValue
       });
       var cos = new cosSDK({
@@ -143,45 +136,32 @@ export default {
           });
         }
       });
+      // that.$refs["platformLogo"].src =  "https://platform-1301573799.cos.ap-chengdu.myqcloud.com/platform-167-logo.png";
+      // that.siteItem.image =
+       
       cos.getObject(
         {
-          Bucket: BucketValue /* 必须 */,
+          Bucket: res.data.Bucket /* 必须 */,
           Region: res.data.Region /* 存储桶所在地域，必须字段 */,
           Key: NameValue /* 必须 */
         },
         function(err, data) {
-          console.log(err || data.Body);
+          if (!err) {
+ that.$refs["platformLogo"].src = data.Body;
+            that.$forceUpdate();
+          }
         }
       );
     },
-    async uploadVideo(file, fileList) {
+    uploadVideoFunc(file, fileList) {
       let NameValue = this.currentPlatform + "-video.mp4";
       let that = this;
-      let res = await getCosTempKey("", {
-        kind: "video",
-        name: NameValue
-      });
-      var cos = new cosSDK({
-        getAuthorization: function(options, callback) {
-          callback({
-            TmpSecretId: res.data.Credentials.TmpSecretId,
-            TmpSecretKey: res.data.Credentials.TmpSecretKey,
-            XCosSecurityToken: res.data.Credentials.Token,
-            ExpiredTime: res.data.ExpiredTime
-          });
-        }
-      });
-      that.videoProgress = "准备上传%";
-      cos.putObject(
-        {
-          Bucket: res.data.Bucket,
-          Region: res.data.Region,
-          Key: NameValue,
-          StorageClass: "STANDARD",
-          Body: file.raw, // 上传文件对象
-          onProgress: function(progressData) {
-            that.videoProgress = "上传进度:" + progressData.percent * 100 + "%";
-          }
+      let res = common.uploadCosFile(
+        file,
+        "platform",
+        NameValue,
+        function(progressData) {
+          that.videoProgress = "上传进度:" + progressData.percent * 100 + "%";
         },
         function(err, data) {
           if (!err) {
