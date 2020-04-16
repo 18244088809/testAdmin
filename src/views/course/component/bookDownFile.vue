@@ -10,10 +10,10 @@
               action
               class="bg-ddd"
               :show-file-list="false"
-              :on-change="function(file, fileList){return uploadDataImg(file,fileList,index)}"
+              :on-change="function(file, item){return uploadVideo(file,item,index)}"
             >
               <img v-if="item.image" :src="item.image" style="width: 140px; height: 140px" />
-              <i v-else slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+              <i v-else slot="default" class="el-icon-plus">&nbsp;{{item.Progress?item.Progress:'点击上传'}}</i>
             </el-upload>
             <el-button @click="onPreview(item.image)">&nbsp;预览</el-button>
           </div>
@@ -48,6 +48,7 @@
 <script>
 import { SetBookInfo } from "@/api/book";
 import $ImgHttp from "@/api/ImgAPI";
+import common from "@/utils/common";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 export default {
   name: "bookDownFile",
@@ -72,7 +73,8 @@ export default {
       showViewer: false,
       // 列表
       dataList: [],
-      currentItemData: this.formItemData
+      currentItemData: this.formItemData,
+      editEnable : false,
     };
   },
   watch: {
@@ -85,6 +87,13 @@ export default {
     fire() {
       this.currentItemData = this.formItemData;
       this.setData(this.currentItemData.Info);
+      this.editEnable = false;
+      let editorList = this.currentItemData.Editors.split(",");
+      editorList.forEach(editorid => {
+        if (editorid == this.$store.getters.manager.Id) {
+          this.editEnable = true;
+        }
+      });
     },
     setData(info) {
       if (!info || info == "") {
@@ -92,6 +101,43 @@ export default {
       }
       this.dataList = JSON.parse(info);
     },
+    uploadVideo(file,row,index) {
+      let that =this;
+      if (that.editEnable == false) {
+        that.$message({
+          message: "你不是本教材编委，不能发布资料",
+          type: "error"
+        });
+        return;
+      }
+      let NameValue =
+        new Date().getTime() +
+       file.name; 
+      let res = common.uploadCosFile(
+        file,
+        "doc",
+        NameValue,
+        function(progressData) {
+          row.Progress = "上传进度:" + progressData.percent * 100 + "%";
+         
+        },
+        function(err, data, fileURL) {
+          if (!err) {
+            that.$message({
+              message: "上传成功",
+              type: "success"
+            });
+          } else {
+            console.log("cos上传错误:", err);
+          }
+         that.dataList[index].image = "http://"+fileURL;
+          that.$forceUpdate();
+        }
+      );
+    },
+
+
+
     // 图片上传
     async uploadDataImg(file, fileList, index) {
       let res = await $ImgHttp.UploadImg("book", file.raw);

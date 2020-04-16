@@ -179,6 +179,7 @@ export default {
         offset: offsetRow
       });
       this.questionsListOfBook = res.data ? res.data : [];
+       this.BookChapter.Questions =  this.BookChapter.Questions? this.BookChapter.Questions:[]
       this.$nextTick(() => {
         this.questionsListOfBook.forEach(question => {  
           this.BookChapter.Questions.forEach(selectItem => { 
