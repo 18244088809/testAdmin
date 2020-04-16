@@ -1,6 +1,6 @@
 <template>
   <div>
-     <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
+    <myImageViewer v-if="showViewer" :on-close="closeViewer" :url-list="[imageViewerSrc]" />
     <div class="flex_column">
       <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
         <div class="flex_mid cardBorder">
@@ -13,8 +13,8 @@
               :on-change="function(file, fileList){return uploadDataImg(file,fileList,index)}"
             >
               <img v-if="item.image" :src="item.image" style="width: 140px; height: 140px" />
-              <i v-else slot="default" class="el-icon-plus"  >&nbsp;点击上传</i>
-            </el-upload> 
+              <i v-else slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+            </el-upload>
             <el-button @click="onPreview(item.image)">&nbsp;预览</el-button>
           </div>
           <el-form label-width="90px" :model="item" style="width:100%">
@@ -65,7 +65,7 @@ export default {
   },
   data() {
     return {
-        myImageViewer,
+      myImageViewer,
       // 预览图片的图片地址
       imageViewerSrc: "",
       // 显示图片查看器
@@ -77,15 +77,15 @@ export default {
   },
   watch: {
     formItemData(newval) {
-      this.currentItemData = this.formItemData;
-      this.setData(this.currentItemData.Info);
+      this.fire();
     }
   },
-  mounted() {
-    this.currentItemData = this.formItemData;
-    this.setData(this.currentItemData.Info);
-  },
+  mounted() {},
   methods: {
+    fire() {
+      this.currentItemData = this.formItemData;
+      this.setData(this.currentItemData.Info);
+    },
     setData(info) {
       if (!info || info == "") {
         info = "[]";
@@ -115,7 +115,7 @@ export default {
         this.$emit("subClickEvent", 1, res.data);
       }
     },
-     // 图片预览
+    // 图片预览
     onPreview(src) {
       this.showViewer = true;
       this.imageViewerSrc = src;

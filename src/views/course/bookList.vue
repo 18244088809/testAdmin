@@ -90,7 +90,7 @@
           <bookRowDetail @itemModify="updateListItem" :formItemData="customFormData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs v-model="activeName">
+          <el-tabs v-model="activeName"  @tab-click="onChangeTabs">
             <el-tab-pane id="xgxz" label="相关下载" name="xgxz">
               <bookDownFile :formItemData="customFormData" @subClickEvent="updateListItem" />
             </el-tab-pane>
@@ -162,6 +162,9 @@ export default {
     this.getBookList();
   },
   methods: {
+     onChangeTabs(item) {
+      item.$children[0].fire();
+    },
     // 条件搜索
     searchSubmit() {
       this.nowPage = 1;

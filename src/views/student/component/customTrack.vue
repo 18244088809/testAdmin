@@ -160,12 +160,13 @@ export default {
       this.fire();
     }
   },
-  fire() {
+ 
+
+  methods: {
+     fire() {
     this.customFormData = this.customData;
     this.getCustomId(this.customData.id);
   },
-
-  methods: {
     onPreview(src) {
       this.showViewer = true;
       this.imageViewerSrc = src;

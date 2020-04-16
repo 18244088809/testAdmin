@@ -221,12 +221,13 @@ export default {
       this.fire();
     }
   }, 
-  fire() {
+ 
+  methods: {
+     fire() {
     this.customBuyCourseList = [];
     this.customItemData = this.customData;
     this.getBuyCouseRecord();
   },
-  methods: {
     // 根据选中的学院获取课程类别
     collegeChange(selVa) {
       this.selectCourseKindId = null;

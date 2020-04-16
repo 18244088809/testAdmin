@@ -79,15 +79,16 @@ export default {
       currentContractIndex: null
     };
   },
- watch: {
+  watch: {
     customRowData(newval) {
       this.fire();
     }
-  }, 
-  fire() {
-     this.getContractList();
   },
+
   methods: {
+    fire() {
+      this.getContractList();
+    },
     // 获取合同信息列表
     async getContractList() {
       // 初始化数据
