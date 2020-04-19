@@ -3,10 +3,11 @@
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-10 p-l-20 p-v-15">
         <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
-          <div class="flex_mid cardBorder  bg-ccc">
+          <div class="flex_mid cardBorder bg-ccc">
             <el-upload
               :auto-upload="false"
-              action   class="   bg-ddd"
+              action
+              class="bg-ddd"
               :show-file-list="false"
               :on-change="function(file, fileList){return uploadBannerImg(file,fileList,index)}"
             >
@@ -19,8 +20,8 @@
               >&nbsp;点击上传</i>
             </el-upload>
 
-            <el-form label-width="90px" :model="item"  style="width:100%">
-              <div class="flex_mid" >
+            <el-form label-width="90px" :model="item" style="width:100%">
+              <div class="flex_mid">
                 <el-form-item label="姓名" style="width:30%">
                   <el-input v-model="item.label" style="width:100%" placeholder="老师姓名"></el-input>
                 </el-form-item>
@@ -28,7 +29,7 @@
                   <el-input v-model="item.href" placeholder="请输入连接地址.没有跳转页面可以不输入"></el-input>
                 </el-form-item>
               </div>
-              <el-form-item label="简介" >
+              <el-form-item label="简介">
                 <el-input type="textarea" rows="5" v-model="item.content" placeholder="老师的介绍"></el-input>
               </el-form-item>
             </el-form>
@@ -70,14 +71,19 @@ export default {
     // 图片上传
     async uploadBannerImg(file, fileList, index) {
       let res = await $ImgHttp.UploadImg("teacher", file.raw);
-      if (res.code == 200) {
-        this.dataList[index].image = res.data;
+      if (res.code != 200) {
         this.$message({
-          message: "上传成功",
-          type: "success"
+          message: res.data,
+          type: "warning"
         });
-        this.$forceUpdate();
+        return;
       }
+      this.dataList[index].image = res.data;
+      this.$message({
+        message: "上传成功",
+        type: "success"
+      });
+      this.$forceUpdate();
     },
     // 保存banner列表
     async saveBannerList() {
@@ -109,12 +115,12 @@ export default {
           message: "删除成功,请最后点击保存按钮",
           type: "success"
         });
-      }); 
+      });
     }
   },
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform =  parseInt(paths[paths.length - 1]);
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
@@ -134,8 +140,8 @@ export default {
   padding: 20px 30px 0px 20px;
   position: relative;
   box-sizing: border-box;
- border-radius: 5px;
-  border:1px dashed rgba(46,84,56,0.2);
+  border-radius: 5px;
+  border: 1px dashed rgba(46, 84, 56, 0.2);
 }
 .el-upload {
   border: 1px dashed #e0e0e0;

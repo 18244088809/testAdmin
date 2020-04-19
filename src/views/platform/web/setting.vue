@@ -95,14 +95,20 @@ export default {
     // 图片上传
     async uploadBannerImg(file, fileList) {
       let res = await $ImgHttp.UploadImg("webSetting", file.raw);
-      if (res.code == 200) {
+     if (res.code != 200) {
+        this.$message({
+          message: res.data,
+          type: "warning"
+        });
+        return;
+      }
         this.siteItem.logo = res.data;
         this.$message({
           message: "上传成功",
           type: "success"
         });
         this.$forceUpdate();
-      }
+      
     },
     // 保存banner列表
     async saveBannerList() {

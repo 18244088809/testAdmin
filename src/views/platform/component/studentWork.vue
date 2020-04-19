@@ -33,12 +33,14 @@
               <receiveStudentExercise ref="gkj"  :classItem="formItemData" :studentIDS="classAllStuList" />
             </el-tab-pane>
             <el-tab-pane id="fzy" label="发作业" name="fzy">
-              <handOutWorks ref="fzy" :classItem="formItemData"  :studentIDS="classAllStuList" />
+              <sendStudentWork ref="fzy" :classItem="formItemData"  :studentIDS="classAllStuList" />
             </el-tab-pane>
-            <el-tab-pane id="gzy" label="改作业" name="gzy"></el-tab-pane>
-            <el-tab-pane id="fly" label="发通知" name="fly">
+            <el-tab-pane id="gzy" label="改作业" name="gzy">
+               <receiveStudentWork ref="fzy" :classItem="formItemData"  :studentIDS="classAllStuList" />
+            </el-tab-pane>
+            <!-- <el-tab-pane id="fly" label="发通知" name="fly">
               <sendMessage ref="fly" :classItem="formItemData"  :studentIDS="classAllStuList" />
-            </el-tab-pane>
+            </el-tab-pane> -->
           </el-tabs>
         </div>
  
@@ -68,16 +70,15 @@ import {
 import common from "@/utils/common";
 import sendStudentExercise from "@/views/platform/component/sendStudentExercise";
 import receiveStudentExercise from "@/views/platform/component/receiveStudentExercise";
-import handOutWorks from "@/views/platform/component/handOutWorks";
-import sendMessage from "@/views/platform/component/sendMessage";
-
+import receiveStudentWork from "@/views/platform/component/receiveStudentWork";
+import sendStudentWork from "@/views/platform/component/sendStudentWork"; 
 import { isDate } from "xe-utils/methods";
 export default {
   components: {
     sendStudentExercise,
     receiveStudentExercise,
-    handOutWorks,
-    sendMessage
+    sendStudentWork,
+    receiveStudentWork
   },
   props: {
     // 班级数据

@@ -13,7 +13,11 @@
               :on-change="function(file, item){return uploadVideo(file,item,index)}"
             >
               <img v-if="item.image" :src="item.image" style="width: 140px; height: 140px" />
-              <i v-else slot="default" class="el-icon-plus">&nbsp;{{item.Progress?item.Progress:'点击上传'}}</i>
+              <i
+                v-else
+                slot="default"
+                class="el-icon-plus"
+              >&nbsp;{{item.Progress?item.Progress:'点击上传'}}</i>
             </el-upload>
             <el-button @click="onPreview(item.image)">&nbsp;预览</el-button>
           </div>
@@ -74,7 +78,7 @@ export default {
       // 列表
       dataList: [],
       currentItemData: this.formItemData,
-      editEnable : false,
+      editEnable: false
     };
   },
   watch: {
@@ -101,8 +105,8 @@ export default {
       }
       this.dataList = JSON.parse(info);
     },
-    uploadVideo(file,row,index) {
-      let that =this;
+    uploadVideo(file, row, index) {
+      let that = this;
       if (that.editEnable == false) {
         that.$message({
           message: "你不是本教材编委，不能发布资料",
@@ -110,16 +114,13 @@ export default {
         });
         return;
       }
-      let NameValue =
-        new Date().getTime() +
-       file.name; 
+      let NameValue = new Date().getTime() + file.name;
       let res = common.uploadCosFile(
         file,
         "doc",
         NameValue,
         function(progressData) {
           row.Progress = "上传进度:" + progressData.percent * 100 + "%";
-         
         },
         function(err, data, fileURL) {
           if (!err) {
@@ -130,25 +131,28 @@ export default {
           } else {
             console.log("cos上传错误:", err);
           }
-         that.dataList[index].image = "http://"+fileURL;
+          that.dataList[index].image = "http://" + fileURL;
           that.$forceUpdate();
         }
       );
     },
 
-
-
     // 图片上传
     async uploadDataImg(file, fileList, index) {
       let res = await $ImgHttp.UploadImg("book", file.raw);
-      if (res.code == 200) {
-        this.dataList[index].image = res.data;
+      if (res.code != 200) {
         this.$message({
-          message: "上传成功",
-          type: "success"
+          message: res.data,
+          type: "warning"
         });
-        this.$forceUpdate();
+        return;
       }
+      this.dataList[index].image = res.data;
+      this.$message({
+        message: "上传成功",
+        type: "success"
+      });
+      this.$forceUpdate();
     },
     // 保存Data列表
     async saveDataList() {

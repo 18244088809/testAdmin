@@ -256,14 +256,19 @@ export default {
     async ImgUploadQuestion(file, fileList) {
       this.isbusy = true;
       let res = await $ImgHttp.UploadImg("exercise", file.raw);
-      if (res.code == 200) {
+      if (res.code != 200) {
         this.$message({
-          message: "操作成功",
-          type: "success"
+          message: res.data,
+          type: "warning"
         });
-        this.ImgAddr = `<img src="${res.data}" />`;
-        this.isbusy = false;
+        return;
       }
+      this.$message({
+        message: "操作成功",
+        type: "success"
+      });
+      this.ImgAddr = `<img src="${res.data}" />`;
+      this.isbusy = false;
     },
     // 修改数据
     saveQuestion() {
@@ -330,7 +335,7 @@ export default {
             }
           }
           this.currentItemData.Questions.push(res.data.Id);
-       
+
           this.$message({
             message: "操作成功",
             type: "success"

@@ -192,6 +192,16 @@ export function getClassOldWorks(url, query, data) {
     data
   })
 }
+//  
+export function getClassStudentWorks(url, query, data) {
+  return request({
+    url: '/class/getClassStudentWorks/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
+
 
 
 

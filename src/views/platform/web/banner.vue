@@ -64,14 +64,19 @@ export default {
     // 图片上传
     async uploadBannerImg(file, fileList, index) {
       let res = await $ImgHttp.UploadImg("banner", file.raw);
-      if (res.code == 200) {
-        this.dataList[index].image = res.data;
+      if (res.code != 200) {
         this.$message({
-          message: "上传成功",
-          type: "success"
+          message: res.data,
+          type: "warning"
         });
-        this.$forceUpdate();
+        return;
       }
+      this.dataList[index].image = res.data;
+      this.$message({
+        message: "上传成功",
+        type: "success"
+      });
+      this.$forceUpdate();
     },
     // 保存banner列表
     async saveBannerList() {
@@ -108,7 +113,7 @@ export default {
   },
   mounted() {
     let paths = this.$router.currentRoute.path.split("/");
-    this.currentPlatform = parseInt( paths[paths.length - 1]);
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
@@ -129,7 +134,7 @@ export default {
   position: relative;
   box-sizing: border-box;
   border-radius: 5px;
-  border:1px dashed rgba(46,84,56,0.2);
+  border: 1px dashed rgba(46, 84, 56, 0.2);
 }
 .cardBorder >>> .el-upload {
   width: 100%;

@@ -79,9 +79,7 @@ export default {
     // 获取平台老师
     async getTeacherOfPlatform() {
       this.platformTeacherOptions = [];
-      const res = await getAllManagerOfPlatform("", {
-        platform: this.targetPlatform
-      });
+      const res = await getAllManagerOfPlatform(this.targetPlatform, "");
       if (res.code == 200) {
         this.platformTeacherOptions = res.data;
       }

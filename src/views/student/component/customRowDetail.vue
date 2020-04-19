@@ -39,7 +39,7 @@
       <el-form-item label="学员微信">
         <el-input v-model="currentItemData.Wechat" placeholder="请输入学员微信号" />
       </el-form-item>
-      <el-form-item label="图片"> 
+      <el-form-item label="图片">
         <div class="flex_dom flex_wrap">
           <div v-for="(item,index) in customImgArr" :key="index" class="relative marg15">
             <img v-if="item" class="wid20" :src="item" @click="onPreview(item)" />
@@ -234,7 +234,7 @@ export default {
       ],
       customInfoRules: {
         Realname: [
-          { required: true, message: '请输入学员姓名', trigger: "blur" }
+          { required: true, message: "请输入学员姓名", trigger: "blur" }
         ],
 
         Qq: [
@@ -244,9 +244,9 @@ export default {
             trigger: "blur"
           }
         ],
-        Sex: [{ required: true, message: '请选择学员性别', trigger: "blur" }],
+        Sex: [{ required: true, message: "请选择学员性别", trigger: "blur" }],
         Telephone: [
-          { required: true, message: '请输入电话号码', trigger: "blur" },
+          { required: true, message: "请输入电话号码", trigger: "blur" },
           {
             pattern: /^\d{11}$/,
             message: "请输入正确的手机号",
@@ -254,7 +254,7 @@ export default {
           }
         ],
         Platform: [
-          { required: true, message: '必须选择一个校区', trigger: "blur" }
+          { required: true, message: "必须选择一个校区", trigger: "blur" }
         ]
       },
       // 学历选择
@@ -290,8 +290,8 @@ export default {
     this.setData();
   },
   methods: {
-    setData() { 
-      if (this.currentItemData.Info ) {
+    setData() {
+      if (this.currentItemData.Info) {
         const info = JSON.parse(this.currentItemData.Info);
         if (info.attach_image) {
           this.customImgArr = info.attach_image.split(",");
@@ -359,13 +359,18 @@ export default {
     // 学员资料图片上传
     async uploadCustomImg(file) {
       let res = await $ImgHttp.UploadImg("custom", file.raw);
-      if (res.code == 200) {
+      if (res.code != 200) {
         this.$message({
-          message: "上传成功！",
-          type: "success"
+          message: res.data,
+          type: "warning"
         });
-        this.customImgArr.push(res.data);
+        return;
       }
+      this.$message({
+        message: "上传成功！",
+        type: "success"
+      });
+      this.customImgArr.push(res.data);
     },
     // 删除学员资料的图片
     deleCustomImg(index) {

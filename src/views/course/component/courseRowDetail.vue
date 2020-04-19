@@ -6,7 +6,7 @@
       :disabled="currenteditEnable==false"
       :model="currentItemData"
       :rules="courseFormRules"
-      style="padding:10px 0px 0px 0px"
+      style="padding:10px "
       label-width="80px"
       size="small"
     >
@@ -25,12 +25,22 @@
       </el-form-item>
 
       <el-form-item label="热门课程" class="flex_1">
-        <el-radio v-model="currentItemData.IsCollegeHot" :label="1">是</el-radio>
-        <el-radio v-model="currentItemData.IsCollegeHot" :label="0">否</el-radio>
+        <el-radio-group v-model="currentItemData.IsCollegeHot">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="全科购买" class="flex_1">
-        <el-radio v-model="currentItemData.MustAllBook" label="1">是</el-radio>
-        <el-radio v-model="currentItemData.MustAllBook" label="0">否</el-radio>
+        <el-radio-group v-model="currentItemData.MustAllBook">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否公开" class="flex_1">
+        <el-radio-group v-model="currentItemData.ISProtected">
+          <el-radio :label="0">官网公开售卖</el-radio>
+          <el-radio :label="1">只内部开课</el-radio>
+        </el-radio-group>
       </el-form-item>
 
       <el-form-item label="展示排序" prop="Sort" class="flex_1">
@@ -146,12 +156,7 @@ export default {
   },
   watch: {
     formItemData(newvar) {
-      this.currentItemData = this.formItemData;
-      if (this.courseKindIdProp > 0) {
-        this.courseKindId = this.courseKindIdProp;
-      }
-      this.currentItemData.TCourseKindID = this.courseKindId;
-      // this.collegeChangeGetCourseKind(0);
+      this.fire();
     },
     courseKindIdProp(newval) {
       if (this.courseKindIdProp > 0) {
@@ -166,7 +171,9 @@ export default {
       common,
       currenteditEnable: this.editEnable,
       // 课程的表单数据
-      currentItemData: {},
+      currentItemData: {
+        ISProtected: 0
+      },
       myImageViewer,
       // 预览图片的图片地址
       imageViewerSrc: "",
@@ -176,13 +183,13 @@ export default {
       collegeIndex: 0,
       // 表单验证
       courseFormRules: {
-        Price: [{ required: true, message: '价格不能为空', trigger: "blur" }],
+        Price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
         CourseNum: [
-          { required: true, message: '课时不能为空', trigger: "blur" }
+          { required: true, message: "课时不能为空", trigger: "blur" }
         ],
-        Sort: [{ required: true, message: '排序不能为空', trigger: "blur" }],
+        Sort: [{ required: true, message: "排序不能为空", trigger: "blur" }],
         Label: [
-          { required: true, message: '产品名称不能为空', trigger: "blur" }
+          { required: true, message: "产品名称不能为空", trigger: "blur" }
         ]
       },
       // 搜索科目时通过课程类别的名称查找
@@ -199,31 +206,41 @@ export default {
   },
 
   mounted() {
-    this.currentItemData = this.formItemData;
-    if (this.currentItemData.TCourseKindID > 0) {
-      this.courseKindId = this.currentItemData.TCourseKindID;
-    } else {
-      this.courseKindId = this.courseKindIdProp;
-    }
-    this.currentItemData.TCourseKindID = this.courseKindId;
-    if (this.currentItemData.Id > 0) {
-      if (this.$store.getters.app.collegeWithCourseKind) {
-        this.$store.getters.app.collegeWithCourseKind.forEach(item => {
-          if (item.Children) {
-            item.Children.forEach(courseKind => {
-              if (courseKind.Id == this.currentItemData.TCourseKindID) {
-                this.courseKindList = item.Children;
-              }
-            });
-          }
-        });
-      }
-    }
-    //  else {
-    //   this.collegeChangeGetCourseKind(0);
-    // }
+    this.fire();
   },
   methods: {
+    fire() {
+      this.currenteditEnable = false;
+      this.currentItemData = this.formItemData;
+      if (!this.currentItemData.ISProtected) {
+        this.currentItemData.ISProtected = 0;
+      }
+      if (!this.currentItemData.MustAllBook) {
+        this.currentItemData.MustAllBook = 0;
+      }
+      if (!this.currentItemData.IsCollegeHot) {
+        this.currentItemData.IsCollegeHot = 0;
+      }
+      if (this.currentItemData.TCourseKindID > 0) {
+        this.courseKindId = this.currentItemData.TCourseKindID;
+      } else {
+        this.courseKindId = this.courseKindIdProp;
+      }
+      this.currentItemData.TCourseKindID = this.courseKindId;
+      if (this.currentItemData.Id > 0) {
+        if (this.$store.getters.app.collegeWithCourseKind) {
+          this.$store.getters.app.collegeWithCourseKind.forEach(item => {
+            if (item.Children) {
+              item.Children.forEach(courseKind => {
+                if (courseKind.Id == this.currentItemData.TCourseKindID) {
+                  this.courseKindList = item.Children;
+                }
+              });
+            }
+          });
+        }
+      }
+    },
     // 上传课程图片
     async uploadCourseImgFunc(file, fileList, type) {
       if (type == 1) {

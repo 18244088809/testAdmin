@@ -1,40 +1,56 @@
 <template>
   <div>
-    选择要发给学员的试卷
+    <el-form :inline="true">
+      <el-form-item label>
+        <el-upload
+          :auto-upload="false"
+          action
+          :show-file-list="true"
+          :file-list="fileList"
+          :on-change="uploadBannerImg"
+        >
+          <el-button size="small" type="primary">上传作业</el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="作业名称:">
+        <el-input placeholder="输入这次作业的名字 以便区别" v-model="workName" />
+      </el-form-item>
+      <el-form-item label="备注:">
+        <el-input placeholder="这个老师比较懒 这句话都没删" v-model="workName" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="success" class="m-l-10" @click="sendToStudents">发给学员</el-button>
+      </el-form-item>
+    </el-form>
+    <div></div>
     <el-table
       tooltip-effect="light"
-      :data="exerciseList"
+      :data="oldWorkList"
       border
       style="width: 100%"
       height="100%"
       ref="refElTabel"
-      @selection-change="selectionChange"
     >
-      <el-table-column type="selection" width="30" />
-      <el-table-column prop="Id" label="ID" width="50"></el-table-column>
-      <el-table-column prop="Label" label="试卷名称" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Used" label="是否已经学过" width="100"></el-table-column>
-      <el-table-column prop="Examtime" label="考试时间(分钟" width="110"></el-table-column>
+      <el-table-column prop="WorkName" label="作业记录" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="TeacherLabel" label="老师" width="110"></el-table-column>
+      <el-table-column prop="Createtime" label="发送时间" :formatter="TimeFormatter" width="110"></el-table-column>
     </el-table>
-    <div class="between-center m-v-10">
-      <el-button type="primary" @click="sendToStudents()">确定发送</el-button>
-      <div>
-        <el-pagination
-          background
-          @current-change=" currentPageChange"
-          :current-page.sync="nowPage"
-          :page-size="rows"
-          layout="total,prev, pager, next, jumper"
-          :total="allRows"
-        ></el-pagination>
-      </div>
+    <div>
+      <el-pagination
+        background
+        :current-page.sync="nowPage"
+        :page-size="rows"
+        layout="total,prev, pager, next, jumper"
+        :total="allRows"
+        @current-change=" getClassOldWorks"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { getClassExercise } from "@/api/exercise";
-import { sendStudentsExercise } from "@/api/class";
+import { getClassOldWorks, sendStudentsWorks } from "@/api/class";
+import $ImgHttp from "@/api/ImgAPI";
 import common from "@/utils/common";
 import { isDate } from "xe-utils/methods";
 export default {
@@ -44,97 +60,90 @@ export default {
       default: {
         Id: 0
       }
-    },
-    // 校区的表单数据
-    studentIDS: {
-      type: Array,
-      default: function() {
-        return [];
-      }
     }
   },
   data() {
     return {
       common,
-      // 数据总条数
+      workName: "",
+      fileList: [],
+      // 数据总条数-分页
       allRows: 0,
-      // 当前页数
+      // 当前页数-分页
       nowPage: 1,
-      // 每页数据的总条
-      rows: 50,
-      // 获取选中的学生ID
-      selectedIDList: [],
-      currentItemData: {},
-      exerciseList: []
+      // 每页数据的总条-分页
+      rows: 40,
+      // 单条学员的数据
+      customFormData: {},
+      //这个班级曾经发过的作业
+      oldWorkList: []
     };
   },
- watch: {
+  watch: {
     classItem(newval) {
       this.fire();
     }
   },
+
+  mounted() {},
   methods: {
     fire() {
-      this.getThisClassExercise();
+      this.getClassOldWorks();
+      let now = new Date();
+      this.workName =
+        this.classItem.Label +
+        "】" +
+        now.getMonth() +
+        "月" +
+        now.getDate() +
+        "日 " +
+        now.getHours() +
+        ":" +
+        now.getMinutes() +
+        " 分的作业";
     },
-    // 分页获取数据
-    currentPageChange(val) {
-      this.nowPage = val;
-      this.getThisClassExercise();
-    },
-    // 选中学院后回调选中课程类别
-    async getThisClassExercise() {
-      let that = this;
-      // 取数据的位置
-      let offsetRow = (this.nowPage - 1) * this.rows;
-      let res = await getClassExercise(this.classItem.Id, {
-        limit: that.rows,
-        offset: offsetRow
-      });
-      if (res.code == 200) {
-        that.exerciseList = res.data ? res.data : [];
-        let exerciseids = that.classItem.Exerciseids.split(",");
-        that.exerciseList.forEach(execise => {
-          execise.Used = "没有学";
-          exerciseids.forEach(exericseid => {
-            if (exericseid == execise.Id) {
-              execise.Used = "已经学过";
-            }
-          });
-        });
-        that.allRows = res.title;
-      }
-    }, // 课程大类改变
-    // 获取选中的学生
-    selectionChange(val) {
-      this.selectedIDList = [];
-      val.forEach(item => {
-        this.selectedIDList.push(item.Id);
-      });
-    },
+    // 图片上传
+    async uploadBannerImg(file) {
+      let res = await $ImgHttp.UploadImg(
+        "studentWork?attach=" + file.name,
+        file.raw
+      );
 
+      if (res.code != 200) {
+        this.$message({
+          message: res.data,
+          type: "warning"
+        });
+        return;
+      }
+      this.fileList.push({ name: res.title, url: res.data });
+      this.$message({
+        message: "上传成功",
+        type: "success"
+      });
+      this.$forceUpdate();
+    },
+    // 格式化显示时间
+    TimeFormatter(row, column, cellValue) {
+      return this.common.dateFormat(cellValue, 2);
+    },
     // 添加或编辑数据
     async sendToStudents() {
-      let usedExeriseIDS = this.classItem.Exerciseids.split(",");
-      let enabledExerciseIDS = [];
-      this.selectedIDList.forEach(execise => {
-        let hasIn = false;
-        usedExeriseIDS.forEach(usedExerciseID => {
-          if (usedExerciseID == execise) {
-            hasIn = true;
-          }
-        });
-        if (hasIn == false) {
-          enabledExerciseIDS.push(execise);
-        }
-      });
-
-      let res = await sendStudentsExercise(
+      let res = await sendStudentsWorks(
         this.classItem.Id,
-        { exerciseids: enabledExerciseIDS.join(",") },
-        this.classAllStuList
+        { workname: this.workName },
+        this.fileList
       );
-      this.classAllStuList = res.data ? res.data : [];
+      this.$message({
+        message: "发送成功",
+        type: "success"
+      });
+      this.oldWorkList.unshift(res.title);
+    },
+    async getClassOldWorks() {
+      let res = await getClassOldWorks(this.classItem.Id, "");
+      this.oldWorkList = res.data;
+      this.allRows = res.title;
     }
   },
   mounted() {}

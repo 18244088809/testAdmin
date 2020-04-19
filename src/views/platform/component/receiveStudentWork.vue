@@ -1,79 +1,56 @@
 <template>
   <div>
+    <el-form :inline="true">
+      <!-- 我的校区的时候使用，用来展示本校区所属的工作人员 -->
+
+      <el-form-item label>
+        <el-switch
+          v-model="readed"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          :inactive-text="readed?'已经批阅的':'没有批阅的'"
+          @change="fire"
+        />
+      </el-form-item>
+    </el-form>
     <el-table
       tooltip-effect="light"
-      :data="studentDoExerciseList"
+      :data="studentFinishWorkList"
       border
       style="width: 100%"
-      height="100%"
+      height="500px"
       ref="refElTabel"
     >
-      <el-table-column prop="ID" label="ID" width="50"></el-table-column>
-      <el-table-column prop="Label" label="试卷名称" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="StudentLabel" label="学员姓名" width="100"></el-table-column>
-      <el-table-column prop="StartTime" label="开始时间" width="110"></el-table-column>
-      <el-table-column prop="EndTime" label="结束时间" width="110"></el-table-column>
-      <el-table-column prop="Score" label="得分" width="50"></el-table-column>
-      <el-table-column width="110" fixed="right">
+     <el-table-column prop="StudentName" label="学员姓名" width="110"></el-table-column>
+      <el-table-column label="作业记录" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <el-button
-            type="success"
-            style="margin:0px;"
-            @click="seeWrongQuestion(scope.$index, scope.row)"
-          >查看错题</el-button>
+          <a target="_blank" @click="seeWrongQuestion(scope.$index, scope.row)">{{scope.row.WorkName}}</a>
         </template>
       </el-table-column>
+      <el-table-column prop="TeacherLabel" label="老师" width="110"></el-table-column>
+      <el-table-column prop="Createtime" label="发送时间" :formatter="TimeFormatter" width="110"></el-table-column>
     </el-table>
-    <div class="between-center m-v-10">
-      <el-button type="primary" @click="sendToStudents()">确定发送</el-button>
-      <div>
-        <el-pagination
-          background
-          @current-change=" currentPageChange"
-          :current-page.sync="nowPage"
-          :page-size="rows"
-          layout="total,prev, pager, next, jumper"
-          :total="allRows"
-        ></el-pagination>
-      </div>
+    <div>
+      <el-pagination
+        background
+        :current-page.sync="nowPage"
+        :page-size="rows"
+        layout="total,prev, pager, next, jumper"
+        :total="allRows"
+        @current-change="getStudentsWorks"
+      />
     </div>
-
-    <el-dialog
-      :visible.sync="studentDoExerciseDailog"
-      :title="'【'+studentDoExercise.Label+'】试卷详情'" 
-      height="500px"
-    > 
-        <studentWrongQuestions :studentDoExercise="studentDoExercise"></studentWrongQuestions>
-      
-      
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  getAllClass,
-  editClassInfo,
-  addClassInfo,
-  getOneClass,
-  setClassTeacher,
-  getClassTeachers,
-  getTimeTableByMonth,
-  addClassDaily,
-  addClassCheck,
-  getClassDaily,
-  addClassStu,
-  getClassStu,
-  handOutTask,
-  getClassFinishExercise
-} from "@/api/class";
+import { getClassStudentWorks } from "@/api/class";
 import common from "@/utils/common";
-import studentWrongQuestions from "@/views/platform/component/studentWrongQuestions"; 
+import studentWrongQuestions from "@/views/platform/component/studentWrongQuestions";
 import { isDate } from "xe-utils/methods";
 export default {
-  components: { 
-studentWrongQuestions
-
+  components: {
+    studentWrongQuestions
   },
   props: {
     classItem: {
@@ -99,6 +76,7 @@ studentWrongQuestions
       nowPage: 1,
       // 每页数据的总条
       rows: 50,
+      readed: false,
       currentItemData: this.formItemData,
       // 表单验证
       ClassFormRules: {
@@ -106,37 +84,40 @@ studentWrongQuestions
           { required: true, message: "班级名称不能为空", trigger: "blur" }
         ]
       },
-      studentDoExercise:{},
-      studentDoExerciseList: [],
+      studentFinishWorkList: [],
       studentDoExerciseDailog: false,
       currentIndex: 0
     };
   },
- watch: {
+  watch: {
     classItem(newval) {
       this.fire();
     }
   },
   methods: {
-    async fire() {
-      let offsetRow = (this.nowPage - 1) * this.rows;
-      let res = await getClassFinishExercise(this.classItem.Id, {
-        limit: this.rows,
-        offset: offsetRow
-      });
-      this.studentDoExerciseList = res.data ? res.data : [];
+    TimeFormatter(row, column, cellValue) {
+      return this.common.dateFormat(cellValue);
+    },
+    fire() {
+      this.getStudentsWorks();
     },
     // 分页获取数据
     currentPageChange(val) {
       this.nowPage = val;
-      this.fire();
+      this.getStudentsWorks();
     },
 
     // 查看这个学员的错题
-    seeWrongQuestion(index, row) {
-      this.studentDoExercise = { ...row }; 
-      this.studentDoExerciseDailog = true;
-      this.currentIndex = index;
+    async getStudentsWorks(index, row) {
+      let offsetRow = (this.nowPage - 1) * this.rows;
+      let res = await getClassStudentWorks(
+        this.classItem.Id + "/" + this.readed,
+        {
+          limit: this.rows,
+          offset: offsetRow
+        }
+      );
+      this.studentFinishWorkList = res.data ? res.data : [];
     }
   }
 };
