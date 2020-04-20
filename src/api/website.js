@@ -21,4 +21,29 @@ export function SetIndexItem(url, query, data) {
   })
 }
 
+  
+//  
+export function getWebSiteInfo(url, query, data) {
+  return request({
+    url: '/website/getWebSiteInfo/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
+
+
+//  
+export function setWebSiteInfo(url, query, data) {
+  return request({
+    url: '/website/setWebSiteInfo/' + url,
+    method: 'post',
+    params: query,
+    data
+  })
+}
+
  
+
+
+

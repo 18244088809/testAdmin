@@ -106,7 +106,7 @@
     >
       <!-- 展示校区的基本信息 -->
       <div slot="left_content">
-        <teacher-row-detail v-bind:formItemData="currentRowData" />
+        <teacher-row-detail :formItemData="currentRowData" />
       </div>
       <div slot="right_content" class="p_both20 p-b-20">
         <el-tabs   @tab-click="onChangeTabs">

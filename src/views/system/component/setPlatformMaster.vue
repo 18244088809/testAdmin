@@ -58,6 +58,9 @@ export default {
   mounted() {},
   methods: {
     fire() {
+      if (!this.formItemData||!this.formItemData.Id) {
+        return;
+      }
       this.currentPlatform = this.formItemData;
 
       this.getAllManagerOfThisPlatform();
@@ -67,8 +70,7 @@ export default {
       this.managerList = res.data;
     },
     // 添加或编辑数据
-    async saveFormItemData() {
-      console.log(this.formItemData, this.currentPlatform);
+    async saveFormItemData() { 
       let res = await setPlatformMaster(
         this.formItemData.Id,
         { masterid: this.currentPlatform.MasterID, add: 1 },

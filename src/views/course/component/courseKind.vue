@@ -78,7 +78,7 @@ export default {
       // 表单验证
       courseFormRules: {
         Label: [
-          { required: true, message: '课程类别名称不能为空', trigger: "blur" }
+          { required: true, message: "课程类别名称不能为空", trigger: "blur" }
         ]
       },
       // 搜索科目时通过课程类别的名称查找
@@ -92,15 +92,17 @@ export default {
   },
   watch: {
     collegePropItem(newvar) {
-      this.collegeItem = this.collegePropItem;
-      this.courseKindItem = {};
-      // this.collegeChangeGetCourseKind(0);
+      this.fire();
     }
   },
   mounted() {
-    this.collegeItem = this.collegePropItem;
+    this.fire();
   },
   methods: {
+    fire() {
+      this.collegeItem = this.collegePropItem;
+      this.courseKindItem = {};
+    },
     // 保存课程数据
     async saveCourseKind() {
       this.$refs.refCourseKindForm.validate(async valid => {

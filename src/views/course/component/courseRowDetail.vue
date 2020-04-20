@@ -25,19 +25,19 @@
       </el-form-item>
 
       <el-form-item label="热门课程" class="flex_1">
-        <el-radio-group v-model="currentItemData.IsCollegeHot">
+        <el-radio-group v-model="currentItemData.IsCollegeHot" @change="$forceUpdate()">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="全科购买" class="flex_1">
-        <el-radio-group v-model="currentItemData.MustAllBook">
+        <el-radio-group v-model="currentItemData.MustAllBook" @change="$forceUpdate()">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="是否公开" class="flex_1">
-        <el-radio-group v-model="currentItemData.ISProtected">
+        <el-radio-group v-model="currentItemData.ISProtected" @change="$forceUpdate()">
           <el-radio :label="0">官网公开售卖</el-radio>
           <el-radio :label="1">只内部开课</el-radio>
         </el-radio-group>
@@ -64,7 +64,7 @@
             :show-file-list="false"
             :on-change="function(file, fileList){return uploadCourseImgFunc(file, fileList,1)}"
           >
-            <el-input v-model="currentItemData.Background" disabled style="width:auto;" />
+            <el-input v-model="currentItemData.Background"   style="width:auto;" />
             <span
               class="m-l-15 wid60 cursor color-1f85aa"
               @click="onPreview(currentItemData.Background)"
@@ -81,7 +81,7 @@
             :show-file-list="false"
             :on-change="function(file, fileList){return uploadCourseImgFunc(file, fileList,2)}"
           >
-            <el-input v-model="currentItemData.Jxtx" disabled style="width:auto; " />
+            <el-input v-model="currentItemData.Jxtx"   style="width:auto; " />
           </el-upload>
           <span class="m-l-15 wid60 cursor color-1f85aa" @click="onPreview(currentItemData.Jxtx)">预览</span>
         </div>
@@ -96,7 +96,7 @@
               :show-file-list="false"
               :on-change="function(file, fileList){return uploadCourseImgFunc(file, fileList,3)}"
             >
-              <el-input v-model="currentItemData.Kcxq" disabled style="width:auto; " />
+              <el-input v-model="currentItemData.Kcxq"   style="width:auto; " />
             </el-upload>
           </div>
           <span class="m-l-15 wid60 cursor color-1f85aa" @click="onPreview(currentItemData.Kcxq)">预览</span>
@@ -163,7 +163,7 @@ export default {
         this.courseKindId = this.courseKindIdProp;
       }
       this.currentItemData.TCourseKindID = this.courseKindId;
-      // this.collegeChangeGetCourseKind(0);
+      
     }
   },
   data() {
@@ -210,8 +210,9 @@ export default {
   },
   methods: {
     fire() {
+     
       this.currenteditEnable = false;
-      this.currentItemData = this.formItemData;
+      this.currentItemData = {...this.formItemData};
       if (!this.currentItemData.ISProtected) {
         this.currentItemData.ISProtected = 0;
       }
@@ -239,6 +240,8 @@ export default {
             }
           });
         }
+      }else{
+        this.currenteditEnable = true;
       }
     },
     // 上传课程图片

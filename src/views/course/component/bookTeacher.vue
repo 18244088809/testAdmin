@@ -108,6 +108,7 @@ export default {
   methods: {
     // 获取班级的所有老师
     fire() {
+      
       this.searchTeacher();
     },
     // 查找老师

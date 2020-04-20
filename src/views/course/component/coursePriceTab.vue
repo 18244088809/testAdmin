@@ -72,6 +72,9 @@ export default {
 
   methods: {
     fire() {
+      if (!this.formItemData || !this.formItemData.Id) {
+        return;
+      }
       this.currentItemData = this.formItemData;
       this.getCoursePrice();
     },

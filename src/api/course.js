@@ -108,7 +108,7 @@ export function addCourseKind(url, param, data) {
 // 编辑课程
 export function editCourseKind(url, param, data) {
   return request({
-    url: '/course_kind/update' + url,
+    url: '/course_kind/update/' + url,
     method: 'put',
     params: param,
     data
@@ -127,7 +127,7 @@ export function getAllCourseKind(url, param, data) {
 // 删除课程类别
 export function deleteCourseKind(url, param, data) {
   return request({
-    url: '/course_kind/delete' + url,
+    url: '/course_kind/delete/' + url,
     method: 'delete',
     params: param,
     data

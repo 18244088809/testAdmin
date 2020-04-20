@@ -44,9 +44,12 @@ export default {
       this.fire();
     }
   },
- 
+
   methods: {
     fire() {
+      if (!this.formItemData||!this.formItemData.Id) {
+        return;
+      }
       this.getManagerPlatforms();
     },
     // 打开模态框时获取所有的权限选择
@@ -57,7 +60,7 @@ export default {
       this.$nextTick(() => {
         this.platforms = this.$store.getters.app.platformList.slice(
           0,
-          this.$store.getters.app.platformList.length - 1
+          this.$store.getters.app.platformList.length
         );
         this.platforms.forEach(platform => {
           platform.Selected = false;

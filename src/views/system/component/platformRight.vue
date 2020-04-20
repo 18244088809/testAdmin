@@ -5,7 +5,7 @@
       <br />
 
       <div v-for="(item,index) in common.docKindList" :key="item.Id">
-        <el-form  >
+        <el-form>
           <el-form-item label-width="100px" :label="'('+(index+1)+')'+item.Label+'：'">
             <el-slider
               style="width:100%;"
@@ -56,8 +56,8 @@ export default {
   data() {
     return {
       value: 1,
-     common,
-      currentPlatform:  this.formItemData,
+      common,
+      currentPlatform: this.formItemData,
       currenteditEnable: false,
       platformRights: []
     };
@@ -67,14 +67,12 @@ export default {
       this.fire();
     }
   },
-  mounted() {
-   
-  },
+  mounted() {},
   methods: {
     fire() {
-       this.setData();
-    },
-    setData() {
+     if (!this.formItemData||!this.formItemData.Id) {
+        return;
+      }
       this.currentPlatform = this.formItemData;
       let index = 0;
       if (this.currentPlatform.Right == "") {
@@ -101,7 +99,7 @@ export default {
       // this.currentPlatform.Right = JSON.stringify(this.platformRights);
       let temp = [];
       for (let i = 0; i < this.platformRights.length; i++) {
-        if (this.platformRights[i]) { 
+        if (this.platformRights[i]) {
           let obj = {};
           obj[i] = this.platformRights[i];
           temp.push(obj);

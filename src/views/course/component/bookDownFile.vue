@@ -89,6 +89,9 @@ export default {
   mounted() {},
   methods: {
     fire() {
+      if (!this.formItemData||!this.formItemData.Id) {
+        return;
+      }
       this.currentItemData = this.formItemData;
       this.setData(this.currentItemData.Info);
       this.editEnable = false;

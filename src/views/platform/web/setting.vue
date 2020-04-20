@@ -2,17 +2,17 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
-        <el-form label-width="90px" :model="siteItem" style="width:100%">
+        <el-form label-width="90px" :model="platform" style="width:100%">
           <div class="flex_dom">
-            <el-form-item label="本校logo">
-              <img ref="platformLogo" style="width: 130px; height:130px" />
+            <el-form-item label="本校logo" style="width:100%">
+              <img ref="platformLogo" :src="platform.logo" style="width: 130px; height:130px" />
               <el-upload
                 :auto-upload="false"
                 action
                 :show-file-list="false"
                 :on-change="function(file, fileList){return uploadBannerImg(file,fileList)}"
               >
-                <i slot="default" class="el-icon-plus"  >&nbsp;点击上传</i>
+                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
               </el-upload>
             </el-form-item>
             <el-form-item label="宣传视频" style="width:100%">
@@ -24,34 +24,37 @@
                 :on-change="function(file, fileList){return uploadVideoFunc(file,fileList)}"
               >
                 <video
-                  v-if="siteItem.webSiteVideo"
-                  :src="siteItem.webSiteVideo"
+                  :src="platform.webSiteVideo"
                   controls="controls"
+                  preload="metadata"
                   style="width: auto; height:130px"
                 >您的浏览器不支持 video 标签预览。</video>
-
-                <i
-                  v-else
-                  slot="default"
-                  class="el-icon-plus"
-                  style="width:130px; height:130px "
-                >{{ videoProgress}}</i>
+                        <i
+                slot="default"
+                class="el-icon-plus"
+            
+              >{{ videoProgress}}</i>
               </el-upload>
+      
             </el-form-item>
           </div>
-          <div class="flex_dom">
-            <el-form-item label="年招生上限" style="width:100%">
-              <label>{{platform.MaxPerYear}}</label>
-            </el-form-item>
-            <el-form-item label="总招生上限" style="width:100%">
-              <label>{{platform.MaxAllYear}}</label>
-            </el-form-item>
-          </div>
+
+          <el-form-item label="校区名称" style="width:100%">
+            <el-input v-model="platform.Label" placeholder="校区名称"></el-input>
+          </el-form-item>
+
           <el-form-item label="校区介绍" style="width:100%">
-            <el-input v-model="platform.Description" placeholder="说明"></el-input>
+            <el-input v-model="platform.Description" placeholder="本校区的备注"></el-input>
           </el-form-item>
           <el-form-item label="办公地址" style="width:100%">
-            <el-input v-model="platform.Address" placeholder="说明"></el-input>
+            <el-input v-model="platform.Address" placeholder="办公地址"></el-input>
+          </el-form-item>
+          <el-form-item label="官网网址" style="width:100%">
+            <span v-if="platform.Domain">{{platform.Domain}}</span>
+            <span v-else>如果需要独立域名请联系总部管理员</span>
+          </el-form-item>
+          <el-form-item label="官网备案号" style="width:100%">
+            <el-input v-model="platform.Beian" placeholder="请填写正确的备案号，否则网站要被官方查封"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -64,7 +67,7 @@
 
 <script>
 import platformRowDetail from "@/views/system/component/platformRowDetail";
-import { GetIndexItem, SetIndexItem } from "@/api/website";
+import { getWebSiteInfo, setWebSiteInfo } from "@/api/website";
 import { getCosTempKey } from "@/api/cos";
 import common from "@/utils/common";
 import $ImgHttp from "@/api/ImgAPI";
@@ -77,48 +80,42 @@ export default {
   data() {
     return {
       // banner列表
-      siteItem: {},
       platform: {},
-      dataList: [],
       currentPlatform: 0,
       videoProgress: "点击上传"
     };
   },
 
   methods: {
-    async GetIndexBanner() {
-      let res = await GetIndexItem(this.currentPlatform + "/webSetting", "");
+    async GetWebSetting() {
+      let res = await getWebSiteInfo(this.currentPlatform, "");
       if (res.code == 200) {
-        this.dataList = res.data ? res.data : [];
+        this.platform = JSON.parse(res.data);
       }
     },
     // 图片上传
     async uploadBannerImg(file, fileList) {
       let res = await $ImgHttp.UploadImg("webSetting", file.raw);
-     if (res.code != 200) {
+      if (res.code != 200) {
         this.$message({
           message: res.data,
           type: "warning"
         });
         return;
       }
-        this.siteItem.logo = res.data;
-        this.$message({
-          message: "上传成功",
-          type: "success"
-        });
-        this.$forceUpdate();
-      
+      this.platform.logo = res.data;
+      this.$message({
+        message: "上传成功",
+        type: "success"
+      });
+      this.$forceUpdate();
     },
     // 保存banner列表
     async saveBannerList() {
-      let res = await SetIndexItem(
-        this.currentPlatform + "/webSetting",
-        "",
-        this.siteItem
-      );
+      let that = this;
+      let res = await setWebSiteInfo(that.currentPlatform, "", that.platform);
       if (res.code == 200) {
-        this.$message({
+        that.$message({
           message: "保存成功",
           type: "success"
         });
@@ -143,8 +140,8 @@ export default {
         }
       });
       // that.$refs["platformLogo"].src =  "https://platform-1301573799.cos.ap-chengdu.myqcloud.com/platform-167-logo.png";
-      // that.siteItem.image =
-       
+      // that.platform.image =
+
       cos.getObject(
         {
           Bucket: res.data.Bucket /* 必须 */,
@@ -153,7 +150,7 @@ export default {
         },
         function(err, data) {
           if (!err) {
- that.$refs["platformLogo"].src = data.Body;
+            that.$refs.platformLogo.src = data.Body;
             that.$forceUpdate();
           }
         }
@@ -175,6 +172,7 @@ export default {
               message: "上传成功",
               type: "success"
             });
+            that.platform.webSiteVideo = "https://" + data.Location;
           } else {
             console.log("cos上传错误:", err);
           }
@@ -207,7 +205,8 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    this.getTempKey();
+    this.GetWebSetting();
+    // this.getTempKey();
   }
 };
 </script>

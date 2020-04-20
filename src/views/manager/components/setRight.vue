@@ -69,6 +69,9 @@ export default {
 
   methods: {
     fire() {
+      if (!this.formItemData||this.formItemData.Id==0) {
+        return;
+      }
       this.currentFormData = this.formItemData;
       this.getAllManagerRight();
     },
