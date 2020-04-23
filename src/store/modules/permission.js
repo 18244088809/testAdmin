@@ -119,12 +119,12 @@ const actions = {
                     meta: { title: 'news', icon: "news" }
                   },
                  
-                  // {
-                  //   path: 'business/' + platform.Id.toString(10),
-                  //   name: 'business' + index.toString(10),
-                  //   component: () => import('@/views/platform/web/business'),
-                  //   meta: { title: 'business', icon: "business" }
-                  // },
+                  {
+                    path: 'business/' + platform.Id.toString(10),
+                    name: 'business' + index.toString(10),
+                    component: () => import('@/views/platform/web/business'),
+                    meta: { title: 'business', icon: "table" }
+                  },
                   {
                     path: 'teacher/' + platform.Id.toString(10),
                     name: 'teacher' + index.toString(10),

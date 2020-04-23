@@ -26,7 +26,7 @@ export default {
     teacher: '优秀老师',
     linker:'友情链接',
     classList: '班级列表',
-    business: '教务管理',
+    business: '业务模块',
     contractList: '所有合同',
     bookAdpter: '教材章节',
     chapterExercise: '章节练习',

@@ -20,19 +20,23 @@
         </el-table-column>
         <el-table-column prop="MasterLabel" label="负责人" width="80" />
         <el-table-column prop="Telephone" label="联系电话" width="100" />
-        <el-table-column prop="MaxPerYear" label="每年招生上限" width="100">
+        <el-table-column prop="MaxPerYear" label="年招生上限" width="100">
           <template slot-scope="scope">
             <span>{{ formatStudentNumber( scope.row.MaxPerYear) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="MaxAllYear" label="总招生上限" width="100">
           <template slot-scope="scope">
-            <span 
-            >{{ formatStudentNumber( scope.row.MaxAllYear) }}</span>
+            <span>{{ formatStudentNumber( scope.row.MaxAllYear) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="Address" label="地址" :show-overflow-tooltip="true" width="300" />
         <el-table-column prop="Description" label="备注" :show-overflow-tooltip="true" />
+        <el-table-column label="网址" :show-overflow-tooltip="true" width="250">
+          <template slot-scope="scope">
+            <a :href="scope.row.Domain" target="_blank">{{scope.row.Domain}}</a>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="between-center m-v-15">
         <el-button type="primary" @click="openNewItem( )">新增校区</el-button>
@@ -46,7 +50,7 @@
         <platformRowDetail :formItemData="customFormData" />
       </div>
       <div slot="right_content" class="p_both20 p-b-20">
-        <el-tabs  @tab-click="onChangeTabs">
+        <el-tabs @tab-click="onChangeTabs">
           <el-tab-pane id="zlxzqx" label="资料下载权限" name="zlxzqx">
             <platformRight :formItemData="customFormData" />
           </el-tab-pane>
@@ -97,12 +101,12 @@ export default {
     this.getAllPlatform();
   },
   methods: {
-     onChangeTabs(item) {
+    onChangeTabs(item) {
       item.$children[0].fire();
     },
     formatStudentNumber(studentnum) {
       if (studentnum == 0) {
-        return "没有上限";
+        return "无限制";
       }
       return "上限:" + studentnum;
     },

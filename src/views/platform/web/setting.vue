@@ -2,15 +2,26 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
-        <el-form label-width="90px" :model="platform" style="width:100%">
+        <el-form label-width="120px" :model="platformWeb" style="width:100%">
           <div class="flex_dom">
-            <el-form-item label="本校logo" style="width:100%">
-              <img ref="platformLogo" :src="platform.logo" style="width: 130px; height:130px" />
+            <el-form-item label="官网logo" style="width:100%">
+              <img  :src="platformWeb.logo" style="width: 130px; height:130px" />
               <el-upload
                 :auto-upload="false"
                 action
                 :show-file-list="false"
-                :on-change="function(file, fileList){return uploadBannerImg(file,fileList)}"
+                :on-change="function(file){return uploadBannerImg(file,'logo')}"
+              >
+                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="小程序二维码" style="width:100%">
+              <img  :src="platformWeb.xcxlogo" style="width: 130px; height:130px" />
+              <el-upload
+                :auto-upload="false"
+                action
+                :show-file-list="false"
+                :on-change="function(file){return uploadBannerImg(file,'xcxlogo')}"
               >
                 <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
               </el-upload>
@@ -21,40 +32,40 @@
                 action
                 style="width:150px;height:150px"
                 :show-file-list="false"
-                :on-change="function(file, fileList){return uploadVideoFunc(file,fileList)}"
+                :on-change="function(file){return uploadVideoFunc(file)}"
               >
                 <video
-                  :src="platform.webSiteVideo"
+                  :src="platformWeb.webSiteVideo"
                   controls="controls"
                   preload="metadata"
                   style="width: auto; height:130px"
                 >您的浏览器不支持 video 标签预览。</video>
-                        <i
-                slot="default"
-                class="el-icon-plus"
-            
-              >{{ videoProgress}}</i>
+                <i slot="default" class="el-icon-plus">{{ videoProgress}}</i>
               </el-upload>
-      
             </el-form-item>
           </div>
 
-          <el-form-item label="校区名称" style="width:100%">
-            <el-input v-model="platform.Label" placeholder="校区名称"></el-input>
+          <el-form-item label="官网名称" style="width:100%">
+            <el-input v-model="platformWeb.Label" placeholder="校区名称.显示在官网以及发给学员的短信的落款上。尽量简短"></el-input>
           </el-form-item>
 
-          <el-form-item label="校区介绍" style="width:100%">
-            <el-input v-model="platform.Description" placeholder="本校区的备注"></el-input>
+          <el-form-item label="官网介绍" style="width:100%">
+            <el-input
+              type="textarea"
+              :rows="2"
+              v-model="platformWeb.Description"
+              placeholder="这些文字会显示在 官网里，请及时修改"
+            ></el-input>
           </el-form-item>
           <el-form-item label="办公地址" style="width:100%">
-            <el-input v-model="platform.Address" placeholder="办公地址"></el-input>
+            <el-input v-model="platformWeb.Address" placeholder="办公地址"></el-input>
           </el-form-item>
           <el-form-item label="官网网址" style="width:100%">
             <span v-if="platform.Domain">{{platform.Domain}}</span>
             <span v-else>如果需要独立域名请联系总部管理员</span>
           </el-form-item>
           <el-form-item label="官网备案号" style="width:100%">
-            <el-input v-model="platform.Beian" placeholder="请填写正确的备案号，否则网站要被官方查封"></el-input>
+            <el-input v-model="platformWeb.Beian" placeholder="请填写正确的备案号，否则网站要被官方查封"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -81,6 +92,7 @@ export default {
     return {
       // banner列表
       platform: {},
+      platformWeb: {},
       currentPlatform: 0,
       videoProgress: "点击上传"
     };
@@ -90,11 +102,15 @@ export default {
     async GetWebSetting() {
       let res = await getWebSiteInfo(this.currentPlatform, "");
       if (res.code == 200) {
-        this.platform = JSON.parse(res.data);
+        if (res.data == "") {
+          res.data = "{}";
+        }
+        this.platformWeb = JSON.parse(res.data);
+        this.platform = res.title;
       }
     },
     // 图片上传
-    async uploadBannerImg(file, fileList) {
+    async uploadBannerImg(file, item) {
       let res = await $ImgHttp.UploadImg("webSetting", file.raw);
       if (res.code != 200) {
         this.$message({
@@ -103,7 +119,7 @@ export default {
         });
         return;
       }
-      this.platform.logo = res.data;
+     this.platformWeb[item] = res.data;
       this.$message({
         message: "上传成功",
         type: "success"
@@ -113,7 +129,11 @@ export default {
     // 保存banner列表
     async saveBannerList() {
       let that = this;
-      let res = await setWebSiteInfo(that.currentPlatform, "", that.platform);
+      let res = await setWebSiteInfo(
+        that.currentPlatform,
+        "",
+        that.platformWeb
+      );
       if (res.code == 200) {
         that.$message({
           message: "保存成功",
@@ -121,42 +141,8 @@ export default {
         });
       }
     },
-    // getTempKey
-    async getTempKey() {
-      let that = this;
-      let NameValue = "platform-" + that.currentPlatform + "-logo.png";
-      let res = await getCosTempKey("", {
-        kind: "platform",
-        name: NameValue
-      });
-      var cos = new cosSDK({
-        getAuthorization: function(options, callback) {
-          callback({
-            TmpSecretId: res.data.Credentials.TmpSecretId,
-            TmpSecretKey: res.data.Credentials.TmpSecretKey,
-            XCosSecurityToken: res.data.Credentials.Token,
-            ExpiredTime: res.data.ExpiredTime // SDK 在 ExpiredTime 时间前，不会再次调用 getAuthorization
-          });
-        }
-      });
-      // that.$refs["platformLogo"].src =  "https://platform-1301573799.cos.ap-chengdu.myqcloud.com/platform-167-logo.png";
-      // that.platform.image =
 
-      cos.getObject(
-        {
-          Bucket: res.data.Bucket /* 必须 */,
-          Region: res.data.Region /* 存储桶所在地域，必须字段 */,
-          Key: NameValue /* 必须 */
-        },
-        function(err, data) {
-          if (!err) {
-            that.$refs.platformLogo.src = data.Body;
-            that.$forceUpdate();
-          }
-        }
-      );
-    },
-    uploadVideoFunc(file, fileList) {
+    uploadVideoFunc(file) {
       let NameValue = this.currentPlatform + "-video.mp4";
       let that = this;
       let res = common.uploadCosFile(
@@ -172,7 +158,7 @@ export default {
               message: "上传成功",
               type: "success"
             });
-            that.platform.webSiteVideo = "https://" + data.Location;
+            that.platformWeb.webSiteVideo = "https://" + data.Location;
           } else {
             console.log("cos上传错误:", err);
           }
@@ -206,7 +192,6 @@ export default {
       this.currentPlatform = 0;
     }
     this.GetWebSetting();
-    // this.getTempKey();
   }
 };
 </script>

@@ -1,94 +1,91 @@
 <template>
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
-      <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-10 p-l-20 p-v-15">
+      <div class="flex_1 m-t-10 overflow_auto my_scrollbar p-r-20 p-l-5">
         <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
           <div class="flex_mid cardBorder bg-ccc">
-            <el-upload
-              :auto-upload="false"
-              action
-              class="bg-ddd"
-              :show-file-list="false"
-              :on-change="function(file, fileList){return uploadBannerImg(file,fileList,index)}"
-            >
-              <img v-if="item.image" :src="item.image" style="width: auto; height: 140px" />
-              <i
-                v-else
-                slot="default"
-                class="el-icon-plus"
-                style="width: 140px; height: 140px"
-              >&nbsp;点击上传</i>
-            </el-upload>
-
-            <el-form label-width="90px" :model="item" style="width:100%">
-              <div class="flex_mid">
-                <el-form-item label="姓名" style="width:30%">
-                  <el-input v-model="item.label" style="width:100%" placeholder="老师姓名"></el-input>
+            <el-form label-width="70px" :model="item" style="width:100%">
+              <div class="between-center">
+                <el-form-item label="模块名称" style="width:100%">
+                  <el-input v-model="item.label" style="width:100%" placeholder="填写模块名"></el-input>
                 </el-form-item>
-                <el-form-item label="跳转地址：" class="m-l-20" style="width:70%">
-                  <el-input v-model="item.href" placeholder="请输入连接地址.没有跳转页面可以不输入"></el-input>
+                <el-form-item label style="width:200px">
+                  <el-button type="primary" @click="openContentEditer(index)">编辑内容</el-button>
+                </el-form-item>
+                <el-form-item label="是否显示" style="width:200px">
+                  <el-checkbox v-model="item.display" style="width:100%"></el-checkbox>
                 </el-form-item>
               </div>
-              <el-form-item label="简介">
-                <el-input type="textarea" rows="5" v-model="item.content" placeholder="老师的介绍"></el-input>
+              <el-form-item label="内容">
+                <div v-html="item.content" />
               </el-form-item>
             </el-form>
 
-            <div class="dele_banner" @click="deleBannerItem(index)">
+            <div class="dele_banner" @click="deleBusinessItem(index)">
               <i class="el-icon-error font24 color-999"></i>
             </div>
           </div>
         </div>
       </div>
       <div class="m-v-15">
-        <el-button type="primary" @click="addBannerItem">新 增</el-button>
+        <el-button type="primary" @click="addBusinessItem">新 增</el-button>
         <el-button type="success" @click="saveBannerList">保 存</el-button>
       </div>
     </div>
+    <my-dialog
+      :visible.sync="contentDilag"
+      :close-show="true"
+      :showLeft="false"
+      :title="'【'+currentItem.label+'】模块的内容'"
+    >
+      <!-- 展示校区的基本信息 -->
+      <div slot="right_content" class="p_both20 p-b-20">
+        <businessFormData :formItemData="currentItem" @updateRowData="updateList" />
+      </div>
+    </my-dialog>
   </div>
 </template>
 
 <script>
+import businessFormData from "@/views/platform/web/component/businessFormData";
 import { GetIndexItem, SetIndexItem } from "@/api/website";
 import $ImgHttp from "@/api/ImgAPI";
+import myDialog from "@/components/myDialog/myDialog";
 export default {
+  components: {
+    businessFormData,
+    myDialog
+  },
   name: "webBusiness",
   data() {
     return {
       // banner列表
+      currentIndex: 0,
+      currentItem: { label: "没有模块名" },
+      contentDilag: false,
       dataList: [],
       currentPlatform: 0
     };
   },
 
   methods: {
-    async GetIndexBanner() {
-      let res = await GetIndexItem(this.currentPlatform + "/teacher", "");
+    async GetWebBusiness() {
+      let res = await GetIndexItem(this.currentPlatform + "/business", "");
       if (res.code == 200) {
         this.dataList = res.data ? res.data : [];
       }
     },
-    // 图片上传
-    async uploadBannerImg(file, fileList, index) {
-      let res = await $ImgHttp.UploadImg("teacher", file.raw);
-      if (res.code != 200) {
-        this.$message({
-          message: res.data,
-          type: "warning"
-        });
-        return;
-      }
-      this.dataList[index].image = res.data;
-      this.$message({
-        message: "上传成功",
-        type: "success"
-      });
-      this.$forceUpdate();
+    
+    // 编辑或者添加之后更新表格数据-资料列表
+    updateList(rowData) {
+      this.$set(this.dataList, this.currentIndex, rowData);
+
+      this.contentDilag = false;
     },
-    // 保存banner列表
+// 保存banner列表
     async saveBannerList() {
       let res = await SetIndexItem(
-        this.currentPlatform + "/teacher",
+        this.currentPlatform + "/business",
         "",
         this.dataList
       );
@@ -99,22 +96,28 @@ export default {
         });
       }
     },
+    openContentEditer(index) {
+      this.currentIndex = index;
+      this.contentDilag = true;
+      this.currentItem = this.dataList[index];
+      this.currentItem.Id = index; 
+    },
     // 添加banner
-    addBannerItem() {
+    addBusinessItem() {
       this.dataList.unshift({});
     },
     // 删除banner
-    async deleBannerItem(index) {
+    async deleBusinessItem(index) {
       this.$confirm("这里删除后还需要点击保存按钮，确定删除吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(async () => {
+      }).then(async () => { 
         this.dataList.splice(index, 1);
         this.$message({
           message: "删除成功,请最后点击保存按钮",
           type: "success"
-        });
+        }); 
       });
     }
   },
@@ -124,7 +127,7 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    this.GetIndexBanner();
+    this.GetWebBusiness();
   }
 };
 </script>

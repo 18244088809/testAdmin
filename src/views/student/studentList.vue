@@ -461,12 +461,12 @@ export default {
     },
     // 我的校区-根据当前登录用户选择的校区获取该校区下所属自己的销售
     async getAllManagerOfPlatform(platformId) {
-      const res = await getAllManagerOfPlatform(platformId,{onlyLive:true});
+      const res = await getAllManagerOfPlatform(platformId,{onlyLive:true,needtotal:false});
       if (res.code == 200) {
         // 默认查看自己的学员
         this.searchWorkerId = this.$store.getters.manager.Id;
         this.myWorkerList = res.data ? res.data : [];
-        this.isPlatformMaster = res.title;
+        this.isPlatformMaster = res.attach;
       }
       this.getCustomList();
     },
