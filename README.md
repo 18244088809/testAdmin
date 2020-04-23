@@ -77,10 +77,7 @@
 ![登录页](https://images.gitee.com/uploads/images/2020/0304/202540_e397edab_870483.png "登录页") 
 
 直接对在线售卖的课程设置各种组合售卖价格。便于学员自主选择购买
-
-
-![登录页](https://images.gitee.com/uploads/images/2020/0304/202549_b5f04a77_870483.png "登录页") 
-
+ 
 
 ![登录页](https://images.gitee.com/uploads/images/2020/0423/155034_8e3ea0ce_870483.png "登录页") 
 
