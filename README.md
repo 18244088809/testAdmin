@@ -81,6 +81,9 @@
 
 ![登录页](https://images.gitee.com/uploads/images/2020/0304/202549_b5f04a77_870483.png "登录页") 
 
+
+![登录页](https://images.gitee.com/uploads/images/2020/0423/155034_8e3ea0ce_870483.png "登录页") 
+
 对每个教材的教学视频都可以划分章节，任意添加多少章节和视频。  
 
 ![登录页](https://images.gitee.com/uploads/images/2020/0223/214411_bc41e322_870483.png "登录页") 
