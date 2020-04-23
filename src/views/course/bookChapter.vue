@@ -1,13 +1,15 @@
 
 <template>
-  <div v-cloak class="font16 hgt_full m-t-10">
+  <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
-      <div class="between-center m-b-15">
-        <div>
+      <vxe-toolbar>
+        <template v-slot:buttons>
+          <el-button v-if="isTableClose" type="primary" @click="expandTables">展开所有</el-button>
+          <el-button v-else type="success" @click="closeTables">合闭所有</el-button>
           <span class="m-b-10">当前科目名称：{{ bookLabel }}</span>
-          <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的教授者</span>
-        </div>
-      </div>
+          <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的编委成员</span>
+        </template>
+      </vxe-toolbar>
       <vxe-table
         ref="chapterTreeTable"
         border
@@ -19,8 +21,7 @@
         :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:true}"
       >
         <vxe-table-column type="seq" width="120" title="序号" tree-node />
-        <vxe-table-column field="SN" title="章节编号" width="100"> 
-        </vxe-table-column>
+        <vxe-table-column field="SN" title="章节编号" width="100"></vxe-table-column>
         <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
         <vxe-table-column title="视频地址">
           <template v-slot="{ row}">
@@ -67,20 +68,19 @@
                 <el-button size="mini" type="info" @click="addQuestion(row,false)">添加试题</el-button>
                 <el-button size="mini" type="success" @click="openLinkQuestion(row,false)">关联试题</el-button>
               </div>
-              <el-button type="danger" size="mini" @click="deleteChildNode(row)">删除</el-button>
+              <el-button
+                type="danger"
+                v-if="!row.Children||row.Children.length==0"
+                size="mini"
+                @click="deleteChildNode(row)"
+              >删除</el-button>
             </div>
           </template>
         </vxe-table-column>
       </vxe-table>
-      <div class="between-center m-v-15">
-        <el-button type="primary" class="m-r-10" @click="addChapter">新增章</el-button>
-        <!-- <el-button type="danger" @click="deleteSelectItems">批量删除</el-button> -->
-        <el-button
-          class="m-r-20"
-          v-show="editEnable"
-          type="success"
-          @click="createSubjectChapter"
-        >保存</el-button>
+      <div class="between-center m-t-10 m-b-20">
+        <el-button type="primary" @click="addChapter">新增章</el-button>
+        <el-button v-show="editEnable" type="success" @click="createSubjectChapter">保存</el-button>
       </div>
     </div>
 
@@ -126,6 +126,7 @@ export default {
   },
   data() {
     return {
+      isTableClose: false,
       // 书名称
       bookLabel: "",
       // 书的Id
@@ -211,8 +212,6 @@ export default {
         QuestionScore: 1,
         BookChapter: row
       };
-
-      //
     },
     chapterAddQuestionOK(type, exerciseQuestion, bookChapter) {
       const rowNode = XEUtils.findTree(
@@ -229,6 +228,10 @@ export default {
     },
 
     deleteChildNode(row) {
+      if (this.editEnable == false) {
+        this.$alert("您不是本教材的编委成员，请先加入本教材编委");
+        return;
+      }
       let chapterTreeTable = this.$refs.chapterTreeTable;
       let matchObj = XEUtils.findTree(
         this.chaperListOfBook,
@@ -236,14 +239,18 @@ export default {
         this.treeConfig
       );
       if (matchObj) {
-        this.$confirm("确认删除吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          let { items, index } = matchObj;
-          let restRow = items.splice(index, 1)[0];
-        });
+        if (matchObj.item == matchObj.items[matchObj.items.length - 1]) {
+          this.$confirm("确认删除吗?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            let { items, index } = matchObj;
+            let restRow = items.splice(index, 1)[0];
+          });
+        } else {
+          this.$alert("可以直接修改名字和视频地址即可。不用删");
+        }
       }
     },
 
@@ -309,13 +316,21 @@ export default {
         });
     },
 
-    // 取消编辑
-    cancelEditChapter(row, index) {
-      this.$refs.chapterTreeTable.clearActived();
-      this.$refs.chapterTreeTable.revert(row);
-      if (row.Id <= 0) {
-        this.$refs.chapterTreeTable.remove(row);
-      }
+    // // 取消编辑
+    // cancelEditChapter(row, index) {
+    //   this.$refs.chapterTreeTable.clearActived();
+    //   this.$refs.chapterTreeTable.revert(row);
+    //   if (row.Id <= 0) {
+    //     this.$refs.chapterTreeTable.remove(row);
+    //   }
+    // },
+    expandTables() {
+      this.$refs.chapterTreeTable.setAllTreeExpansion(true);
+      this.isTableClose = false;
+    },
+    closeTables() {
+      this.$refs.chapterTreeTable.clearTreeExpand();
+      this.isTableClose = true;
     },
     // 新增章
     addChapter() {
@@ -336,33 +351,33 @@ export default {
 
       this.chaperListOfBook.push(newItem);
     },
-    // 批量删除
-    deleteSelectItems() {
-      const that = this;
-      const selectChapterItems = that.$refs.chapterTreeTable.getSelectRecords();
-      const ids = [];
-      for (const chapterItem of selectChapterItems) {
-        ids.push(chapterItem.Id);
-      }
-      that
-        .$confirm("确认删除吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-        .then(async () => {
-          const res = await deleBookVideo({
-            idlist: ids.toString()
-          });
+    // // 批量删除
+    // deleteSelectItems() {
+    //   const that = this;
+    //   const selectChapterItems = that.$refs.chapterTreeTable.getSelectRecords();
+    //   const ids = [];
+    //   for (const chapterItem of selectChapterItems) {
+    //     ids.push(chapterItem.Id);
+    //   }
+    //   that
+    //     .$confirm("确认删除吗?", "提示", {
+    //       confirmButtonText: "确定",
+    //       cancelButtonText: "取消",
+    //       type: "warning"
+    //     })
+    //     .then(async () => {
+    //       const res = await deleBookVideo({
+    //         idlist: ids.toString()
+    //       });
 
-          that.getBookChapter();
-          this.$message({
-            message: "操作成功",
-            type: "success"
-          });
-        })
-        .catch(() => {});
-    },
+    //       that.getBookChapter();
+    //       this.$message({
+    //         message: "操作成功",
+    //         type: "success"
+    //       });
+    //     })
+    //     .catch(() => {});
+    // },
     // 获取章节列表
     async getBookChapter() {
       const res = await getBookVideo(this.bookID, {

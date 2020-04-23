@@ -175,7 +175,7 @@ export default {
       let res = await getQuestionOfBook("", {
         bookid: this.currentItemData.BookId,
         question_content: this.searchQuestionContent,
-        zhang: this.currentItemData.zhang,
+        zhang: this.currentItemData.Zhang,
         jie: this.currentItemData.Jie,
         topic: this.currentItemData.TopicNo,
         limit: this.rows,
