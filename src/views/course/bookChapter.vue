@@ -7,67 +7,71 @@
           <span class="m-b-10">当前科目名称：{{ bookLabel }}</span>
           <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的教授者</span>
         </div>
-      </div> 
-        <vxe-table
-          ref="chapterTreeTable"
-          border
-          row-id="Id"
-          show-overflow
-          :tree-config="treeConfig"
-          :data.sync="chaperListOfBook"
-          height="100%"
-          :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:true}"
-        >
-          <vxe-table-column type="seq" width="120" title="序号" tree-node />
-          <vxe-table-column field="SN" title="章节编号" width="100">
-            <template v-slot="{ row }">{{row.SN}}</template>
-          </vxe-table-column>
-          <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
-          <vxe-table-column title="视频地址">
-            <template v-slot="{ row}">
-              <div class="flex_dom" style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
-                <el-upload
-                  :auto-upload="false"
-                  action 
-                  :show-file-list="false"
-                  :on-change="function(file){return uploadVideo(file,row)}"
-                >
-                  <el-button type="info">上传视频</el-button>
-                </el-upload>
-                  <el-input class="m-l-10" v-model="row.Video" />
-              </div>
-            </template>
-          </vxe-table-column>
+      </div>
+      <vxe-table
+        ref="chapterTreeTable"
+        border
+        row-id="Id"
+        show-overflow
+        :tree-config="treeConfig"
+        :data.sync="chaperListOfBook"
+        height="100%"
+        :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:true}"
+      >
+        <vxe-table-column type="seq" width="120" title="序号" tree-node />
+        <vxe-table-column field="SN" title="章节编号" width="100"> 
+        </vxe-table-column>
+        <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
+        <vxe-table-column title="视频地址">
+          <template v-slot="{ row}">
+            <div class="flex_dom" style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
+              <el-upload
+                :auto-upload="false"
+                action
+                :show-file-list="false"
+                :on-change="function(file){return uploadVideo(file,row)}"
+              >
+                <el-button size="mini" type="info">上传视频</el-button>
+              </el-upload>
+              <el-input class="m-l-10" v-model="row.Video" />
+            </div>
+          </template>
+        </vxe-table-column>
 
-          <vxe-table-column field="Taste" title="允许试读" width="80">
-            <template v-slot="{ row}">
-              <div v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
-                <select v-model="row.Taste" class="quanke">
-                  <option :value="0">否</option>
-                  <option :value="1">是</option>
-                </select>
-              </div>
-            </template>
-          </vxe-table-column>
-          <vxe-table-column title="操作" width="200">
-            <template v-slot="{ row }">
+        <vxe-table-column field="Taste" title="允许试读" width="80">
+          <template v-slot="{ row}">
+            <div v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
+              <select v-model="row.Taste" class="quanke">
+                <option :value="0">否</option>
+                <option :value="1">是</option>
+              </select>
+            </div>
+          </template>
+        </vxe-table-column>
+        <vxe-table-column title="操作" width="270">
+          <template v-slot="{ row }">
+            <div class="between-center">
               <el-button
                 v-if="row.Zhang>0&&row.Jie==0&&row.TopicNo==0"
                 type="primary"
+                size="mini"
                 @click="addChildNode(row,true)"
               >添加节</el-button>
               <el-button
                 v-else-if="row.Jie>0&&row.TopicNo==0 "
                 type="warning"
+                size="mini"
                 @click="addChildNode(row,false)"
               >添加视频</el-button>
               <div v-else>
-                <el-button type="info" @click="addQuestion(row,false)">添加试题</el-button>
-                <el-button type="success" @click="openLinkQuestion(row,false)">关联试题</el-button>
+                <el-button size="mini" type="info" @click="addQuestion(row,false)">添加试题</el-button>
+                <el-button size="mini" type="success" @click="openLinkQuestion(row,false)">关联试题</el-button>
               </div>
-            </template>
-          </vxe-table-column>
-        </vxe-table> 
+              <el-button type="danger" size="mini" @click="deleteChildNode(row)">删除</el-button>
+            </div>
+          </template>
+        </vxe-table-column>
+      </vxe-table>
       <div class="between-center m-v-15">
         <el-button type="primary" class="m-r-10" @click="addChapter">新增章</el-button>
         <!-- <el-button type="danger" @click="deleteSelectItems">批量删除</el-button> -->
@@ -149,8 +153,8 @@ export default {
       this.$refs.chapterTreeTable.setActiveRow(row);
     },
     //关联试题
-    openLinkQuestion(row, isZhang) { 
-      this.newQuestionItem = {...row};
+    openLinkQuestion(row, isZhang) {
+      this.newQuestionItem = { ...row };
       this.newQuestionItem.BookId = this.bookID;
       this.linkQuestionDialog = true;
     },
@@ -191,7 +195,7 @@ export default {
           } else {
             console.log("cos上传错误:", err);
           }
-          row.Video ="https://"+ fileURL;
+          row.Video = "https://" + fileURL;
         }
       );
     },
@@ -223,6 +227,26 @@ export default {
         rowNode.item.Questions.push(exerciseQuestion.Id);
       }
     },
+
+    deleteChildNode(row) {
+      let chapterTreeTable = this.$refs.chapterTreeTable;
+      let matchObj = XEUtils.findTree(
+        this.chaperListOfBook,
+        item => item.Id === row.Id,
+        this.treeConfig
+      );
+      if (matchObj) {
+        this.$confirm("确认删除吗?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          let { items, index } = matchObj;
+          let restRow = items.splice(index, 1)[0];
+        });
+      }
+    },
+
     // 新增子级节点
     addChildNode(row, isZhang) {
       const that = this;
