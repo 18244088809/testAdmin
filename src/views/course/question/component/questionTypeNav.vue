@@ -19,8 +19,7 @@ export default {
   props: ["id"],
   data() {
     return {
-      myTabsData: [
-        { title: "章节练习", name: "chapterExercise" },
+      myTabsData: [ 
         { title: "组卷模考", name: "mockExam" },
         { title: "高频组卷", name: "highFrequencyExam" },
         { title: "svip组卷", name: "svipExam" },

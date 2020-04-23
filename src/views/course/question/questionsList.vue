@@ -4,7 +4,35 @@
       <div class="between-center">
         <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
         <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label>
+          <el-form-item v-if="classID>0">
+            <el-dropdown @command="selectCourse">
+              <span class="el-dropdown-link">
+                {{"《"+CourseItem.Label+"》"}}
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="item in courseOfClass"
+                  :key="item.Id"
+                  :command="item"
+                >{{item.Label}}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-form-item>
+          <el-form-item>
+            <el-dropdown @command="selectBook">
+              <span class="el-dropdown-link">
+                {{"《"+BookItem.Label+"》"}}
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="item in bookOfCourse"
+                  :key="item.Id"
+                  :command="item"
+                >{{ item.Label }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
             <el-dropdown @command="selectZhang">
               <span class="el-dropdown-link">
                 {{zhangItem.SN+"("+zhangItem.Label+")"}}
@@ -49,7 +77,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{Label:'全部知识点',SN:'',Value:0}">全部知识点</el-dropdown-item>
                 <el-dropdown-item
-                  v-for="item in topicOfBook"
+                  v-for="item in topicOfJie"
                   :key="item.Id"
                   :command="item"
                 >{{item.SN+"("+item.Label+")"}}</el-dropdown-item>
@@ -58,60 +86,66 @@
           </el-form-item>
           <el-form-item label="题干">
             <el-input
-              class="wid150"
+              class="wid_100"
               v-model="searchQuestionContent"
               placeholder="输入题干内容查重"
               @keyup.native.enter="getQuesListOfBookZhangJie"
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="getQuesListOfBookZhangJie">查询</el-button>
+            <el-button type="primary" @click="getQuesListOfBookZhangJie">点击获取</el-button>
           </el-form-item>
         </el-form>
       </div>
-
-      <el-table
-        :data="questionsListOfBook"
-        border
-        tooltip-effect="light"
-        style="width: 100%"
-        height="100%"
-        ref="refElTabel"
-      >
-        <el-table-column prop="Id" label="ID" width="60"></el-table-column>
-        <el-table-column prop="QuestionContent" label="题干" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <div
-              class="color-1f85aa font-w6 cursor"
-              v-html="scope.row.QuestionContent"
-              @click="openEditQuestionDialog(scope.$index, scope.row)"
-            ></div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="QuestionType" label="类型" width="95">
-          <template slot-scope="scope">
-            <span>{{common.FormatSelect($store.getters.app.questionTypes,scope.row.QuestionType)}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="ManagerLabel" label="发布人" width="100"></el-table-column>
-        <el-table-column prop="ZhangId" width="50" label="章"></el-table-column>
-        <el-table-column prop="JieId" width="50" label="节"></el-table-column>
-        <el-table-column prop="TopicId" width="80" label="知识点"></el-table-column>
-        <el-table-column prop="QuestionScore" width="50" label="分值"></el-table-column>
-        <el-table-column prop="State" label="状态" width="70">
-          <template slot-scope="scope">
-            <el-tag v-show="scope.row.State==1">上架</el-tag>
-            <el-tag v-show="scope.row.State==0" type="info">下架</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="State" label="错误/全部" width="90">
-          <template slot-scope="scope">
-            <span>{{scope.row.WrongNum}}/{{scope.row.AnswerNum}}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="flex_column hgt_full">
+        <el-table
+          :data="nowPageQuestionId"
+          border
+          tooltip-effect="light"
+          style="width: 100%"
+          height="100%"
+          :row-style="{height:'40px'}"
+          ref="refElTabel"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column prop="Id" label="ID" width="60"></el-table-column>
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="QuestionContent" label="题干" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <div
+                class="color-1f85aa font-w6 cursor"
+                v-html="scope.row.QuestionContent"
+                @click="openEditQuestionDialog(scope.$index, scope.row)"
+              ></div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="QuestionType" label="类型" width="95">
+            <template slot-scope="scope">
+              <span>{{common.FormatSelect($store.getters.app.questionTypes,scope.row.QuestionType)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="ManagerLabel" label="发布人" width="100"></el-table-column>
+          <el-table-column prop="ZhangId" width="50" label="章"></el-table-column>
+          <el-table-column prop="JieId" width="50" label="节"></el-table-column>
+          <el-table-column prop="TopicId" width="80" label="知识点"></el-table-column>
+          <el-table-column prop="QuestionScore" width="50" label="分值"></el-table-column>
+          <el-table-column prop="State" label="状态" width="70">
+            <template slot-scope="scope">
+              <el-tag v-show="scope.row.State==1">上架</el-tag>
+              <el-tag v-show="scope.row.State==0" type="info">下架</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="State" label="错误/全部" width="90">
+            <template slot-scope="scope">
+              <span>{{scope.row.WrongNum}}/{{scope.row.AnswerNum}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <div class="between-center m-v-15">
-        <el-button type="primary" @click="openAddQuestionDialog">新增试题</el-button>
+        <el-button v-if="this.classID ==0" type="primary" @click="openAddQuestionDialog">新增试题</el-button>
+        <el-button v-else type="primary" @click="saveExerciseQuestions">保存关联</el-button>
+
         <div>
           <el-pagination
             background
@@ -142,6 +176,8 @@ import myDialog from "@/components/myDialog/myDialog";
 import questionRowDialog from "@/views/course/question/component/questionRowDialog";
 import $ImgHttp from "@/api/ImgAPI";
 import { bookChapter } from "@/api/book";
+import { getCourseBookByCourse } from "@/api/course";
+import { getClassCourse } from "@/api/class";
 import { getQuestionOfBook } from "@/api/exercise";
 import common from "@/utils/common";
 export default {
@@ -149,6 +185,12 @@ export default {
   components: {
     myDialog,
     questionRowDialog
+  },
+  props: {
+    classID: {
+      typ: Number,
+      default: 0
+    }
   },
   data() {
     return {
@@ -164,6 +206,14 @@ export default {
       // 每页数据的总条
       rows: 30,
       // 查询-搜索
+      CourseItem: {
+        SN: "",
+        Label: "全部课程"
+      },
+      BookItem: {
+        SN: "",
+        Label: "全部教材"
+      }, //搜索
       zhangItem: {
         SN: "",
         Label: "全部章"
@@ -184,12 +234,17 @@ export default {
       moreOperationDialog: false,
       // 当前索引操作的
       currentQuestionIndex: null,
+      allQuestionsIdSeleted: [],
       // 科目的试题列表
-      questionsListOfBook: [],
+      //存储当前页所有题的ID
+      nowPageQuestionId: [],
+      courseOfClass: [],
+      bookOfCourse: [],
       zhangOfBook: [],
       jieOfBook: [],
-      topicOfBook: [],
-
+      topicOfJie: [],
+      // 科目的试题列表
+      multipleSelection: [],
       // 图片地址
       ImgAddr: "",
       currentPlatform: {},
@@ -199,6 +254,8 @@ export default {
         Zhang: 1,
         Jie: 1
       },
+      //0 代表公共的试题列表。大于零则代表班级自己的和公共的
+      currentClassID: 0,
       // 表单验证
       questionFormRules: {
         ZhangId: [{ required: true, message: "请填写章编号", trigger: "blur" }],
@@ -213,12 +270,29 @@ export default {
       }
     };
   },
+  watch: {
+    $route(to, from) {
+      this.fire();
+    }
+  },
   mounted() {
-    this.currentItemData.BookId = parseInt(this.$route.query.Id);
-    this.bookChapter();
-    this.getQuesListOfBookZhangJie();
+    this.fire();
   },
   methods: {
+    async fire() {
+      if (this.$route.query.Id) {
+        this.currentItemData.BookId = parseInt(this.$route.query.Id);
+        this.bookChapter();
+        this.getQuesListOfBookZhangJie();
+      } else if (this.classID > 0) {
+        let res = await getClassCourse(this.classID, {});
+        this.courseOfClass = res.data ? res.data : [];
+
+        if (this.courseOfClass.length > 0) {
+          this.currentItemData.BookId = this.courseOfClass[0].Id;
+        }
+      }
+    },
     // 复制文本
     copy() {
       let clipboard = new this.clipboard(".tag-read");
@@ -229,6 +303,30 @@ export default {
         // 释放内存
         clipboard.destroy();
       });
+    },
+    handleSelectionChange(seletedItem) {
+      // this.multipleSelection = seletedItem;
+      let nowSeletedQuestionId = [];
+      // // 遍历当前页已选中的选项
+      seletedItem.forEach(item => {
+        nowSeletedQuestionId.push(item.Id);
+      });
+      // 遍历已选中的所有Id
+      this.allQuestionsIdSeleted = this.allQuestionsIdSeleted.filter(
+        (value, index) => {
+          if (!this.nowPageQuestionId.includes(value)) {
+            return value;
+          }
+        }
+      );
+      // this.allQuestionsIdSeleted = this.allQuestionsIdSeleted.concat(
+      //   nowSeletedQuestionId
+      // );
+
+      console.log(
+        "=== this.allQuestionsIdSeleted :====",
+        this.allQuestionsIdSeleted
+      );
     },
     // 题库上传图片
     async ImgUploadQuestion(file, fileList) {
@@ -243,9 +341,57 @@ export default {
         this.isbusy = false;
       }
     },
+
+    async selectCourse(item) {
+      this.CourseItem.Label = item.Label;
+      this.CourseItem.Id = item.Id;
+      let res = await getCourseBookByCourse(item.Id, "");
+      this.bookOfCourse = res.data;
+      this.BookItem = {
+        SN: "",
+        Label: "全部教材"
+      };
+      this.zhangItem = {
+        SN: "",
+        Label: "全部章"
+      };
+      this.jieItem = {
+        SN: "",
+        Label: "全部节"
+      };
+      this.topicItem = {
+        SN: "",
+        Label: "全部知识点"
+      };
+      this.zhangOfBook = [];
+      this.jieOfBook = [];
+      this.topicOfJie = [];
+    },
+    selectBook(item) {
+      this.BookItem.Label = item.Label;
+      this.BookItem.Id = item.TBookId;
+      this.currentItemData.BookId = this.BookItem.Id;
+      this.zhangItem = {
+        SN: "",
+        Label: "全部章"
+      };
+      this.jieItem = {
+        SN: "",
+        Label: "全部节"
+      };
+      this.topicItem = {
+        SN: "",
+        Label: "全部知识点"
+      };
+      this.jieOfBook = [];
+      this.topicOfJie = [];
+      this.bookChapter();
+    },
     selectZhang(item) {
+      this.topicOfJie = [];
       this.jieOfBook = item.Children;
       this.zhangItem = item;
+
       this.jieItem = {
         SN: "",
         Label: "全部节"
@@ -256,7 +402,7 @@ export default {
       };
     },
     selectJie(item) {
-      this.topicOfBook = item.Children;
+      this.topicOfJie = item.Children;
       this.jieItem = item;
       this.topicItem = {
         SN: "",
@@ -269,6 +415,8 @@ export default {
     async bookChapter() {
       let res = await bookChapter(this.currentItemData.BookId, "");
       this.zhangOfBook = res.data ? res.data.Children : [];
+      this.BookItem.Label = res.title;
+      this.BookItem.SN = this.currentItemData.BookId;
     },
     // 获取科目相关的试题列表
     async getQuesListOfBookZhangJie() {
@@ -282,9 +430,10 @@ export default {
         limit: this.rows,
         offset: offsetRow
       });
-      this.questionsListOfBook = res.data ? res.data : [];
+      this.nowPageQuestionId = res.data ? res.data : [];
       this.allRows = res.title;
     },
+    saveExerciseQuestions() {},
     // 打开试题的模态框-新增
     openAddQuestionDialog() {
       this.currentQuestionIndex = -1;
@@ -299,6 +448,9 @@ export default {
       this.currentItemData.G = "";
       this.currentItemData.H = "";
       this.currentItemData.I = "";
+      this.currentItemData.ZhangId = this.currentItemData.Zhang;
+      this.currentItemData.JieId = this.currentItemData.Jie;
+      this.currentItemData.TopicId = this.currentItemData.Topic;
 
       this.moreOperationDialog = true;
       this.currentItemData.BookId = parseInt(this.$route.query.Id);
@@ -306,16 +458,16 @@ export default {
     //  打开试题的模态框-编辑
     openEditQuestionDialog(index, row) {
       this.currentQuestionIndex = index;
-      this.currentItemData = {...row};
+      this.currentItemData = { ...row };
       this.moreOperationDialog = true;
     },
     // 更新数据列表
     updateQuestionList(type, row) {
       if (type == 0) {
-        this.questionsListOfBook.push(row);
+        this.nowPageQuestionId.push(row);
         this.moreOperationDialog = false;
       } else if (type == 1) {
-        this.questionsListOfBook.splice(this.currentQuestionIndex, 1, row);
+        this.nowPageQuestionId.splice(this.currentQuestionIndex, 1, row);
         this.moreOperationDialog = false;
       } else if (type == -1) {
         this.moreOperationDialog = false;

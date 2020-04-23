@@ -224,6 +224,6 @@ export default {
 </script> 
 <style scoped>
 .quan_xian_item {
-  width: calc(100% / 5);
+  width: calc(100% / 2);
 }
 </style> 

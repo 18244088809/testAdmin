@@ -50,7 +50,7 @@ export function editCourse(url, param, data) {
 }
 
 // 根据课程获取科目
-export function GetSubjectByCourse(url, param, data) {
+export function getCourseBookByCourse(url, param, data) {
   return request({
     url: '/coursebook/getCourseBookByCourse/' + url,
     method: 'get',

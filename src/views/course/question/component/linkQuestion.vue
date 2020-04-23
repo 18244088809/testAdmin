@@ -4,7 +4,7 @@
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item label="章">
         <el-input-number
-          v-model="searchQuestionZhang"
+          v-model="currentItemData.Zhang"
           controls-position="right"
           :min="0"
           :max="1000"
@@ -13,7 +13,7 @@
       </el-form-item>
       <el-form-item label="节">
         <el-input-number
-          v-model="searchQuestionJie"
+          v-model="currentItemData.Jie"
           controls-position="right"
           :min="0"
           :max="1000"
@@ -22,7 +22,7 @@
       </el-form-item>
       <el-form-item label="知识点">
         <el-input-number
-          v-model="searchQuestionTopic"
+          v-model="currentItemData.TopicNo"
           controls-position="right"
           :min="0"
           :max="1000"
@@ -41,43 +41,41 @@
         <el-button type="primary" @click="getQuesListOfBookZhangJie">查询</el-button>
       </el-form-item>
     </el-form>
-    <div class="flex_column hgt_full">
-      <el-table
-        :data="questionsListOfBook"
-        border
-        tooltip-effect="light"
-        style="width: 100%"
-        :height="tableHeight"
-        ref="refElTabel"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="Id" label="ID" width="60"></el-table-column>
-        <el-table-column prop="QuestionContent" label="题干" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <div v-html="scope.row.QuestionContent" class="QuestionContentImg"></div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="QuestionType" label="类型" width="95">
-          <template slot-scope="scope">
-            <span>{{common.FormatSelect($store.getters.app.questionTypes,scope.row.QuestionType)}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="ManagerLabel" label="发布人" width="100"></el-table-column>
-        <el-table-column prop="QuestionScore" width="50" label="得分"></el-table-column>
-        <el-table-column prop="State" label="状态" width="70">
-          <template slot-scope="scope">
-            <el-tag v-show="scope.row.State==1">上架</el-tag>
-            <el-tag v-show="scope.row.State==0" type="info">下架</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="State" label="错误/全部" width="90">
-          <template slot-scope="scope">
-            <span>{{scope.row.WrongNum}}/{{scope.row.AnswerNum}}</span>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+    <el-table
+      :data="questionsListOfBook"
+      border
+      tooltip-effect="light"
+      style="width: 100%"
+      :height="tableHeight"
+      ref="refElTabel"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="Id" label="ID" width="60"></el-table-column>
+      <el-table-column prop="QuestionContent" label="题干" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <div v-html="scope.row.QuestionContent" class="QuestionContentImg"></div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="QuestionType" label="类型" width="95">
+        <template slot-scope="scope">
+          <span>{{common.FormatSelect($store.getters.app.questionTypes,scope.row.QuestionType)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="ManagerLabel" label="发布人" width="100"></el-table-column>
+      <el-table-column prop="QuestionScore" width="50" label="得分"></el-table-column>
+      <el-table-column prop="State" label="状态" width="70">
+        <template slot-scope="scope">
+          <el-tag v-show="scope.row.State==1">上架</el-tag>
+          <el-tag v-show="scope.row.State==0" type="info">下架</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="State" label="错误/全部" width="90">
+        <template slot-scope="scope">
+          <span>{{scope.row.WrongNum}}/{{scope.row.AnswerNum}}</span>
+        </template>
+      </el-table-column>
+    </el-table>
     <div class="between-center m-t-20">
       <el-button type="primary" @click="linkQuestion">确认关联</el-button>
       <div>
@@ -120,9 +118,7 @@ export default {
       // 每页数据的总条
       rows: 50,
       // 查询-搜索
-      searchQuestionZhang: 1, //搜索章
-      searchQuestionJie: 1, //搜索节
-      searchQuestionTopic: 1, //搜索知识点
+ 
       //搜索有没有相同的题干了.
       searchQuestionContent: "",
       // 模态框获得的单条数据
@@ -137,13 +133,19 @@ export default {
   },
   watch: {
     BookChapter(newval) {
-      this.currentItemData = this.BookChapter;
+      this.fire();
     }
   },
   mounted() {
-    this.currentItemData = this.BookChapter;
+    this.fire();
   },
   methods: {
+    fire() {
+      this.currentItemData = this.BookChapter;
+      this.tableHeight = window.innerHeight - 200;
+      this.questionsListOfBook = [];
+      // this.currentPageChange(1)
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -153,7 +155,8 @@ export default {
         questionIDS.push(item.Id);
       });
       this.BookChapter.Questions = questionIDS;
-      this.BookChapter.Description = "包含(" + questionIDS.length + ")道随堂练习题";
+      this.BookChapter.Description =
+        "包含(" + questionIDS.length + ")道随堂练习题";
       this.$emit("linkedQuestion");
       this.$message({
         message: "操作成功",
@@ -172,17 +175,19 @@ export default {
       let res = await getQuestionOfBook("", {
         bookid: this.currentItemData.BookId,
         question_content: this.searchQuestionContent,
-        zhang: this.searchQuestionZhang,
-        jie: this.searchQuestionJie,
-        topic: this.searchQuestionTopic,
+        zhang: this.currentItemData.zhang,
+        jie: this.currentItemData.Jie,
+        topic: this.currentItemData.TopicNo,
         limit: this.rows,
         offset: offsetRow
       });
       this.questionsListOfBook = res.data ? res.data : [];
-       this.BookChapter.Questions =  this.BookChapter.Questions? this.BookChapter.Questions:[]
+      this.BookChapter.Questions = this.BookChapter.Questions
+        ? this.BookChapter.Questions
+        : [];
       this.$nextTick(() => {
-        this.questionsListOfBook.forEach(question => {  
-          this.BookChapter.Questions.forEach(selectItem => { 
+        this.questionsListOfBook.forEach(question => {
+          this.BookChapter.Questions.forEach(selectItem => {
             if (question.Id == selectItem) {
               this.$refs.refElTabel.toggleRowSelection(question, true);
             }

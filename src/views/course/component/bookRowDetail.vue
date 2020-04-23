@@ -10,8 +10,8 @@
       size="small"
     >
       <el-form-item label="名称" prop="Label">
-        <el-tooltip class="item" effect="dark" content="教材的名字一经填写,不允许再修改" placement="top-start">
-          <el-input v-model="currentItemData.Label" :disabled="currentItemData.Id>0" />
+        <el-tooltip class="item" effect="dark" content="教材的名字一经填写,不要随便修改 以免混乱" placement="top-start">
+          <el-input v-model="currentItemData.Label"  />
         </el-tooltip>
       </el-form-item>
 

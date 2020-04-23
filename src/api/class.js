@@ -201,6 +201,17 @@ export function getClassStudentWorks(url, query, data) {
     data
   })
 }
+//获取班级的试卷 
+export function getClassExercise(url, query, data) {
+  return request({
+    url: '/class/getClassExercise/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
+
+
 
 
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    选择要发给学员的试卷
+    选择要发给学员的试卷 
     <el-table
       tooltip-effect="light"
       :data="exerciseList"
@@ -28,16 +28,18 @@
           :total="allRows"
         ></el-pagination>
       </div>
-    </div>
+    </div> 
   </div>
 </template>
 
 <script>
 import { getClassExercise } from "@/api/exercise";
 import { sendStudentsExercise } from "@/api/class";
-import common from "@/utils/common";
+import common from "@/utils/common"; 
 import { isDate } from "xe-utils/methods";
 export default {
+  name: "questionsList",
+  
   props: {
     classItem: {
       type: Object,
@@ -65,10 +67,11 @@ export default {
       // 获取选中的学生ID
       selectedIDList: [],
       currentItemData: {},
-      exerciseList: []
+      exerciseList: [],
+      makeExamDialog: false
     };
   },
- watch: {
+  watch: {
     classItem(newval) {
       this.fire();
     }
@@ -76,6 +79,9 @@ export default {
   methods: {
     fire() {
       this.getThisClassExercise();
+    },
+    addNewExercise() {
+      this.makeExamDialog = true;
     },
     // 分页获取数据
     currentPageChange(val) {

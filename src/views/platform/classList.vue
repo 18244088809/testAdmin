@@ -4,7 +4,7 @@
       <!-- 查询表单 -->
       <div class="m-b-10">
         <el-form :inline="true">
-          <el-form-item label="年级">
+          <el-form-item label="建班年份:">
             <el-date-picker
               style="width:100px"
               v-model="searchGrade"
@@ -13,7 +13,7 @@
               placeholder="选择年"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="班级名称">
+          <el-form-item label="班级名称:">
             <el-input
               v-model="searchClassLabel"
               @keyup.enter.native="searchSubmit"
@@ -59,8 +59,13 @@
         <el-table-column prop="OpenTime" label="开课时间" width="90" :formatter="TimeFormatter"></el-table-column>
         <el-table-column prop="Endtime" label="结课时间" width="90" :formatter="TimeFormatter"></el-table-column>
         <el-table-column prop="Description" label="情况备注" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="操作" width="110" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="scope">
+            <el-button
+              type="warning"
+              style="margin:0px;"
+              @click="openExerciseManager(scope.$index, scope.row)"
+            >试卷管理</el-button>
             <el-button
               type="success"
               style="margin:0px;"
@@ -77,7 +82,7 @@
             @current-change=" currentPageChange"
             :current-page.sync="nowPage"
             :page-size="rows"
-            layout="total,prev, pager, next, jumper"
+            layout="total,prev, pager, next, jumper" 
             :total="allRows"
           ></el-pagination>
         </div>
@@ -95,21 +100,20 @@
           ></class-row-detail>
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs   @tab-click="onChangeTabs">
+          <el-tabs @tab-click="onChangeTabs">
             <el-tab-pane label="本班学员" name="bbxy" id="bbxy">
-              <classStudent  :formItemData="classFormData"></classStudent>
+              <classStudent :formItemData="classFormData"></classStudent>
             </el-tab-pane>
-             <el-tab-pane label="所开课程" name="skkc" id="skkc">
+            <el-tab-pane label="所开课程" name="skkc" id="skkc">
               <classCourse :formItemData="classFormData"></classCourse>
             </el-tab-pane>
             <!-- <el-tab-pane label="任课老师" name="rkls" id="rkls">
               <classTeacher :formItemData="classFormData"></classTeacher>
-            </el-tab-pane> -->
+            </el-tab-pane>-->
 
             <el-tab-pane label="课程表" name="kcb" id="kcb">
               <classDaily :formItemData="classFormData"></classDaily>
             </el-tab-pane>
-            
           </el-tabs>
         </div>
       </my-dialog>
@@ -135,21 +139,26 @@
       >
         <div slot="right_content" class="flex_dom hgt_100">
           <studentWork :formItemData="classFormData"></studentWork>
-          <!-- <el-tabs v-model="activeClassTabs">
-            
-             <el-tab-pane label="本班学员作业" name="xyzy" id="xyzy">
-              <studentWork :formItemData="classFormData"></studentWork>
-            </el-tab-pane>
-          </el-tabs>-->
+        </div>
+      </my-dialog>
+       <!-- 班级相关操作的模态框 -->
+      <my-dialog
+        :visible.sync="makeExamDialog"
+        :title="'【'+classFormData.Label+'】试卷管理'"
+        :showLeft="false"
+      >
+        <div slot="right_content" class="flex_dom hgt_100">
+          <classExam :formItemData="classFormData"></classExam>
         </div>
       </my-dialog>
     </div>
   </div>
 </template> 
 <script>
-import classRowDetail from "@/views/platform/component/classRowDetail"; 
+import classRowDetail from "@/views/platform/component/classRowDetail";
 import classStudent from "@/views/platform/component/classStudent";
 import studentWork from "@/views/platform/component/studentWork";
+import classExam from "@/views/course/question/component/classExam";
 import classCourse from "@/views/platform/component/classCourse";
 import classDaily from "@/views/platform/component/classDaily";
 import myDialog from "@/components/myDialog/myDialog";
@@ -176,10 +185,11 @@ export default {
   components: {
     myDialog,
     classRowDetail,
-    classDaily, 
+    classDaily,
     studentWork,
     classStudent,
-    classCourse
+    classCourse,
+    classExam
   },
   data() {
     return {
@@ -201,6 +211,7 @@ export default {
       // 控制班级更多操作的弹出框
       moreOperationDialog: false,
       classStudentsDialog: false,
+      makeExamDialog:false,
       searchClassLabel: "",
       searchGrade: new Date(),
       // 当前的校区id
@@ -214,8 +225,8 @@ export default {
     };
   },
   methods: {
-    onChangeTabs(item) { 
-        item.$children[0].fire(); 
+    onChangeTabs(item) {
+      item.$children[0].fire();
     },
     // 获取所有班级的列表
     async getAllClass() {
@@ -246,15 +257,21 @@ export default {
       this.classStudentsDialog = true;
       this.currentIndex = index;
     },
+    // 组卷管理
+    openExerciseManager(index, row) {
+      this.classFormData = { ...row };
+      this.makeExamDialog = true;
+      this.currentIndex = index;
+    },
+
     // 打开更多操作模态框
     openMoreOptationDialog(index, row) {
-      this.classFormData = { ...row }; 
+      this.classFormData = { ...row };
       this.classFormData.OpenTime = row.OpenTime * 1000;
       this.classFormData.Endtime = row.Endtime * 1000;
-      this.classFormData.Createtime = row.Createtime * 1000; 
+      this.classFormData.Createtime = row.Createtime * 1000;
       this.moreOperationDialog = true;
       this.currentIndex = index;
-     
     },
     //打开班级信息模态框
     createClass(type) {

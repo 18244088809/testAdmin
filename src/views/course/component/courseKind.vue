@@ -13,7 +13,7 @@
       <el-table-column label="操作" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button type="success" @click="modifyCourseKind(scope.$index, scope.row)">修改</el-button>
-          <el-button type="warning" @click="delCourseKind(scope.$index, scope.row)">删除</el-button>
+          <!-- <el-button type="warning" @click="delCourseKind(scope.$index, scope.row)">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>

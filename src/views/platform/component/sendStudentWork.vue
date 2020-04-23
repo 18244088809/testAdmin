@@ -16,7 +16,7 @@
         <el-input placeholder="输入这次作业的名字 以便区别" v-model="workName" />
       </el-form-item>
       <el-form-item label="备注:">
-        <el-input placeholder="这个老师比较懒 这句话都没删" v-model="workName" />
+        <el-input  v-model="workDescription" />
       </el-form-item>
       <el-form-item>
         <el-button type="success" class="m-l-10" @click="sendToStudents">发给学员</el-button>
@@ -66,6 +66,7 @@ export default {
     return {
       common,
       workName: "",
+      workDescription:"这个老师比较懒 这句话都没删",
       fileList: [],
       // 数据总条数-分页
       allRows: 0,
@@ -129,9 +130,16 @@ export default {
     },
     // 添加或编辑数据
     async sendToStudents() {
+      if (this.fileList.length == 0) {
+        this.$message({
+          message: "你还没有上传作业",
+          type: "warning"
+        });
+        return;
+      }
       let res = await sendStudentsWorks(
         this.classItem.Id,
-        { workname: this.workName },
+        { workname: this.workName,workDescription:this.workDescription },
         this.fileList
       );
       this.$message({

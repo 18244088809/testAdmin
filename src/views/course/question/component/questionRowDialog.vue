@@ -7,15 +7,34 @@
       :rules="questionFormRules"
     >
       <div class="between-center">
-        <el-form-item label="隶属于" class="flex_1">
-          <span>第{{currentItemData.ZhangId}} 章 - 第{{currentItemData.JieId}} 节 - 第{{currentItemData.TopicId}} 知识点</span>
+        <el-form-item label="隶属于" >
+          <span>
+            第
+            <el-input-number
+              :min="1"  style="width:90px"
+              v-model="currentItemData.ZhangId"
+              controls-position="right"
+              :step="1"
+            ></el-input-number>章 - 第
+            <el-input-number
+              :min="1"  style="width:90px"
+              v-model="currentItemData.JieId"
+              controls-position="right"
+              :step="1"
+            ></el-input-number>节 - 第
+            <el-input-number
+              :min="1"  style="width:90px"
+              v-model="currentItemData.TopicId"
+              controls-position="right"
+              :step="1"
+            ></el-input-number>知识点
+          </span>
         </el-form-item>
 
-        <el-form-item label="题型" class="flex_1" style="width:300px">
+        <el-form-item label="题型" style="width:300px">
           <el-select
             @change="getQuestionRow"
             v-model="currentItemData.QuestionType"
-            :disabled="currentItemData.Id>0"
             placeholder="请选择题型"
           >
             <el-option
@@ -26,7 +45,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分值" prop="QuestionScore" class="flex_1">
+        <el-form-item label="分值" prop="QuestionScore"  >
           <el-input-number
             :min="1"
             v-model="currentItemData.QuestionScore"
@@ -56,7 +75,7 @@
           v-model="currentItemData.QuestionAnalyse"
         ></el-input>
       </el-form-item>
-      <el-form-item label="作答提示" class="flex_1" prop="VideoAnalyse">
+      <el-form-item label="作答提示"  prop="VideoAnalyse">
         <el-input
           v-model="currentItemData.VideoAnalyse"
           placeholder="请填写视频地址，如 http://www.te.com.cn/d.mp4 或 /test/video.mp4"

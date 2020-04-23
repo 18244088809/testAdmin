@@ -49,7 +49,7 @@ export default {
       // 考卷的表单数据
       examForm: {},
       //  组卷的模态框
-      examFormDialog: false,
+      examFormDialog: true,
       // 表单的名称
       formTitle: ""
     };

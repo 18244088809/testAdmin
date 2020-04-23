@@ -12,21 +12,18 @@
               placeholder="请选择学院"
               @change="collegeChange"
             >
+              <el-option label="全部学院" :value="0"></el-option>
               <el-option
                 v-for="(item,index) in collegeList"
                 :key="index"
                 :label="item.Label"
-                :value="index"
+                :value="item.Id"
               />
             </el-select>
           </el-form-item>
           <el-form-item label="课程类别">
-            <el-select
-              v-model="searchCourseKindId"
-              class="wid160"
-              placeholder="请选择课程类别"
-              @change="getCourseListOfKind"
-            >
+            <el-select v-model="searchCourseKindId" class="wid160" placeholder="请选择课程类别">
+              <el-option label="全部课程类别" :value="0"></el-option>
               <el-option
                 v-for="(item,index) in courseKindsOps"
                 :key="index"
@@ -127,7 +124,7 @@
           <course-row-detail @itemModify="updateListItem" :formItemData="currentItemData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs  @tab-click="onChangeTabs"> 
+          <el-tabs @tab-click="onChangeTabs">
             <el-tab-pane id="priceSetting" label="价格设定" name="priceSetting">
               <course-price-tab :formItemData="currentItemData" />
             </el-tab-pane>
@@ -170,7 +167,7 @@ import {
   setCourseUpperShelf,
   addCourse,
   editCourse,
-  GetSubjectByCourse,
+  getCourseBookByCourse,
   getCourseTravelBrochure,
   updateCourseTravelBrochure,
   saveCoursePriceList,
@@ -211,7 +208,7 @@ export default {
       // 搜索内容-课程名称
       searchCourseLabel: "",
       // 搜索内容-课程类别的Id
-      searchCourseKindId: null,
+      searchCourseKindId: 0,
       CourseKindLabel: "",
       // 学院的选项数据
       collegeList: [],
@@ -228,7 +225,11 @@ export default {
     };
   },
   mounted() {
-    this.getAllCollegeWithCourseKind();
+    this.collegeList = this.$store.getters.app.collegeWithCourseKind;
+    this.getCourseListOfKind();
+    if (this.collegeList.length == 0) {
+      this.getAllCollegeWithCourseKind();
+    }
   },
   methods: {
     onChangeTabs(item) {
@@ -275,7 +276,6 @@ export default {
       const res = await getCollegeWithCourseKind("", { include: 1 });
       if (res.code == 200) {
         this.collegeList = res.data ? res.data : [];
-        this.collegeChange(0);
       }
     },
     // 选中学院类别后回调
@@ -283,12 +283,18 @@ export default {
       // 清空数据
       this.courseKindsOps = [];
       this.courseList = [];
-      this.searchCourseKindId = null;
-      if (this.collegeList[selVa].Children) {
-        this.courseKindsOps = this.collegeList[selVa].Children;
+      this.searchCourseKindId = 0;
+      let currentCollege = null;
+      this.collegeList.forEach(item => {
+        if (item.Id == selVa) {
+          currentCollege = item;
+        }
+      });
+      if (currentCollege && currentCollege.Children) {
+        this.courseKindsOps = currentCollege.Children;
         this.searchCourseKindId = this.courseKindsOps[0].Id;
         this.CourseKindLabel = this.courseKindsOps[0].Label;
-        this.getCourseListOfKind();
+        // this.getCourseListOfKind();
       }
     },
     // 设置是否上架
@@ -345,13 +351,7 @@ export default {
     },
     // 打开课程的模态框
     openCourseDialog(type) {
-      if (!this.searchCourseKindId || this.searchCourseKindId == 0) {
-        this.$message({
-          message: "没有选择课程类别",
-          type: "warning"
-        });
-        return;
-      }
+      
       this.editDialog = true;
       this.currentItemData = {};
     },

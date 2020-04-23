@@ -59,7 +59,7 @@ export function getExerciseByBookChapter(url, param, data) {
 
 export function addExam(url, param, data) {
   return request({
-    url: '/exercise' + url,
+    url: '/exercise/add' + url,
     method: 'post',
     params: param,
     data
@@ -68,7 +68,7 @@ export function addExam(url, param, data) {
 // 编辑组卷
 export function editExam(url, param, data) {
   return request({
-    url: '/exercise/' + url,
+    url: '/exercise/update/' + url,
     method: 'put',
     params: param,
     data
@@ -142,3 +142,12 @@ export function getStudentWrongQuestions(url, param, data) {
   })
 }
 
+// 获取这个考卷下的所有考题
+export function getExerciseQuestion(url, query, data) {
+  return request({
+    url: '/exercise/getExerciseQuestion/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}

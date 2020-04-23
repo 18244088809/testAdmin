@@ -11,7 +11,7 @@
         <div class="addSubject flex_dom flex_wrap">
           <p v-for="(item,index) in allBookList" :key="item.Id">
             {{ item.Label }}
-            <i class="el-icon-circle-plus" @click="addSubjectToSourse(item,index)" />
+            <i class="el-icon-circle-plus" @click="addBookToSourse(item,index)" />
           </p>
         </div>
       </el-form-item>
@@ -166,13 +166,13 @@ export default {
       }
     },
     // 给课程关联学科
-    addSubjectToSourse(subjectItem, index) {
+    addBookToSourse(subjectItem, index) {
       let has = false;
       this.currentItemData.Children = this.currentItemData.Children
         ? this.currentItemData.Children
         : [];
-      this.currentItemData.Children.forEach(item => {
-        if (item.TBookId == subjectItem.Id) {
+      this.currentItemData.Children.forEach(item => { 
+        if (item.Id == subjectItem.Id) {
           has = true;
         }
       });

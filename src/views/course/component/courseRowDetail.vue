@@ -13,7 +13,30 @@
       <el-form-item label="产品名称" prop="Label">
         <el-input v-model="currentItemData.Label" required autocomplete="off" />
       </el-form-item>
-
+      <el-form-item label="所属学院" class="flex_1">
+        <el-select v-model="collegeIndex" @change="collegeChangeGetCourseKind" placeholder="请选择学院">
+          <el-option
+            :label="item.Label"
+            :value="index"
+            v-for="(item,index) in $store.getters.app.collegeWithCourseKind"
+            :key="index"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="课程类别" class="flex_1">
+        <el-select
+          v-model="currentItemData.TCourseKindID"
+          @change="onCouseKindChange"
+          placeholder="请选择课程类别"
+        >
+          <el-option
+            :label="item.Label"
+            :key="index"
+            :value="item.Id"
+            v-for="(item,index) in courseKindList"
+          ></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="产品特征" class="flex_1">
         <el-input v-model="currentItemData.Comments" autocomplete="off" />
       </el-form-item>
@@ -38,14 +61,14 @@
       </el-form-item>
       <el-form-item label="是否公开" class="flex_1">
         <el-radio-group v-model="currentItemData.ISProtected" @change="$forceUpdate()">
-          <el-radio :label="0">官网公开售卖</el-radio>
-          <el-radio :label="1">只内部开课</el-radio>
+          <el-radio :label="0">公售</el-radio>
+          <el-radio :label="1">内用</el-radio>
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="展示排序" prop="Sort" class="flex_1">
+      <!-- <el-form-item label="展示排序" prop="Sort" class="flex_1">
         <el-input v-model.number="currentItemData.Sort" autocomplete="off" />
-      </el-form-item>
+      </el-form-item>-->
 
       <el-form-item label="产品描述">
         <el-input
@@ -64,7 +87,7 @@
             :show-file-list="false"
             :on-change="function(file, fileList){return uploadCourseImgFunc(file, fileList,1)}"
           >
-            <el-input v-model="currentItemData.Background"   style="width:auto;" />
+            <el-input v-model="currentItemData.Background" style="width:auto;" />
             <span
               class="m-l-15 wid60 cursor color-1f85aa"
               @click="onPreview(currentItemData.Background)"
@@ -81,7 +104,7 @@
             :show-file-list="false"
             :on-change="function(file, fileList){return uploadCourseImgFunc(file, fileList,2)}"
           >
-            <el-input v-model="currentItemData.Jxtx"   style="width:auto; " />
+            <el-input v-model="currentItemData.Jxtx" style="width:auto; " />
           </el-upload>
           <span class="m-l-15 wid60 cursor color-1f85aa" @click="onPreview(currentItemData.Jxtx)">预览</span>
         </div>
@@ -96,7 +119,7 @@
               :show-file-list="false"
               :on-change="function(file, fileList){return uploadCourseImgFunc(file, fileList,3)}"
             >
-              <el-input v-model="currentItemData.Kcxq"   style="width:auto; " />
+              <el-input v-model="currentItemData.Kcxq" style="width:auto; " />
             </el-upload>
           </div>
           <span class="m-l-15 wid60 cursor color-1f85aa" @click="onPreview(currentItemData.Kcxq)">预览</span>
@@ -163,7 +186,6 @@ export default {
         this.courseKindId = this.courseKindIdProp;
       }
       this.currentItemData.TCourseKindID = this.courseKindId;
-      
     }
   },
   data() {
@@ -210,9 +232,8 @@ export default {
   },
   methods: {
     fire() {
-     
       this.currenteditEnable = false;
-      this.currentItemData = {...this.formItemData};
+      this.currentItemData = { ...this.formItemData };
       if (!this.currentItemData.ISProtected) {
         this.currentItemData.ISProtected = 0;
       }
@@ -230,19 +251,46 @@ export default {
       this.currentItemData.TCourseKindID = this.courseKindId;
       if (this.currentItemData.Id > 0) {
         if (this.$store.getters.app.collegeWithCourseKind) {
-          this.$store.getters.app.collegeWithCourseKind.forEach(item => {
-            if (item.Children) {
-              item.Children.forEach(courseKind => {
-                if (courseKind.Id == this.currentItemData.TCourseKindID) {
-                  this.courseKindList = item.Children;
-                }
-              });
+          this.$store.getters.app.collegeWithCourseKind.forEach(
+            (item, collegeindex) => {
+              if (item.Children) {
+                item.Children.forEach(courseKind => {
+                  if (courseKind.Id == this.currentItemData.TCourseKindID) {
+                    this.courseKindList = item.Children;
+                    this.collegeIndex = collegeindex;
+                  }
+                });
+              }
             }
-          });
+          );
         }
-      }else{
+      } else {
         this.currenteditEnable = true;
+        this.$nextTick(() => {
+          this.collegeChangeGetCourseKind(0);
+        });
       }
+    },
+
+    //  选中学院后回调
+    collegeChangeGetCourseKind(index) {
+      this.courseKindList = [];
+      this.currentItemData.TCourseKindID = null;
+      let currentcollege = this.$store.getters.app.collegeWithCourseKind[index];
+      this.currentItemData.TCollegeID = currentcollege.Id;
+
+      this.courseKindList = currentcollege.Children
+        ? currentcollege.Children
+        : [];
+      if (this.courseKindList.length > 0) {
+        this.currentItemData.TCourseKindID = this.courseKindList[0].Id;
+        this.courseKindLabel = this.courseKindList[0].Label;
+        // this.getBookList();
+      }
+    },
+    //  选中学院后回调
+    onCouseKindChange(kindid) {
+      this.currentItemData.TCourseKindID = kindid;
     },
     // 上传课程图片
     async uploadCourseImgFunc(file, fileList, type) {

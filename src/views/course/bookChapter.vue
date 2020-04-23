@@ -7,8 +7,7 @@
           <span class="m-b-10">当前科目名称：{{ bookLabel }}</span>
           <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的教授者</span>
         </div>
-      </div>
-      <div class="flex_1">
+      </div> 
         <vxe-table
           ref="chapterTreeTable"
           border
@@ -26,17 +25,16 @@
           <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
           <vxe-table-column title="视频地址">
             <template v-slot="{ row}">
-              <div style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
+              <div class="flex_dom" style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
                 <el-upload
                   :auto-upload="false"
-                  action
-                  style="width:100%"
+                  action 
                   :show-file-list="false"
                   :on-change="function(file){return uploadVideo(file,row)}"
                 >
                   <el-button type="info">上传视频</el-button>
-                  <el-input v-model="row.Video" />
                 </el-upload>
+                  <el-input class="m-l-10" v-model="row.Video" />
               </div>
             </template>
           </vxe-table-column>
@@ -65,12 +63,11 @@
               >添加视频</el-button>
               <div v-else>
                 <el-button type="info" @click="addQuestion(row,false)">添加试题</el-button>
-                <el-button type="success" @click="linkQuestion(row,false)">关联试题</el-button>
+                <el-button type="success" @click="openLinkQuestion(row,false)">关联试题</el-button>
               </div>
             </template>
           </vxe-table-column>
-        </vxe-table>
-      </div>
+        </vxe-table> 
       <div class="between-center m-v-15">
         <el-button type="primary" class="m-r-10" @click="addChapter">新增章</el-button>
         <!-- <el-button type="danger" @click="deleteSelectItems">批量删除</el-button> -->
@@ -152,9 +149,9 @@ export default {
       this.$refs.chapterTreeTable.setActiveRow(row);
     },
     //关联试题
-    linkQuestion(row, isZhang) {
+    openLinkQuestion(row, isZhang) { 
+      this.newQuestionItem = {...row};
       this.newQuestionItem.BookId = this.bookID;
-      this.newQuestionItem = row;
       this.linkQuestionDialog = true;
     },
     linkedQuestion() {
@@ -194,7 +191,7 @@ export default {
           } else {
             console.log("cos上传错误:", err);
           }
-          row.Video = fileURL;
+          row.Video ="https://"+ fileURL;
         }
       );
     },
