@@ -1,8 +1,8 @@
 <template>
   <div class="font16 hgt_full m-t-10">
-    <div class="flex_column hgt_full">
+    <div class="flex_column hgt_full" v-if="exerciseItem&&exerciseItem.Id>0">
       <div class="between-center">
-        <!-- <span class="m-b-10">科目名称：{{subjectLabel}}</span> -->
+        <!-- <span class="m-b-10">科目名称：{{exerciseItem}}</span> -->
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item v-if="classID>0">
             <el-dropdown @command="selectCourse">
@@ -97,19 +97,19 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="flex_column hgt_full">
+      <div class="hgt_full">
         <el-table
-          :data="nowPageQuestionId"
+          :data="thisPageQuestionList"
           border
           tooltip-effect="light"
           style="width: 100%"
-          height="100%"
+          :height="tableHeight"
           :row-style="{height:'40px'}"
           ref="refElTabel"
           @selection-change="handleSelectionChange"
         >
+          <el-table-column type="selection" width="55" v-if="classID>0"></el-table-column>
           <el-table-column prop="Id" label="ID" width="60"></el-table-column>
-          <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="QuestionContent" label="题干" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <div
@@ -141,25 +141,27 @@
             </template>
           </el-table-column>
         </el-table>
-      </div>
-      <div class="between-center m-v-15">
-        <el-button v-if="this.classID ==0" type="primary" @click="openAddQuestionDialog">新增试题</el-button>
-        <el-button v-else type="primary" @click="saveExerciseQuestions">保存关联</el-button>
 
-        <div>
-          <el-pagination
-            background
-            @current-change=" currentPageChange"
-            :current-page.sync="nowPage"
-            :page-size="rows"
-            layout="total,prev, pager, next, jumper"
-            :total="allRows"
-          ></el-pagination>
+        <div class="between-center m-v-15">
+          <el-button v-if="this.classID ==0" type="primary" @click="openAddQuestionDialog">新增试题</el-button>
+          <el-button v-else type="primary" @click="saveExerciseQuestions">保存关联</el-button>
+
+          <div>
+            <el-pagination
+              background
+              @current-change=" currentPageChange"
+              :current-page.sync="nowPage"
+              :page-size="rows"
+              layout="total,prev, pager, next, jumper"
+              :total="allRows"
+            ></el-pagination>
+          </div>
         </div>
       </div>
     </div>
+    <span v-else>请先选择左边的试卷</span>
     <!-- 弹出框 -->
-    <my-dialog :visible.sync="moreOperationDialog" :showLeft="false" title="题目详情编辑">
+    <my-dialog :visible.sync="questionRowShow" :showLeft="false" title="题目详情编辑">
       <div slot="right_content">
         <question-row-dialog
           ref="refQusetionDialog"
@@ -178,7 +180,7 @@ import $ImgHttp from "@/api/ImgAPI";
 import { bookChapter } from "@/api/book";
 import { getCourseBookByCourse } from "@/api/course";
 import { getClassCourse } from "@/api/class";
-import { getQuestionOfBook } from "@/api/exercise";
+import { getQuestionOfBook, saveExamQuestions } from "@/api/exercise";
 import common from "@/utils/common";
 export default {
   name: "questionsList",
@@ -190,6 +192,10 @@ export default {
     classID: {
       typ: Number,
       default: 0
+    },
+    exerciseItem: {
+      typ: Object,
+      default: { Id: 0 }
     }
   },
   data() {
@@ -204,7 +210,7 @@ export default {
       // 当前页数
       nowPage: 1,
       // 每页数据的总条
-      rows: 30,
+      rows: 7,
       // 查询-搜索
       CourseItem: {
         SN: "",
@@ -231,20 +237,18 @@ export default {
       // 科目名称
       subjectLabel: "",
       // 更多操作弹窗
-      moreOperationDialog: false,
+      questionRowShow: false,
       // 当前索引操作的
       currentQuestionIndex: null,
-      allQuestionsIdSeleted: [],
+      allSelectedQuesionIDS: [],
       // 科目的试题列表
       //存储当前页所有题的ID
-      nowPageQuestionId: [],
+      thisPageQuestionList: [],
       courseOfClass: [],
       bookOfCourse: [],
       zhangOfBook: [],
       jieOfBook: [],
       topicOfJie: [],
-      // 科目的试题列表
-      multipleSelection: [],
       // 图片地址
       ImgAddr: "",
       currentPlatform: {},
@@ -254,6 +258,7 @@ export default {
         Zhang: 1,
         Jie: 1
       },
+      tableHeight: window.innerHeight - 300,
       //0 代表公共的试题列表。大于零则代表班级自己的和公共的
       currentClassID: 0,
       // 表单验证
@@ -273,6 +278,9 @@ export default {
   watch: {
     $route(to, from) {
       this.fire();
+    },
+    exerciseItem(newval) {
+      this.fire();
     }
   },
   mounted() {
@@ -280,17 +288,25 @@ export default {
   },
   methods: {
     async fire() {
+      this.tableHeight = window.innerHeight - 300;
+      this.thisPageQuestionList = [];
       if (this.$route.query.Id) {
         this.currentItemData.BookId = parseInt(this.$route.query.Id);
         this.bookChapter();
         this.getQuesListOfBookZhangJie();
       } else if (this.classID > 0) {
+        if (!this.exerciseItem || this.exerciseItem.Id == 0) {
+          return;
+        }
+        this.allSelectedQuesionIDS = [];
+        if (this.exerciseItem.QuestionId != "") {
+          let oldQuestionIDs = this.exerciseItem.QuestionId.split(",");
+          oldQuestionIDs.forEach(id => {
+            this.allSelectedQuesionIDS.push(parseInt(id));
+          });
+        }
         let res = await getClassCourse(this.classID, {});
         this.courseOfClass = res.data ? res.data : [];
-
-        if (this.courseOfClass.length > 0) {
-          this.currentItemData.BookId = this.courseOfClass[0].Id;
-        }
       }
     },
     // 复制文本
@@ -304,29 +320,38 @@ export default {
         clipboard.destroy();
       });
     },
-    handleSelectionChange(seletedItem) {
-      // this.multipleSelection = seletedItem;
-      let nowSeletedQuestionId = [];
+    handleSelectionChange(thisPageSelectItemS) {
+      let thisPageSelectIDS = [];
       // // 遍历当前页已选中的选项
-      seletedItem.forEach(item => {
-        nowSeletedQuestionId.push(item.Id);
+      thisPageSelectItemS.forEach(item => {
+        thisPageSelectIDS.push(item.Id);
       });
-      // 遍历已选中的所有Id
-      this.allQuestionsIdSeleted = this.allQuestionsIdSeleted.filter(
-        (value, index) => {
-          if (!this.nowPageQuestionId.includes(value)) {
-            return value;
-          }
-        }
-      );
-      // this.allQuestionsIdSeleted = this.allQuestionsIdSeleted.concat(
-      //   nowSeletedQuestionId
-      // );
+      let thisIDS = [];
+      this.thisPageQuestionList.forEach(item => {
+        thisIDS.push(item.Id);
+      });
 
-      console.log(
-        "=== this.allQuestionsIdSeleted :====",
-        this.allQuestionsIdSeleted
-      );
+      let allDeleteIds = thisIDS.filter(itemID => {
+        if (
+          !thisPageSelectIDS.includes(itemID) &&
+          this.allSelectedQuesionIDS.includes(itemID)
+        ) {
+          return itemID;
+        }
+      });
+
+      // 遍历已选中的所有Id
+      let notInIDS = thisPageSelectIDS.filter(value => {
+        if (!this.allSelectedQuesionIDS.includes(value)) {
+          return value;
+        }
+      });
+      this.allSelectedQuesionIDS = this.allSelectedQuesionIDS.concat(notInIDS);
+      this.allSelectedQuesionIDS = this.allSelectedQuesionIDS.filter(itemID => {
+        if (!allDeleteIds.includes(itemID)) {
+          return itemID;
+        }
+      });
     },
     // 题库上传图片
     async ImgUploadQuestion(file, fileList) {
@@ -420,6 +445,13 @@ export default {
     },
     // 获取科目相关的试题列表
     async getQuesListOfBookZhangJie() {
+      if (!this.currentItemData.BookId || this.currentItemData.BookId == 0) {
+        this.$message({
+          message: "请选择课程和教材",
+          type: "warning"
+        });
+        return;
+      }
       let offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getQuestionOfBook("", {
         bookid: this.currentItemData.BookId,
@@ -430,10 +462,40 @@ export default {
         limit: this.rows,
         offset: offsetRow
       });
-      this.nowPageQuestionId = res.data ? res.data : [];
+      this.thisPageQuestionList = res.data ? res.data : [];
       this.allRows = res.title;
+
+      let thisPageQuestionIDS = [];
+      // // 遍历当前页已选中的选项
+      this.thisPageQuestionList.forEach(item => {
+        thisPageQuestionIDS.push(item.Id);
+      });
+      this.thisPageQuestionList.filter(questionItem => {
+        if (this.allSelectedQuesionIDS.includes(questionItem.Id)) {
+          this.$nextTick(() => {
+            this.$refs.refElTabel.toggleRowSelection(questionItem, true);
+          });
+        }
+      });
     },
-    saveExerciseQuestions() {},
+    async saveExerciseQuestions() {
+      if (this.exerciseItem.Id == 0) {
+        this.$message({
+          message: "试卷id不能为0",
+          type: "warning"
+        });
+        return;
+      }
+      let res = await saveExamQuestions(
+        this.exerciseItem.Id,
+        "",
+        this.allSelectedQuesionIDS
+      );
+      this.$message({
+        message: "【" + this.exerciseItem.Label + "】试卷保存成功",
+        type: "success"
+      });
+    },
     // 打开试题的模态框-新增
     openAddQuestionDialog() {
       this.currentQuestionIndex = -1;
@@ -452,25 +514,25 @@ export default {
       this.currentItemData.JieId = this.currentItemData.Jie;
       this.currentItemData.TopicId = this.currentItemData.Topic;
 
-      this.moreOperationDialog = true;
+      this.questionRowShow = true;
       this.currentItemData.BookId = parseInt(this.$route.query.Id);
     },
     //  打开试题的模态框-编辑
     openEditQuestionDialog(index, row) {
       this.currentQuestionIndex = index;
       this.currentItemData = { ...row };
-      this.moreOperationDialog = true;
+      this.questionRowShow = true;
     },
     // 更新数据列表
     updateQuestionList(type, row) {
       if (type == 0) {
-        this.nowPageQuestionId.push(row);
-        this.moreOperationDialog = false;
+        this.thisPageQuestionList.push(row);
+        this.questionRowShow = false;
       } else if (type == 1) {
-        this.nowPageQuestionId.splice(this.currentQuestionIndex, 1, row);
-        this.moreOperationDialog = false;
+        this.thisPageQuestionList.splice(this.currentQuestionIndex, 1, row);
+        this.questionRowShow = false;
       } else if (type == -1) {
-        this.moreOperationDialog = false;
+        this.questionRowShow = false;
       }
     },
     // // 获取试题类型

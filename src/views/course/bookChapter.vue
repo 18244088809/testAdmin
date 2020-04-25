@@ -4,81 +4,84 @@
     <div class="flex_column hgt_full">
       <vxe-toolbar>
         <template v-slot:buttons>
-          <el-button v-if="isTableClose" type="primary" @click="expandTables">展开所有</el-button>
-          <el-button v-else type="success" @click="closeTables">合闭所有</el-button>
+          <el-button v-if="isTableClose" type="success" @click="closeTables">合闭所有</el-button>
+          <el-button v-else type="primary" @click="expandTables">展开所有</el-button>
           <span class="m-b-10">当前科目名称：{{ bookLabel }}</span>
           <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的编委成员</span>
         </template>
       </vxe-toolbar>
-      <vxe-table
-        ref="chapterTreeTable"
-        border
-        row-id="Id"
-        show-overflow
-        :tree-config="treeConfig"
-        :data.sync="chaperListOfBook"
-        height="100%"
-        :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:true}"
-      >
-        <vxe-table-column type="seq" width="120" title="序号" tree-node />
-        <vxe-table-column field="SN" title="章节编号" width="100"></vxe-table-column>
-        <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
-        <vxe-table-column title="视频地址">
-          <template v-slot="{ row}">
-            <div class="flex_dom" style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
-              <el-upload
-                :auto-upload="false"
-                action
-                :show-file-list="false"
-                :on-change="function(file){return uploadVideo(file,row)}"
-              >
-                <el-button size="mini" type="info">上传视频</el-button>
-              </el-upload>
-              <el-input class="m-l-10" v-model="row.Video" />
-            </div>
-          </template>
-        </vxe-table-column>
-
-        <vxe-table-column field="Taste" title="允许试读" width="80">
-          <template v-slot="{ row}">
-            <div v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
-              <select v-model="row.Taste" class="quanke">
-                <option :value="0">否</option>
-                <option :value="1">是</option>
-              </select>
-            </div>
-          </template>
-        </vxe-table-column>
-        <vxe-table-column title="操作" width="270">
-          <template v-slot="{ row }">
-            <div class="between-center">
-              <el-button
-                v-if="row.Zhang>0&&row.Jie==0&&row.TopicNo==0"
-                type="primary"
-                size="mini"
-                @click="addChildNode(row,true)"
-              >添加节</el-button>
-              <el-button
-                v-else-if="row.Jie>0&&row.TopicNo==0 "
-                type="warning"
-                size="mini"
-                @click="addChildNode(row,false)"
-              >添加视频</el-button>
-              <div v-else>
-                <el-button size="mini" type="info" @click="addQuestion(row,false)">添加试题</el-button>
-                <el-button size="mini" type="success" @click="openLinkQuestion(row,false)">关联试题</el-button>
+      <div class="hgt_full">
+        <vxe-table
+          ref="chapterTreeTable"
+          class="p-b-10"
+          border
+          row-id="Id"
+          show-overflow
+          :tree-config="treeConfig"
+          :data.sync="chaperListOfBook"
+          height="100%"
+          :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:false}"
+        >
+          <vxe-table-column type="seq" width="120" title="序号" tree-node />
+          <vxe-table-column field="SN" title="章节编号" width="100"></vxe-table-column>
+          <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
+          <vxe-table-column title="视频地址" field="Video">
+            <template v-slot="{ row}">
+              <div class="flex_dom" style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
+                <el-upload
+                  :auto-upload="false"
+                  action
+                  :show-file-list="false"
+                  :on-change="function(file){return uploadVideo(file,row)}"
+                >
+                  <el-button size="mini" type="info">上传视频</el-button>
+                </el-upload>
+                <el-input class="m-l-10" v-model="row.Video" />
               </div>
-              <el-button
-                type="danger"
-                v-if="!row.Children||row.Children.length==0"
-                size="mini"
-                @click="deleteChildNode(row)"
-              >删除</el-button>
-            </div>
-          </template>
-        </vxe-table-column>
-      </vxe-table>
-      <div class="between-center m-t-10 m-b-20">
+            </template>
+          </vxe-table-column>
+
+          <vxe-table-column field="Taste" title="允许试读" width="80">
+            <template v-slot="{ row}">
+              <div v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
+                <select v-model="row.Taste" class="quanke">
+                  <option :value="0">否</option>
+                  <option :value="1">是</option>
+                </select>
+              </div>
+            </template>
+          </vxe-table-column>
+          <vxe-table-column title="操作" width="270">
+            <template v-slot="{ row }">
+              <div class="between-center">
+                <el-button
+                  v-if="row.Zhang>0&&row.Jie==0&&row.TopicNo==0"
+                  type="primary"
+                  size="mini"
+                  @click="addChildNode(row,true)"
+                >添加节</el-button>
+                <el-button
+                  v-else-if="row.Jie>0&&row.TopicNo==0 "
+                  type="warning"
+                  size="mini"
+                  @click="addChildNode(row,false)"
+                >添加视频</el-button>
+                <div v-else>
+                  <el-button size="mini" type="info" @click="addQuestion(row,false)">添加试题</el-button>
+                  <el-button size="mini" type="success" @click="openLinkQuestion(row,false)">关联试题</el-button>
+                </div>
+                <el-button
+                  type="danger"
+                  v-if="!row.Children||row.Children.length==0"
+                  size="mini"
+                  @click="deleteChildNode(row)"
+                >删除</el-button>
+              </div>
+            </template>
+          </vxe-table-column>
+        </vxe-table>
+      </div>
+      <div class="between-center m-t-10 m-b-10">
         <el-button type="primary" @click="addChapter">新增章</el-button>
         <el-button v-show="editEnable" type="success" @click="createSubjectChapter">保存</el-button>
       </div>
@@ -97,6 +100,7 @@
       <div slot="right_content">
         <linkQuestion
           ref="linkQusetionDialog"
+          :BookLabel="bookLabel"
           @linkedQuestion="linkedQuestion"
           :BookChapter="newQuestionItem"
         ></linkQuestion>
@@ -110,7 +114,7 @@ import {
   addBookVideo,
   deleBookVideo,
   getBookVideo,
-  createBookStructure
+  updateContent
 } from "@/api/book";
 import myDialog from "@/components/myDialog/myDialog";
 import questionRowDialog from "@/views/course/question/component/questionRowDialog";
@@ -155,12 +159,12 @@ export default {
     },
     //关联试题
     openLinkQuestion(row, isZhang) {
-      this.newQuestionItem = { ...row };
+      this.newQuestionItem = row;
       this.newQuestionItem.BookId = this.bookID;
       this.linkQuestionDialog = true;
     },
     linkedQuestion() {
-      createBookStructure(this.bookID, "", this.chaperListOfBook);
+      updateContent(this.bookID, "", this.chaperListOfBook);
     },
     uploadVideo(file, row) {
       if (this.editEnable == false) {
@@ -326,11 +330,11 @@ export default {
     // },
     expandTables() {
       this.$refs.chapterTreeTable.setAllTreeExpansion(true);
-      this.isTableClose = false;
+      this.isTableClose = true;
     },
     closeTables() {
       this.$refs.chapterTreeTable.clearTreeExpand();
-      this.isTableClose = true;
+      this.isTableClose = false;
     },
     // 新增章
     addChapter() {
@@ -407,7 +411,7 @@ export default {
         })
         .then(async () => {
           if (that.chaperListOfBook.length > 0) {
-            const res = await createBookStructure(
+            const res = await updateContent(
               that.bookID,
               "",
               that.chaperListOfBook

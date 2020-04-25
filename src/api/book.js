@@ -65,7 +65,7 @@ export function deleBookVideo(url, param, data) {
   })
 }
 // 生成书的章节知识点结构
-export function createBookStructure(url, param, data) {
+export function updateContent(url, param, data) {
   return request({
     url: '/book/updateContent/' + url,
     method: 'put',

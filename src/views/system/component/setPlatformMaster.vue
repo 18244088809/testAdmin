@@ -18,11 +18,11 @@
           v-show="currenteditEnable"
           class="m-l-40"
           @click="saveFormItemData"
-        >确 认</el-button>
+        >确认</el-button>
         <el-button v-show="currenteditEnable" @click="currenteditEnable=false">取 消</el-button>
       </div>
     </div>
-    <span v-else>目前没有老师加入本校，请先给本校添加员工和老师。然后再来从中选择一个当负责人</span>
+     <div class="around-center hgt250" v-else>目前没有老师加入本校，请先给本校添加员工和老师。然后再来从中选择一个当负责人</div>
   </div>
 </template>
 

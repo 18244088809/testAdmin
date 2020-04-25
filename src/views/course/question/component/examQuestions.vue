@@ -9,7 +9,7 @@
       style="width: 100%"
       @selection-change="mockExamQuestionIdSelectedChange"
     >
-      <el-table-column type="selection" width="50"></el-table-column>
+      <!-- <el-table-column type="selection" width="50"></el-table-column> -->
       <el-table-column prop="QuestionType" label="题型" width="100">
         <template slot-scope="scope">
           <el-tag v-show="scope.row.QuestionType==1">单选题</el-tag>
@@ -26,7 +26,7 @@
       <el-table-column prop="JieId" label="节" width="50" show-overflow-tooltip></el-table-column>
       <el-table-column prop="TopicId" label="知识点" width="80" show-overflow-tooltip></el-table-column>
     </el-table>
-    <div class="between-center m-t-30">
+    <!-- <div class="between-center m-t-30">
       <el-pagination
         background
         @current-change="currentPageChangeQuestion"
@@ -36,19 +36,19 @@
         :total="allRowsQuestions"
       ></el-pagination>
       <div>
-        <el-button type="danger" @click="saveExamQuestions">删除所选</el-button>
+        <el-button type="danger" @click="deleSelectQuestions">删除所选</el-button>
         <el-button type="primary" @click="saveExamQuestions">确定</el-button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
 import { getExerciseQuestion } from "@/api/exercise";
 export default {
   props: {
-    exerciseID: {
-      type: Number,
-      default: 0
+    exerciseItem: {
+      type: Object,
+      default: {}
     }
   },
   data() {
@@ -78,7 +78,7 @@ export default {
     };
   },
   watch: {
-    exerciseID(newval) {
+    exerciseItem(newval) {
       this.fire();
     }
   },
@@ -94,10 +94,10 @@ export default {
     // 获取科目下所有的章
     async getSubjectZhang() {
       this.examQuestionList = [];
-      if (this.exerciseID == 0) {
+      if (!this.exerciseItem || this.exerciseItem.Id == 0) {
         return;
       }
-      let res = await getExerciseQuestion(this.exerciseID);
+      let res = await getExerciseQuestion(this.exerciseItem.Id,{simple:false});
 
       this.examQuestionList = res.data ? res.data.List : [];
     },
@@ -159,6 +159,9 @@ export default {
       this.allQuestionsIdSeleted = this.allQuestionsIdSeleted.concat(
         nowSeletedQuestionId
       );
+    },
+    deleSelectQuestions(){
+
     },
     // 保存已经选中的考题
     async saveExamQuestions() {

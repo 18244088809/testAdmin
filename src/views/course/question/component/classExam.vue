@@ -22,11 +22,11 @@
       <div slot="right_content" class="p-l-10 p-b-20 wid_100">
         <div class="center">
           <el-tabs @tab-click="onChangeTabs">
-            <el-tab-pane id="fkj" label="包含试题" name="fkj">
-              <examQuestions ref="bhst" :exerciseID="currentExercise.Id" />
+            <el-tab-pane id="gkj" label="添加试题" name="gkj">
+              <questionsList ref="gkj" :classID="formItemData.Id" :exerciseItem="currentExercise" />
             </el-tab-pane>
-            <el-tab-pane id="gkj" label="添加考题" name="gkj">
-              <questionsList ref="gkj" :classID="formItemData.Id" />
+            <el-tab-pane id="fkj" label="试卷预览" name="fkj">
+              <examQuestions ref="bhst" :exerciseItem="currentExercise" />
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -129,8 +129,8 @@ export default {
       this.examList.unshift(res.data);
     },
     async onChangeExam(val) {
+       this.currentExercise ={};
       this.currentExercise = val;
-     console.log("this.exercise:",this.exercise)
     },
     onChangeTabs(item) {
       item.$children[0].fire();

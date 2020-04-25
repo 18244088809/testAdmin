@@ -18,6 +18,7 @@
           @input="$forceUpdate()"
           style="width:170px"
           type="date"
+          value-format="timestamp"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="结课时间" prop="Endtime">
@@ -26,6 +27,7 @@
           @input="$forceUpdate()"
           style="width:170px"
           type="date"
+          value-format="timestamp"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="授课形式">
@@ -136,23 +138,26 @@ export default {
       // 表单验证
       ClassFormRules: {
         Label: [
-          { required: true, message: '班级名称不能为空', trigger: "blur" }
+          { required: true, message: "班级名称不能为空", trigger: "blur" }
         ]
       }
     };
   },
   watch: {
     formItemData(newvar) {
-      this.currentItemData = this.formItemData; 
+      this.fire();
     }
   },
   mounted() {
-    if (isDate(this.searchGrade)) {
-      this.currentItemData.Grade = this.searchGrade.getFullYear();
-    }
-    this.currentItemData = this.formItemData;
+    this.fire();
   },
   methods: {
+    fire() {
+      if (isDate(this.searchGrade)) {
+        this.currentItemData.Grade = this.searchGrade.getFullYear();
+      }
+      this.currentItemData = this.formItemData;
+    },
     // 添加或编辑数据
     saveFormItemData() {
       this.currentItemData.PlatformID = parseInt(this.platform);
@@ -165,33 +170,26 @@ export default {
         if (valid) {
           let rowdata = { ...this.currentItemData };
           if (isNaN(this.currentItemData.OpenTime)) {
-            rowdata.OpenTime = Math.floor(
-              this.currentItemData.OpenTime.getTime() / 1000
-            );
+            rowdata.OpenTime = this.currentItemData.OpenTime.getTime() / 1000;
           } else {
-            rowdata.OpenTime = Math.floor(this.currentItemData.OpenTime / 1000);
+            rowdata.OpenTime = this.currentItemData.OpenTime / 1000;
           }
           if (isNaN(this.currentItemData.Endtime)) {
-            rowdata.Endtime = Math.floor(
-              this.currentItemData.Endtime.getTime() / 1000
-            );
+            rowdata.Endtime = this.currentItemData.Endtime.getTime() / 1000;
           } else {
-            rowdata.Endtime = Math.floor(this.currentItemData.Endtime / 1000);
+            rowdata.Endtime = this.currentItemData.Endtime / 1000;
           }
           if (isNaN(this.currentItemData.Createtime)) {
-            rowdata.Createtime = Math.floor(
-              this.currentItemData.Createtime.getTime() / 1000
-            );
+            rowdata.Createtime =
+              this.currentItemData.Createtime.getTime() / 1000;
           } else {
-            rowdata.Createtime = Math.floor(
-              this.currentItemData.Createtime / 1000
-            );
+            rowdata.Createtime = this.currentItemData.Createtime / 1000;
           }
           if (rowdata.Id > 0) {
             // 编辑
             let res = await editClassInfo(rowdata.Id, "", rowdata);
             this.isShowPlatformDialog = false;
-            this.currentItemData = res.data;
+            // this.currentItemData = res.data;
             this.$emit("subClickEvent", 1, res.data);
             this.$message({
               message: "修改成功",
@@ -207,16 +205,11 @@ export default {
             });
             this.$emit("subClickEvent", 0, res.data);
           }
-          this.currentItemData.OpenTime = this.currentItemData.OpenTime * 1000;
-          this.currentItemData.Endtime = this.currentItemData.Endtime * 1000;
-          this.currentItemData.Createtime =
-            this.currentItemData.Createtime * 1000;
         } else {
           return false;
         }
       });
     }
-  },
-  mounted() {}
+  }
 };
 </script>  

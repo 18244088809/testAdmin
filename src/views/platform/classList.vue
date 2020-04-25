@@ -82,7 +82,7 @@
             @current-change=" currentPageChange"
             :current-page.sync="nowPage"
             :page-size="rows"
-            layout="total,prev, pager, next, jumper" 
+            layout="total,prev, pager, next, jumper"
             :total="allRows"
           ></el-pagination>
         </div>
@@ -105,7 +105,7 @@
               <classStudent :formItemData="classFormData"></classStudent>
             </el-tab-pane>
             <el-tab-pane label="所开课程" name="skkc" id="skkc">
-              <classCourse :formItemData="classFormData"></classCourse>
+              <classCourse :formItemData="classFormData" @subClickEvent="updateListItem"></classCourse>
             </el-tab-pane>
             <!-- <el-tab-pane label="任课老师" name="rkls" id="rkls">
               <classTeacher :formItemData="classFormData"></classTeacher>
@@ -141,7 +141,7 @@
           <studentWork :formItemData="classFormData"></studentWork>
         </div>
       </my-dialog>
-       <!-- 班级相关操作的模态框 -->
+      <!-- 班级相关操作的模态框 -->
       <my-dialog
         :visible.sync="makeExamDialog"
         :title="'【'+classFormData.Label+'】试卷管理'"
@@ -211,7 +211,7 @@ export default {
       // 控制班级更多操作的弹出框
       moreOperationDialog: false,
       classStudentsDialog: false,
-      makeExamDialog:false,
+      makeExamDialog: false,
       searchClassLabel: "",
       searchGrade: new Date(),
       // 当前的校区id
@@ -283,6 +283,15 @@ export default {
     },
     // 添加班级成功之后更新表格数据-班级列表
     updateListItem(type, rowData) {
+      if (rowData.OpenTime > 1507800391000) {
+        rowData.OpenTime = rowData.OpenTime / 1000;
+      }
+      if (rowData.Endtime > 1507800391000) {
+        rowData.Endtime = rowData.Endtime / 1000;
+      }
+      if (rowData.Createtime > 1507800391000) {
+        rowData.Createtime = rowData.Createtime / 1000;
+      }
       if (type == 0) {
         this.classList.unshift(rowData);
       } else if (type == 1) {
@@ -290,14 +299,7 @@ export default {
       }
       this.editDialog = false;
     },
-    // // 切换tabs标签页在调用函数
-    // changDialogClassTabs(tab) {
-    //   if (tab.$attrs.id == "bjxy") {
-    //     this.$refs.refClassStudent.getClassRow(this.classFormData);
-    //   } else if (tab.$attrs.id == "kcb") {
-    //     this.$refs.refClassTimeTable.getClassRow(this.classFormData);
-    //   }
-    // },
+
     // 格式化日期
     TimeFormatter(row, column, cellValue) {
       return this.common.dateFormat(cellValue);

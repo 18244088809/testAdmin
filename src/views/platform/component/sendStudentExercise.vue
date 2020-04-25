@@ -12,6 +12,7 @@
     >
       <el-table-column type="selection" width="30" />
       <el-table-column prop="Id" label="ID" width="50"></el-table-column>
+       <el-table-column prop="Label" label="试卷来源" :formatter="sourceFomratter" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Label" label="试卷名称" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Used" label="是否已经学过" width="100"></el-table-column>
       <el-table-column prop="Examtime" label="考试时间(分钟" width="110"></el-table-column>
@@ -117,6 +118,9 @@ export default {
       val.forEach(item => {
         this.selectedIDList.push(item.Id);
       });
+    },
+    sourceFomratter(item){
+console.log(item,"---------")
     },
 
     // 添加或编辑数据
