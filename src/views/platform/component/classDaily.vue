@@ -280,7 +280,7 @@ export default {
     // 获取班级的授课老师
     async getAllManagerOfPlatform() {
       let res = await getAllManagerOfPlatform(this.formItemData.PlatformID, {
-        onlyLive: true
+        onlyLive: true,needtotal:false
       });
 
       if (res.data) {

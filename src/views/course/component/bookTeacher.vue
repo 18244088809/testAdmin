@@ -117,7 +117,7 @@ export default {
       // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getAllManagerOfPlatform(this.currentPlatform, {
-        onlyLive: true
+        onlyLive: true,needtotal:false
       });
       that.checkBoxAddStu = [];
       if (res.data) {

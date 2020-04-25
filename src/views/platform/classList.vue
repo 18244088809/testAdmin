@@ -53,8 +53,9 @@
             <span>{{common.FormatSelect(common.teachingForm,scope.row.TeachMethod)}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="StudentNum" label="学员人数" width="70"></el-table-column>
-        <el-table-column prop="CreaterLabel" label="创建人员" width="70"></el-table-column>
+        <el-table-column prop="StudentNum" label="学员人数" width="80"></el-table-column>
+        <el-table-column prop="ManagerLabel" label="班主任" width="80"></el-table-column>
+        <el-table-column prop="CreaterLabel" label="创建人员" width="80"></el-table-column>
         <el-table-column prop="Createtime" label="创建时间" width="90" :formatter="TimeFormatter"></el-table-column>
         <el-table-column prop="OpenTime" label="开课时间" width="90" :formatter="TimeFormatter"></el-table-column>
         <el-table-column prop="Endtime" label="结课时间" width="90" :formatter="TimeFormatter"></el-table-column>
@@ -107,9 +108,9 @@
             <el-tab-pane label="所开课程" name="skkc" id="skkc">
               <classCourse :formItemData="classFormData" @subClickEvent="updateListItem"></classCourse>
             </el-tab-pane>
-            <!-- <el-tab-pane label="任课老师" name="rkls" id="rkls">
-              <classTeacher :formItemData="classFormData"></classTeacher>
-            </el-tab-pane>-->
+            <el-tab-pane label="选择班主任" name="rkls" id="rkls">
+              <classManager :formItemData="classFormData"  @subClickEvent="updateListItem"></classManager>
+            </el-tab-pane>
 
             <el-tab-pane label="课程表" name="kcb" id="kcb">
               <classDaily :formItemData="classFormData"></classDaily>
@@ -160,6 +161,7 @@ import classStudent from "@/views/platform/component/classStudent";
 import studentWork from "@/views/platform/component/studentWork";
 import classExam from "@/views/course/question/component/classExam";
 import classCourse from "@/views/platform/component/classCourse";
+import classManager from "@/views/platform/component/classManager";
 import classDaily from "@/views/platform/component/classDaily";
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
@@ -167,8 +169,7 @@ import {
   getAllClass,
   editClassInfo,
   addClassInfo,
-  getOneClass,
-  setClassTeacher,
+  getOneClass, 
   getClassTeachers,
   getTimeTableByMonth,
   addClassDaily,
@@ -189,7 +190,8 @@ export default {
     studentWork,
     classStudent,
     classCourse,
-    classExam
+    classExam,
+    classManager
   },
   data() {
     return {

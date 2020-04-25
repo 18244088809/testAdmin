@@ -231,7 +231,7 @@ export default {
       this.allRows = 0;
       this.teacherList = [];
       if (res.data) {
-        this.allRows = res.title;
+        this.allRows = res.attach;
         this.teacherList = res.data;
       }
     },

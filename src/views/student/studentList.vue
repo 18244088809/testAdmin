@@ -466,7 +466,7 @@ export default {
         // 默认查看自己的学员
         this.searchWorkerId = this.$store.getters.manager.Id;
         this.myWorkerList = res.data ? res.data : [];
-        this.isPlatformMaster = res.attach;
+        this.isPlatformMaster = res.title;
       }
       this.getCustomList();
     },

@@ -25,7 +25,7 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
+    // console.log(error) // for debug
     return Promise.reject(error)
   }
 )
@@ -56,7 +56,7 @@ service.interceptors.response.use(
       removeToken();
       location.href = "/login"
     }
-    return Promise.reject(new Error(res.title || 'Error'))
+    return   Promise.reject(response);
     // // if the custom code is not 20000, it is judged as an error.
     // if (res.code !== 200) {
     //   Message({
@@ -84,7 +84,7 @@ service.interceptors.response.use(
     // }
   },
   error => {
-    console.log('err' + error) // for debug
+    // console.log('err' + error) // for debug
     Message({
       message: error.message,
       type: 'error',

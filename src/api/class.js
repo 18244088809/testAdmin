@@ -35,10 +35,10 @@ export function getOneClass(url, param, data) {
     data
   })
 }
-// 添加班级的开班申请的资料
-export function setClassTeacher(url, param, data) {
+// 设置班主任
+export function setClassManager(url, param, data) {
   return request({
-    url: '/class/setClassTeacher/'+url,
+    url: '/class/setClassManager/'+url,
     method: 'post',
     params: param,
     data

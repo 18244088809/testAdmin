@@ -22,7 +22,7 @@
         <el-button v-show="currenteditEnable" @click="currenteditEnable=false">取 消</el-button>
       </div>
     </div>
-     <div class="around-center hgt250" v-else>目前没有老师加入本校，请先给本校添加员工和老师。然后再来从中选择一个当负责人</div>
+    <div class="around-center hgt250" v-else>目前没有老师加入本校，请先给本校添加员工和老师。然后再来从中选择一个当负责人</div>
   </div>
 </template>
 
@@ -57,7 +57,9 @@ export default {
       this.fire();
     }
   },
-  mounted() {},
+  mounted() {
+    this.fire();
+  },
   methods: {
     fire() {
       if (!this.formItemData || !this.formItemData.Id) {
@@ -68,7 +70,10 @@ export default {
       this.getAllManagerOfThisPlatform();
     },
     async getAllManagerOfThisPlatform() {
-      let res = await getAllManagerOfPlatform(this.currentPlatform.Id, "");
+      let res = await getAllManagerOfPlatform(this.currentPlatform.Id, {
+        onlyLive: true,
+        needtotal: false
+      });
       this.managerList = res.data ? res.data : [];
     },
     // 添加或编辑数据
