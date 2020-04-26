@@ -25,25 +25,37 @@
 
       <div slot="right_content" class="p-l-10 p-b-20 wid_100">
         <div class="center">
-          <el-tabs  @tab-click="onChangeTabs">
+          <el-tabs @tab-click="onChangeTabs">
             <el-tab-pane id="fkj" label="发考卷" name="fkj">
-              <sendStudentExercise ref="fkj" :classItem="formItemData" :studentIDS="classAllStuList" />
+              <sendStudentExercise
+                ref="fkj"
+                :classItem="formItemData"
+                @updateClassItem="updateClassItem"
+                :studentIDS="classAllStuList"
+              />
             </el-tab-pane>
             <el-tab-pane id="gkj" label="改考卷" name="gkj">
-              <receiveStudentExercise ref="gkj"  :classItem="formItemData" :studentIDS="classAllStuList" />
+              <receiveStudentExercise
+                ref="gkj"
+                :classItem="formItemData"
+                :studentIDS="classAllStuList"
+              />
             </el-tab-pane>
             <el-tab-pane id="fzy" label="发作业" name="fzy">
-              <sendStudentWork ref="fzy" :classItem="formItemData"  :studentIDS="classAllStuList" />
+              <sendStudentWork ref="fzy" :classItem="formItemData" :studentIDS="classAllStuList" />
             </el-tab-pane>
             <el-tab-pane id="gzy" label="改作业" name="gzy">
-               <receiveStudentWork ref="fzy" :classItem="formItemData"  :studentIDS="classAllStuList" />
+              <receiveStudentWork
+                ref="fzy"
+                :classItem="formItemData"
+                :studentIDS="classAllStuList"
+              />
             </el-tab-pane>
             <!-- <el-tab-pane id="fly" label="发通知" name="fly">
               <sendMessage ref="fly" :classItem="formItemData"  :studentIDS="classAllStuList" />
-            </el-tab-pane> -->
+            </el-tab-pane>-->
           </el-tabs>
         </div>
- 
       </div>
     </div>
   </div>
@@ -54,7 +66,7 @@ import {
   getAllClass,
   editClassInfo,
   addClassInfo,
-  getOneClass, 
+  getOneClass,
   getClassTeachers,
   getTimeTableByMonth,
   addClassDaily,
@@ -63,14 +75,14 @@ import {
   addClassStu,
   getClassStu,
   sendStudentsExercise,
-  getClassMateWorks, 
+  getClassMateWorks,
   getExerciseByBookChapter
 } from "@/api/class";
 import common from "@/utils/common";
 import sendStudentExercise from "@/views/platform/component/sendStudentExercise";
 import receiveStudentExercise from "@/views/platform/component/receiveStudentExercise";
 import receiveStudentWork from "@/views/platform/component/receiveStudentWork";
-import sendStudentWork from "@/views/platform/component/sendStudentWork"; 
+import sendStudentWork from "@/views/platform/component/sendStudentWork";
 import { isDate } from "xe-utils/methods";
 export default {
   components: {
@@ -99,7 +111,7 @@ export default {
   data() {
     return {
       common,
-      // 当前所在tab页 
+      // 当前所在tab页
       searchGrade: new Date(),
       currenteditEnable: this.editEnable,
       // 控制班级弹出框
@@ -176,7 +188,10 @@ export default {
       let res = await getClassMateWorks(studentid, "");
       this.classAllStuList = res.data ? res.data : [];
     },
-
+    updateClassItem(classitem) { 
+      this.currentItemData.Exerciseids= classitem.Exerciseids; 
+      this.$emit("subClickEvent", 1, this.currentItemData);
+    },
     // 添加或编辑数据
     saveFormItemData() {
       this.currentItemData.PlatformID = parseInt(this.platform);

@@ -158,7 +158,7 @@ import {
 import {
   getManagerList,
   getAllTeacher,
-  resetPasswordManager,
+  resetPasswordManager
 } from "@/api/manager";
 import { getAllManagerOfPlatform } from "@/api/platform";
 import { getBooksOfCourses } from "@/api/course";
@@ -170,7 +170,9 @@ export default {
     // 班级
     formItemData: {
       type: Object,
-      default: { Id: 0 }
+      default: function() {
+        return { Id: 0 };
+      }
     }
   },
   components: {
@@ -280,7 +282,8 @@ export default {
     // 获取班级的授课老师
     async getAllManagerOfPlatform() {
       let res = await getAllManagerOfPlatform(this.formItemData.PlatformID, {
-        onlyLive: true,needtotal:false
+        onlyLive: true,
+        needtotal: false
       });
 
       if (res.data) {

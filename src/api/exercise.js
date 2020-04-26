@@ -120,6 +120,15 @@ export function getExerciseOfTeacher(url, param, data) {
     data
   })
 }
+// 获取某个课程的所有试卷
+export function getCourseExercise(url, param, data) {
+  return request({
+    url: '/exercise/getCourseExercise/' + url,
+    method: 'get',
+    params: param,
+    data
+  })
+}
 
 // 获取一个班级所开课程的所有考卷
 export function getClassExercise(url, param, data) {

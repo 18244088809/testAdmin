@@ -57,8 +57,8 @@ export default {
   props: {
     classItem: {
       type: Object,
-      default: {
-        Id: 0
+      default: function() {
+        return { Id: 0 };
       }
     }
   },

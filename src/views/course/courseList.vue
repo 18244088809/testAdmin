@@ -99,12 +99,13 @@
         <el-table-column label="宣传售价" width="70" prop="Price" />
         <el-table-column label="课时量" width="60" prop="CourseNum" />
         <el-table-column label="产品描述" :show-overflow-tooltip="true" prop="Description" />
-        <el-table-column label="是否上架" width="180" fixed="right">
+        <el-table-column label="是否上架" width="200" fixed="right">
           <template slot-scope="scope">
             <el-button
               :type="scope.row.Open==1?'success':'warning'"
               @click="setIsUpperShelf(scope.$index, scope.row)"
             >{{ scope.row.Open==1?"已经上架":"没有上架" }}</el-button>
+            <el-button type="primary" @click="openMakeExercise(scope.$index, scope.row)">专家组卷</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -148,7 +149,15 @@
         />
         <div></div>
       </el-dialog>
-      <!-- <course-row-dialog :travel-brochure-data="currentItemData" :visible.sync="editDialog" @subClickEvent="updataCourseList" /> -->
+       <my-dialog
+        :visible.sync="makeExamDialog"
+        :title="'【'+currentItemData.Label+'】试卷管理'"
+        :showLeft="false"
+      >
+        <div slot="right_content" class="flex_dom hgt_100">
+           <makeExercise :courseItemData="currentItemData"></makeExercise>
+        </div>
+      </my-dialog>
     </div>
   </div>
 </template>
@@ -158,6 +167,7 @@ import myDialog from "@/components/myDialog/myDialog";
 import myImageViewer from "@/components/myImageViewer/myImageViewer";
 import courseTravelBrochure from "@/views/course/component/courseTravelBrochure";
 import coursePriceTab from "@/views/course/component/coursePriceTab";
+import makeExercise from "@/views/course/question/component/makeExercise";
 import courseSellPlatform from "@/views/course/component/courseSellPlatform";
 import courseRowDetail from "@/views/course/component/courseRowDetail";
 import common from "@/utils/common";
@@ -191,7 +201,8 @@ export default {
     courseTravelBrochure,
     coursePriceTab,
     courseSellPlatform,
-    courseRowDetail
+    courseRowDetail,
+    makeExercise
   },
   data() {
     return {
@@ -205,6 +216,8 @@ export default {
       courseList: [],
       // 默认选中的学院
       collegeIndex: 0,
+        // 当前操作的课程数据的索引
+      currentCourseIndex: 0,
       // 搜索内容-课程名称
       searchCourseLabel: "",
       // 搜索内容-课程类别的Id
@@ -212,6 +225,7 @@ export default {
       CourseKindLabel: "",
       // 学院的选项数据
       collegeList: [],
+       makeExamDialog: false,
       // 课程类别的选项数据
       courseKindsOps: [],
       // 当前所在面板的名称
@@ -278,6 +292,12 @@ export default {
         this.collegeList = res.data ? res.data : [];
       }
     },
+    // 组卷管理
+    openMakeExercise(index, row) {
+      this.currentItemData = { ...row };
+      this.makeExamDialog = true;
+      this.currentCourseIndex = index; 
+    },
     // 选中学院类别后回调
     collegeChange(selVa) {
       // 清空数据
@@ -297,6 +317,7 @@ export default {
         // this.getCourseListOfKind();
       }
     },
+ 
     // 设置是否上架
     setIsUpperShelf(index, row) {
       const checked = row.Open == 1 ? 0 : 1;
@@ -351,7 +372,6 @@ export default {
     },
     // 打开课程的模态框
     openCourseDialog(type) {
-      
       this.editDialog = true;
       this.currentItemData = {};
     },

@@ -82,7 +82,9 @@ export default {
   props: {
     urlList: {
       type: Array,
-      default: () => []
+     default() {
+        return []
+      }
     },
     zIndex: {
       type: Number,

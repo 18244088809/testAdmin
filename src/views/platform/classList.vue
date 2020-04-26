@@ -139,7 +139,7 @@
         :showLeft="false"
       >
         <div slot="right_content" class="flex_dom hgt_100">
-          <studentWork :formItemData="classFormData"></studentWork>
+          <studentWork :formItemData="classFormData"    @subClickEvent="updateListItem"></studentWork>
         </div>
       </my-dialog>
       <!-- 班级相关操作的模态框 -->
@@ -149,7 +149,7 @@
         :showLeft="false"
       >
         <div slot="right_content" class="flex_dom hgt_100">
-          <classExam :formItemData="classFormData"></classExam>
+          <makeExercise :classItemData="classFormData"></makeExercise>
         </div>
       </my-dialog>
     </div>
@@ -159,7 +159,7 @@
 import classRowDetail from "@/views/platform/component/classRowDetail";
 import classStudent from "@/views/platform/component/classStudent";
 import studentWork from "@/views/platform/component/studentWork";
-import classExam from "@/views/course/question/component/classExam";
+import makeExercise from "@/views/course/question/component/makeExercise";
 import classCourse from "@/views/platform/component/classCourse";
 import classManager from "@/views/platform/component/classManager";
 import classDaily from "@/views/platform/component/classDaily";
@@ -190,7 +190,7 @@ export default {
     studentWork,
     classStudent,
     classCourse,
-    classExam,
+    makeExercise,
     classManager
   },
   data() {
@@ -284,7 +284,7 @@ export default {
       this.editDialog = true;
     },
     // 添加班级成功之后更新表格数据-班级列表
-    updateListItem(type, rowData) {
+    updateListItem(type, rowData) { 
       if (rowData.OpenTime > 1507800391000) {
         rowData.OpenTime = rowData.OpenTime / 1000;
       }

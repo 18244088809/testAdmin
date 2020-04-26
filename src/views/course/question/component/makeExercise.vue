@@ -4,7 +4,7 @@
       <div class="flex_dom hgt_100" style="width:350px;   ">
         <div class="flex_column wid_100 between-center">
           <el-table
-            :data="examList"
+            :data="exerciseList"
             ref="examTable"
             tooltip-effect="light"
             highlight-current-row
@@ -23,7 +23,7 @@
         <div class="center">
           <el-tabs @tab-click="onChangeTabs">
             <el-tab-pane id="gkj" label="添加试题" name="gkj">
-              <questionsList ref="gkj" :classID="formItemData.Id" :exerciseItem="currentExercise" />
+              <questionsList ref="gkj" :classID="classItemData.Id" :exerciseItem="currentExercise" />
             </el-tab-pane>
             <el-tab-pane id="fkj" label="试卷预览" name="fkj">
               <examQuestions ref="bhst" :exerciseItem="currentExercise" />
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { addExam, getExerciseQuestion } from "@/api/exercise";
+import { addExam, getExerciseQuestion,getCourseExercise } from "@/api/exercise";
 import { getClassExercise } from "@/api/class";
 import common from "@/utils/common";
 import questionsList from "@/views/course/question/questionsList";
@@ -49,7 +49,14 @@ export default {
   },
   props: {
     // 班级数据
-    formItemData: {
+    classItemData: {
+      type: Object,
+      default: function() {
+        return { Id: 0 };
+      }
+    },
+    // 课程数据
+    courseItemData: {
       type: Object,
       default: function() {
         return { Id: 0 };
@@ -75,13 +82,13 @@ export default {
       // 创建班级的时间
       createClassTime: null,
       // 获取班级的所有学员
-      examList: [],
+      exerciseList: [],
       //考卷列表
       exerciseList: [],
       currentExercise: { Id: 0 },
       // 创建人
       createPerson: null,
-      currentItemData: this.formItemData,
+      currentItemData: this.classItemData,
       selectedStudentIDList: [],
       // 表单验证
       ClassFormRules: {
@@ -92,7 +99,10 @@ export default {
     };
   },
   watch: {
-    formItemData(newvar) {
+    classItemData(newvar) {
+      this.setData();
+    },
+     courseItemData(newvar) {
       this.setData();
     }
   },
@@ -117,7 +127,8 @@ export default {
             ExamKind: 0,
             State: 1,
             Public: 0,
-            ClassID: this.formItemData.Id
+            ClassID: this.classItemData.Id,
+            CourseID:this.courseItemData.Id,
           };
 
           this.createExam(exercise);
@@ -126,18 +137,22 @@ export default {
     },
     async createExam(exerciseItem) {
       let res = await addExam("", "", exerciseItem);
-      this.examList.unshift(res.data);
+      this.exerciseList.unshift(res.data);
     },
     async onChangeExam(val) {
-       this.currentExercise ={};
+      this.currentExercise = {};
       this.currentExercise = val;
     },
     onChangeTabs(item) {
       item.$children[0].fire();
     },
     setData() {
-      this.currentItemData = this.formItemData;
-      this.getClassExercise();
+      if (this.classItemData.Id>0) {
+        this.currentItemData = this.classItemData;
+        this.getClassExercise();
+      }else if (this.courseItemData.Id>0){
+        this.getCourseExercise();
+      }
     },
 
     // 获取选中的学生
@@ -148,15 +163,27 @@ export default {
       });
     },
 
+    // 搜索某个课程的考卷
+    async getCourseExercise() {
+      this.serachStuList = [];
+      this.ShowSearchForm = false;
+      this.showSrarchStuResult = false;
+ let that = this;
+      let res = await getCourseExercise(this.courseItemData.Id);
+      that.exerciseList = res.data ? res.data : []; 
+      that.$nextTick(function() {
+        this.$refs.examTable.toggleAllSelection();
+      });
+
+    },
     // 获取班级的所有学员
     async getClassExercise() {
       this.serachStuList = [];
       this.ShowSearchForm = false;
       this.showSrarchStuResult = false;
       let that = this;
-      let res = await getClassExercise(this.formItemData.Id);
-      that.examList = res.data ? res.data : [];
-
+      let res = await getClassExercise(this.classItemData.Id);
+      that.exerciseList = res.data ? res.data : []; 
       that.$nextTick(function() {
         this.$refs.examTable.toggleAllSelection();
       });
@@ -164,79 +191,80 @@ export default {
 
     async getClassFinishExercise(studentid) {
       let res = await getClassFinishExercise(studentid);
-      this.examList = res.data ? res.data : [];
+      this.exerciseList = res.data ? res.data : [];
     },
     async getClassMateWorks(studentid) {
       this.serachStuList = [];
       this.ShowSearchForm = false;
       this.showSrarchStuResult = false;
       let res = await getClassMateWorks(studentid, "");
-      this.examList = res.data ? res.data : [];
+      this.exerciseList = res.data ? res.data : [];
     },
+     
 
-    // 添加或编辑数据
-    saveFormItemData() {
-      this.currentItemData.PlatformID = parseInt(this.platform);
-      if (isDate(this.searchGrade)) {
-        this.currentItemData.Grade = this.searchGrade.getFullYear();
-      }
+    // // 添加或编辑数据
+    // saveclassItemData() {
+    //   this.currentItemData.PlatformID = parseInt(this.platform);
+    //   if (isDate(this.searchGrade)) {
+    //     this.currentItemData.Grade = this.searchGrade.getFullYear();
+    //   }
 
-      // 验证表单数据
-      this.$refs.classForm.validate(async valid => {
-        if (valid) {
-          let rowdata = { ...this.currentItemData };
-          if (isNaN(this.currentItemData.OpenTime)) {
-            rowdata.OpenTime = Math.floor(
-              this.currentItemData.OpenTime.getTime() / 1000
-            );
-          } else {
-            rowdata.OpenTime = Math.floor(this.currentItemData.OpenTime / 1000);
-          }
-          if (isNaN(this.currentItemData.Endtime)) {
-            rowdata.Endtime = Math.floor(
-              this.currentItemData.Endtime.getTime() / 1000
-            );
-          } else {
-            rowdata.Endtime = Math.floor(this.currentItemData.Endtime / 1000);
-          }
-          if (isNaN(this.currentItemData.Createtime)) {
-            rowdata.Createtime = Math.floor(
-              this.currentItemData.Createtime.getTime() / 1000
-            );
-          } else {
-            rowdata.Createtime = Math.floor(
-              this.currentItemData.Createtime / 1000
-            );
-          }
-          if (rowdata.Id > 0) {
-            // 编辑
-            let res = await editClassInfo(rowdata.Id, "", rowdata);
-            this.isShowPlatformDialog = false;
-            this.currentItemData = res.data;
-            this.$emit("subClickEvent", 1, res.data);
-            this.$message({
-              message: "修改成功",
-              type: "success"
-            });
-          } else {
-            // 创建
-            let res = await addClassInfo("", "", rowdata);
+    //   // 验证表单数据
+    //   this.$refs.classForm.validate(async valid => {
+    //     if (valid) {
+    //       let rowdata = { ...this.currentItemData };
+    //       if (isNaN(this.currentItemData.OpenTime)) {
+    //         rowdata.OpenTime = Math.floor(
+    //           this.currentItemData.OpenTime.getTime() / 1000
+    //         );
+    //       } else {
+    //         rowdata.OpenTime = Math.floor(this.currentItemData.OpenTime / 1000);
+    //       }
+    //       if (isNaN(this.currentItemData.Endtime)) {
+    //         rowdata.Endtime = Math.floor(
+    //           this.currentItemData.Endtime.getTime() / 1000
+    //         );
+    //       } else {
+    //         rowdata.Endtime = Math.floor(this.currentItemData.Endtime / 1000);
+    //       }
+    //       if (isNaN(this.currentItemData.Createtime)) {
+    //         rowdata.Createtime = Math.floor(
+    //           this.currentItemData.Createtime.getTime() / 1000
+    //         );
+    //       } else {
+    //         rowdata.Createtime = Math.floor(
+    //           this.currentItemData.Createtime / 1000
+    //         );
+    //       }
+    //       if (rowdata.Id > 0) {
+    //         // 编辑
+    //         let res = await editClassInfo(rowdata.Id, "", rowdata);
+    //         this.isShowPlatformDialog = false;
+    //         this.currentItemData = res.data;
+    //         this.$emit("subClickEvent", 1, res.data);
+    //         this.$message({
+    //           message: "修改成功",
+    //           type: "success"
+    //         });
+    //       } else {
+    //         // 创建
+    //         let res = await addClassInfo("", "", rowdata);
 
-            this.$message({
-              message: "创建成功",
-              type: "success"
-            });
-            this.$emit("subClickEvent", 0, res.data);
-          }
-          this.currentItemData.OpenTime = this.currentItemData.OpenTime * 1000;
-          this.currentItemData.Endtime = this.currentItemData.Endtime * 1000;
-          this.currentItemData.Createtime =
-            this.currentItemData.Createtime * 1000;
-        } else {
-          return false;
-        }
-      });
-    }
+    //         this.$message({
+    //           message: "创建成功",
+    //           type: "success"
+    //         });
+    //         this.$emit("subClickEvent", 0, res.data);
+    //       }
+    //       this.currentItemData.OpenTime = this.currentItemData.OpenTime * 1000;
+    //       this.currentItemData.Endtime = this.currentItemData.Endtime * 1000;
+    //       this.currentItemData.Createtime =
+    //         this.currentItemData.Createtime * 1000;
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // }
   }
 };
 </script>  

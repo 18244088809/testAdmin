@@ -22,6 +22,7 @@
           <div v-html="scope.row.QuestionContent" class="QuestionContentImg"></div>
         </template>
       </el-table-column>
+       <el-table-column prop="BookId" label="教材ID" width="60"></el-table-column>
       <el-table-column prop="ZhangId" label="章" width="50"></el-table-column>
       <el-table-column prop="JieId" label="节" width="50" show-overflow-tooltip></el-table-column>
       <el-table-column prop="TopicId" label="知识点" width="80" show-overflow-tooltip></el-table-column>
@@ -48,7 +49,9 @@ export default {
   props: {
     exerciseItem: {
       type: Object,
-      default: {}
+      default: function() {
+        return { Id: 0 };
+      }
     }
   },
   data() {

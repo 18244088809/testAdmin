@@ -71,8 +71,8 @@
         @selection-change="contractSelectionChange"
       >
         <el-table-column type="selection" width="40" />
-        <el-table-column prop="StudentID" width="70" label="学员编号" />
-        <el-table-column prop="AddTime" width="130" :formatter="TimeFormatter" label="报名时间" />
+        <el-table-column prop="StudentID" width="80" label="学员编号" />
+        <el-table-column prop="AddTime" width="110" :formatter="TimeFormatter" label="报名时间" />
         <el-table-column label="合同名称" width="210" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <span
@@ -81,17 +81,17 @@
             >{{ scope.row.Title }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="PlatformLabel" width="110" label="归属校区" />
-        <el-table-column prop="StudentLabel" width="120" label="学员姓名" fixed />
+        <el-table-column prop="PlatformLabel"  label="归属校区" />
+        <el-table-column prop="StudentLabel" width="80" label="学员姓名" fixed />
         <el-table-column prop="Telephone" width="120" label="学员电话" />
 
         <el-table-column prop="CourseLabel" width="220" label="报名课程" :show-overflow-tooltip="true" />
-        <el-table-column prop="CoursePrice" width="70" label="课程价格" />
-        <el-table-column prop="ShijiPrice" width="70" label="实收学费" />
-        <el-table-column prop="QiankuanPrice" width="70" label="欠款金额" />
+        <el-table-column prop="CoursePrice" width="80" label="课程价格" />
+        <el-table-column prop="ShijiPrice" width="80" label="实收学费" />
+        <el-table-column prop="QiankuanPrice" width="80" label="欠款金额" />
         <el-table-column prop="PayMethod" width="100" label="付款方式" />
         <el-table-column prop="Comments" label="备注" width="200" :show-overflow-tooltip="true" />
-        <el-table-column label="操作" width="80" fixed="right">
+        <el-table-column label="操作" width="60" fixed="right">
           <template slot-scope="scope">
             <el-button type="primary" @click="deleteContractRecord(scope.row.Id,scope.$index)">删除</el-button>
           </template>

@@ -3,11 +3,11 @@
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
         <div class="m-b-20" v-for="(item,index) in dataList" :key="index">
-          <div class="cardBorder bg-ccc">
+          <div class="cardBorder  ">
             <el-upload
               :auto-upload="false"
               action
-              class="wid_100 flex_dom bg-ddd"
+              class="wid_100 flex_dom bg-eee"
               :show-file-list="false"
               :on-change="function(file, fileList){return uploadBannerImg(file,fileList,index)}"
             >
@@ -19,12 +19,12 @@
                 style="width: 100%; height: 160px"
               >&nbsp;点击上传</i>
             </el-upload>
-            <el-form :inline="true" :model="item" class="demo-form-inline m-t-10">
+            <el-form :inline="true" :model="item"  >
               <el-form-item label="标题">
                 <el-input v-model="item.label" placeholder="请输入标题"></el-input>
               </el-form-item>
-              <el-form-item label="跳转地址：" style="width:100%">
-                <el-input v-model="item.href" placeholder="请输入连接地址"></el-input>
+              <el-form-item label="跳转地址：">
+                <el-input v-model="item.href"  style="width:100%" placeholder="请输入连接地址"></el-input>
               </el-form-item>
             </el-form>
             <div class="dele_banner" @click="deleBannerItem(index)">

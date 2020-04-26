@@ -32,7 +32,9 @@ export default {
     // 班级
     formItemData: {
       type: Object,
-      default: { Id: 0 }
+       default: function() {
+        return { Id: 0 };
+      }
     }
   },
 

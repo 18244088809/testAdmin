@@ -3,24 +3,20 @@
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-10 overflow_auto my_scrollbar p-r-20 p-l-5">
         <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
-          <div class="flex_mid cardBorder bg-ccc">
-            <el-form label-width="70px" :model="item" style="width:100%">
-              <div class="between-center">
-                <el-form-item label="模块名称" style="width:100%">
+          <div class="flex_dom cardBorder"> 
+              <el-form label-width="70px" :model="item" style="width:200px" class="bg-f5 p-t-5">
+                <el-form-item label="模块名称">
                   <el-input v-model="item.label" style="width:100%" placeholder="填写模块名"></el-input>
                 </el-form-item>
-                <el-form-item label style="width:200px">
-                  <el-button type="primary" @click="openContentEditer(index)">编辑内容</el-button>
-                </el-form-item>
-                <el-form-item label="是否显示" style="width:200px">
+                <el-form-item label="是否显示">
                   <el-checkbox v-model="item.display" style="width:100%"></el-checkbox>
                 </el-form-item>
-              </div>
-              <el-form-item label="内容">
-                <div v-html="item.content" />
-              </el-form-item>
-            </el-form>
-
+                <el-form-item label>
+                  <el-button type="primary" @click="openContentEditer(index)">编辑内容</el-button>
+                </el-form-item>
+              </el-form>
+              <div style="width:100%" v-html="item.content" />
+          
             <div class="dele_banner" @click="deleBusinessItem(index)">
               <i class="el-icon-error font24 color-999"></i>
             </div>
@@ -75,14 +71,14 @@ export default {
         this.dataList = res.data ? res.data : [];
       }
     },
-    
+
     // 编辑或者添加之后更新表格数据-资料列表
     updateList(rowData) {
       this.$set(this.dataList, this.currentIndex, rowData);
 
       this.contentDilag = false;
     },
-// 保存banner列表
+    // 保存banner列表
     async saveBannerList() {
       let res = await SetIndexItem(
         this.currentPlatform + "/business",
@@ -100,7 +96,7 @@ export default {
       this.currentIndex = index;
       this.contentDilag = true;
       this.currentItem = this.dataList[index];
-      this.currentItem.Id = index; 
+      this.currentItem.Id = index;
     },
     // 添加banner
     addBusinessItem() {
@@ -112,12 +108,12 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(async () => { 
+      }).then(async () => {
         this.dataList.splice(index, 1);
         this.$message({
           message: "删除成功,请最后点击保存按钮",
           type: "success"
-        }); 
+        });
       });
     }
   },
@@ -144,7 +140,7 @@ export default {
   position: relative;
   box-sizing: border-box;
   border-radius: 5px;
-  border: 1px dashed rgba(46, 84, 56, 0.2);
+  border: 2px dashed rgba(46, 84, 56, 0.2);
 }
 .el-upload {
   border: 1px dashed #e0e0e0;

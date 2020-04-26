@@ -1,20 +1,26 @@
 <template>
   <div>
-    选择要发给学员的试卷 
+    选择要发给学员的试卷
     <el-table
       tooltip-effect="light"
       :data="exerciseList"
       border
       style="width: 100%"
-      height="100%"
+      :height="tableHeight"
       ref="refElTabel"
       @selection-change="selectionChange"
     >
       <el-table-column type="selection" width="30" />
       <el-table-column prop="Id" label="ID" width="50"></el-table-column>
-       <el-table-column prop="Label" label="试卷来源" :formatter="sourceFomratter" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column
+        prop="Label"
+        width="100"
+        label="试卷来源"
+        :formatter="sourceFomratter"
+        :show-overflow-tooltip="true"
+      ></el-table-column>
       <el-table-column prop="Label" label="试卷名称" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Used" label="是否已经学过" width="100"></el-table-column>
+      <el-table-column prop="Used" label="是否已经发过" width="100"></el-table-column>
       <el-table-column prop="Examtime" label="考试时间(分钟" width="110"></el-table-column>
     </el-table>
     <div class="between-center m-v-10">
@@ -29,23 +35,23 @@
           :total="allRows"
         ></el-pagination>
       </div>
-    </div> 
+    </div>
   </div>
 </template>
 
 <script>
 import { getClassExercise } from "@/api/exercise";
 import { sendStudentsExercise } from "@/api/class";
-import common from "@/utils/common"; 
+import common from "@/utils/common";
 import { isDate } from "xe-utils/methods";
 export default {
   name: "questionsList",
-  
+
   props: {
     classItem: {
       type: Object,
-      default: {
-        Id: 0
+      default: function() {
+        return { Id: 0 };
       }
     },
     // 校区的表单数据
@@ -65,6 +71,7 @@ export default {
       nowPage: 1,
       // 每页数据的总条
       rows: 50,
+      tableHeight: window.innerHeight - 300,
       // 获取选中的学生ID
       selectedIDList: [],
       currentItemData: {},
@@ -79,6 +86,7 @@ export default {
   },
   methods: {
     fire() {
+       this.tableHeight = window.innerHeight - 300;
       this.getThisClassExercise();
     },
     addNewExercise() {
@@ -98,19 +106,17 @@ export default {
         limit: that.rows,
         offset: offsetRow
       });
-      if (res.code == 200) {
-        that.exerciseList = res.data ? res.data : [];
-        let exerciseids = that.classItem.Exerciseids.split(",");
-        that.exerciseList.forEach(execise => {
-          execise.Used = "没有学";
-          exerciseids.forEach(exericseid => {
-            if (exericseid == execise.Id) {
-              execise.Used = "已经学过";
-            }
-          });
+      that.exerciseList = res.data ? res.data : [];
+      let exerciseids = that.classItem.Exerciseids.split(",");
+      that.exerciseList.forEach(execise => {
+        execise.Used = "没有发给班级";
+        exerciseids.forEach(exericseid => {
+          if (exericseid == execise.Id) {
+            execise.Used = "已经发给学员";
+          }
         });
-        that.allRows = res.title;
-      }
+      });
+      that.allRows = res.title;
     }, // 课程大类改变
     // 获取选中的学生
     selectionChange(val) {
@@ -119,8 +125,14 @@ export default {
         this.selectedIDList.push(item.Id);
       });
     },
-    sourceFomratter(item){
-console.log(item,"---------")
+    sourceFomratter(item) {
+      if (item.CourseID > 0) {
+        return "教材编委发布";
+      } else if (item.ClassID > 0) {
+        return "班级内部发布";
+      } else {
+        return "未知";
+      }
     },
 
     // 添加或编辑数据
@@ -138,15 +150,30 @@ console.log(item,"---------")
           enabledExerciseIDS.push(execise);
         }
       });
-
+      let that = this;
       let res = await sendStudentsExercise(
-        this.classItem.Id,
-        { exerciseids: enabledExerciseIDS.join(",") },
-        this.classAllStuList
+        that.classItem.Id,
+        "",
+        enabledExerciseIDS
       );
-      this.classAllStuList = res.data ? res.data : [];
+      that.$emit("updateClassItem", res.data);
+      that.$message({
+        message: "发送成功",
+        type: "success"
+      });
+      this.$nextTick(() => {
+        that.exerciseList.forEach(execise => {
+          execise.Used = "没有发给班级";
+          this.selectedIDList.forEach(exericseid => {
+            if (exericseid == execise.Id) {
+              execise.Used = "已经发给学员";
+            }
+          });
+        });
+
+        that.exerciseList = [...that.exerciseList];
+      });
     }
-  },
-  mounted() {}
+  }
 };
 </script>  

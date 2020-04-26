@@ -59,8 +59,8 @@
         <el-table-column prop="Description" :show-overflow-tooltip="true" label="备注" />
         <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="scope">
-            <el-button type="success" @click="addChapter(scope.$index, scope.row)">内容管理</el-button>
-            <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题管理</el-button>
+            <el-button type="success" @click="addChapter(scope.$index, scope.row)">教材内容</el-button>
+            <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题试卷</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -232,7 +232,7 @@ export default {
     questionManager: function(index, row) {
       this.$router.push({
         name: "questionsList",
-        query: { Id: row.Id }
+        query: { bookId: row.Id }
       });
     }
     // 学生作业

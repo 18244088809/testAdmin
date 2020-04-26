@@ -1,10 +1,10 @@
 <template>
   <div class="font16 hgt_full m-t-10">
-    <div class="flex_column hgt_full" v-if="exerciseItem&&exerciseItem.Id>0">
+    <div class="flex_column hgt_full">
       <div class="between-center">
         <!-- <span class="m-b-10">科目名称：{{exerciseItem}}</span> -->
         <el-form :inline="true" class="demo-form-inline">
-          <el-form-item v-if="classID>0">
+          <el-form-item v-if="exerciseItem.ClassID>0&&CourseItem.Id==0">
             <el-dropdown @command="selectCourse">
               <span class="el-dropdown-link">
                 {{"《"+CourseItem.Label+"》"}}
@@ -108,7 +108,7 @@
           ref="refElTabel"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55" v-if="classID>0"></el-table-column>
+          <el-table-column type="selection" width="55" v-if="CourseItem.Id>0"></el-table-column>
           <el-table-column prop="Id" label="ID" width="60"></el-table-column>
           <el-table-column prop="QuestionContent" label="题干" :show-overflow-tooltip="true">
             <template slot-scope="scope">
@@ -143,7 +143,7 @@
         </el-table>
 
         <div class="between-center m-v-15">
-          <el-button v-if="this.classID ==0" type="primary" @click="openAddQuestionDialog">新增试题</el-button>
+          <el-button v-if="exerciseItem.Id==0" type="primary" @click="openAddQuestionDialog">新增试题</el-button>
           <el-button v-else type="primary" @click="saveExerciseQuestions">保存关联</el-button>
 
           <div>
@@ -159,7 +159,7 @@
         </div>
       </div>
     </div>
-    <span v-else>请先选择左边的试卷</span>
+    <!-- <span v-else>请先选择左边的试卷</span> -->
     <!-- 弹出框 -->
     <my-dialog :visible.sync="questionRowShow" :showLeft="false" title="题目详情编辑">
       <div slot="right_content">
@@ -180,7 +180,11 @@ import $ImgHttp from "@/api/ImgAPI";
 import { bookChapter } from "@/api/book";
 import { getCourseBookByCourse } from "@/api/course";
 import { getClassCourse } from "@/api/class";
-import { getQuestionOfBook, saveExamQuestions } from "@/api/exercise";
+import {
+  getQuestionOfBook,
+  saveExamQuestions,
+  getCourseExercise
+} from "@/api/exercise";
 import common from "@/utils/common";
 export default {
   name: "questionsList",
@@ -189,13 +193,15 @@ export default {
     questionRowDialog
   },
   props: {
-    classID: {
-      typ: Number,
-      default: 0
-    },
+    // classID: {
+    //   typ: Number,
+    //   default: 0
+    // },
     exerciseItem: {
       typ: Object,
-      default: { Id: 0 }
+      default: function() {
+        return { Id: 0 };
+      }
     }
   },
   data() {
@@ -210,7 +216,7 @@ export default {
       // 当前页数
       nowPage: 1,
       // 每页数据的总条
-      rows: 7,
+      rows: 30,
       // 查询-搜索
       CourseItem: {
         SN: "",
@@ -290,23 +296,30 @@ export default {
     async fire() {
       this.tableHeight = window.innerHeight - 300;
       this.thisPageQuestionList = [];
-      if (this.$route.query.Id) {
-        this.currentItemData.BookId = parseInt(this.$route.query.Id);
+      if (this.$route.query.bookId) {
+        this.currentItemData.BookId = parseInt(this.$route.query.bookId);
         this.bookChapter();
         this.getQuesListOfBookZhangJie();
-      } else if (this.classID > 0) {
-        if (!this.exerciseItem || this.exerciseItem.Id == 0) {
-          return;
+      } else if (this.exerciseItem) { 
+        if (this.exerciseItem.ClassID > 0) { 
+          if (this.exerciseItem.Id == 0) {
+            return;
+          }
+          this.allSelectedQuesionIDS = [];
+          if (this.exerciseItem.QuestionId != "") {
+            let oldQuestionIDs = this.exerciseItem.QuestionId.split(",");
+            oldQuestionIDs.forEach(id => {
+              this.allSelectedQuesionIDS.push(parseInt(id));
+            });
+          }
+          let res = await getClassCourse(this.exerciseItem.ClassID, {});
+          this.courseOfClass = res.data ? res.data : [];
+        } else if (this.exerciseItem.CourseID > 0) {
+          let courseItem = {};
+          courseItem.Id = this.exerciseItem.CourseID; 
+          this.selectCourse(courseItem);
+          
         }
-        this.allSelectedQuesionIDS = [];
-        if (this.exerciseItem.QuestionId != "") {
-          let oldQuestionIDs = this.exerciseItem.QuestionId.split(",");
-          oldQuestionIDs.forEach(id => {
-            this.allSelectedQuesionIDS.push(parseInt(id));
-          });
-        }
-        let res = await getClassCourse(this.classID, {});
-        this.courseOfClass = res.data ? res.data : [];
       }
     },
     // 复制文本

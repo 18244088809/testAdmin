@@ -104,7 +104,9 @@ export default {
     // 表单数据
     BookChapter: {
       type: Object,
-      default: {}
+      default: function() {
+        return { Id: 0 };
+      }
     }
     ,
     BookLabel: {
