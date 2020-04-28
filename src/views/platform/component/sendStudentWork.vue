@@ -28,7 +28,7 @@
       :data="oldWorkList"
       border
       style="width: 100%"
-      height="100%"
+     :height="tableHeight"
       ref="refElTabel"
     >
       <el-table-column prop="WorkName" label="作业记录" :show-overflow-tooltip="true"></el-table-column>
@@ -77,7 +77,8 @@ export default {
       // 单条学员的数据
       customFormData: {},
       //这个班级曾经发过的作业
-      oldWorkList: []
+      oldWorkList: [],
+       tableHeight: window.innerHeight - 250,
     };
   },
   watch: {
@@ -86,9 +87,10 @@ export default {
     }
   },
 
-  mounted() {},
+  mounted() {this.fire();},
   methods: {
     fire() {
+        this.tableHeight = window.innerHeight - 250;
       this.getClassOldWorks();
       let now = new Date();
       this.workName =
@@ -153,7 +155,6 @@ export default {
       this.oldWorkList = res.data;
       this.allRows = res.title;
     }
-  },
-  mounted() {}
+  }
 };
 </script>  

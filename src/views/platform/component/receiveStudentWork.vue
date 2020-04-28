@@ -18,13 +18,16 @@
       :data="studentFinishWorkList"
       border
       style="width: 100%"
-      height="500px"
+     :height="tableHeight"
       ref="refElTabel"
     >
-     <el-table-column prop="StudentName" label="学员姓名" width="110"></el-table-column>
+      <el-table-column prop="StudentName" label="学员姓名" width="110"></el-table-column>
       <el-table-column label="作业记录" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <a target="_blank" @click="seeWrongQuestion(scope.$index, scope.row)">{{scope.row.WorkName}}</a>
+          <a
+            target="_blank"
+            @click="seeWrongQuestion(scope.$index, scope.row)"
+          >{{scope.row.WorkName}}</a>
         </template>
       </el-table-column>
       <el-table-column prop="TeacherLabel" label="老师" width="110"></el-table-column>
@@ -55,7 +58,7 @@ export default {
   props: {
     classItem: {
       type: Object,
-       default: function() {
+      default: function() {
         return { Id: 0 };
       }
     },
@@ -84,6 +87,7 @@ export default {
           { required: true, message: "班级名称不能为空", trigger: "blur" }
         ]
       },
+       tableHeight: window.innerHeight - 200,
       studentFinishWorkList: [],
       studentDoExerciseDailog: false,
       currentIndex: 0
@@ -99,6 +103,7 @@ export default {
       return this.common.dateFormat(cellValue);
     },
     fire() {
+      this.tableHeight = window.innerHeight - 200;
       this.getStudentsWorks();
     },
     // 分页获取数据
@@ -106,18 +111,25 @@ export default {
       this.nowPage = val;
       this.getStudentsWorks();
     },
+    async seeWrongQuestion(index, row) {
+      let href = "/studentwork/scratch3/index.html?p="+this.classItem.PlatformID+"&id="+row.Id;
+      window.open(href)
+ 
+    },
 
     // 查看这个学员的错题
-    async getStudentsWorks(index, row) {
+    async getStudentsWorks() {
+      let that = this;
       let offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getClassStudentWorks(
-        this.classItem.Id + "/" + this.readed,
+        that.classItem.Id + "/" + that.readed,
         {
-          limit: this.rows,
+          limit: that.rows,
           offset: offsetRow
         }
       );
-      this.studentFinishWorkList = res.data ? res.data : [];
+      that.studentFinishWorkList = res.data ? res.data : [];
+      that.allRows = res.title;
     }
   }
 };

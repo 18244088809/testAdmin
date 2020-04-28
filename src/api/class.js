@@ -211,6 +211,16 @@ export function getClassExercise(url, query, data) {
   })
 }
 
+//获取单个学员的作业 
+export function getOneStudentWorks(url, query, data) {
+  return request({
+    url: '/class/getOneStudentWorks/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
+
 
 
 

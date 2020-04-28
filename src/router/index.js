@@ -156,6 +156,7 @@ export const asyncRoutes = [
   bookRouter,
   customRouter,
   // 404 page must be placed at the end !!!
+  { path: '/scratch3/*', redirect: '/scratch3/index', hidden: true },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
