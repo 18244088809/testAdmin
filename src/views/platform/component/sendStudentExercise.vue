@@ -1,6 +1,6 @@
 <template>
   <div>
-    选择要发给学员的试卷
+    选择要发给学员的作业
     <el-table
       tooltip-effect="light"
       :data="exerciseList"
@@ -15,11 +15,11 @@
       <el-table-column
         prop="Label"
         width="100"
-        label="试卷来源"
+        label="作业来源"
         :formatter="sourceFomratter"
         :show-overflow-tooltip="true"
       ></el-table-column>
-      <el-table-column prop="Label" label="试卷名称" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Label" label="作业名称" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Used" label="是否已经发过" width="100"></el-table-column>
       <el-table-column prop="Examtime" label="考试时间(分钟" width="110"></el-table-column>
     </el-table>
