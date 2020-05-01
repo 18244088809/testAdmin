@@ -9,11 +9,11 @@
           :file-list="fileList"
           :on-change="uploadBannerImg"
         >
-          <el-button size="small" type="primary">上传作业</el-button>
+          <el-button size="small" type="primary">上传作品</el-button>
         </el-upload>
       </el-form-item>
-      <el-form-item label="作业名称:">
-        <el-input placeholder="输入这次作业的名字 以便区别" v-model="workName" />
+      <el-form-item label="作品名称:">
+        <el-input placeholder="输入这次作品的名字 以便区别" v-model="workName" />
       </el-form-item>
       <el-form-item label="备注:">
         <el-input  v-model="workDescription" />
@@ -31,7 +31,7 @@
      :height="tableHeight"
       ref="refElTabel"
     >
-      <el-table-column prop="WorkName" label="作业记录" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="WorkName" label="作品记录" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="TeacherLabel" label="老师" width="110"></el-table-column>
       <el-table-column prop="Createtime" label="发送时间" :formatter="TimeFormatter" width="110"></el-table-column>
     </el-table>
@@ -76,7 +76,7 @@ export default {
       rows: 40,
       // 单条学员的数据
       customFormData: {},
-      //这个班级曾经发过的作业
+      //这个班级曾经发过的作品
       oldWorkList: [],
        tableHeight: window.innerHeight - 250,
     };
@@ -103,7 +103,7 @@ export default {
         now.getHours() +
         ":" +
         now.getMinutes() +
-        " 分的作业";
+        " 分的作品";
     },
     // 图片上传
     async uploadBannerImg(file) {
@@ -134,7 +134,7 @@ export default {
     async sendToStudents() {
       if (this.fileList.length == 0) {
         this.$message({
-          message: "你还没有上传作业",
+          message: "你还没有上传作品",
           type: "warning"
         });
         return;

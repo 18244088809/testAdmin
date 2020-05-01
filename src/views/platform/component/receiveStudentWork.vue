@@ -22,11 +22,11 @@
       ref="refElTabel"
     >
       <el-table-column prop="StudentName" label="学员姓名" width="110"></el-table-column>
-      <el-table-column label="作业记录" :show-overflow-tooltip="true">
+      <el-table-column label="作品发送记录" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <a
             target="_blank"
-            @click="seeWrongQuestion(scope.$index, scope.row)"
+            @click="openStudentWork(scope.$index, scope.row)"
           >{{scope.row.WorkName}}</a>
         </template>
       </el-table-column>
@@ -111,7 +111,7 @@ export default {
       this.nowPage = val;
       this.getStudentsWorks();
     },
-    async seeWrongQuestion(index, row) {
+    async openStudentWork(index, row) {
       let href = "/studentwork/scratch3/index.html?p="+this.classItem.PlatformID+"&id="+row.Id;
       window.open(href)
  
