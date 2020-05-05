@@ -1,39 +1,32 @@
 <template>
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
-      <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-10 p-l-20 p-v-15">
-        <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
-          <div class="flex_mid cardBorder bg-ccc">
+      <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
+        <div class="m-b-20" v-for="(item,index) in dataList" :key="index">
+          <div class="cardBorder  ">
             <el-upload
               :auto-upload="false"
               action
-              class="bg-ddd"
+              class="wid_100 flex_dom bg-eee"
               :show-file-list="false"
               :on-change="function(file, fileList){return uploadBannerImg(file,fileList,index)}"
             >
-              <img v-if="item.image" :src="item.image" style="width: auto; height: 140px" />
+              <img v-if="item.image" :src="item.image" style="width:auto; height: 160px" />
               <i
                 v-else
                 slot="default"
-                class="el-icon-plus"
-                style="width: 140px; height: 140px"
+                class="el-icon-plus flex_1"
+                style="width: 100%; height: 160px"
               >&nbsp;点击上传</i>
             </el-upload>
-
-            <el-form label-width="90px" :model="item" style="width:100%">
-              <div class="flex_mid">
-                <el-form-item label="姓名" style="width:30%">
-                  <el-input v-model="item.label" style="width:100%" placeholder="老师姓名"></el-input>
-                </el-form-item>
-                <el-form-item label="跳转地址：" class="m-l-20" style="width:70%">
-                  <el-input v-model="item.href" placeholder="请输入连接地址.没有跳转页面可以不输入"></el-input>
-                </el-form-item>
-              </div>
-              <el-form-item label="简介">
-                <el-input type="textarea" rows="5" v-model="item.content" placeholder="老师的介绍"></el-input>
+            <el-form :inline="true" :model="item"  >
+              <el-form-item label="证书名称">
+                <el-input v-model="item.label" placeholder="证书名称"></el-input>
+              </el-form-item>
+              <el-form-item label="跳转地址：">
+                <el-input v-model="item.href"  style="width:100%" placeholder="请输入连接地址"></el-input>
               </el-form-item>
             </el-form>
-
             <div class="dele_banner" @click="deleBannerItem(index)">
               <i class="el-icon-error font24 color-999"></i>
             </div>
@@ -52,7 +45,7 @@
 import { getWebContent, setWebContent } from "@/api/platform";
 import $ImgHttp from "@/api/ImgAPI";
 export default {
-  name: "webTeacher",
+  name: "webHonor",
   data() {
     return {
       // banner列表
@@ -63,14 +56,20 @@ export default {
 
   methods: {
     async GetIndexBanner() {
-      let res = await getWebContent(  this.currentPlatform +"/teacher", "");
-      if (res.code == 200) {
-        this.dataList = res.data ? res.data : [];
-      }
+      let res = await getWebContent( this.currentPlatform +"/honor", "");
+       res.data= res.data ? res.data :[];
+       res.data.forEach(item => {
+        if (typeof str == "string") {
+          this.dataList.push(JSON.parse(item));
+        } else {
+          this.dataList.push(item);
+        }
+      });
+ 
     },
     // 图片上传
     async uploadBannerImg(file, fileList, index) {
-      let res = await $ImgHttp.UploadImg("teacher", file.raw);
+      let res = await $ImgHttp.UploadImg(this.currentPlatform + "/honor", file.raw);
       if (res.code != 200) {
         this.$message({
           message: res.data,
@@ -87,8 +86,7 @@ export default {
     },
     // 保存banner列表
     async saveBannerList() {
-      let res = await setWebContent(
-        this.currentPlatform + "/teacher",
+      let res = await setWebContent( this.currentPlatform +"/honor",
         "",
         this.dataList
       );
@@ -143,11 +141,15 @@ export default {
   border-radius: 5px;
   border: 1px dashed rgba(46, 84, 56, 0.2);
 }
-.el-upload {
+.cardBorder >>> .el-upload {
+  width: 100%;
+}
+.el-icon-plus {
   border: 1px dashed #e0e0e0;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
+
   overflow: hidden;
 }
 </style>

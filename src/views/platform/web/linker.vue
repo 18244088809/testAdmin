@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { GetIndexItem, SetIndexItem } from "@/api/website";
+import { getWebContent, setWebContent } from "@/api/platform";
 
 export default {
   name: "linker",
@@ -47,14 +47,14 @@ export default {
 
   methods: {
     async GetIndexBanner() {
-      let res = await GetIndexItem(this.currentPlatform + "/linker", "");
+      let res = await getWebContent(  this.currentPlatform +"/linker", "");
       if (res.code == 200) {
         this.dataList = res.data ? res.data : [];
       }
     },
     // 保存banner列表
     async saveBannerList() {
-      let res = await SetIndexItem(
+      let res = await setWebContent(
         this.currentPlatform + "/linker",
         "",
         this.dataList

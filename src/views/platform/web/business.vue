@@ -44,7 +44,7 @@
 
 <script>
 import businessFormData from "@/views/platform/web/component/businessFormData";
-import { GetIndexItem, SetIndexItem } from "@/api/website";
+import { getWebContent, setWebContent } from "@/api/platform";
 import $ImgHttp from "@/api/ImgAPI";
 import myDialog from "@/components/myDialog/myDialog";
 export default {
@@ -66,7 +66,7 @@ export default {
 
   methods: {
     async GetWebBusiness() {
-      let res = await GetIndexItem(this.currentPlatform + "/business", "");
+      let res = await getWebContent(  this.currentPlatform +"/business", "");
       if (res.code == 200) {
         this.dataList = res.data ? res.data : [];
       }
@@ -80,7 +80,7 @@ export default {
     },
     // 保存banner列表
     async saveBannerList() {
-      let res = await SetIndexItem(
+      let res = await setWebContent(
         this.currentPlatform + "/business",
         "",
         this.dataList

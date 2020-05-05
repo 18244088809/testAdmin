@@ -43,7 +43,7 @@
       >
         <el-table-column width="80" label="头像">
           <template slot-scope="scope">
-            <img :src="scope.row.face" class="wid28" />
+            <img :src="scope.row.Face" class="wid28" />
           </template>
         </el-table-column>
         <el-table-column prop="Id" label="ID" width="50"></el-table-column>
@@ -55,14 +55,14 @@
             >{{scope.row.Realname}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="role" label="身份" width="80">
+        <el-table-column prop="Role" label="身份" width="80">
           <template slot-scope="scope">
-            <span>{{common.FormatSelect(common.managerRoleList,scope.row.role)}}</span>
+            <span>{{common.FormatSelect(common.managerRoleList,scope.row.Role)}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="Sex" width="50" label="性别"></el-table-column>
-        <el-table-column prop="tel" label="电话号码" width="100"></el-table-column>
-        <el-table-column prop="info" label="个人描述" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="Tel" label="电话号码" width="100"></el-table-column>
+        <el-table-column prop="Info" label="个人描述" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
             <el-button type="danger" @click="resetPassword(scope.$index, scope.row)">重置密码</el-button>
@@ -279,7 +279,7 @@ export default {
       this.$refs.refAlarmForm.setTarget(
         row.Id,
         "给["+row.Realname+"]发送提醒",
-        from.Realname + "(" + from.Sex + ")" + from.tel + " 对你说:"
+        from.Realname + "(" + from.Sex + ")" + from.Tel + " 对你说:"
       );
     },
     // 重置密码

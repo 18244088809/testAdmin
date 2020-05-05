@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { GetIndexItem, SetIndexItem } from "@/api/website";
+import { getWebContent, setWebContent } from "@/api/platform";
 import $ImgHttp from "@/api/ImgAPI";
 export default {
   name: "webBanner",
@@ -56,7 +56,7 @@ export default {
 
   methods: {
     async GetIndexBanner() {
-      let res = await GetIndexItem(this.currentPlatform + "/banner", "");
+      let res = await getWebContent(  this.currentPlatform +"/banner", "");
       if (res.code == 200) {
         this.dataList = res.data ? res.data : [];
       }
@@ -80,7 +80,7 @@ export default {
     },
     // 保存banner列表
     async saveBannerList() {
-      let res = await SetIndexItem(
+      let res = await setWebContent(
         this.currentPlatform + "/banner",
         "",
         this.dataList

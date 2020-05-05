@@ -52,3 +52,53 @@ export function setPlatformMaster(url, query, data) {
   })
 }
  
+
+
+//  
+export function getWebSiteFooterInfo(url, query, data) {
+  return request({
+    url: '/platform/getWebSiteFooterInfo/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
+export function getWebSiteInfo(url, query, data) {
+  return request({
+    url: '/platform/getWebSiteInfo/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
+export function setWebSiteInfo(url, query, data) {
+  return request({
+    url: '/platform/setWebSiteInfo/' + url,
+    method: 'put',
+    params: query,
+    data
+  })
+}
+
+
+//  
+export function setWebContent(url, query, data) {
+  return request({
+    url: '/platform/setWebContent/' + url,
+    method: 'put',
+    params: query,
+    data
+  })
+}
+
+
+//  
+export function getWebContent(url, query, data) {
+  return request({
+    url: '/platform/getWebContent/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
+ 

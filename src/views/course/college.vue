@@ -11,11 +11,7 @@
         style="width: 100%"
         ref="refElTabel"
       >
-        <el-table-column width="80" label="学院logo">
-          <template slot-scope="scope">
-            <img :src="scope.row.face" class="wid28" />
-          </template>
-        </el-table-column>
+         
         <el-table-column prop="Id" label="ID" width="50"></el-table-column>
         <el-table-column label="学院名称" width="120">
           <template slot-scope="scope">

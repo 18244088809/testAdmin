@@ -114,11 +114,6 @@ export const asyncRoutes = [
         name: 'docUpload',
         component: () => import('@/views/platform/web/docDownload'),
         meta: { title: 'docUpload', icon: "docUpload" }
-      }, {
-        path: 'guest',
-        name: 'guest',
-        component: () => import('@/views/system/guest'),
-        meta: { title: 'guest', icon: "wechat" }
       }
     ]
   },

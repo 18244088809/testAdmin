@@ -7,7 +7,7 @@ const bookRouter = {
     component: Layout,
     redirect: 'noRedirect',
     name: 'bookResearch',
-    meta: { title: 'bookResearch', icon: "book",  roles: [0]  },
+    meta: { title: 'bookResearch', icon: "book",  roles: [0,1]  },
     children: [
         {
             path: 'list',

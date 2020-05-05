@@ -7,7 +7,7 @@ import store from '@/store'
  * @param route
  */
 function hasPermission(role, route) { 
-  if (route.meta && route.meta.roles) {
+  if (route.meta && route.meta.roles) { 
     return route.meta.roles.includes(role)
   } else {
     return true
@@ -50,7 +50,7 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }) {
     return new Promise(async resolve => {
-      if (!store.getters.manager.tel) {
+      if (!store.getters.manager.Tel) {
         await store.dispatch('manager/getInfo')
       }
       let accessedRoutes
@@ -59,7 +59,7 @@ const actions = {
       //   accessedRoutes = asyncRoutes || []
       // } else {
         // 管理员
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, store.getters.manager.role)
+        accessedRoutes = filterAsyncRoutes(asyncRoutes, store.getters.manager.Role)
       // }
 
       // const topPlatformRoute = {
@@ -164,6 +164,11 @@ const actions = {
                 component: () => import('@/views/student/contractList'),
                 name: 'contractList' + index.toString(10),
                 meta: { title: 'contractList', icon: 'contract' }
+              }, {
+                path: 'guest/' + platform.Id,
+                name: 'guest' + index.toString(10),
+                component: () => import('@/views/platform/guest'),
+                meta: { title: 'guest', icon: "wechat" }
               }
             ]
           }

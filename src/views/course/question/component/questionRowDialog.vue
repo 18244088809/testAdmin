@@ -7,23 +7,26 @@
       :rules="questionFormRules"
     >
       <div class="between-center">
-        <el-form-item label="隶属于" >
+        <el-form-item label="隶属于">
           <span>
             第
             <el-input-number
-              :min="1"  style="width:90px"
+              :min="1"
+              style="width:90px"
               v-model="currentItemData.ZhangId"
               controls-position="right"
               :step="1"
             ></el-input-number>章 - 第
             <el-input-number
-              :min="1"  style="width:90px"
+              :min="1"
+              style="width:90px"
               v-model="currentItemData.JieId"
               controls-position="right"
               :step="1"
             ></el-input-number>节 - 第
             <el-input-number
-              :min="1"  style="width:90px"
+              :min="1"
+              style="width:90px"
               v-model="currentItemData.TopicId"
               controls-position="right"
               :step="1"
@@ -45,7 +48,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分值" prop="QuestionScore"  >
+        <el-form-item label="分值" prop="QuestionScore">
           <el-input-number
             :min="1"
             v-model="currentItemData.QuestionScore"
@@ -75,7 +78,7 @@
           v-model="currentItemData.QuestionAnalyse"
         ></el-input>
       </el-form-item>
-      <el-form-item label="作答提示"  prop="VideoAnalyse">
+      <el-form-item label="作答提示" prop="VideoAnalyse">
         <el-input
           v-model="currentItemData.VideoAnalyse"
           placeholder="请填写视频地址，如 http://www.te.com.cn/d.mp4 或 /test/video.mp4"
@@ -136,7 +139,7 @@
             :show-file-list="false"
             :on-change="function(file, fileList){return ImgUploadQuestion(file, fileList)}"
           >
-            <el-button>上传图片</el-button>
+            <el-button>{{ImgUI}}</el-button>
           </el-upload>
           <el-tooltip
             class="item cursor"
@@ -146,6 +149,25 @@
           >
             <span class="tag-read" :data-clipboard-text="ImgAddr" @click="copyText">{{ImgAddr}}</span>
           </el-tooltip>
+
+   
+            <el-upload
+              :auto-upload="false"
+              action
+              style="width:150px;height:150px"
+              :show-file-list="false"
+              :on-change="function(file){return uploadVideoFunc(file)}"
+            >
+              <video
+                :src="VideoSrc"
+                controls="controls"
+                preload="metadata"
+                style="width: auto; height:130px"
+              >您的浏览器不支持 video 标签预览。</video>
+              <el-button>上传视频</el-button>
+            </el-upload>
+            <span class="tag-read" :data-clipboard-text="VideoAddr" @click="copyText">{{VideoUI}}</span>
+         
           <el-button type="primary" @click="saveQuestion">确 认</el-button>
         </div>
       </el-form-item>
@@ -181,6 +203,10 @@ export default {
       isbusy: false,
       // 图片地址
       ImgAddr: "",
+      VideoSrc: "",
+      VideoAddr: "",
+      ImgUI: "上传图片",
+      VideoUI: "",
       // 选项字母
       words: ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
       // 题型信息
@@ -222,6 +248,32 @@ export default {
   methods: {
     setData() {
       this.currentItemData = this.formItemData;
+    },
+
+    uploadVideoFunc(file) {
+      let NameValue = "question-" + this.currentItemData.Id + ".mp4";
+      let that = this;
+      let res = common.uploadCosFile(
+        file,
+        "platform",
+        NameValue,
+        function(progressData) {
+          that.VideoUI = "上传进度:" + progressData.percent * 100 + "%";
+        },
+        function(err, data) {
+          if (!err) {
+            that.$message({
+              message: "上传成功",
+              type: "success"
+            });
+            that.VideoSrc = "https://" + data.Location;
+            that.VideoAddr = `<video preload="meta"  controls="controls" src="https://${data.Location}" />`;
+            that.VideoUI = "点击复制";
+          } else {
+            console.log("cos上传错误:", err);
+          }
+        }
+      );
     },
     // 从父组件获取的值
     getQuestionRow() {
@@ -287,6 +339,7 @@ export default {
         type: "success"
       });
       this.ImgAddr = `<img src="${res.data}" />`;
+      this.ImgUI = `点击上传`;
       this.isbusy = false;
     },
     // 修改数据

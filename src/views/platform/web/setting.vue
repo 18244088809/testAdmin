@@ -2,10 +2,10 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
-        <el-form label-width="120px" :model="platformWeb" style="width:100%">
+        <el-form   :model="platformWeb" style="width:100%">
           <div class="flex_dom">
             <el-form-item label="官网logo" style="width:100%">
-              <img  :src="platformWeb.logo" style="width: 130px; height:130px" />
+              <img :src="platformWeb.logo" style="width: 130px; height:130px" />
               <el-upload
                 :auto-upload="false"
                 action
@@ -15,13 +15,35 @@
                 <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
               </el-upload>
             </el-form-item>
+            <el-form-item label="浏览器图标" style="width:100%">
+              <img :src="platformWeb.shortcut" style="width: 130px; height:130px" />
+              <el-upload
+                :auto-upload="false"
+                action
+                :show-file-list="false"
+                :on-change="function(file){return uploadBannerImg(file,'shortcut')}"
+              >
+                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+              </el-upload>
+            </el-form-item>
             <el-form-item label="小程序二维码" style="width:100%">
-              <img  :src="platformWeb.xcxlogo" style="width: 130px; height:130px" />
+              <img :src="platformWeb.xcxlogo" style="width: 130px; height:130px" />
               <el-upload
                 :auto-upload="false"
                 action
                 :show-file-list="false"
                 :on-change="function(file){return uploadBannerImg(file,'xcxlogo')}"
+              >
+                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="宣传图片" style="width:100%">
+              <img :src="platformWeb.webSiteVideoImage" style="width: 130px; height:130px" />
+              <el-upload
+                :auto-upload="false"
+                action
+                :show-file-list="false"
+                :on-change="function(file){return uploadBannerImg(file,'webSiteVideoImage')}"
               >
                 <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
               </el-upload>
@@ -44,11 +66,20 @@
               </el-upload>
             </el-form-item>
           </div>
-
-          <el-form-item label="官网名称" style="width:100%">
-            <el-input v-model="platformWeb.Label" placeholder="校区名称.显示在官网以及发给学员的短信的落款上。尽量简短"></el-input>
-          </el-form-item>
-
+          <div class="flex_dom">
+            <el-form-item label="官网名称" style="width:100%">
+              <el-input v-model="platformWeb.Label" placeholder="校区名称."></el-input>
+            </el-form-item>
+            <el-form-item label="联系人" style="width:100%">
+              <el-input v-model="platformWeb.Administrator" placeholder="联系人."></el-input>
+            </el-form-item>
+            <el-form-item label="联系电话" style="width:100%">
+              <el-input v-model="platformWeb.Telephone" placeholder="联系电话."></el-input>
+            </el-form-item>
+            <el-form-item label="联系邮箱" style="width:100%">
+              <el-input v-model="platformWeb.Email" placeholder="联系邮箱"></el-input>
+            </el-form-item>
+          </div>
           <el-form-item label="官网介绍" style="width:100%">
             <el-input
               type="textarea"
@@ -67,6 +98,17 @@
           <el-form-item label="官网备案号" style="width:100%">
             <el-input v-model="platformWeb.Beian" placeholder="请填写正确的备案号，否则网站要被官方查封"></el-input>
           </el-form-item>
+          <el-form-item label="在线报名背景图" style="width:100%">
+            <img :src="platformWeb.zxbm" style="width: 130px; height:130px" />
+            <el-upload
+              :auto-upload="false"
+              action
+              :show-file-list="false"
+              :on-change="function(file){return uploadBannerImg(file,'zxbm')}"
+            >
+              <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+            </el-upload>
+          </el-form-item>
         </el-form>
       </div>
       <div class="m-v-15">
@@ -78,7 +120,7 @@
 
 <script>
 import platformRowDetail from "@/views/system/component/platformRowDetail";
-import { getWebSiteInfo, setWebSiteInfo } from "@/api/website";
+import { setWebSiteInfo, getWebSiteInfo } from "@/api/platform";
 import { getCosTempKey } from "@/api/cos";
 import common from "@/utils/common";
 import $ImgHttp from "@/api/ImgAPI";
@@ -102,11 +144,12 @@ export default {
     async GetWebSetting() {
       let res = await getWebSiteInfo(this.currentPlatform, "");
       if (res.code == 200) {
-        if (res.data == "") {
-          res.data = "{}";
-        }
-        this.platformWeb = JSON.parse(res.data);
-        this.platform = res.title;
+        this.platformWeb = res.data;
+        this.$store.getters.app.platformList.forEach(item => {
+          if (item.Id == res.title) {
+            this.platform = item;
+          }
+        });
       }
     },
     // 图片上传
@@ -119,7 +162,7 @@ export default {
         });
         return;
       }
-     this.platformWeb[item] = res.data;
+      this.platformWeb[item] = res.data;
       this.$message({
         message: "上传成功",
         type: "success"
@@ -130,7 +173,7 @@ export default {
     async saveBannerList() {
       let that = this;
       let res = await setWebSiteInfo(
-        that.currentPlatform,
+        this.currentPlatform,
         "",
         that.platformWeb
       );

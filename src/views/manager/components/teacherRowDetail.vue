@@ -19,11 +19,11 @@
         <el-input v-model="currentFormData.EnRealname" placeholder="请输入英文名"></el-input>
       </el-form-item>
       <el-form-item label="电话号码" prop="tel">
-        <el-input v-model="currentFormData.tel" placeholder="请输入电话号码"></el-input>
+        <el-input v-model="currentFormData.Tel" placeholder="请输入电话号码"></el-input>
       </el-form-item>
 
       <el-form-item label="角色" prop="role">
-        <el-select v-model="currentFormData.role" placeholder="请选择角色">
+        <el-select v-model="currentFormData.Role" placeholder="请选择角色">
           <el-option
             :label="item.Label"
             :key="index"
@@ -64,7 +64,7 @@
         <el-input v-model="currentFormData.video" placeholder="请填写视频地址"></el-input>
       </el-form-item>
       <el-form-item label="个人介绍">
-        <el-input type="textarea" :rows="3" v-model="currentFormData.info" placeholder="个人信息~"></el-input>
+        <el-input type="textarea" :rows="3" v-model="currentFormData.Info" placeholder="个人信息~"></el-input>
       </el-form-item>
     </el-form>
     <div>
@@ -126,7 +126,7 @@ export default {
         Username: [
           { required: true, message: '昵称不能为空', trigger: "blur" }
         ],
-        tel: [
+        Tel: [
           { required: true, message: '请输入电话号码', trigger: "blur" },
           {
             pattern: /^1[3456789]\d{9}$/,
@@ -134,7 +134,7 @@ export default {
             trigger: "blur"
           }
         ],
-        role: [
+        Role: [
           { required: true, message: '必须选择身份角色', trigger: "blur" }
         ],
         platformSelect: [

@@ -1,13 +1,13 @@
 
 <template>
   <div v-cloak class="font16 hgt_full">
-    <div class="flex_column hgt_full">
+    <span class="m-b-10">当前科目名称：{{ bookLabel }}</span>
+    <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的编委成员</span>
+    <div class="flex_column hgt_full" v-else>
       <vxe-toolbar>
         <template v-slot:buttons>
           <el-button v-if="isTableClose" type="success" @click="closeTables">合闭所有</el-button>
           <el-button v-else type="primary" @click="expandTables">展开所有</el-button>
-          <span class="m-b-10">当前科目名称：{{ bookLabel }}</span>
-          <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的编委成员</span>
         </template>
       </vxe-toolbar>
       <div class="hgt_full">

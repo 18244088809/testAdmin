@@ -10,7 +10,7 @@
                 <div v-show="showMineInfo">
                   <div class="flex_dom">
                     <div class="wid200">
-                      <img :src="mineData.face" alt class="wid200" />
+                      <img :src="mineData.Face" alt class="wid200" />
                     </div>
                     <div class="wid_50">
                       <el-form
@@ -29,13 +29,13 @@
                           <span>{{mineData.EnRealname}}</span>
                         </el-form-item>
                         <el-form-item label="电话号码:">
-                          <span>{{mineData.tel}}</span>
+                          <span>{{mineData.Tel}}</span>
                         </el-form-item>
                         <el-form-item label="性别:">
                           <span>{{mineData.Sex}}</span>
                         </el-form-item>
                         <el-form-item label="个人信息:">
-                          <span>{{mineData.info}}</span>
+                          <span>{{mineData.Info}}</span>
                         </el-form-item>
                       </el-form>
                       <div class="center-end m-t-30">
@@ -47,7 +47,7 @@
                 <div v-show="!showMineInfo">
                   <div class="flex_dom">
                     <div class="wid200 text-center">
-                      <img :src="mineData.face" alt class="wid200" />
+                      <img :src="mineData.Face" alt class="wid200" />
                       <el-upload
                         :multiple="false"
                         v-loading="isbusy"
@@ -73,14 +73,14 @@
                           <el-input v-model="mineData.EnRealname" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="电话号码">
-                          <el-input v-model="mineData.tel" autocomplete="off"></el-input>
+                          <el-input v-model="mineData.Tel" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="性别">
                           <el-radio v-model="mineData.Sex" label="男">男</el-radio>
                           <el-radio v-model="mineData.Sex" label="女">女</el-radio>
                         </el-form-item>
                         <el-form-item label="个人信息">
-                          <el-input type="textarea" :rows="3" v-model="mineData.info"></el-input>
+                          <el-input type="textarea" :rows="3" v-model="mineData.Info"></el-input>
                         </el-form-item>
                         <div class="center-end m-t-30">
                           <el-button @click="cancelEdit">取消</el-button>
@@ -196,7 +196,7 @@ export default {
       let that = this;
       let res = await $ImgAPI.UploadImg("manager", file.raw);
       if (res.code == 200) {
-        that.mineData.face = res.data;
+        that.mineData.Face = res.data;
         that.isbusy = false;
       } else {
         that.$message({

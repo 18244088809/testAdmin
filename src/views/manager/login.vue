@@ -123,7 +123,7 @@ export default {
     return {
       codeUrl: "",
       loginForm: {
-        tel: "13551322482",
+        tel: "",
         password: "",
         captcha:""
       },
