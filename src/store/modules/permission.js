@@ -132,6 +132,13 @@ const actions = {
                     meta: { title: 'teacher', icon: "hotteacher" }
                   },
                   {
+                    path: 'honor/' + platform.Id.toString(10),
+                    name: 'honor' + index.toString(10),
+                    component: () => import('@/views/platform/web/honor'),
+                    meta: { title: 'honorList', icon: "star" }
+                  },
+                  
+                  {
                     path: 'linker/' + platform.Id.toString(10),
                     name: 'linker' + index.toString(10),
                     component: () => import('@/views/platform/web/linker'),

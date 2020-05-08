@@ -131,6 +131,7 @@
             <el-button @click="addQuestionOption">添加选项</el-button>
             <el-button @click="deleteQuestionOption">删除最后项</el-button>
           </div>
+          {{ImgAddr}}
           <el-upload
             :auto-upload="false"
             action
@@ -150,24 +151,23 @@
             <span class="tag-read" :data-clipboard-text="ImgAddr" @click="copyText">{{ImgAddr}}</span>
           </el-tooltip>
 
-   
-            <el-upload
-              :auto-upload="false"
-              action
-              style="width:150px;height:150px"
-              :show-file-list="false"
-              :on-change="function(file){return uploadVideoFunc(file)}"
-            >
-              <video
-                :src="VideoSrc"
-                controls="controls"
-                preload="metadata"
-                style="width: auto; height:130px"
-              >您的浏览器不支持 video 标签预览。</video>
-              <el-button>上传视频</el-button>
-            </el-upload>
-            <span class="tag-read" :data-clipboard-text="VideoAddr" @click="copyText">{{VideoUI}}</span>
-         
+          <video
+            :src="VideoSrc"
+            controls="controls"
+            preload="metadata"
+            style="width: auto; height:130px"
+          >您的浏览器不支持 video 标签预览。</video>
+          <el-upload
+            :auto-upload="false"
+            action
+            style=" height:150px"
+            :show-file-list="false"
+            :on-change="function(file){return uploadVideoFunc(file)}"
+          >
+            <el-button>上传视频</el-button>
+          </el-upload>
+          <span class="tag-read" :data-clipboard-text="VideoAddr" @click="copyText">{{VideoUI}}</span>
+
           <el-button type="primary" @click="saveQuestion">确 认</el-button>
         </div>
       </el-form-item>
@@ -251,7 +251,7 @@ export default {
     },
 
     uploadVideoFunc(file) {
-      let NameValue = "question-" + this.currentItemData.Id + ".mp4";
+      let NameValue = "question-" + this.currentItemData.Id + "-"+(new Date().getTime()/1000)+".mp4";
       let that = this;
       let res = common.uploadCosFile(
         file,

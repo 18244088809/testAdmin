@@ -26,6 +26,7 @@ export default {
     teacher: '优秀老师',
     linker:'友情链接',
     classList: '班级列表',
+    honorList: '荣誉资质',
     business: '业务模块',
     bookAdpter: '教材章节',
     contractList: '所有合同',
@@ -74,7 +75,7 @@ export default {
     i18n: '國際化',
     externalLink: '外鏈',
     profile: '個人中心',
-    guest:"拜访学员"
+    guest:"官网报名学员"
   },
   navbar: {
     dashboard: '首頁',

@@ -69,7 +69,7 @@ export default {
     },
     // 图片上传
     async uploadBannerImg(file, fileList, index) {
-      let res = await $ImgHttp.UploadImg(this.currentPlatform + "/honor", file.raw);
+      let res = await $ImgHttp.UploadImg( "honor", file.raw);
       if (res.code != 200) {
         this.$message({
           message: res.data,

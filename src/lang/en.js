@@ -26,6 +26,7 @@ export default {
     teacher: 'hot teacher',
     linker:'linker',
     classList: 'class List',
+    honorList: 'honor list',
     business: 'business',
     contractList: 'contract List',
     bookAdpter: 'book adpter',

@@ -26,6 +26,7 @@ export default {
     teacher: '优秀老师',
     linker:'友情链接',
     classList: '班级列表',
+    honorList: '荣誉资质',
     business: '业务模块',
     contractList: '所有合同',
     personalData:"个人设置",
@@ -74,7 +75,7 @@ export default {
     i18n: '多言語',
     externalLink: '外部リンク',
     profile: 'プロフィール',
-    guest:"拜访学员"
+    guest:"官网报名学员"
   },
   navbar: {
     dashboard: 'トップ',

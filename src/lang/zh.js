@@ -27,6 +27,7 @@ export default {
     linker:'友情链接',
     classList: '班级列表',
     business: '业务模块',
+    honorList: '荣誉资质',
     contractList: '所有合同',
     bookAdpter: '教材章节',
     chapterExercise: '章节练习',
@@ -36,7 +37,7 @@ export default {
     taskExam: '任务模考',
     achievementAnalysis: '成绩分析',
     personalData:"个人设置",
-    guest:"拜访学员"
+    guest:"官网报名学员"
   },
   navbar: {
     dashboard: '首页',
