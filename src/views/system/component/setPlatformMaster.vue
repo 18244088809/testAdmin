@@ -1,10 +1,12 @@
 <template>
   <div>
-    <div v-if="managerList.length>0">
-      <el-radio-group v-model="currentPlatform.MasterID" :disabled="!currenteditEnable">
+      <span class="m-v-10"> 负责人拥有本校区的管辖权，可以设置其他员工的工作权限，可以查看其他员工所负责的学员等</span>
+    <div v-if="managerList.length>0" class="m-t-10 m-l-20">
+      <p class="m-v-20">请从以下员工中选择一个作为本校区负责人。 </p>
+     <el-radio-group class="bge0e3ea" v-model="currentPlatform.MasterID" :disabled="!currenteditEnable">
         <el-radio :label="item.Id" :key="item.Id" v-for="item in managerList">{{item.Realname}}</el-radio>
       </el-radio-group>
-      <div class="around-center hgt60 bge0e3ea">
+      <div class="around-center  m-t-20 ">
         <el-button
           type="warning"
           :disabled="false"

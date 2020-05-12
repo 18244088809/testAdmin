@@ -2,78 +2,94 @@
   <div v-cloak class="font16 hgt_full" style="height:100%">
     <div class="flex_column hgt_full">
       <el-form label-width="180px" class="demo-ruleForm" size="small">
-        <el-form-item label="后台登陆页标题">
-          <el-input v-model="systemForm.name" placeholder="可以输入多个号码，用英文逗号,隔开" />
+        <el-form-item label="系统名称">
+          <el-input v-model="common.systemForm.Name" placeholder="可以输入多个号码，用英文逗号,隔开" />
         </el-form-item>
-        <el-form-item label="后台登陆页背景">
-          <el-input v-model="systemForm.loginBg" type="textarea" :row="3" placeholder="短信内容，不宜太长。" />
+        <div class="flex_dom">
+        <el-form-item label="系统logo"> 
+         
+          <el-upload
+            :auto-upload="false"
+            action
+            class="m-l-10"
+            :show-file-list="false"
+            :on-change="function(file, fileList){return ImgUploadQuestion(file, fileList)}"
+          >
+            <el-button>上传logo</el-button>
+          </el-upload>
         </el-form-item>
-        <el-form-item label="系统logo">
-          <el-input v-model="systemForm.loginBg" type="textarea" :row="3" placeholder="短信内容，不宜太长。" />
+         <img width="50" height="50" :src="common.systemForm.Logo" />
+        </div>
+         <el-form-item label="短信落款">
+          <el-input v-model="common.systemForm.SMSName" placeholder="必须和 短信提供商哪里设置的落款名完全一致，否则短信发送会失败" />
+        </el-form-item>
+        <el-form-item label>
+          <el-button @click="setSystemData">保存</el-button>
         </el-form-item>
       </el-form>
-    </div> 
-    <platformRowDetail v-bind:platformInfoData="platformRowData" />
+    </div>
   </div>
 </template>
 
-<script> 
+<script>
 import platformRowDetail from "@/views/system/component/platformRowDetail";
 import myDialog from "@/components/myDialog/myDialog";
-// import $AppHttp from "@/service/AppAPI";
+import $ImgHttp from "@/api/ImgAPI";
+import common from "@/utils/common";
+import { setSystemData } from "@/api/system";
 export default {
   name: "setting",
   components: {
-    myDialog, 
+   
+    myDialog,
     platformRowDetail
   },
   data() {
     return {
-      // 更多操作弹窗
-      systemForm: {},
-      // 模态框获得的单条数据
-      platformRowData: {},
-      // 当前操作平台的索引
-      currentPlatformIndex: null
+       common, 
+      imgsrc:"",
+      
     };
   },
-  mounted() {},
+  mounted() {
+    this.fire();
+  },
   methods: {
-    // 打开校区的弹出框
-    openPlatformDialog(type) {
-      // type=1新增，type=0编辑
-      if (type) {
-        this.$refs.refPlatformDialog.getPlatformRowData({ id: 0 });
-      } else {
-        this.$refs.refPlatformDialog.getPlatformRowData({
-          ...this.platformRowData
+    fire() {
+      this.imgsrc = this.common.systemForm.Logo;
+    },
+
+    // 题库上传图片
+    async ImgUploadQuestion(file, fileList) {
+      let that = this;
+      let res = await $ImgHttp.UploadImg("system", file.raw);
+      if (res.code != 200) {
+        that.$message({
+          message: res.data,
+          type: "warning"
         });
+        return;
       }
+      that.common.systemForm.Logo = res.data; 
+      that.imgsrc =   that.common.systemForm.Logo ;
+      that.$message({
+        message: "操作成功",
+        type: "success"
+      });
     },
-    // 追加数据后更新列表
-    updatePlatformList(type, rowData) {
-      // type=1新增，type=0编辑
-      if (type) {
-        this.$store.getters.platformList;
-      } else {
-        this.$set(this.$store.getters.app.platformList, this.currentPlatformIndex, rowData);
-        // 更新展示的基本信息
-        this.$refs.refPlatformDetail.getPlatformRowData({ ...rowData });
-        // this.platformRowData = { ...rowData };
-      }
+    // 题库上传图片
+    async setSystemData() {
+      let that = this;
+      let res = await setSystemData("", "",  that.common.systemForm);
+
+      that.common.systemForm = (res.data);
+      that.$message({
+        message: "操作成功",
+        type: "success"
+      });
     },
-    // 获取所有平台的信息
-    getAllPlatform() {
-      this.$store.dispatch("app/getPlatformList").then(() => {});
-    },
-    // 打开更多操作的弹出框
-    openMoreOperationDialog(index, row) {
-      this.$refs.refPlatformDetail.getPlatformRowData(row);
-      // this.platformRowData = {};
-      this.currentPlatformIndex = index;
-      // this.platformRowData = row;
-      this.moreOperationDialog = true;
-    }
+   
+  
   }
 };
 </script>

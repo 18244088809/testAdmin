@@ -3,6 +3,7 @@
     <div class="flex_dom hgt_100 wid_100">
       <div class="flex_dom hgt_100" style="width:350px;   ">
         <div class="flex_column wid_100 between-center">
+        <span>请先创建或者选择一个试卷，然后再去右边组卷</span>
           <el-table
             :data="exerciseList"
             ref="examTable"
@@ -14,7 +15,7 @@
             <el-table-column prop="CreateTime" :formatter="TimeFormatter" label="组卷时间" width="80"></el-table-column>
           </el-table>
 
-          <el-button type="primary" @click="addNewExercie" style="width:120px">添加试卷</el-button>
+          <el-button type="primary" @click="addNewExercie" style="width:140px">添加试卷</el-button>
         </div>
       </div>
       <div style="width:15px; background:#e0e3ea; "></div>
@@ -23,7 +24,7 @@
         <div class="center">
           <el-tabs @tab-click="onChangeTabs">
             <el-tab-pane id="gkj" label="添加试题" name="gkj">
-              <questionsList ref="gkj" :classID="classItemData.Id" :exerciseItem="currentExercise" />
+              <questionsList ref="gkj" :exerciseItem="currentExercise" />
             </el-tab-pane>
             <el-tab-pane id="fkj" label="试卷预览" name="fkj">
               <examQuestions ref="bhst" :exerciseItem="currentExercise" />
@@ -36,7 +37,11 @@
 </template>
 
 <script>
-import { addExam, getExerciseQuestion,getCourseExercise } from "@/api/exercise";
+import {
+  addExam,
+  getExerciseQuestion,
+  getCourseExercise
+} from "@/api/exercise";
 import { getClassExercise } from "@/api/class";
 import common from "@/utils/common";
 import questionsList from "@/views/course/question/questionsList";
@@ -102,7 +107,7 @@ export default {
     classItemData(newvar) {
       this.setData();
     },
-     courseItemData(newvar) {
+    courseItemData(newvar) {
       this.setData();
     }
   },
@@ -119,6 +124,10 @@ export default {
         cancelButtonText: "取消"
       })
         .then(({ value }) => {
+          if (value==""){
+            this.$alert("试卷名称不能为空")
+            return
+          }
           let exercise = {
             ManagerID: this.$store.getters.manager.Id,
             Label: value,
@@ -128,7 +137,7 @@ export default {
             State: 1,
             Public: 0,
             ClassID: this.classItemData.Id,
-            CourseID:this.courseItemData.Id,
+            CourseID: this.courseItemData.Id
           };
 
           this.createExam(exercise);
@@ -147,10 +156,10 @@ export default {
       item.$children[0].fire();
     },
     setData() {
-      if (this.classItemData.Id>0) {
+      if (this.classItemData.Id > 0) {
         this.currentItemData = this.classItemData;
         this.getClassExercise();
-      }else if (this.courseItemData.Id>0){
+      } else if (this.courseItemData.Id > 0) {
         this.getCourseExercise();
       }
     },
@@ -168,13 +177,12 @@ export default {
       this.serachStuList = [];
       this.ShowSearchForm = false;
       this.showSrarchStuResult = false;
- let that = this;
+      let that = this;
       let res = await getCourseExercise(this.courseItemData.Id);
-      that.exerciseList = res.data ? res.data : []; 
+      that.exerciseList = res.data ? res.data : [];
       that.$nextTick(function() {
         this.$refs.examTable.toggleAllSelection();
       });
-
     },
     // 获取班级的所有学员
     async getClassExercise() {
@@ -183,7 +191,7 @@ export default {
       this.showSrarchStuResult = false;
       let that = this;
       let res = await getClassExercise(this.classItemData.Id);
-      that.exerciseList = res.data ? res.data : []; 
+      that.exerciseList = res.data ? res.data : [];
       that.$nextTick(function() {
         this.$refs.examTable.toggleAllSelection();
       });
@@ -199,8 +207,7 @@ export default {
       this.showSrarchStuResult = false;
       let res = await getClassMateWorks(studentid, "");
       this.exerciseList = res.data ? res.data : [];
-    },
-     
+    }
 
     // // 添加或编辑数据
     // saveclassItemData() {

@@ -9,7 +9,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">{{ $t('login.title') }}</h3>
+        <h3 class="title">{{common.systemForm.Name+ $t('login.title') }}</h3>
         <lang-select class="set-language" />
       </div>
 
@@ -92,6 +92,7 @@
 <script>
 import LangSelect from "@/components/LangSelect";
 import { getCodeImg } from "@/api/manager";
+import common from "@/utils/common";
 import crypto from "crypto";
 export default {
   name: "Login",
@@ -121,6 +122,7 @@ export default {
       }
     };
     return {
+      common,
       codeUrl: "",
       loginForm: {
         tel: "",

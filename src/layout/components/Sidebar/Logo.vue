@@ -2,18 +2,19 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ title }} </h1>
+        <img v-if="common.systemForm.Logo" :src="common.systemForm.Logo" class="sidebar-logo">
+        <h1 v-else class="sidebar-title">{{ common.systemForm.Name }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }} </h1>
+        <img v-if="common.systemForm.Logo" :src="common.systemForm.Logo" class="sidebar-logo">
+        <h1 class="sidebar-title">{{ common.systemForm.Name }} </h1>
       </router-link>
     </transition>
   </div>
 </template>
 
 <script>
+import common from "@/utils/common";
 export default {
   name: 'SidebarLogo',
   props: {
@@ -24,8 +25,7 @@ export default {
   },
   data() {
     return {
-      title: '教育管理系统',
-      logo: '/assets/logo.png'
+      common
     }
   }
 }

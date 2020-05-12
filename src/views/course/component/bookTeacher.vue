@@ -8,7 +8,7 @@
             class="m-b-5"
             :key="item.Id"
             v-for="item in serachStuList"
-          >{{item.Realname}}（{{item.Tel}}）</el-checkbox>
+          >{{item.Realname}}（{{cutTelephone(item.Tel)}}）</el-checkbox>
         </el-checkbox-group>
       </div>
       <div class="m-t-30 center-end">
@@ -112,6 +112,9 @@ export default {
     fire() {
       
       this.searchTeacher();
+    },
+    cutTelephone(originTel){
+      return "电话末四位:"+originTel.substr(-4)
     },
     // 查找老师
     async searchTeacher() {

@@ -171,18 +171,18 @@ export default {
           if (isNaN(this.currentItemData.OpenTime)) {
             rowdata.OpenTime = this.currentItemData.OpenTime.getTime() / 1000;
           } else {
-            rowdata.OpenTime = this.currentItemData.OpenTime / 1000;
+            rowdata.OpenTime = parseInt(this.currentItemData.OpenTime / 1000);
           }
           if (isNaN(this.currentItemData.Endtime)) {
             rowdata.Endtime = this.currentItemData.Endtime.getTime() / 1000;
           } else {
-            rowdata.Endtime = this.currentItemData.Endtime / 1000;
+            rowdata.Endtime = parseInt(this.currentItemData.Endtime / 1000);
           }
           if (isNaN(this.currentItemData.Createtime)) {
             rowdata.Createtime =
               this.currentItemData.Createtime.getTime() / 1000;
           } else {
-            rowdata.Createtime = this.currentItemData.Createtime / 1000;
+            rowdata.Createtime = parseInt(this.currentItemData.Createtime / 1000);
           }
           if (rowdata.Id > 0) {
             // 编辑

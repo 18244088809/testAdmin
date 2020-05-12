@@ -499,6 +499,7 @@ export default {
     }
   ],
   AllQuestionTypes: [], // 所有题的类型
+  systemForm: { Name: "", Logo: "" },
   // 根据类型变化返回一些数据的Label
   FormatSelect(options, typeId) {
 
@@ -523,7 +524,7 @@ export default {
     return input * 1000;
   },
   ToUnixTime(input) {
-    return input / 1000;
+    return parseInt(input / 1000);
   }
   ,
   // 上传附件之前的验证

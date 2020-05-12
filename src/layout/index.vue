@@ -22,6 +22,8 @@ import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 
+import common from "@/utils/common";
+import {  getSystemData } from "@/api/system";
 export default {
   name: 'Layout',
   components: {
@@ -31,6 +33,11 @@ export default {
     Settings,
     Sidebar,
     TagsView
+  },
+   data() {
+    return { 
+    common,
+    }
   },
   mixins: [ResizeMixin],
   computed: {
@@ -50,7 +57,20 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getSystemData();
+  },
   methods: {
+     // 题库上传图片
+    async getSystemData() {
+      let that = this;
+      let res = await getSystemData("");
+      if (res.data && res.data.Value != "") {
+        that.common.systemForm =(res.data); 
+        document.title = that.common.systemForm.Name;
+         document.getElementById("shortcut").href = that.common.systemForm.Logo; 
+      }
+    },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     }

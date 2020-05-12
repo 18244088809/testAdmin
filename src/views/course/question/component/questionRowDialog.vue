@@ -48,9 +48,10 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分值" prop="QuestionScore">
+        <el-form-item label="分值" >
           <el-input-number
             :min="1"
+            :max="100"
             v-model="currentItemData.QuestionScore"
             controls-position="right"
             :step="0.5"
@@ -213,7 +214,8 @@ export default {
       currentItemData: {},
       State: 1,
       // 多选题答案
-      quesCheckboxAnswer: [],
+     
+      quesCheckboxAnswer: ["A"],
       // 存放题的选项
       quesAnswerOptions: [
         {
@@ -248,6 +250,7 @@ export default {
   methods: {
     setData() {
       this.currentItemData = this.formItemData;
+     
     },
 
     uploadVideoFunc(file) {
@@ -301,13 +304,16 @@ export default {
         });
         this.quesAnswerOptions = Options;
       } else {
-        this.quesCheckboxAnswer = ["A"];
         this.quesAnswerOptions = [
           {
             tag: "A",
             content: ""
           }
         ];
+        this.$nextTick(()=>{
+
+          this.quesCheckboxAnswer = ["A"];
+        })
       }
       if (this.currentItemData.QuestionType == 4) {
         this.currentItemData.QuestionAnswer = " ";
@@ -378,7 +384,9 @@ export default {
           if (!this.currentItemData.Questions) {
             this.currentItemData.Questions = [];
           }
-
+          if (isNaN(this.currentItemData.QuestionScore)){
+            this.currentItemData.QuestionScore = parseFloat(this.currentItemData.QuestionScore);
+          }
           let res;
           // 修改数据
           if (this.currentItemData.Id > 0) {

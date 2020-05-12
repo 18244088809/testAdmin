@@ -97,12 +97,12 @@ export const asyncRoutes = [
     name: 'system',
     meta: { title: 'system', icon: 'skill', roles: [0] },
     children: [
-      // {
-      //   path: 'setting',
-      //   component: () => import('@/views/system/setting'),
-      //   name: 'setting',
-      //   meta: { title: 'system', icon: 'edit' }
-      // },
+      {
+        path: 'setting',
+        component: () => import('@/views/system/setting'),
+        name: 'setting',
+        meta: { title: 'system', icon: 'edit' }
+      },
       {
         path: 'college',
         component: () => import('@/views/course/college'),

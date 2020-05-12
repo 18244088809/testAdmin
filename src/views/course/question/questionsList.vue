@@ -1,10 +1,10 @@
 <template>
   <div class="font16 hgt_full m-t-10">
+        <!-- <span class="m-b-10">请先在左边创建或选择一个试卷</span> -->
     <div class="flex_column hgt_full">
       <div class="between-center">
-        <!-- <span class="m-b-10">科目名称：{{exerciseItem}}</span> -->
         <el-form :inline="true" class="demo-form-inline">
-          <el-form-item v-if="exerciseItem.ClassID>0&&CourseItem.Id==0">
+       <el-form-item v-if="exerciseItem.ClassID>0&&CourseItem.Id==0">
             <el-dropdown @command="selectCourse">
               <span class="el-dropdown-link">
                 {{"《"+CourseItem.Label+"》"}}
@@ -219,6 +219,7 @@ export default {
       rows: 30,
       // 查询-搜索
       CourseItem: {
+        Id:0,
         SN: "",
         Label: "全部课程"
       },
@@ -511,6 +512,7 @@ export default {
     },
     // 打开试题的模态框-新增
     openAddQuestionDialog() {
+      this.currentItemData = {};
       this.currentQuestionIndex = -1;
       this.currentItemData.QuestionScore = "";
       this.currentItemData.QuestionContent = "";
@@ -525,10 +527,9 @@ export default {
       this.currentItemData.I = "";
       this.currentItemData.ZhangId = this.currentItemData.Zhang;
       this.currentItemData.JieId = this.currentItemData.Jie;
-      this.currentItemData.TopicId = this.currentItemData.Topic;
-
+      this.currentItemData.TopicId = this.currentItemData.Topic; 
       this.questionRowShow = true;
-      this.currentItemData.BookId = parseInt(this.$route.query.Id);
+      this.currentItemData.BookId = parseInt(this.$route.query.bookId);
     },
     //  打开试题的模态框-编辑
     openEditQuestionDialog(index, row) {

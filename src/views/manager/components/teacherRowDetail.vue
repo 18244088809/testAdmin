@@ -52,7 +52,7 @@
         <el-radio v-model="currentFormData.Sex" :disabled="currentFormData.Id>0" label="男">男</el-radio>
         <el-radio v-model="currentFormData.Sex" :disabled="currentFormData.Id>0" label="女">女</el-radio>
       </el-form-item>
-      <el-form-item label="主页显示">
+      <!-- <el-form-item label="主页显示">
         <el-radio v-model="currentFormData.IsHot" :label="1">显示</el-radio>
         <el-radio v-model="currentFormData.IsHot" :label="0">不显示</el-radio>
       </el-form-item>
@@ -62,7 +62,7 @@
       </el-form-item>
       <el-form-item label="宣传视频">
         <el-input v-model="currentFormData.video" placeholder="请填写视频地址"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="个人介绍">
         <el-input type="textarea" :rows="3" v-model="currentFormData.Info" placeholder="个人信息~"></el-input>
       </el-form-item>

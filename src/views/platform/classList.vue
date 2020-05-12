@@ -286,13 +286,13 @@ export default {
     // 添加班级成功之后更新表格数据-班级列表
     updateListItem(type, rowData) { 
       if (rowData.OpenTime > 1507800391000) {
-        rowData.OpenTime = rowData.OpenTime / 1000;
+        rowData.OpenTime =parseInt( rowData.OpenTime / 1000);
       }
       if (rowData.Endtime > 1507800391000) {
-        rowData.Endtime = rowData.Endtime / 1000;
+        rowData.Endtime = parseInt(rowData.Endtime / 1000);
       }
       if (rowData.Createtime > 1507800391000) {
-        rowData.Createtime = rowData.Createtime / 1000;
+        rowData.Createtime =parseInt( rowData.Createtime / 1000);
       }
       if (type == 0) {
         this.classList.unshift(rowData);
