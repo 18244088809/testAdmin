@@ -22,4 +22,4 @@ selenium-debug.log
 package-lock.json
 yarn.lock
 #vue的配置文件。里面的api地址一直使用公共地址
-.vue.config.js
+vue.config.js
