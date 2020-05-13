@@ -18,7 +18,7 @@
             <el-button>上传logo</el-button>
           </el-upload>
         </el-form-item>
-         <img width="50" height="50" :src="common.systemForm.Logo" />
+         <img  height="50" :src="common.systemForm.Logo" />
         </div>
          <el-form-item label="短信落款">
           <el-input v-model="common.systemForm.SMSName" placeholder="必须和 短信提供商哪里设置的落款名完全一致，否则短信发送会失败" />
