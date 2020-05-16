@@ -67,7 +67,7 @@
         border
         tooltip-effect="light"
         style="width: 100%"
-        
+        height="100%"
         @selection-change="contractSelectionChange"
       >
         <el-table-column type="selection" width="40" />

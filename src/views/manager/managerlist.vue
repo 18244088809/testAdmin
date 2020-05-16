@@ -34,7 +34,7 @@
       <!-- 用户列表 -->
 
       <el-table
-        
+        height="100%"
         :data="teacherList"
         tooltip-effect="light"
         border
@@ -83,7 +83,8 @@
       <!-- 用户操作 -->
       <div class="between-center m-v-15">
         <el-button type="primary" @click="openNewItem()">新增用户</el-button>
-        <div>
+        <div> 
+          
           <el-pagination
             background
             @current-change=" getDataChangePage"
@@ -231,7 +232,7 @@ export default {
       this.allRows = 0;
       this.teacherList = [];
       if (res.data) {
-        this.allRows = res.attach;
+        this.allRows = res.title;
         this.teacherList = res.data;
       }
     },

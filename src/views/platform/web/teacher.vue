@@ -39,12 +39,12 @@
                     <el-radio  label="square">方形</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                <el-form-item label="" class="m-l-5" >
+                <!-- <el-form-item label="" class="m-l-5" >
                   <el-radio-group v-model="item.colored" @change="$forceUpdate()">
-                    <el-radio  label="noclored">透明</el-radio>
-                    <el-radio  label="colored">带色</el-radio>
+                    <el-radio  :label="'noclored'">透明</el-radio>
+                    <el-radio  :label="'colored'">带色</el-radio>
                   </el-radio-group>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="动效:" class="m-l-5" >
                   <el-radio-group v-model="item.effect" @change="$forceUpdate()">
                     <el-radio  label="1">1</el-radio>
@@ -116,9 +116,9 @@ export default {
       if (!item.xingzhuang) {
         item.xingzhuang = "circle";
       }
-      if (!item.colored||item.colored=="noclored") {
-        item.colored = "";
-      }
+      // if (!item.colored||item.colored=="noclored") {
+      //   }
+        item.colored = "colored";
       if (!item.effect) {
         item.effect = "effect6";
       } else {
