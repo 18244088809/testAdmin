@@ -3,30 +3,29 @@
     <div class="flex_column hgt_full">
       <el-table
         ref="refElTabel"
-        
         :data="guestList"
         tooltip-effect="light"
         border
         style="width: 100%"
       >
         <el-table-column prop="Id" label="ID" width="50" />
-        <el-table-column prop="Realname" label="姓名" width="210"/>  
-        <el-table-column prop="Tel" label="联系电话" width="100" />  
-         <el-table-column prop="Kind" label="留言类别" width="310"/>   
-        <el-table-column prop="Message" label="留言内容"  :show-overflow-tooltip="true" />
+        <el-table-column prop="Realname" label="姓名" width="210" />
+        <el-table-column prop="Tel" label="联系电话" width="100" />
+        <el-table-column prop="Kind" label="留言类别" width="310" />
+        <el-table-column prop="Message" label="留言内容" :show-overflow-tooltip="true" />
         <!-- <el-table-column prop="Platform" label="校区名称" width="210">
             <template slot-scope="scope">
               <span  >{{ common.FormatSelect($store.getters.app.platformList,scope.row.Platform) }}</span>
             </template>
-          </el-table-column> -->
-         <el-table-column prop="Createtime" label="时间" width="110">
-            <template slot-scope="scope">
-              <span >{{ common.dateFormat(scope.row.Createtime) }}</span>
-            </template>
-          </el-table-column>
+        </el-table-column>-->
+        <el-table-column prop="Createtime" label="时间" width="110">
+          <template slot-scope="scope">
+            <span>{{ common.dateFormat(scope.row.Createtime) }}</span>
+          </template>
+        </el-table-column>
       </el-table>
-      <div class="between-center m-v-15"> 
-        <label/>
+      <div class="between-center m-v-15">
+        <label />
         <div>
           <el-pagination
             background
@@ -42,13 +41,12 @@
   </div>
 </template>
 
-<script> 
+<script>
 import { listSchoolTeacher } from "@/api/guest";
 import common from "@/utils/common";
 export default {
   name: "guest",
-  components: { 
-  },
+  components: {},
   data() {
     return {
       common,
@@ -60,7 +58,7 @@ export default {
       nowPage: 1,
       // 每页获取数据的总条数
       rows: 30,
-      currentPlatform:0,
+      currentPlatform: 0
     };
   },
   mounted() {
@@ -69,12 +67,17 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    this.getAllGuest(); 
+    this.getAllGuest();
   },
-  methods: { 
+  methods: {
     // 获取所有平台的信息
-    async  getAllGuest() {
-      let res =  await listSchoolTeacher("",{platform:this.currentPlatform});
+    async getAllGuest() {
+      let offsetRow = (this.nowPage - 1) * this.rows;
+      let res = await listSchoolTeacher("", {
+        platform: this.currentPlatform,
+        limit: this.rows,
+        offset: offsetRow
+      });
       this.guestList = res.data;
       this.allRows = res.title;
     }

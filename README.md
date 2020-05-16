@@ -41,7 +41,7 @@
 4.  使用 npm run build:prod 编译出生产文件。部署在web服务器后即可。 
 
 #### 使用方法
-1.  演示版本的地址 [后台地址 http://eduadmin.todear.net:8990](http://eduadmin.todear.net:8990)。 用户名和密码都是17760478454 。没有任何权限，只能点点看看。以免演示数据搞混乱了。
+1.  演示版本的地址 [后台地址 http://admin.todear.net:8990](http://admin.todear.net:8990)。 用户名和密码都是17760478454 。没有任何权限，只能点点看看。以免演示数据搞混乱了。  学员端演示地址会  [学员端地址 http://edu.todear.net:8990](http://edu.todear.net:8990)
 2.  如果需要使用在线拨打电话功能需要另外购买一台电话机通过usb连接电脑，大概400元。否则无法直接在网上拨打电话。
 3.    [在线API文档地址 http://edudoc.todear.net:8990](在线API文档地址http://edudoc.todear.net:8990)
 
