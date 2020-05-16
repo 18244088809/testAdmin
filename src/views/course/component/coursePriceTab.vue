@@ -18,6 +18,7 @@
     </el-form>
     <vxe-grid
       border
+         :height="documentHeight"
       resizable
       :data.sync="currentItemData.Children"
       :edit-config="{trigger: 'click', mode: 'row'}"
@@ -61,7 +62,8 @@ export default {
       allBookList: [],
       CourseKindsOps: [],
       // 查找教材搜索内容
-      searchSubjectContent: ""
+      searchSubjectContent: "",
+      documentHeight:500,
     };
   },
   watch: {
@@ -71,7 +73,8 @@ export default {
   },
 
   methods: {
-    fire() {
+     fire() { 
+      this.documentHeight = document.body.clientHeight-400;
       if (!this.formItemData || !this.formItemData.Id) {
         return;
       }

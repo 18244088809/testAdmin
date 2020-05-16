@@ -18,7 +18,7 @@
       :data="studentFinishWorkList"
       border
       style="width: 100%"
-     :height="tableHeight"
+   :height="documentHeight"
       ref="refElTabel"
     >
       <el-table-column prop="StudentName" label="学员姓名" width="110"></el-table-column>
@@ -86,11 +86,11 @@ export default {
         Label: [
           { required: true, message: "班级名称不能为空", trigger: "blur" }
         ]
-      },
-       tableHeight: window.innerHeight - 200,
+      }, 
       studentFinishWorkList: [],
       studentDoExerciseDailog: false,
-      currentIndex: 0
+      currentIndex: 0,
+      documentHeight:500,
     };
   },
   watch: {
@@ -102,8 +102,8 @@ export default {
     TimeFormatter(row, column, cellValue) {
       return this.common.dateFormat(cellValue);
     },
-    fire() {
-      this.tableHeight = window.innerHeight - 200;
+     fire() { this.documentHeight = document.body.clientHeight-400;
+     
       this.getStudentsWorks();
     },
     // 分页获取数据

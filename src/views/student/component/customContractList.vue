@@ -6,6 +6,7 @@
       border
       tooltip-effect="light"
       style="width: 100%"
+      :height="documentHeight"
     >
       <el-table-column prop="Title" width="300" label="合同名称" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -76,7 +77,8 @@ export default {
       // 学员的个人信息
       customRowData: this.customData,
       // 当前操作合同的索引
-      currentContractIndex: null
+      currentContractIndex: null,
+      documentHeight:500,
     };
   },
   watch: {
@@ -86,7 +88,7 @@ export default {
   },
 
   methods: {
-    fire() {
+     fire() { this.documentHeight = document.body.clientHeight-400;
       this.getContractList();
     },
     // 获取合同信息列表

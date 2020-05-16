@@ -31,7 +31,7 @@
         :data="classList"
         border
         style="width: 100%"
-        height="100%"
+        
         ref="refElTabel"
       >
         <el-table-column prop="Id" label="ID" width="50"></el-table-column>

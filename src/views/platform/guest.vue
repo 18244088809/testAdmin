@@ -3,7 +3,7 @@
     <div class="flex_column hgt_full">
       <el-table
         ref="refElTabel"
-        height="100%"
+        
         :data="guestList"
         tooltip-effect="light"
         border

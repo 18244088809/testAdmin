@@ -223,7 +223,8 @@ export default {
       // 图片加载
       isbusy1: false,
       isbusy2: false,
-      isbusy3: false
+      isbusy3: false,
+      documentHeight:500,
     };
   },
 
@@ -231,7 +232,8 @@ export default {
     this.fire();
   },
   methods: {
-    fire() {
+     fire() {  
+       this.documentHeight = document.body.clientHeight-400;
       this.currenteditEnable = false;
       this.currentItemData = { ...this.formItemData };
       if (!this.currentItemData.ISProtected) {

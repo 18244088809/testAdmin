@@ -15,11 +15,11 @@
           ref="chapterTreeTable"
           class="p-b-10"
           border
+           height="100%"
           row-id="Id"
           show-overflow
           :tree-config="treeConfig"
-          :data.sync="chaperListOfBook"
-          height="100%"
+          :data.sync="chaperListOfBook" 
           :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:false}"
         >
           <vxe-table-column type="seq" width="120" title="序号" tree-node />
@@ -145,10 +145,10 @@ export default {
       //  列表的children数据
       treeConfig: {
         children: "Children"
-      }
+      }, 
     };
   },
-  mounted() {
+  mounted() { 
     this.bookID = parseInt(this.$router.currentRoute.query.Id);
     this.getBookChapter();
   },

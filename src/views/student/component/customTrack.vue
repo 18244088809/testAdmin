@@ -152,7 +152,8 @@ export default {
       // 该学员所有的跟进记录
       customTrackList: [],
       // 当前回复跟进数据的索引
-      currentReplyIndex: null
+      currentReplyIndex: null,
+      documentHeight:500,
     };
   },
   watch: {
@@ -163,7 +164,7 @@ export default {
  
 
   methods: {
-     fire() {
+      fire() { this.documentHeight = document.body.clientHeight-400;
     this.customFormData = this.customData;
     this.getCustomId(this.customData.id);
   },

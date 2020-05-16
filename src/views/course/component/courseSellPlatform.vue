@@ -50,7 +50,8 @@ export default {
       // 学院默认选中第一项
       collegeIndex: 0,
       //
-      platforms: []
+      platforms: [],
+      documentHeight:500,
     };
   },
   watch: {
@@ -60,7 +61,7 @@ export default {
   },
 
   methods: {
-    fire() {
+     fire() { this.documentHeight = document.body.clientHeight-400;
       this.platforms = [];
       let forbiddenPlatformList = this.currentFormData.ForbiddenPlatform.split(
         ","

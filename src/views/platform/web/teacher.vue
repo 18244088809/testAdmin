@@ -2,31 +2,80 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-10 p-l-20 p-v-15">
-        <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
-          <div class="flex_mid cardBorder bg-ccc">
+        <div class="m-b-20" v-for="(item,index) in dataList" :key="index">
+          <div class="flex_mid cardBorder bg-ddd">
             <el-upload
               :auto-upload="false"
               action
-              class="bg-ddd"
+              class
               :show-file-list="false"
               :on-change="function(file, fileList){return uploadBannerImg(file,fileList,index)}"
             >
-              <img v-if="item.image" :src="item.image" style="width: auto; height: 140px" />
-              <i
-                v-else
-                slot="default"
-                class="el-icon-plus"
-                style="width: 140px; height: 140px"
-              >&nbsp;点击上传</i>
+
+            <div :class="makeEffect(item)">
+                <a href="#">
+                  <div class="spinner"></div>
+                  <div class="img">
+                    <img :src="item.image" />
+                  </div>
+                  <div class="info">
+                    <div class="info-back">
+                      <h3 >{{item.label}}</h3>
+                      <p style="padding-top:-20px" >{{item.content}}</p>
+                    </div>
+                  </div>
+                </a>
+              </div> 
             </el-upload>
 
-            <el-form label-width="90px" :model="item" style="width:100%">
-              <div class="flex_mid">
-                <el-form-item label="姓名" style="width:30%">
+            <el-form label-width="60px" :model="item" style="width:100%">
+              <div class="flex_dom">
+                <el-form-item label="姓名:" style="width:250px">
                   <el-input v-model="item.label" style="width:100%" placeholder="老师姓名"></el-input>
                 </el-form-item>
-                <el-form-item label="跳转地址：" class="m-l-20" style="width:70%">
-                  <el-input v-model="item.href" placeholder="请输入连接地址.没有跳转页面可以不输入"></el-input>
+                <el-form-item label="" class="m-l-5" >
+                  <el-radio-group v-model="item.xingzhuang" @change="$forceUpdate()">
+                    <el-radio  label="circle">圆形</el-radio>
+                    <el-radio  label="square">方形</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <el-form-item label="" class="m-l-5" >
+                  <el-radio-group v-model="item.colored" @change="$forceUpdate()">
+                    <el-radio  label="noclored">透明</el-radio>
+                    <el-radio  label="colored">带色</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <el-form-item label="动效:" class="m-l-5" >
+                  <el-radio-group v-model="item.effect" @change="$forceUpdate()">
+                    <el-radio  label="1">1</el-radio>
+                    <el-radio  label="2">2</el-radio>
+                    <el-radio label="3">3</el-radio>
+                    <el-radio  label="4">4</el-radio>
+                    <el-radio  label="5">5</el-radio>
+                    <el-radio  label="6">6</el-radio>
+                    <el-radio  label="7">7</el-radio>
+                    <el-radio  label="8">8</el-radio>
+                    <el-radio  label="9">9</el-radio>
+                    <el-radio  label="10">10</el-radio>
+                    <el-radio  label="11">11</el-radio>
+                    <el-radio  label="12">12</el-radio>
+                    <el-radio  label="13">13</el-radio>
+                    <el-radio  label="14">14</el-radio>
+                    <el-radio  label="15">15</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <el-form-item v-if="item.xingzhuang=='square'" label="方向" class="m-l-5">
+                  <el-radio-group v-model="item.fangxiang" @change="$forceUpdate()">
+                    <el-radio label="left_and_right">左右</el-radio>
+                    <el-radio  label="top_to_bottom">上下1</el-radio>
+                    <el-radio  label="bottom_to_top">下上</el-radio>
+                    <el-radio label="from_top_and_bottom">上下2</el-radio>
+                    <el-radio label="from_left_and_right">上下2</el-radio>
+                    <el-radio label="scale_up">放大</el-radio>
+                    <el-radio label="scale_down">缩小</el-radio>
+                    <el-radio label="left_to_right">左到右</el-radio>
+                    <el-radio label="right_to_left">右到左</el-radio> 
+                  </el-radio-group>
                 </el-form-item>
               </div>
               <el-form-item label="简介">
@@ -62,8 +111,35 @@ export default {
   },
 
   methods: {
+    makeEffect(item) {
+      let effe = "";
+      if (!item.xingzhuang) {
+        item.xingzhuang = "circle";
+      }
+      if (!item.colored||item.colored=="noclored") {
+        item.colored = "";
+      }
+      if (!item.effect) {
+        item.effect = "effect6";
+      } else {
+        effe = "effect" + item.effect;
+      }
+      if (!item.fangxiang) {
+        item.fangxiang = "scale_up";
+      }
+      return (
+        "ih-item " +
+        item.xingzhuang +
+        " " +
+        item.colored +
+        " " +
+        effe +
+        " m-l-40 " +
+        item.fangxiang
+      );
+    },
     async GetIndexBanner() {
-      let res = await getWebContent(  this.currentPlatform +"/teacher", "");
+      let res = await getWebContent(this.currentPlatform + "/teacher", "");
       if (res.code == 200) {
         this.dataList = res.data ? res.data : [];
       }
@@ -137,7 +213,7 @@ export default {
 .cardBorder {
   -webkit-box-shadow: 0 1px 5px 0 #dedede;
   box-shadow: 0 1px 5px 0 #dedede;
-  padding: 20px 30px 0px 20px;
+  padding: 20px 30px 20px 20px;
   position: relative;
   box-sizing: border-box;
   border-radius: 5px;

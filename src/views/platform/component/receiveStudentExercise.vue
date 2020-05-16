@@ -5,7 +5,7 @@
       :data="studentDoExerciseList"
       border
       style="width: 100%"
-      height="100%"
+      :height="documentHeight"
       ref="refElTabel"
     >
       <el-table-column prop="ID" label="ID" width="50"></el-table-column>
@@ -105,7 +105,8 @@ export default {
       studentDoExercise: {},
       studentDoExerciseList: [],
       studentDoExerciseDailog: false,
-      currentIndex: 0
+      currentIndex: 0,
+      documentHeight:500,
     };
   },
   watch: {
@@ -114,7 +115,7 @@ export default {
     }
   },
   methods: {
-    async fire() {
+    async  fire() { this.documentHeight = document.body.clientHeight-400;
       let offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getClassFinishExercise(this.classItem.Id, {
         limit: this.rows,

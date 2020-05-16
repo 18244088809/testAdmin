@@ -4,12 +4,13 @@
       <!-- 学院列表 -->
 
       <el-table
-        height="100%"
+        :height="documentHeight"
         :data="$store.getters.app.collegeWithCourseKind"
         tooltip-effect="light"
         border
         style="width: 100%"
         ref="refElTabel"
+        
       >
          
         <el-table-column prop="Id" label="ID" width="50"></el-table-column>
@@ -123,7 +124,8 @@ export default {
       // 当前用户所有的权限数据
       managerRightsMap: {},
       //当前所在校区
-      currentPlatform: 0
+      currentPlatform: 0,
+      
     };
   },
   methods: {
@@ -155,6 +157,7 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
+     
   }
 };
 </script>

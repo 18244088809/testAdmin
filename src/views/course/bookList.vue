@@ -32,9 +32,8 @@
         border
         tooltip-effect="light"
         style="width: 100%"
-        height="100%"
+        :height="documentHeight"
       >
-        >
         <el-table-column prop="Id" label="ID" width="50" />
         <el-table-column prop="Label" label="名称" width="250" :show-overflow-tooltip="true">
           <template slot-scope="scope">
@@ -89,7 +88,7 @@
           <bookRowDetail @itemModify="updateListItem" :formItemData="customFormData" />
         </div>
         <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs  @tab-click="onChangeTabs">
+          <el-tabs @tab-click="onChangeTabs">
             <el-tab-pane id="xgxz" label="相关下载" name="xgxz">
               <bookDownFile :formItemData="customFormData" @subClickEvent="updateListItem" />
             </el-tab-pane>
@@ -154,10 +153,12 @@ export default {
       // 模态框获得的单条数据
       customFormData: {},
       // 当前操作平台的索引
-      currentRowIndex: null
+      currentRowIndex: null,
+      documentHeight: 500
     };
   },
   mounted() {
+    this.documentHeight = document.body.clientHeight - 400;
     this.getBookList();
   },
   methods: {
@@ -204,13 +205,13 @@ export default {
       this.customFormData = {};
     },
 
-    updateEditors( editors) {
-      console.log("----1---",editors);
+    updateEditors(editors) {
+      console.log("----1---", editors);
 
       this.subjectList[this.currentSubjectIndex].Editors = editors;
       console.log("---2----", this.subjectList[this.currentSubjectIndex]);
 
-     //  this.$set(this.subjectList, this.currentSubjectIndex, rowData);
+      //  this.$set(this.subjectList, this.currentSubjectIndex, rowData);
     },
     // 添加或编辑之后更新列表数据
     updateListItem(type, rowData) {

@@ -57,7 +57,8 @@ export default {
       checkBoxAddItem: [],
       // 复选框所选中的课程ID
       selectExistCourse: [],
-      currentItemData: {}
+      currentItemData: {},
+      documentHeight:500,
     };
   },
   watch: {
@@ -68,7 +69,7 @@ export default {
   },
   methods: {
     // 获取班级的所有课程
-    async fire() {
+    async  fire() { this.documentHeight = document.body.clientHeight-400;
       this.currentItemData= {...this.formItemData}; 
       this.searchCourseList = [];
       this.searchCourse(); 

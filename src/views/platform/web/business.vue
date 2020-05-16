@@ -9,10 +9,13 @@
                   <el-input v-model="item.label" style="width:100%" placeholder="填写模块名"></el-input>
                 </el-form-item>
                 <el-form-item label="是否显示">
-                  <el-checkbox v-model="item.display" style="width:100%"></el-checkbox>
+                  <el-checkbox v-model="item.display" checked="checked" style="width:100%"></el-checkbox>
                 </el-form-item>
-                <el-form-item label>
-                  <el-button type="primary" @click="openContentEditer(index)">编辑内容</el-button>
+                <el-form-item label="图片特效">
+                  
+                </el-form-item>
+                <el-form-item label="编辑内容">
+                  <el-button type="primary" @click="openContentEditer(index)">点击编辑</el-button>
                 </el-form-item>
               </el-form>
               <div style="width:100%" v-html="item.content" />

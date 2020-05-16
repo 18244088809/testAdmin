@@ -14,7 +14,7 @@
         :data="newsListTable"
         border
         style="width: 100%"
-        height="100%"
+        
       >
         <el-table-column prop="Id" label="ID" width="50"></el-table-column>
         <el-table-column prop="Title" label="资料名称" :show-overflow-tooltip="true">

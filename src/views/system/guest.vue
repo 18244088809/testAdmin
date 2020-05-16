@@ -3,7 +3,7 @@
     <div class="flex_column hgt_full">
       <el-table
         ref="refElTabel"
-        height="100%"
+     
         :data="guestList"
         tooltip-effect="light"
         border
@@ -59,10 +59,11 @@ export default {
       // 当前页数
       nowPage: 1,
       // 每页获取数据的总条数
-      rows: 30,
+      rows: 30, 
     };
   },
   mounted() {
+     
     this.getAllGuest();
   },
   methods: { 

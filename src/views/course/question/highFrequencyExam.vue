@@ -8,7 +8,7 @@
           border
           style="width: 100%"
           ref="refElTabel"
-          height="100%"
+          
         >
           <el-table-column prop="Id" label="ID" width="80"></el-table-column>
           <el-table-column prop="Label" label="组卷名称"></el-table-column>

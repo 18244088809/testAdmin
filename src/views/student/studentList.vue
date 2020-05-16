@@ -91,7 +91,7 @@
         border
         tooltip-effect="light"
         style="width: 100%"
-        height="100%"
+        
         @selection-change="selectionCustomChange"
       >
         <el-table-column width="120" fixed label="姓名">

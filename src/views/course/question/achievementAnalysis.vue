@@ -46,7 +46,7 @@
               border
               id="idWrongStu"
               style="width: 100%"
-              height="100%"
+              
             >
               <el-table-column prop="StudentName" label="学生姓名" width="100"></el-table-column>
               <el-table-column prop="Tel" label="学生电话" width="100"></el-table-column>
@@ -94,7 +94,7 @@
               border
               id="idTopWrongQues"
               style="width: 100%"
-              height="100%"
+              
             >
               <el-table-column prop="ID" label="ID" width="50"></el-table-column>
               <el-table-column prop="QuestionType" label="题型" width="65">

@@ -2,7 +2,7 @@
 <template>
   <!-- --------------------学员的跟进记录模块----------------------- -->
   <div class="p_both10">
-    <el-table :data="customBuyCourseList" border tooltip-effect="dark" style="width: 100%">
+    <el-table :data="customBuyCourseList" border tooltip-effect="dark" style="width: 100%" :height="documentHeight">
       <el-table-column prop="CourseImage" width="90" label="课程logo">
         <template slot-scope="scope">
           <div
@@ -213,7 +213,8 @@ export default {
         actualPrice: [
           { required: true, message: "实际金额不能为空", trigger: "blur" }
         ]
-      }
+      },
+      documentHeight:500,
     };
   },
  watch: {
@@ -223,7 +224,7 @@ export default {
   }, 
  
   methods: {
-     fire() {
+      fire() { this.documentHeight = document.body.clientHeight-400;
     this.customBuyCourseList = [];
     this.customItemData = this.customData;
     this.getBuyCouseRecord();

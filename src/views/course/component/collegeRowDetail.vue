@@ -72,7 +72,8 @@ export default {
             trigger: "blur"
           }
         ]
-      }
+      },
+      documentHeight:500,
     };
   },
   watch: {
@@ -84,7 +85,8 @@ export default {
     this.fire();
   },
   methods: {
-    fire() {
+     fire() {  
+       this.documentHeight = document.body.clientHeight-400;
       this.currentFormData = this.formItemData;
     },
     // 保存学员信息

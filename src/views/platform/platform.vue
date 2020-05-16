@@ -3,7 +3,7 @@
     <div class="flex_column hgt_full">
       <el-table
         ref="refElTabel"
-        height="100%"
+        
         :data="$store.getters.app.platformList"
         tooltip-effect="light"
         border

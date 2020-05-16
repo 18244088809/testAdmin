@@ -28,7 +28,7 @@
       :data="oldWorkList"
       border
       style="width: 100%"
-     :height="tableHeight"
+     :height="documentHeight"
       ref="refElTabel"
     >
       <el-table-column prop="WorkName" label="作品记录" :show-overflow-tooltip="true"></el-table-column>
@@ -77,8 +77,7 @@ export default {
       // 单条学员的数据
       customFormData: {},
       //这个班级曾经发过的作品
-      oldWorkList: [],
-       tableHeight: window.innerHeight - 250,
+      oldWorkList: [], 
     };
   },
   watch: {
@@ -89,8 +88,8 @@ export default {
 
   mounted() {this.fire();},
   methods: {
-    fire() {
-        this.tableHeight = window.innerHeight - 250;
+     fire() { this.documentHeight = document.body.clientHeight-400;
+ 
       this.getClassOldWorks();
       let now = new Date();
       this.workName =

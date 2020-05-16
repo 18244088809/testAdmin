@@ -48,7 +48,7 @@
         border
         tooltip-effect="light"
         style="width: 100%"
-        :height="tableHeight"
+      :height="documentHeight"
         ref="refElTabel"
         @selection-change="handleSelectionChange"
       >
@@ -138,7 +138,7 @@ export default {
       // 科目的试题列表
       questionsListOfBook: [],
       multipleSelection: [],
-      tableHeight: window.innerHeight - 200
+      documentHeight:500,
     };
   },
   watch: {
@@ -150,9 +150,8 @@ export default {
     this.fire();
   },
   methods: {
-    fire() {
-      this.currentItemData = this.BookChapter;
-      this.tableHeight = window.innerHeight - 200;
+     fire() { this.documentHeight = document.body.clientHeight-400;
+      this.currentItemData = this.BookChapter; 
       this.questionsListOfBook = [];
       // this.currentPageChange(1)
     },

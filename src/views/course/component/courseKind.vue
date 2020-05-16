@@ -5,7 +5,7 @@
       border
       tooltip-effect="light"
       style="width: 100%"
-      height="100%"
+      
     >
       <el-table-column prop="Id" label="ID" width="50" />
       <el-table-column prop="Label" label="课程类别名称" width="250" />
@@ -87,7 +87,8 @@ export default {
       courseKindItem: {},
 
       // 图片加载
-      editForm: false
+      editForm: false,
+      documentHeight:500,
     };
   },
   watch: {
@@ -99,7 +100,8 @@ export default {
     this.fire();
   },
   methods: {
-    fire() {
+     fire() {  
+       this.documentHeight = document.body.clientHeight-400;
       this.collegeItem = this.collegePropItem;
       this.courseKindItem = {};
     },

@@ -54,7 +54,7 @@
         border
         tooltip-effect="light"
         style="width: 100%"
-        height="100%"
+            height="100%"
       >
         <el-table-column label="ID" width="50" prop="Id" />
         <el-table-column label="封面图" width="60" prop="Background">

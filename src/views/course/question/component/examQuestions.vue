@@ -1,7 +1,7 @@
 <template>
   <!-- 关联题库弹窗 -->
   <div class>
-    <el-table
+    <el-table :height="documentHeight"
       ref="refMockExam"
       :data="examQuestionList"
       border
@@ -77,7 +77,8 @@ export default {
       jieOptions: [],
       //查询选中的章或节
       selectedZhang: 0,
-      selectedJie: 0
+      selectedJie: 0,
+      documentHeight:500,
     };
   },
   watch: {
@@ -87,7 +88,7 @@ export default {
   },
   methods: {
     //   获取组卷的数据
-    fire() {
+     fire() { this.documentHeight = document.body.clientHeight-400;
       // 初始化数据
       this.getSubjectZhang();
     },

@@ -34,7 +34,7 @@
       <!-- 用户列表 -->
 
       <el-table
-        height="100%"
+        
         :data="teacherList"
         tooltip-effect="light"
         border

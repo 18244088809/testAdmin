@@ -9,7 +9,7 @@
           show-overflow
           ref="chapterTreeTable"
           :tree-config="chaperTreeConfig"
-          height="100%"
+           height="100%"
           size="mini"
           :data.sync="chaperTreeTableList"
         >

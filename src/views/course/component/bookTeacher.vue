@@ -99,22 +99,42 @@ export default {
       // 获取班级的所有老师
       classAllStuList: [],
       // 复选框所选中的老师ID
-      selectExistTeachers: []
+      selectExistTeachers: [],
+      documentHeight: 500
     };
   },
   watch: {
     currentPlatform(newval) {
       this.fire();
+    },
+    formItemData(newval) {
+      this.changeBook();
     }
   },
   methods: {
     // 获取班级的所有老师
     fire() {
-      
+      this.documentHeight = document.body.clientHeight - 400;
       this.searchTeacher();
     },
-    cutTelephone(originTel){
-      return "电话末四位:"+originTel.substr(-4)
+    cutTelephone(originTel) {
+      return "电话末四位:" + originTel.substr(-4);
+    },
+    //修改教材
+    changeBook() {
+      let editors = this.formItemData.Editors.split(",");
+      //将搜索出来的结果中，选中那些已经是本班老师的打钩
+      this.$nextTick(() => {
+        this.serachStuList.forEach(searchItem => {
+          editors.forEach(selectItem => {
+            if (searchItem.Id == selectItem) {
+              this.checkBoxAddStu.push(searchItem.Id);
+            }
+          });
+        });
+      });
+
+      this.showSearchStuResult = true;
     },
     // 查找老师
     async searchTeacher() {
@@ -122,24 +142,13 @@ export default {
       // 取数据的位置
       const offsetRow = (this.nowPage - 1) * this.rows;
       let res = await getAllManagerOfPlatform(this.currentPlatform, {
-        onlyLive: true,needtotal:false
+        onlyLive: true,
+        needtotal: false
       });
       that.checkBoxAddStu = [];
       if (res.data) {
         that.serachStuList = res.data;
-        let editors = that.formItemData.Editors.split(",");
-        //将搜索出来的结果中，选中那些已经是本班老师的打钩
-        that.$nextTick(() => {
-          that.serachStuList.forEach(searchItem => {
-            editors.forEach(selectItem => {
-              if (searchItem.Id == selectItem) {
-                that.checkBoxAddStu.push(searchItem.Id);
-              }
-            });
-          });
-        });
-
-        that.showSearchStuResult = true;
+        this.changeBook();
       } else {
         that.serachStuList = [];
         that.$message({

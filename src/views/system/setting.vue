@@ -48,14 +48,14 @@ export default {
     return {
        common, 
       imgsrc:"",
-      
+      documentHeight:500,
     };
   },
   mounted() {
     this.fire();
   },
   methods: {
-    fire() {
+     fire() { this.documentHeight = document.body.clientHeight-400;
       this.imgsrc = this.common.systemForm.Logo;
     },
 

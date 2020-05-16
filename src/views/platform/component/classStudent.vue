@@ -197,7 +197,8 @@ export default {
       // 获取班级的所有学员
       classAllStuList: [],
       // 复选框所选中的学员ID
-      selectExistStudents: []
+      selectExistStudents: [],
+      documentHeight:500,
     };
   },
  watch: {
@@ -207,7 +208,7 @@ export default {
   },
   methods: {
     // 获取班级的所有学员
-    async fire() {
+    async  fire() { this.documentHeight = document.body.clientHeight-400;
       this.serachStuList = [];
       this.ShowSearchForm = false;
       this.showSearchStuResult = false;

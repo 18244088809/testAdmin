@@ -58,7 +58,8 @@ export default {
       // 存储已选中的权限
       currentManagerRights: [],
       // 当前用户所有的权限数据
-      managerRightsMap: {}
+      managerRightsMap: {},
+      documentHeight:500,
     };
   },
   watch: {
@@ -68,7 +69,7 @@ export default {
   },
 
   methods: {
-    fire() {
+     fire() { this.documentHeight = document.body.clientHeight-400;
       if (!this.formItemData||this.formItemData.Id==0) {
         return;
       }

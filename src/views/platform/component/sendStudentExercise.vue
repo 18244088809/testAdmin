@@ -6,7 +6,7 @@
       :data="exerciseList"
       border
       style="width: 100%"
-      :height="tableHeight"
+      :height="documentHeight"
       ref="refElTabel"
       @selection-change="selectionChange"
     >
@@ -71,12 +71,12 @@ export default {
       nowPage: 1,
       // 每页数据的总条
       rows: 50,
-      tableHeight: window.innerHeight - 300,
       // 获取选中的学生ID
       selectedIDList: [],
       currentItemData: {},
       exerciseList: [],
-      makeExamDialog: false
+      makeExamDialog: false,
+      documentHeight: 500
     };
   },
   watch: {
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     fire() {
-       this.tableHeight = window.innerHeight - 300;
+      this.documentHeight = document.body.clientHeight - 400;
       this.getThisClassExercise();
     },
     addNewExercise() {

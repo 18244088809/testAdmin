@@ -139,7 +139,8 @@ export default {
         Label: [
           { required: true, message: "班级名称不能为空", trigger: "blur" }
         ]
-      }
+      },
+      documentHeight:500,
     };
   },
   watch: {
@@ -151,7 +152,7 @@ export default {
     this.fire();
   },
   methods: {
-    fire() {
+     fire() { this.documentHeight = document.body.clientHeight-400;
       if (isDate(this.searchGrade)) {
         this.currentItemData.Grade = this.searchGrade.getFullYear();
       }

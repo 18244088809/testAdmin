@@ -17,6 +17,7 @@
     <vxe-table
       ref="timeTable"
       border
+      :height="documentHeight"
       :edit-rules="TimeTableRules"
       @edit-disabled="editDisabledRow"
       :data="todayTimeTableList"
@@ -184,7 +185,7 @@ export default {
       classAllTeacher: [],
       // 已经添加课表的日期
       calendarSelectData: [],
-
+documentHeight:500,
       currentCheckIndex: 0,
       // 课程所有的科目
       classAllBooks: [],
@@ -225,7 +226,7 @@ export default {
         }
         this.getTimeTableSelectDay();
       },
-      deep: true
+      deep: true, 
     }
   },
   mounted() {},
@@ -238,7 +239,7 @@ export default {
       });
     },
     //获取班级的基本信息
-    fire() {
+     fire() { this.documentHeight = document.body.clientHeight-400;
       this.getTimeTable();
       this.getAllManagerOfPlatform();
       this.getBooksOfCourses();

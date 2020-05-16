@@ -78,7 +78,8 @@ export default {
       // 列表
       dataList: [],
       currentItemData: this.formItemData,
-      editEnable: false
+      editEnable: false,
+      documentHeight:500,
     };
   },
   watch: {
@@ -88,7 +89,8 @@ export default {
   },
   mounted() {},
   methods: {
-    fire() {
+     fire() {  
+       this.documentHeight = document.body.clientHeight-400;
       if (!this.formItemData||!this.formItemData.Id) {
         return;
       }

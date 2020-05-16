@@ -29,7 +29,8 @@ export default {
     currentPlatform: {
       type: Number,
       default: 0
-    }
+    },
+      documentHeight:500,
   },
   name: "setPlatform",
   data() {
@@ -46,7 +47,7 @@ export default {
   },
 
   methods: {
-    fire() {
+     fire() { this.documentHeight = document.body.clientHeight-400;
       if (!this.formItemData||!this.formItemData.Id) {
         return;
       }

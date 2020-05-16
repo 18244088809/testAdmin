@@ -3,7 +3,7 @@
     <div class="flex_column hgt_full">
       <question-type-nav :id="subjectId"></question-type-nav>
       <div class="flex_1 m-t-20">
-        <el-table :data="taskExamList" border style="width: 100%" ref="refElTabel" height="100%">
+        <el-table :data="taskExamList" border style="width: 100%" ref="refElTabel" >
           <el-table-column prop="Id" label="ID" width="80"></el-table-column>
           <el-table-column prop="Label" label="组卷名称"></el-table-column>
           <el-table-column prop="Examtime" label="考试时间(分)" width="120"></el-table-column>

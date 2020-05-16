@@ -103,7 +103,7 @@
           border
           tooltip-effect="light"
           style="width: 100%"
-          :height="tableHeight"
+        :height="documentHeight"
           :row-style="{height:'40px'}"
           ref="refElTabel"
           @selection-change="handleSelectionChange"
@@ -264,8 +264,7 @@ export default {
         TopicNo: 1,
         Zhang: 1,
         Jie: 1
-      },
-      tableHeight: window.innerHeight - 300,
+      }, 
       //0 代表公共的试题列表。大于零则代表班级自己的和公共的
       currentClassID: 0,
       // 表单验证
@@ -279,7 +278,8 @@ export default {
         QuestionContent: [
           { required: true, message: "请填写题干内容", trigger: "blur" }
         ]
-      }
+      },
+      documentHeight:500,
     };
   },
   watch: {
@@ -294,8 +294,8 @@ export default {
     this.fire();
   },
   methods: {
-    async fire() {
-      this.tableHeight = window.innerHeight - 300;
+    async  fire() { this.documentHeight = document.body.clientHeight-400;
+ 
       this.thisPageQuestionList = [];
       if (this.$route.query.bookId) {
         this.currentItemData.BookId = parseInt(this.$route.query.bookId);

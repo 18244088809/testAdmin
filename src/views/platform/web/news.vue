@@ -7,8 +7,7 @@
           tooltip-effect="light"
           :data="newsListTable"
           border
-          style="width: 100%"
-          height="100%"
+          style="width: 100%" 
         >
           <el-table-column prop="Id" label="ID" width="50"></el-table-column>
           <el-table-column prop="Title" label="新闻标题" :show-overflow-tooltip="true">
@@ -111,7 +110,8 @@ export default {
       currentItemData: null,
       // 当前索引
       currentNewsIndex: null,
-      currentPlatform: 0
+      currentPlatform: 0,
+      documentHeight:500,
     };
   },
   methods: {
@@ -195,6 +195,8 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
+    
+    console.log(document.body.clientHeight,"   this.documentHeight:",   this.documentHeight)
     this.GetPlatformNews();
   }
 };
