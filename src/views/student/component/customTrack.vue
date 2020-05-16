@@ -6,10 +6,8 @@
     <div class="border-e5ecf7 radius3">
       <div class="m-b-10 bg-f5f9ff p_both20 p-v-15">
         <span>跟进方式：</span>
-        <el-radio v-model="trackMethod" label="邀约上门">邀约上门</el-radio>
-        <el-radio v-model="trackMethod" label="电话沟通">电话沟通</el-radio>
-        <el-radio v-model="trackMethod" label="QQ咨询">QQ咨询</el-radio>
-        <el-radio v-model="trackMethod" label="微信咨询">微信咨询</el-radio>
+        <el-radio v-model="trackMethod" label="线上沟通">线上沟通</el-radio>
+        <el-radio v-model="trackMethod" label="线下沟通">线下沟通</el-radio> 
       </div>
       <div class="bg-fff p_both20 p-v-10">
         <textarea
