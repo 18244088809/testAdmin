@@ -7,7 +7,7 @@
       <div class="m-b-10 bg-f5f9ff p_both20 p-v-15">
         <span>跟进方式：</span>
         <el-radio v-model="trackMethod" label="线上沟通">线上沟通</el-radio>
-        <el-radio v-model="trackMethod" label="线下沟通">线下沟通</el-radio> 
+        <el-radio v-model="trackMethod" label="线下沟通">线下沟通</el-radio>
       </div>
       <div class="bg-fff p_both20 p-v-10">
         <textarea
@@ -151,7 +151,7 @@ export default {
       customTrackList: [],
       // 当前回复跟进数据的索引
       currentReplyIndex: null,
-      documentHeight:500,
+      documentHeight: 500
     };
   },
   watch: {
@@ -159,13 +159,13 @@ export default {
       this.fire();
     }
   },
- 
 
   methods: {
-      fire() { this.documentHeight = document.body.clientHeight-400;
-    this.customFormData = this.customData;
-    this.getCustomId(this.customData.id);
-  },
+    fire() {
+      this.documentHeight = document.body.clientHeight - 400;
+      this.customFormData = this.customData;
+      this.getCustomId(this.customData.id);
+    },
     onPreview(src) {
       this.showViewer = true;
       this.imageViewerSrc = src;
