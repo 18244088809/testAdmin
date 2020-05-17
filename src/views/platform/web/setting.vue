@@ -67,17 +67,20 @@
             </el-form-item>
           </div>
           <div class="flex_dom">
-            <el-form-item label="官网名称" style="width:100%">
+            <el-form-item label="官网名称" style="width:20%">
               <el-input v-model="platformWeb.Label" placeholder="校区名称."></el-input>
             </el-form-item>
-            <el-form-item label="联系人" style="width:100%">
+            <el-form-item label="联系人" style="width:20%">
               <el-input v-model="platformWeb.Administrator" placeholder="联系人."></el-input>
             </el-form-item>
-            <el-form-item label="联系电话" style="width:100%">
+            <el-form-item label="联系电话" style="width:20%">
               <el-input v-model="platformWeb.Telephone" placeholder="联系电话."></el-input>
             </el-form-item>
-            <el-form-item label="联系邮箱" style="width:100%">
+            <el-form-item label="联系邮箱" style="width:20%">
               <el-input v-model="platformWeb.Email" placeholder="联系邮箱"></el-input>
+            </el-form-item>
+             <el-form-item label="联系QQ" style="width:20%">
+              <el-input v-model="platformWeb.QQ" placeholder="联系邮箱"></el-input>
             </el-form-item>
           </div>
           <el-form-item label="官网介绍" style="width:100%">

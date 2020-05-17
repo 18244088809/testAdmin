@@ -69,7 +69,7 @@
         <div slot="right_content">
           <docFormData
             ref="newsForm" 
-            :college="currentCollege"
+            :college="currentKind"
             :platform="currentPlatform"
             :formItemData="currentRowData"
             @updateRowData="updateNewsList"
@@ -94,7 +94,7 @@ export default {
   data() {
     return {
       common,
-      currentCollege: 0, 
+      currentKind: 0, 
       // 资料的数据列表
       newsListTable: [],
       // 数据总条数
@@ -117,7 +117,7 @@ export default {
 
   methods: {
     handleClick(item) {
-      this.currentCollege = 0;
+      this.currentKind = 0;
       let selectIndex = 0;
       if (item != null) {
         selectIndex = item.index;
@@ -126,7 +126,7 @@ export default {
         selectIndex
       ];
       if (collegeItem) {
-        this.currentCollege = collegeItem.Id;
+        this.currentKind = collegeItem.Id;
       }
       this.getNewsList();
     },
@@ -134,7 +134,7 @@ export default {
     async getNewsList() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
-        college: this.currentCollege, 
+        college: this.currentKind, 
         needPublic:true,
         content: 1,
         limit: this.rows,
@@ -196,9 +196,8 @@ export default {
         Downfile: "",
         Title: "",
         Description: "",
-        Content: "",
-        KindId: null,
-        CollegeID: this.currentCollege,
+        Content: "", 
+        KindId:  this.currentKind,
         Platform: this.currentPlatform
       };
     },
