@@ -22,7 +22,7 @@
         </el-tooltip>
         <div class="flex_1 m-l-30">
           <div class="flex_dom">
-            <el-form-item style="width:50%;" label="保密级别">
+            <el-form-item style="width:100%;" label="保密级别">
               <el-slider
                 class="m-l-30"
                 v-model="currentItemData.Right"
@@ -32,16 +32,15 @@
                 :max="5"
               ></el-slider>
             </el-form-item>
-            <el-form-item label="附件地址" style="width:50%;">
-              <el-upload
-                style="width:100%;"
+            <el-form-item label="附件地址"  style="width:500px;">
+              <el-upload 
                 :multiple="false"
                 :on-change="uploadEnclosure"
                 :show-file-list="false"
                 :auto-upload="false"
                 action
               >
-                <el-input placeholder="点击选择附件" v-model="currentItemData.Downfile"></el-input>
+                <el-input placeholder="点击选择附件或直接填写附件的下载地址"   v-model="currentItemData.Downfile"></el-input>
               </el-upload>
             </el-form-item>
           </div>

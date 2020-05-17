@@ -2,11 +2,7 @@
   <div class="font16 hgt_full" v-cloak>
     <div class="flex_column hgt_full">
       <el-tabs @tab-click="handleClick">
-        <el-tab-pane
-          v-for="item in common.docKindList"
-          :label="item.Label"
-          :key="item.value"
-        ></el-tab-pane>
+        <el-tab-pane v-for="(item,index) in common.docKindList" :label="item.Label"  :key="index"></el-tab-pane>
       </el-tabs>
       <el-table
         ref="refElTabel"
@@ -14,7 +10,6 @@
         :data="newsListTable"
         border
         style="width: 100%"
-        
       >
         <el-table-column prop="Id" label="ID" width="50"></el-table-column>
         <el-table-column prop="Title" label="资料名称" :show-overflow-tooltip="true">
@@ -26,11 +21,11 @@
           </template>
         </el-table-column>
         <el-table-column label="是否公共" width="100">
-            <template slot-scope="scope">
-              <span v-if="scope.row.Platform==0">总部发布</span>
-              <span v-else>本校私有</span>
-            </template>
-          </el-table-column>
+          <template slot-scope="scope">
+            <span v-if="scope.row.Platform==0">总部发布</span>
+            <span v-else>本校私有</span>
+          </template>
+        </el-table-column>
         <el-table-column label="保密级别" width="100">
           <template slot-scope="scope">
             <span>{{common.FormatSelect(common.docRights,scope.row.KindID)}}</span>
@@ -59,16 +54,10 @@
     </div>
     <!-- 弹出框 -->
     <div>
-      <my-dialog
-        
-        title="资料详情编辑"
-        :showLeft="false"
-        :visible.sync="moreOperationDialog"
-        
-      >
+      <my-dialog title="资料详情编辑" :showLeft="false" :visible.sync="moreOperationDialog">
         <div slot="right_content">
           <docFormData
-            ref="newsForm" 
+            ref="newsForm"
             :college="currentKind"
             :platform="currentPlatform"
             :formItemData="currentRowData"
@@ -94,7 +83,7 @@ export default {
   data() {
     return {
       common,
-      currentKind: 0, 
+      currentKind: 0,
       // 资料的数据列表
       newsListTable: [],
       // 数据总条数
@@ -117,25 +106,33 @@ export default {
 
   methods: {
     handleClick(item) {
-      this.currentKind = 0;
-      let selectIndex = 0;
-      if (item != null) {
-        selectIndex = item.index;
+      
+    
+      if (item==null) {
+         this.currentKind  =this.common.docKindList[0].value;
+      }else{
+         this.currentKind  = this.common.docKindList[item.index].value;
       }
-      let collegeItem = this.$store.getters.app.collegeWithCourseKind[
-        selectIndex
-      ];
-      if (collegeItem) {
-        this.currentKind = collegeItem.Id;
-      }
+      console.log("=======",  this.currentKind)
+      // this.currentKind = 0;
+      // let selectIndex = 0;
+      // if (item != null) {
+      //   selectIndex = item.index;
+      // }
+      // let collegeItem = this.$store.getters.app.collegeWithCourseKind[
+      //   selectIndex
+      // ];
+      // if (collegeItem) { 
+      // }
       this.getNewsList();
     },
     // 获取资料的数据列表
     async getNewsList() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
-        college: this.currentKind, 
-        needPublic:true,
+        kind_id:this.currentKind,
+        college: this.currentKind,
+        needPublic: true,
         content: 1,
         limit: this.rows,
         offset: offsetRow
@@ -179,9 +176,6 @@ export default {
       this.moreOperationDialog = true;
       this.currentNewsIndex = index;
       this.currentRowData = row;
-
-
-     
     },
     // 显示列表的时候格式化时间
     TimeFormatter(row, column, cellValue) {
@@ -196,8 +190,8 @@ export default {
         Downfile: "",
         Title: "",
         Description: "",
-        Content: "", 
-        KindId:  this.currentKind,
+        Content: "",
+        KindID: this.currentKind,
         Platform: this.currentPlatform
       };
     },
@@ -215,7 +209,7 @@ export default {
     openMoreOperationDialog(index, row) {
       this.currentTeacherIndex = index;
       this.currentRowData = row;
- 
+
       this.moreOperationDialog = true;
     }
   },
@@ -226,9 +220,9 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    setTimeout(this.handleClick, 500);
-
-    // this.getNewsList();
+    this.$nextTick(() => {
+      this.handleClick(null);
+    }); 
   }
 };
 </script>
