@@ -1,27 +1,27 @@
 <template>
-<div class="font16 hgt_full" v-cloak>
+  <div class="font16 hgt_full" v-cloak>
     <div class="flex_column hgt_full">
       <div class="flex_1 relative">
-        <div class="">
+        <div class="btn_fenxi">
           <div>
-          <el-radio-group v-model="radio1" @change="getDataAnalysis()">
-            <el-radio-button label="fromid">录入数量</el-radio-button>
-            <!-- <el-radio-button  abel="money">成交金额</el-radio-button> -->
-            <el-radio-button label="strack">跟进数量</el-radio-button>
-          </el-radio-group>
+            <el-radio-group v-model="radio1" @change="getDataAnalysis()">
+              <el-radio-button label="fromid">录入数量</el-radio-button>
+              <!-- <el-radio-button  abel="money">成交金额</el-radio-button> -->
+              <el-radio-button label="strack">跟进数量</el-radio-button>
+            </el-radio-group>
+          </div>
+          <div class="m-t-15">
+            <el-radio-group v-model="days" @change="getDataAnalysis()">
+              <el-radio-button label="7">7天</el-radio-button>
+              <el-radio-button label="30">30天</el-radio-button>
+              <el-radio-button label="100">100天</el-radio-button>
+              <el-radio-button label="120">120天</el-radio-button>
+            </el-radio-group>
+          </div>
         </div>
-        <div class="m-t-15">
-          <el-radio-group v-model="days" @change="getDataAnalysis()">
-            <el-radio-button label="7">7天</el-radio-button>
-            <el-radio-button label="30">30天</el-radio-button>
-            <el-radio-button label="100">100天</el-radio-button>
-            <el-radio-button label="120">120天</el-radio-button>
-          </el-radio-group>
-        </div>
+        <div id="myChart" :style="{width: '100%', height: '100%'}" />
       </div>
-      <div id="myChart" :style="{width: '100%', height: '100%'}" class="m-t-20" />
     </div>
-     </div>
   </div>
 </template>
 
@@ -32,7 +32,7 @@ import {
 } from "@/api/home";
 import { getToken } from "@/utils/auth";
 export default {
-  name: "DashboardAdmin",
+  name: "DashboardTeacher",
   data() {
     return {
       radio1: "fromid",

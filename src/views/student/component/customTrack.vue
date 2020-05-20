@@ -253,7 +253,7 @@ export default {
         });
       } else {
         this.currentReplyIndex = index;
-        const res = await replyTracks(track.Id, track.replyContent);
+        const res = await replyTracks(track.Id,"", track.replyContent);
         if (res.code == 200) {
           this.$message({
             message: "操作成功",

@@ -28,7 +28,7 @@
         </el-table-column>
         <el-table-column label="保密级别" width="100">
           <template slot-scope="scope">
-            <span>{{common.FormatSelect(common.docRights,scope.row.KindID)}}</span>
+            <span>{{common.FormatSelect(common.docRights,scope.row.Right)}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="Creattime" :formatter="TimeFormatter" label="发布时间" width="130"></el-table-column>
@@ -112,8 +112,7 @@ export default {
          this.currentKind  =this.common.docKindList[0].value;
       }else{
          this.currentKind  = this.common.docKindList[item.index].value;
-      }
-      console.log("=======",  this.currentKind)
+      } 
       // this.currentKind = 0;
       // let selectIndex = 0;
       // if (item != null) {
@@ -130,8 +129,7 @@ export default {
     async getNewsList() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
-        kind_id:this.currentKind,
-        college: this.currentKind,
+        kind_id:this.currentKind, 
         needPublic: true,
         content: 1,
         limit: this.rows,

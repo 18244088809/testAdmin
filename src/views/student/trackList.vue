@@ -166,7 +166,7 @@ export default {
       this.getCustomtTracks();
     },
     // 提交回复评论
-    async submitReplyTrack(track, index) {
+    async submitReplyTrack(track, index) { 
       const oldtrack = { ...track };
       if (!track.replyContent) {
         this.$message({
@@ -174,6 +174,7 @@ export default {
           type: "warning"
         });
       } else {
+      
         this.currentReplyIndex = index;
         const res = await replyTracks(track.Id, "", track.replyContent);
 
