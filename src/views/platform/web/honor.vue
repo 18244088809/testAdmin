@@ -2,6 +2,8 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
+          <vuedraggable class="wrapper" v-model="dataList">
+          <transition-group>
         <div class="m-b-20" v-for="(item,index) in dataList" :key="index">
           <div class="cardBorder  ">
             <el-upload
@@ -32,6 +34,8 @@
             </div>
           </div>
         </div>
+          </transition-group>
+          </vuedraggable>
       </div>
       <div class="m-v-15">
         <el-button type="primary" @click="addBannerItem">新 增</el-button>
@@ -44,8 +48,12 @@
 <script>
 import { getWebContent, setWebContent } from "@/api/platform";
 import $ImgHttp from "@/api/ImgAPI";
+import vuedraggable from "vuedraggable";
 export default {
   name: "webHonor",
+  components:{
+    vuedraggable,
+  },
   data() {
     return {
       // banner列表

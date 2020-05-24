@@ -310,8 +310,7 @@ export default {
             content: ""
           }
         ];
-        this.$nextTick(()=>{
-
+        this.$nextTick(()=>{ 
           this.quesCheckboxAnswer = ["A"];
         })
       }

@@ -2,6 +2,8 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar">
+          <vuedraggable class="wrapper" v-model="dataList">
+          <transition-group>
         <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
           <div class="flex_mid cardBorder bg-ccc">
             <el-form label-width="90px" :model="item" style="width:100%">
@@ -23,6 +25,8 @@
             </div>
           </div>
         </div>
+          </transition-group>
+          </vuedraggable>
       </div>
       <div class="m-v-15">
         <el-button type="primary" @click="addBannerItem">添加友情链接</el-button>
@@ -34,9 +38,12 @@
 
 <script>
 import { getWebContent, setWebContent } from "@/api/platform";
-
+import vuedraggable from "vuedraggable";
 export default {
   name: "linker",
+  components:{
+    vuedraggable,
+  },
   data() {
     return {
       // 列表

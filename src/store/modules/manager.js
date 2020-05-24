@@ -41,7 +41,7 @@ const actions = {
         setToken(response.title)
         dispatch('app/getPlatformList', null, { root: true })
         dispatch('app/getCollegeWithCourseKind', null, { root: true }) 
-        dispatch('app/getQuestionTypes', null, { root: true })
+        // dispatch('app/getQuestionTypes', null, { root: true })
   
         resolve()
       }).catch(error => {

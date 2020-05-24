@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie'
 import { getLanguage } from '@/lang/index'
-import {  getQuestionTypes } from "@/api/exercise";
+import { getQuestionTypes } from "@/api/exercise";
 import { getCollegeWithCourseKind } from '@/api/college'
-import { queryPlatform } from '@/api/platform' 
+import { queryPlatform } from '@/api/platform'
 const state = {
   sidebar: {
     opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
@@ -13,7 +13,23 @@ const state = {
   size: Cookies.get('size') || 'medium',
   platformList: [],//所有的平台列表
   collegeWithCourseKind: [],// 
-  questionTypes:[],
+  questionTypes: [
+    {
+      "ID": 1,
+      "Label": "单项选择题"
+    },
+    {
+      "ID": 2,
+      "Label": "多项选择题"
+    },
+    {
+      "ID": 3,
+      "Label": "判断题"
+    },
+    {
+      "ID": 4,
+      "Label": "案例分析"
+    }],
 }
 
 const mutations = {
@@ -51,8 +67,8 @@ const mutations = {
   SET_QUESTIONTYPES: (state, data) => {
     state.questionTypes = data
   },
- 
- 
+
+
   PUSH_PLATFORM: (state, newItem) => {
     let hasIn = false;
     state.platformList.forEach(item => {
@@ -90,7 +106,7 @@ const actions = {
   getPlatformList({ commit }) {
     return new Promise((resolve, reject) => {
       queryPlatform('', '', '').then(response => {
-        commit('SET_PLATFORMLIST', response.data);  
+        commit('SET_PLATFORMLIST', response.data);
         resolve()
       }).catch(error => {
         reject(error)
@@ -108,17 +124,7 @@ const actions = {
       })
     })
   },
-  // getQuestionTypes
-  getQuestionTypes({ commit }) {
-    return new Promise((resolve, reject) => {
-      getQuestionTypes('','', '').then(response => {
-        commit('SET_QUESTIONTYPES', response.data)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
+ 
   pushPlatform({ commit }, data) {
     commit('PUSH_PLATFORM', data)
   },

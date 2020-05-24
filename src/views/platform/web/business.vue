@@ -1,30 +1,53 @@
 <template>
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
-      <div class="flex_1 m-t-10 overflow_auto my_scrollbar p-r-20 p-l-5">
-        <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
-          <div class="flex_dom cardBorder"> 
-              <el-form label-width="70px" :model="item" style="width:200px" class="bg-f5 p-t-5">
-                <el-form-item label="模块名称">
-                  <el-input v-model="item.label" style="width:100%" placeholder="填写模块名"></el-input>
-                </el-form-item>
-                <el-form-item label="是否显示">
-                  <el-checkbox v-model="item.display" checked="checked" style="width:100%"></el-checkbox>
-                </el-form-item>
-                <el-form-item label="图片特效">
-                  
-                </el-form-item>
-                <el-form-item label="编辑内容">
-                  <el-button type="primary" @click="openContentEditer(index)">点击编辑</el-button>
-                </el-form-item>
-              </el-form>
-              <div style="width:100%" v-html="item.content" />
-          
-            <div class="dele_banner" @click="deleBusinessItem(index)">
-              <i class="el-icon-error font24 color-999"></i>
+      <div class="flex_1 m-t-10 overflow_auto my_scrollbar p-r-20">
+        <vuedraggable class="wrapper" v-model="dataList">
+          <transition-group>
+            <div
+              class="m-b-10"
+              v-for="(item,index) in dataList"
+              :key="index"
+             
+            >
+              <div
+                class="flex_dom cardBorder"
+                :id="'card'+index" 
+              >
+                <el-form
+                  label-width="120px"
+                  :model="item"
+                  style="width:300px"
+                  class="bg-f5 p-t-10 p-r-10"
+                >
+                  <el-form-item label="模块名称">
+                    <el-input v-model="item.label" style="width:100%" placeholder="填写模块名"></el-input>
+                  </el-form-item>
+                  <el-form-item label="模块副标题">
+                    <el-input v-model="item.description" placeholder="可填写英文做副标题" style="width:100%"></el-input>
+                  </el-form-item>
+                  <el-form-item label="是否显示">
+                    <el-checkbox v-model="item.display" checked="checked" style="width:100%">打钩显示</el-checkbox>
+                  </el-form-item>
+                  <el-form-item label="图片滑动透明度">
+                    <el-slider v-model="item.imgHoverOpacity" :max="1" :min="0" :step="0.1"></el-slider>
+                  </el-form-item>
+                  <el-form-item label="图片滑动缩放">
+                    <el-slider v-model="item.imgHoverScale" :max="1.5" :min="0.5" :step="0.01"></el-slider>
+                  </el-form-item>
+                  <el-form-item label="编辑内容">
+                    <el-button type="primary" @click="openContentEditer(index)">点击编辑</el-button>
+                  </el-form-item>
+                </el-form>
+                <div style="width:100%" v-html="formatContent(item)" />
+
+                <div class="dele_banner" @click="deleBusinessItem(index)">
+                  <i class="el-icon-error font24 color-999"></i>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </transition-group>
+        </vuedraggable>
       </div>
       <div class="m-v-15">
         <el-button type="primary" @click="addBusinessItem">新 增</el-button>
@@ -50,10 +73,12 @@ import businessFormData from "@/views/platform/web/component/businessFormData";
 import { getWebContent, setWebContent } from "@/api/platform";
 import $ImgHttp from "@/api/ImgAPI";
 import myDialog from "@/components/myDialog/myDialog";
+import vuedraggable from "vuedraggable";
 export default {
   components: {
     businessFormData,
-    myDialog
+    myDialog,
+   vuedraggable,
   },
   name: "webBusiness",
   data() {
@@ -68,11 +93,31 @@ export default {
   },
 
   methods: {
+    allowDrop(ev) {
+      ev.preventDefault();
+    },
+
+    drag(ev) {
+      ev.dataTransfer.setData("item", ev.target.id);
+    },
+
+    drop(ev) {
+      ev.preventDefault();
+      var item = ev.dataTransfer.getData("item");
+      ev.target.appendChild(document.getElementById(item));
+      console.log(
+        ev.target,
+        "--------",
+        item,
+        "----------",
+        document.getElementById(item)
+      );
+    },
+
     async GetWebBusiness() {
-      let res = await getWebContent(  this.currentPlatform +"/business", "");
-      if (res.code == 200) {
-        this.dataList = res.data ? res.data : [];
-      }
+      let res = await getWebContent(this.currentPlatform + "/business", "");
+
+      this.dataList = res.data ? res.data : [];
     },
 
     // 编辑或者添加之后更新表格数据-资料列表
@@ -88,12 +133,10 @@ export default {
         "",
         this.dataList
       );
-      if (res.code == 200) {
-        this.$message({
-          message: "保存成功",
-          type: "success"
-        });
-      }
+      this.$message({
+        message: "保存成功",
+        type: "success"
+      });
     },
     openContentEditer(index) {
       this.currentIndex = index;
@@ -101,9 +144,30 @@ export default {
       this.currentItem = this.dataList[index];
       this.currentItem.Id = index;
     },
+    formatContent(item) {
+      ///word/g
+      if (item.content) {
+        return item.content.replace(
+          /<img /g,
+          "<img onMouseOver='this.style.opacity=" +
+            item.imgHoverOpacity +
+            '; this.style.transform="scale(' +
+            item.imgHoverScale +
+            "," +
+            item.imgHoverScale +
+            ")\"' onmouseout='this.style.opacity=1;  this.style.transform=\"scale(1,1)\"' "
+        );
+      }
+    },
     // 添加banner
     addBusinessItem() {
-      this.dataList.unshift({});
+      let item = {};
+      item.label = "未命名模块";
+      item.display = true;
+      item.imgHoverOpacity = 0.7;
+      item.imgHoverScale = 0.9;
+      item.content = "这里没有什么内容";
+      this.dataList.unshift(item);
     },
     // 删除banner
     async deleBusinessItem(index) {
@@ -136,13 +200,15 @@ export default {
   right: 5px;
   top: 5px;
 }
+.myImg:hover {
+  opacity: 0.1;
+}
 .cardBorder {
   -webkit-box-shadow: 0 1px 5px 0 #dedede;
   box-shadow: 0 1px 5px 0 #dedede;
-  padding: 20px 30px 0px 20px;
   position: relative;
   box-sizing: border-box;
-  border-radius: 5px;
+  border-radius: 10px;
   border: 2px dashed rgba(46, 84, 56, 0.2);
 }
 .el-upload {
