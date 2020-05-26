@@ -18,7 +18,7 @@
       <el-form-item label="英文名">
         <el-input v-model="currentFormData.EnRealname" placeholder="请输入英文名"></el-input>
       </el-form-item>
-      <el-form-item label="电话号码" prop="tel">
+      <el-form-item label="电话号码" prop="Tel">
         <el-input v-model="currentFormData.Tel" placeholder="请输入电话号码"></el-input>
       </el-form-item>
 

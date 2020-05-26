@@ -12,14 +12,13 @@
       </vxe-toolbar>
       <div class="hgt_full">
         <vxe-table
-          ref="chapterTreeTable"
-          class="p-b-10"
+          ref="chapterTreeTable" 
           border
-           height="100%"
+          height="95%"
           row-id="Id"
           show-overflow
           :tree-config="treeConfig"
-          :data.sync="chaperListOfBook" 
+          :data.sync="chaperListOfBook"
           :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:false}"
         >
           <vxe-table-column type="seq" width="120" title="序号" tree-node />
@@ -39,8 +38,7 @@
                 <el-input class="m-l-10" v-model="row.Video" />
               </div>
             </template>
-          </vxe-table-column>
-
+          </vxe-table-column> 
           <vxe-table-column field="Taste" title="允许试读" width="80">
             <template v-slot="{ row}">
               <div v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
@@ -81,7 +79,7 @@
           </vxe-table-column>
         </vxe-table>
       </div>
-      <div class="between-center m-t-10 m-b-10">
+      <div class="  m-b-30">
         <el-button type="primary" @click="addChapter">新增章</el-button>
         <el-button v-show="editEnable" type="success" @click="createSubjectChapter">保存</el-button>
       </div>
@@ -145,10 +143,10 @@ export default {
       //  列表的children数据
       treeConfig: {
         children: "Children"
-      }, 
+      }
     };
   },
-  mounted() { 
+  mounted() {
     this.bookID = parseInt(this.$router.currentRoute.query.Id);
     this.getBookChapter();
   },
