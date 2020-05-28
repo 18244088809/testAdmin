@@ -108,10 +108,6 @@
 4. 新建 Pull Request
 
 
-#### 交流QQ群
-欢迎加入在线教育管理系统，
-![QQ群技术讨论群](https://images.gitee.com/uploads/images/2020/0308/144031_e1edf23e_870483.png "QQ群") 
-
 
 #### 码云特技
  +
