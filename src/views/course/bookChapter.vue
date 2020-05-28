@@ -1,20 +1,23 @@
 
 <template>
   <div v-cloak class="font16 hgt_full">
-    <span class="m-b-10">当前科目名称：{{ bookLabel }}</span>
-    <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改本教材内容。因为你不是本教材的编委成员</span>
+   
+    <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改教材:《{{ bookLabel }}》内容。因为你不是本教材的编委成员</span>
     <div class="flex_column hgt_full" v-else>
-      <vxe-toolbar>
+       <vxe-toolbar>
         <template v-slot:buttons>
+           <span >《{{ bookLabel }}》</span>
           <el-button v-if="isTableClose" type="success" @click="closeTables">合闭所有</el-button>
           <el-button v-else type="primary" @click="expandTables">展开所有</el-button>
+          <el-button type="primary" @click="addChapter">追加一章</el-button>
+          <el-button v-show="editEnable" type="success" @click="createSubjectChapter">保存</el-button>
         </template>
       </vxe-toolbar>
       <div class="hgt_full">
         <vxe-table
-          ref="chapterTreeTable" 
+          ref="chapterTreeTable"
           border
-          height="95%"
+          height="98%"
           row-id="Id"
           show-overflow
           :tree-config="treeConfig"
@@ -22,7 +25,7 @@
           :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:false}"
         >
           <vxe-table-column type="seq" width="120" title="序号" tree-node />
-          <vxe-table-column field="SN" title="章节编号" width="100"></vxe-table-column>
+          <vxe-table-column field="SN" title="章节编号" :edit-render="{name: 'input'}"  width="100"></vxe-table-column>
           <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
           <vxe-table-column title="视频地址" field="Video">
             <template v-slot="{ row}">
@@ -38,7 +41,7 @@
                 <el-input class="m-l-10" v-model="row.Video" />
               </div>
             </template>
-          </vxe-table-column> 
+          </vxe-table-column>
           <vxe-table-column field="Taste" title="允许试读" width="80">
             <template v-slot="{ row}">
               <div v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
@@ -79,10 +82,7 @@
           </vxe-table-column>
         </vxe-table>
       </div>
-      <div class="  m-b-30">
-        <el-button type="primary" @click="addChapter">新增章</el-button>
-        <el-button v-show="editEnable" type="success" @click="createSubjectChapter">保存</el-button>
-      </div>
+    
     </div>
 
     <my-dialog :visible.sync="addQuestionDialog" :showLeft="false" title="添加考题">
