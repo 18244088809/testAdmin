@@ -35,6 +35,9 @@
                   <el-form-item label="图片滑动缩放">
                     <el-slider v-model="item.imgHoverScale" :max="1.5" :min="0.5" :step="0.01"></el-slider>
                   </el-form-item>
+                     <el-form-item label="图片滑动阴影">
+                    <el-slider v-model="item.imgHoverShadow" :max="100" :min="0" :step="1"></el-slider>
+                  </el-form-item>
                   <el-form-item label="编辑内容">
                     <el-button type="primary" @click="openContentEditer(index)">点击编辑</el-button>
                   </el-form-item>
@@ -144,8 +147,8 @@ export default {
       this.currentItem = this.dataList[index];
       this.currentItem.Id = index;
     },
-    formatContent(item) {
-      ///word/g
+     formatContent(item) {
+      ///word/g  0px 0px 44px 2px rgba(43, 43, 43, 0.19)
       if (item.content) {
         return item.content.replace(
           /<img /g,
@@ -155,7 +158,11 @@ export default {
             item.imgHoverScale +
             "," +
             item.imgHoverScale +
-            ")\"' onmouseout='this.style.opacity=1;  this.style.transform=\"scale(1,1)\"' "
+            ")\";this.style.boxShadow=\"0px 0px " +
+            item.imgHoverShadow +
+            "px " +
+            item.imgHoverShadow +
+            "px rgba(43, 43, 43, 0.19)\";  ' onmouseout='this.style.opacity=1;  this.style.transform=\"scale(1,1)\" ;this.style.boxShadow=\"\";' "
         );
       }
     },
