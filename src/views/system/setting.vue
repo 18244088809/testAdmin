@@ -1,6 +1,6 @@
 <template>
   <div v-cloak class="font16 hgt_full" style="height:100%">
-    <div class="flex_column hgt_full">
+    <div class="flex_column hgt_full m-t-40">
       <el-form label-width="180px" class="demo-ruleForm" size="small">
         <el-form-item label="系统名称">
           <el-input v-model="common.systemForm.Name" placeholder="可以输入多个号码，用英文逗号,隔开" />

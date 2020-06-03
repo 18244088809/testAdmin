@@ -4,7 +4,7 @@
     <div class="flex_column hgt_full">
       <div class="between-center">
         <el-form :inline="true" class="demo-form-inline">
-       <el-form-item v-if="exerciseItem.ClassID>0&&CourseItem.Id==0">
+       <el-form-item v-if="exerciseItem&&exerciseItem.ClassID>0&&CourseItem.Id==0">
             <el-dropdown @command="selectCourse">
               <span class="el-dropdown-link">
                 {{"《"+CourseItem.Label+"》"}}
@@ -140,10 +140,9 @@
               <span>{{scope.row.WrongNum}}/{{scope.row.AnswerNum}}</span>
             </template>
           </el-table-column>
-        </el-table>
-
+        </el-table> 
         <div class="between-center m-v-15">
-          <el-button v-if="exerciseItem.Id==0" type="primary" @click="openAddQuestionDialog">新增试题</el-button>
+          <el-button v-if=" exerciseItem.Id<0" type="primary" @click="openAddQuestionDialog">新增试题</el-button>
           <el-button v-else type="primary" @click="saveExerciseQuestions">保存关联</el-button>
 
           <div>
@@ -200,7 +199,7 @@ export default {
     exerciseItem: {
       typ: Object,
       default: function() {
-        return { Id: 0 };
+        return { Id: -1 };
       }
     }
   },

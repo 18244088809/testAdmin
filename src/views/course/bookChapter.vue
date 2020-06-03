@@ -1,12 +1,14 @@
 
 <template>
   <div v-cloak class="font16 hgt_full">
-   
-    <span v-if="editEnable==false" class="m-b-10 color-red">你无权修改教材:《{{ bookLabel }}》内容。因为你不是本教材的编委成员</span>
+    <span
+      v-if="editEnable==false"
+      class="m-b-10 color-red"
+    >你无权修改教材:《{{ bookLabel }}》内容。因为你不是本教材的编委成员</span>
     <div class="flex_column hgt_full" v-else>
-       <vxe-toolbar>
+      <vxe-toolbar>
         <template v-slot:buttons>
-           <span >《{{ bookLabel }}》</span>
+          <span>《{{ bookLabel }}》</span>
           <el-button v-if="isTableClose" type="success" @click="closeTables">合闭所有</el-button>
           <el-button v-else type="primary" @click="expandTables">展开所有</el-button>
           <el-button type="primary" @click="addChapter">追加一章</el-button>
@@ -25,8 +27,9 @@
           :edit-config="{trigger: 'dblclick', mode: 'row',showIcon:false}"
         >
           <vxe-table-column type="seq" width="120" title="序号" tree-node />
-          <vxe-table-column field="SN" title="章节编号" :edit-render="{name: 'input'}"  width="100"></vxe-table-column>
+          <vxe-table-column field="SN" title="章节编号" :edit-render="{name: 'input'}" width="100"></vxe-table-column>
           <vxe-table-column field="Label" title="名称" :edit-render="{name: 'input'}" />
+
           <vxe-table-column title="视频地址" field="Video">
             <template v-slot="{ row}">
               <div class="flex_dom" style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
@@ -49,6 +52,21 @@
                   <option :value="0">否</option>
                   <option :value="1">是</option>
                 </select>
+              </div>
+            </template>
+          </vxe-table-column>
+          <vxe-table-column title="附属资料" field="Doc">
+            <template v-slot="{ row}">
+              <div class="flex_dom" style="width:100%">
+                <el-upload
+                  :auto-upload="false"
+                  action
+                  :show-file-list="false"
+                  :on-change="function(file){return uploadDoc(file,row)}"
+                >
+                  <el-button size="mini" type="info">上传资料</el-button>
+                </el-upload>
+                <el-input class="m-l-10" v-model="row.Doc" />
               </div>
             </template>
           </vxe-table-column>
@@ -82,7 +100,6 @@
           </vxe-table-column>
         </vxe-table>
       </div>
-    
     </div>
 
     <my-dialog :visible.sync="addQuestionDialog" :showLeft="false" title="添加考题">
@@ -164,7 +181,38 @@ export default {
     linkedQuestion() {
       updateContent(this.bookID, "", this.chaperListOfBook);
     },
+
+    uploadDoc(file, row) {
+      var index = file.name.lastIndexOf(".");
+      var suffix = file.name.substr(index + 1).toLowerCase();
+      if (suffix == "mp4" || suffix == "ogg" || suffix == "webm") {
+        this.$confirm("这好像是个视频，你确认是上传的资料?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          this.uploadExecute(file, row, "doc");
+        });
+      } else {
+        this.uploadExecute(file, row, "doc");
+      }
+    },
+
     uploadVideo(file, row) {
+      var index = file.name.lastIndexOf(".");
+      var suffix = file.name.substr(index + 1).toLowerCase(); 
+      if (suffix != "mp4" && suffix != "ogg"&&suffix != "webm") {
+        this.$message({
+          message: "视频格式只能mp4或者ogg或者webm",
+          type: "error"
+        });
+        return;
+      }
+
+      this.uploadExecute(file, row, "video");
+    },
+
+    uploadExecute(file, row, uploadKind) {
       if (this.editEnable == false) {
         this.$message({
           message: "你不是本教材编委，不能编辑内容",
@@ -172,6 +220,9 @@ export default {
         });
         return;
       }
+      var index = file.name.lastIndexOf(".");
+      var suffix = file.name.substr(index + 1);
+
       let NameValue =
         this.bookID +
         "-" +
@@ -180,14 +231,20 @@ export default {
         row.Jie +
         "-" +
         row.TopicNo +
-        "-video.mp4";
+        "." +
+        suffix;
       let that = this;
       let res = common.uploadCosFile(
         file,
-        "video",
+        uploadKind,
         NameValue,
         function(progressData) {
-          row.Video = "上传进度:" + progressData.percent * 100 + "%";
+          if (uploadKind == "video") {
+            row.Video = "上传进度:" + progressData.percent * 100 + "%";
+          } else if (uploadKind == "doc") {
+            row.Doc = "上传进度:" + progressData.percent * 100 + "%";
+          }
+          that.$forceUpdate();
         },
         function(err, data, fileURL) {
           if (!err) {
@@ -198,7 +255,12 @@ export default {
           } else {
             console.log("cos上传错误:", err);
           }
-          row.Video = "https://" + fileURL;
+          if (uploadKind == "video") {
+            row.Video = "https://" + fileURL;
+          } else if (uploadKind == "doc") {
+            row.Doc = "https://" + fileURL;
+          }
+           that.$forceUpdate();
         }
       );
     },

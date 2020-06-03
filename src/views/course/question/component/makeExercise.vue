@@ -18,11 +18,10 @@
           <el-button type="primary" @click="addNewExercie" style="width:140px">添加试卷</el-button>
         </div>
       </div>
-      <div style="width:15px; background:#e0e3ea; "></div>
-
+      <div style="width:15px; background:#e0e3ea; "></div> 
       <div slot="right_content" class="p-l-10 p-b-20 wid_100">
         <div class="center">
-          <el-tabs @tab-click="onChangeTabs">
+          <el-tabs @tab-click="onChangeTabs" v-show="currentExercise.Id>0">
             <el-tab-pane id="gkj" label="添加试题" name="gkj">
               <questionsList ref="gkj" :exerciseItem="currentExercise" />
             </el-tab-pane>

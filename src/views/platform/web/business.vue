@@ -7,7 +7,7 @@
             <div
               class="m-b-10"
               v-for="(item,index) in dataList"
-              :key="index"
+              :key="item.label+index"
              
             >
               <div
@@ -96,26 +96,7 @@ export default {
   },
 
   methods: {
-    allowDrop(ev) {
-      ev.preventDefault();
-    },
-
-    drag(ev) {
-      ev.dataTransfer.setData("item", ev.target.id);
-    },
-
-    drop(ev) {
-      ev.preventDefault();
-      var item = ev.dataTransfer.getData("item");
-      ev.target.appendChild(document.getElementById(item));
-      console.log(
-        ev.target,
-        "--------",
-        item,
-        "----------",
-        document.getElementById(item)
-      );
-    },
+    
 
     async GetWebBusiness() {
       let res = await getWebContent(this.currentPlatform + "/business", "");
