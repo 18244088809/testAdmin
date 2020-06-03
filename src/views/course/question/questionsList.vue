@@ -1,10 +1,10 @@
 <template>
   <div class="font16 hgt_full m-t-10">
-        <!-- <span class="m-b-10">请先在左边创建或选择一个试卷</span> -->
+    <!-- <span class="m-b-10">请先在左边创建或选择一个试卷</span> -->
     <div class="flex_column hgt_full">
       <div class="between-center">
         <el-form :inline="true" class="demo-form-inline">
-       <el-form-item v-if="exerciseItem&&exerciseItem.ClassID>0&&CourseItem.Id==0">
+          <el-form-item v-if="exerciseItem&&exerciseItem.ClassID>0&&CourseItem.Id==0">
             <el-dropdown @command="selectCourse">
               <span class="el-dropdown-link">
                 {{"《"+CourseItem.Label+"》"}}
@@ -103,7 +103,7 @@
           border
           tooltip-effect="light"
           style="width: 100%"
-        :height="documentHeight"
+          :height="documentHeight"
           :row-style="{height:'40px'}"
           ref="refElTabel"
           @selection-change="handleSelectionChange"
@@ -140,7 +140,7 @@
               <span>{{scope.row.WrongNum}}/{{scope.row.AnswerNum}}</span>
             </template>
           </el-table-column>
-        </el-table> 
+        </el-table>
         <div class="between-center m-v-15">
           <el-button v-if=" exerciseItem.Id<0" type="primary" @click="openAddQuestionDialog">新增试题</el-button>
           <el-button v-else type="primary" @click="saveExerciseQuestions">保存关联</el-button>
@@ -218,7 +218,7 @@ export default {
       rows: 30,
       // 查询-搜索
       CourseItem: {
-        Id:0,
+        Id: 0,
         SN: "",
         Label: "全部课程"
       },
@@ -263,7 +263,7 @@ export default {
         TopicNo: 1,
         Zhang: 1,
         Jie: 1
-      }, 
+      },
       //0 代表公共的试题列表。大于零则代表班级自己的和公共的
       currentClassID: 0,
       // 表单验证
@@ -278,7 +278,7 @@ export default {
           { required: true, message: "请填写题干内容", trigger: "blur" }
         ]
       },
-      documentHeight:500,
+      documentHeight: 500
     };
   },
   watch: {
@@ -293,15 +293,16 @@ export default {
     this.fire();
   },
   methods: {
-    async  fire() { this.documentHeight = document.body.clientHeight-400;
- 
+    async fire() {
+      this.documentHeight = document.body.clientHeight - 400;
+
       this.thisPageQuestionList = [];
       if (this.$route.query.bookId) {
         this.currentItemData.BookId = parseInt(this.$route.query.bookId);
         this.bookChapter();
         this.getQuesListOfBookZhangJie();
-      } else if (this.exerciseItem) { 
-        if (this.exerciseItem.ClassID > 0) { 
+      } else if (this.exerciseItem) {
+        if (this.exerciseItem.ClassID > 0) {
           if (this.exerciseItem.Id == 0) {
             return;
           }
@@ -316,9 +317,11 @@ export default {
           this.courseOfClass = res.data ? res.data : [];
         } else if (this.exerciseItem.CourseID > 0) {
           let courseItem = {};
-          courseItem.Id = this.exerciseItem.CourseID; 
-          this.selectCourse(courseItem);
-          
+          courseItem.Id = this.exerciseItem.CourseID;
+         await this.selectCourse(courseItem);
+          if (this.bookOfCourse.length>0){ 
+            this.selectBook(this.bookOfCourse[0])
+          }
         }
       }
     },
@@ -407,7 +410,7 @@ export default {
     },
     selectBook(item) {
       this.BookItem.Label = item.Label;
-      this.BookItem.Id = item.TBookId;
+      this.BookItem.Id = item.TBookId; 
       this.currentItemData.BookId = this.BookItem.Id;
       this.zhangItem = {
         SN: "",
@@ -526,7 +529,7 @@ export default {
       this.currentItemData.I = "";
       this.currentItemData.ZhangId = this.currentItemData.Zhang;
       this.currentItemData.JieId = this.currentItemData.Jie;
-      this.currentItemData.TopicId = this.currentItemData.Topic; 
+      this.currentItemData.TopicId = this.currentItemData.Topic;
       this.questionRowShow = true;
       this.currentItemData.BookId = parseInt(this.$route.query.bookId);
     },
