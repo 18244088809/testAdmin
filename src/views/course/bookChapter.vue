@@ -4,7 +4,7 @@
     <span
       v-if="editEnable==false"
       class="m-b-10 color-red"
-    >你无权修改教材:《{{ bookLabel }}》内容。因为你不是本教材的编委成员</span>
+    >{{ bookLabel }}</span>
     <div class="flex_column hgt_full" v-else>
       <vxe-toolbar>
         <template v-slot:buttons>
@@ -32,6 +32,7 @@
 
           <vxe-table-column title="视频地址" field="Video">
             <template v-slot="{ row}">
+           
               <div class="flex_dom" style="width:100%" v-if="row.Zhang>0&&row.Jie>0&&row.TopicNo>0">
                 <el-upload
                   :auto-upload="false"
@@ -147,7 +148,7 @@ export default {
     return {
       isTableClose: false,
       // 书名称
-      bookLabel: "",
+      bookLabel: "系统正在检测你是否有权限，请稍后...",
       // 书的Id
       bookID: 0,
       // 更多操作弹窗
@@ -257,6 +258,7 @@ export default {
           }
           if (uploadKind == "video") {
             row.Video = "https://" + fileURL;
+            row.TeacherID = that.$store.getters.manager.Id;
           } else if (uploadKind == "doc") {
             row.Doc = "https://" + fileURL;
           }

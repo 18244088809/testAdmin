@@ -233,8 +233,8 @@ export default {
         const params =
           "platformworklabel=" +
           this.platformworklabel +
-          "&download=true&token=" +
-          sessionStorage.token +
+          "&download=true&token=" + 
+          this.sessionStorage.token +
           "&start=" +
           startDate +
           "&end" +

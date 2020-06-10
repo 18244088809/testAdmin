@@ -10,14 +10,14 @@
               action
               class="bg-ddd"
               :show-file-list="false"
-              :on-change="function(file, item){return uploadVideo(file,item,index)}"
+              :on-change="function(file, item){return uploadImage(file,item,index)}"
             >
               <img v-if="item.image" :src="item.image" style="width: 140px; height: 140px" />
               <i
                 v-else
                 slot="default"
                 class="el-icon-plus"
-              >&nbsp;{{item.Progress?item.Progress:'点击上传'}}</i>
+              >&nbsp;{{item.imageProgress?item.imageProgress:'点击上传'}}</i>
             </el-upload>
             <el-button @click="onPreview(item.image)">&nbsp;预览</el-button>
           </div>
@@ -26,8 +26,23 @@
               <el-form-item label="资料名称" style="width:30%">
                 <el-input v-model="item.label" style="width:100%" placeholder="填写资料的名称"></el-input>
               </el-form-item>
-              <el-form-item label="跳转地址：" class="m-l-20" style="width:70%">
-                <el-input v-model="item.href" placeholder="请输入连接地址.或者下载地址"></el-input>
+
+              <el-form-item label="资料地址：" class="m-l-20" style="width:70%">
+                <div class="flex_dom">
+                  <el-upload
+                    :auto-upload="false"
+                    action
+                    class="bg-ddd"
+                    :show-file-list="false"
+                    :on-change="function(file, item){return uploadDoc(file,item,index)}"
+                  >
+                    <i
+                      slot="default"
+                      class="el-icon-plus"
+                    >&nbsp;{{item.docProgress?item.docProgress:'点击上传资料'}}</i>
+                  </el-upload>
+                  <el-input v-model="item.href" placeholder="请输入连接地址.或者下载地址"></el-input>
+                </div>
               </el-form-item>
               <a :href="item.href" style="width:50px" download>下载</a>
             </div>
@@ -39,6 +54,7 @@
           <div class="dele_Data" @click="deleDataItem(index)">
             <i class="el-icon-error font24 color-999"></i>
           </div>
+          <div class="bg-green"></div>
         </div>
       </div>
     </div>
@@ -79,7 +95,8 @@ export default {
       dataList: [],
       currentItemData: this.formItemData,
       editEnable: false,
-      documentHeight:500,
+      documentHeight: 500,
+      progress: 0
     };
   },
   watch: {
@@ -89,9 +106,9 @@ export default {
   },
   mounted() {},
   methods: {
-     fire() {  
-       this.documentHeight = document.body.clientHeight-400;
-      if (!this.formItemData||!this.formItemData.Id) {
+    fire() {
+      this.documentHeight = document.body.clientHeight - 400;
+      if (!this.formItemData || !this.formItemData.Id) {
         return;
       }
       this.currentItemData = this.formItemData;
@@ -110,7 +127,7 @@ export default {
       }
       this.dataList = JSON.parse(info);
     },
-    uploadVideo(file, row, index) {
+    uploadImage(file, row, index) {
       let that = this;
       if (that.editEnable == false) {
         that.$message({
@@ -119,13 +136,21 @@ export default {
         });
         return;
       }
-      let NameValue = new Date().getTime() + file.name;
+      let filename = file.name.split(".");
+      let NameValue =
+        "book_" +
+        this.currentItemData.Id +
+        "image_" +
+        index +
+        "." +
+        filename[filename.length - 1].toLowerCase();
+
       let res = common.uploadCosFile(
         file,
         "doc",
         NameValue,
         function(progressData) {
-          row.Progress = "上传进度:" + progressData.percent * 100 + "%";
+          row.imageProgress = "上传进度:" + progressData.percent * 100 + "%";
         },
         function(err, data, fileURL) {
           if (!err) {
@@ -141,24 +166,47 @@ export default {
         }
       );
     },
-
-    // 图片上传
-    async uploadDataImg(file, fileList, index) {
-      let res = await $ImgHttp.UploadImg("book", file.raw);
-      if (res.code != 200) {
-        this.$message({
-          message: res.data,
-          type: "warning"
+    uploadDoc(file, row, index) {
+      let that = this;
+      if (that.editEnable == false) {
+        that.$message({
+          message: "你不是本教材编委，不能发布资料",
+          type: "error"
         });
         return;
       }
-      this.dataList[index].image = res.data;
-      this.$message({
-        message: "上传成功",
-        type: "success"
-      });
-      this.$forceUpdate();
+
+      let filename = file.name.split(".");
+      let NameValue =
+        "book_" +
+        this.currentItemData.Id +
+        "doc_" +
+        index +
+        "." +
+        filename[filename.length - 1].toLowerCase();
+
+      let res = common.uploadCosFile(
+        file,
+        "doc",
+        NameValue,
+        function(progressData) {
+          row.docProgress = "上传进度:" + progressData.percent * 100 + "%";
+        },
+        function(err, data, fileURL) {
+          if (!err) {
+            that.$message({
+              message: "上传成功",
+              type: "success"
+            });
+          } else {
+            console.log("cos上传错误:", err);
+          }
+          that.dataList[index].href = "http://" + fileURL;
+          that.$forceUpdate();
+        }
+      );
     },
+
     // 保存Data列表
     async saveDataList() {
       let res = await SetBookInfo(this.currentItemData.Id, "", this.dataList);

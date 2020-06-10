@@ -56,9 +56,11 @@
         />
 
         <el-table-column prop="Description" :show-overflow-tooltip="true" label="备注" />
+        <el-table-column prop="Record" :show-overflow-tooltip="true" label="教材评分" />
         <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="scope">
             <el-button type="success" @click="addChapter(scope.$index, scope.row)">教材内容</el-button>
+            <el-button type="warning" @click="videoAsk(scope.$index, scope.row)">学员留言</el-button>
             <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题试卷</el-button>
           </template>
         </el-table-column>
@@ -191,7 +193,13 @@ export default {
       this.nowPage = val;
       this.getBookList();
     },
-
+    // 学员留言
+    videoAsk:function(index, row) {
+      this.$router.push({
+        name: "videoAsk",
+        query: { Id: row.Id }
+      });
+    },
     // 打开更多操作弹出框
     openMoreOptationDialog(index, row) {
       this.currentSubjectIndex = index;
@@ -206,12 +214,7 @@ export default {
     },
 
     updateEditors(editors) {
-      console.log("----1---", editors);
-
       this.subjectList[this.currentSubjectIndex].Editors = editors;
-      console.log("---2----", this.subjectList[this.currentSubjectIndex]);
-
-      //  this.$set(this.subjectList, this.currentSubjectIndex, rowData);
     },
     // 添加或编辑之后更新列表数据
     updateListItem(type, rowData) {

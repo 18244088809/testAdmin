@@ -318,9 +318,9 @@ export default {
         } else if (this.exerciseItem.CourseID > 0) {
           let courseItem = {};
           courseItem.Id = this.exerciseItem.CourseID;
-         await this.selectCourse(courseItem);
-          if (this.bookOfCourse.length>0){ 
-            this.selectBook(this.bookOfCourse[0])
+          await this.selectCourse(courseItem);
+          if (this.bookOfCourse.length > 0) {
+            this.selectBook(this.bookOfCourse[0]);
           }
         }
       }
@@ -377,9 +377,9 @@ export default {
         file.raw
       );
       if (res.code == 200) {
-        this.common.go_alert("上传成功");
         this.ImgAddr = `<img src="${res.data}" />`;
         this.isbusy = false;
+        this.common.go_alert("上传成功");
       }
     },
 
@@ -410,7 +410,7 @@ export default {
     },
     selectBook(item) {
       this.BookItem.Label = item.Label;
-      this.BookItem.Id = item.TBookId; 
+      this.BookItem.Id = item.TBookId;
       this.currentItemData.BookId = this.BookItem.Id;
       this.zhangItem = {
         SN: "",

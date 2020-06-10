@@ -6,6 +6,7 @@
           ref="refElTabel"
           tooltip-effect="light"
           :data="newsListTable"
+          height="100%"
           border
           style="width: 100%" 
         >

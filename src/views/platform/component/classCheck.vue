@@ -303,7 +303,7 @@ export default {
 
     // 关闭考勤记录模态框
     cancleOperation() {
-      this.$emit("subClickEvent");
+      this.$emit("subAddClassCheckEvent");
     }
   },
 

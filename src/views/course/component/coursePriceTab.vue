@@ -18,7 +18,7 @@
     </el-form>
     <vxe-grid
       border
-         :height="documentHeight"
+      :height="documentHeight"
       resizable
       :data.sync="currentItemData.Children"
       :edit-config="{trigger: 'click', mode: 'row'}"
@@ -63,7 +63,7 @@ export default {
       CourseKindsOps: [],
       // 查找教材搜索内容
       searchSubjectContent: "",
-      documentHeight:500,
+      documentHeight: 500
     };
   },
   watch: {
@@ -73,8 +73,8 @@ export default {
   },
 
   methods: {
-     fire() { 
-      this.documentHeight = document.body.clientHeight-400;
+    fire() {
+      this.documentHeight = document.body.clientHeight - 400;
       if (!this.formItemData || !this.formItemData.Id) {
         return;
       }
@@ -174,7 +174,7 @@ export default {
       this.currentItemData.Children = this.currentItemData.Children
         ? this.currentItemData.Children
         : [];
-      this.currentItemData.Children.forEach(item => { 
+      this.currentItemData.Children.forEach(item => {
         if (item.Id == subjectItem.Id) {
           has = true;
         }
@@ -190,11 +190,18 @@ export default {
     },
     // 新增课程有效期列
     insertColumns() {
-      this.$prompt("请输入有效期名称", "提示", {
+      this.$prompt("请输入有效期.(填数字，单位天）", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
       })
         .then(({ value }) => {
+          if (isNaN(value)) {
+            this.$message({
+              message: "请填写数字",
+              type: "warning"
+            });
+            return;
+          }
           this.$message({
             message: "操作成功",
             type: "success"

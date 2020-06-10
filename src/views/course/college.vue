@@ -15,6 +15,8 @@
          
         <el-table-column prop="Id" label="ID" width="50"></el-table-column>
         <el-table-column label="学院名称" width="120">
+
+          
           <template slot-scope="scope">
             <span
               class="color-1f85aa font-w6 cursor"
@@ -22,6 +24,7 @@
             >{{scope.row.Label}}</span>
           </template>
         </el-table-column>
+        <!-- <el-table-column prop="Sort" label="显示顺序" width="150"></el-table-column> -->
         <el-table-column prop="Descritpion" label="备注" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <!-- 用户操作 -->

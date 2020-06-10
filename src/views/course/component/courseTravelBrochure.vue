@@ -121,6 +121,7 @@
           ref="refElTabel"
           :data="travelBrochureData.VideoList"
           :border="true"
+           height="100%"
           style="width: 100%"
         >
           <el-table-column prop="Label" label="视频名称" width="180" />

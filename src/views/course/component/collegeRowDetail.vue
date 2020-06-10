@@ -12,6 +12,9 @@
       <el-form-item label="名称" prop="Label">
         <el-input v-model="currentFormData.Label" />
       </el-form-item>
+       <!-- <el-form-item label="展示排序" prop="Sort" class="flex_1">
+        <el-input v-model.number="currentFormData.Sort" autocomplete="off" />
+      </el-form-item> -->
       <el-form-item label="备注">
         <el-input type="textarea" :rows="5" v-model="currentFormData.Descritpion" />
       </el-form-item>

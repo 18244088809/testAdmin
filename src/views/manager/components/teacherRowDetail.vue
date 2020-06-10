@@ -22,7 +22,7 @@
         <el-input v-model="currentFormData.Tel" placeholder="请输入电话号码"></el-input>
       </el-form-item>
 
-      <el-form-item label="角色" prop="role">
+      <el-form-item label="角色" prop="role" v-if="$store.getters.manager.Role==0">
         <el-select v-model="currentFormData.Role" placeholder="请选择角色">
           <el-option
             :label="item.Label"
