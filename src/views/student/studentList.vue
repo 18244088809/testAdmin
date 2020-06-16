@@ -238,10 +238,10 @@
             <el-tab-pane id="htdd" label="合同订单" name="htdd">
               <custom-contract-list :customData="customFormData" />
             </el-tab-pane>
-            <!-- <el-tab-pane id="cjlr" label="成绩录入" name="cjlr">
-              <scoreEntry :customData="customFormData" />
+            <el-tab-pane id="certificate" label="证书" name="certificate">
+              <studentCertificate :customData="customFormData" />
             </el-tab-pane> 
-            <el-tab-pane id="dazl" label="档案资料" name="dazl">
+          <!--   <el-tab-pane id="dazl" label="档案资料" name="dazl">
               <scoreEntry :customData="customFormData" />
             </el-tab-pane>-->
           </el-tabs>
@@ -306,6 +306,7 @@ import {
   setPlatformMaster
 } from "@/api/platform";
 import customRowDetail from "@/views/student/component/customRowDetail";
+import studentCertificate from "@/views/student/component/studentCertificate";
 import customSendSmsDialog from "@/views/student/component/customSendSmsDialog";
 import customTrack from "@/views/student/component/customTrack";
 import customBuyRecord from "@/views/student/component/customBuyRecord";
@@ -334,7 +335,8 @@ export default {
     customTrack,
     customBuyRecord,
     addAlarmDialog,
-    batchChangeManagerView
+    batchChangeManagerView,
+    studentCertificate
   },
   data() {
     return {

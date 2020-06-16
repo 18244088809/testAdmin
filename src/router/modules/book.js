@@ -7,7 +7,7 @@ const bookRouter = {
     component: Layout,
     redirect: 'noRedirect',
     name: 'bookResearch',
-    meta: { title: 'bookResearch', icon: "book",  roles: [0,1]  },
+    meta: { title: 'bookResearch', icon: "book", roles: [0, 1] },
     children: [
         {
             path: 'list',
@@ -21,6 +21,16 @@ const bookRouter = {
             name: 'bookAdpter',
             hidden: true,
             meta: { title: 'bookAdpter', icon: "book" }
+        }, 
+        {
+
+            path: 'bookAsk',
+            component: () => import('@/views/course/bookAsk'),
+            name: 'bookAsk',
+            hidden: true,
+            meta: {
+                title: 'bookAsk', icon: "book"
+            },
         },
         {
 
@@ -36,7 +46,7 @@ const bookRouter = {
             hidden: true,
             path: 'chapterExercise',
             name: 'chapterExercise',
-            meta: {  title: 'chapterExercise', icon: "exam1"   },
+            meta: { title: 'chapterExercise', icon: "exam1" },
             component: () => import('@/views/course/question/chapterExercises'),
         },
         {
@@ -61,23 +71,15 @@ const bookRouter = {
             hidden: true,
             path: 'svipExam',
             name: 'svipExam',
-            meta: { title: 'svipExam', icon: "exam4"   },
+            meta: { title: 'svipExam', icon: "exam4" },
             component: () => import('@/views/course/question/svipExam'),
         },
-        // {
 
-        //     path: 'taskExam',
-        //     name: 'taskExam',
-        //     meta: {
-        //         title: 'taskExam',
-        //     },
-        //     component: () => import('@/views/course/question/taskExam'),
-        // },
         {
             hidden: true,
             path: 'achievementAnalysis',
             name: 'achievementAnalysis',
-            meta: { title: 'achievementAnalysis', icon: "exam6"  },
+            meta: { title: 'achievementAnalysis', icon: "exam6" },
             component: () => import('@/views/course/question/achievementAnalysis'),
         }
     ]

@@ -165,7 +165,7 @@ export default {
     };
   },
   mounted() {
-    this.bookID = parseInt(this.$router.currentRoute.query.Id);
+    this.bookID = parseInt(this.$router.currentRoute.query.Id); 
     this.getBookChapter();
   },
   methods: {

@@ -176,7 +176,7 @@ const actions = {
                 name: 'guest' + index.toString(10),
                 component: () => import('@/views/platform/guest'),
                 meta: { title: 'guest', icon: "wechat" }
-              }
+              } 
             ]
           }
           accessedRoutes.push(platformRoute) 

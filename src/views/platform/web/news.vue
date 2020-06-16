@@ -196,8 +196,7 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    
-    console.log(document.body.clientHeight,"   this.documentHeight:",   this.documentHeight)
+     
     this.GetPlatformNews();
   }
 };

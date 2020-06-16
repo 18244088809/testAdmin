@@ -37,7 +37,8 @@ export default {
     taskExam: '任务模考',
     achievementAnalysis: '成绩分析',
     personalData:"个人设置",
-    guest:"官网报名学员"
+    guest:"官网报名学员",
+    bookAsk:"学员提问"
   },
   navbar: {
     dashboard: '首页',

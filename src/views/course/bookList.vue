@@ -56,12 +56,11 @@
         />
 
         <el-table-column prop="Description" :show-overflow-tooltip="true" label="备注" />
-        <el-table-column prop="Record" :show-overflow-tooltip="true" label="教材评分" />
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="290" fixed="right">
           <template slot-scope="scope">
             <el-button type="success" @click="addChapter(scope.$index, scope.row)">教材内容</el-button>
-            <el-button type="warning" @click="videoAsk(scope.$index, scope.row)">学员留言</el-button>
-            <el-button type="warning" @click="questionManager(scope.$index, scope.row)">试题试卷</el-button>
+            <el-button type="warning" @click="bookAsk(scope.$index, scope.row)">学员留言</el-button>
+            <el-button type="info" @click="questionManager(scope.$index, scope.row)">试题试卷</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -194,9 +193,9 @@ export default {
       this.getBookList();
     },
     // 学员留言
-    videoAsk:function(index, row) {
+    bookAsk:function(index, row) {
       this.$router.push({
-        name: "videoAsk",
+        name: "bookAsk",
         query: { Id: row.Id }
       });
     },
