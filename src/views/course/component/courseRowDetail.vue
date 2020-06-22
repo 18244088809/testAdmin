@@ -289,10 +289,12 @@ export default {
         this.courseKindLabel = this.courseKindList[0].Label;
         // this.getBookList();
       }
+        this.$forceUpdate()
     },
     //  选中学院后回调
     onCouseKindChange(kindid) {
       this.currentItemData.TCourseKindID = kindid;
+      this.$forceUpdate()
     },
     // 上传课程图片
     async uploadCourseImgFunc(file, fileList, type) {

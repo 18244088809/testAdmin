@@ -4,16 +4,8 @@
       <div class="flex_1 m-t-10 overflow_auto my_scrollbar p-r-20">
         <vuedraggable class="wrapper" v-model="dataList">
           <transition-group>
-            <div
-              class="m-b-10"
-              v-for="(item,index) in dataList"
-              :key="item.label+index"
-             
-            >
-              <div
-                class="flex_dom cardBorder"
-                :id="'card'+index" 
-              >
+            <div class="m-b-10" v-for="(item,index) in dataList" :key="item.label+index">
+              <div class="flex_dom cardBorder" :id="'card'+index">
                 <el-form
                   label-width="120px"
                   :model="item"
@@ -35,7 +27,7 @@
                   <el-form-item label="图片滑动缩放">
                     <el-slider v-model="item.imgHoverScale" :max="1.5" :min="0.5" :step="0.01"></el-slider>
                   </el-form-item>
-                     <el-form-item label="图片滑动阴影">
+                  <el-form-item label="图片滑动阴影">
                     <el-slider v-model="item.imgHoverShadow" :max="100" :min="0" :step="1"></el-slider>
                   </el-form-item>
                   <el-form-item label="编辑内容">
@@ -81,7 +73,7 @@ export default {
   components: {
     businessFormData,
     myDialog,
-   vuedraggable,
+    vuedraggable
   },
   name: "webBusiness",
   data() {
@@ -96,8 +88,6 @@ export default {
   },
 
   methods: {
-    
-
     async GetWebBusiness() {
       let res = await getWebContent(this.currentPlatform + "/business", "");
 
@@ -128,7 +118,7 @@ export default {
       this.currentItem = this.dataList[index];
       this.currentItem.Id = index;
     },
-     formatContent(item) {
+    formatContent(item) {
       ///word/g  0px 0px 44px 2px rgba(43, 43, 43, 0.19)
       if (item.content) {
         return item.content.replace(
@@ -139,11 +129,11 @@ export default {
             item.imgHoverScale +
             "," +
             item.imgHoverScale +
-            ")\";this.style.boxShadow=\"0px 0px " +
+            ')";this.style.boxShadow="0px 0px ' +
             item.imgHoverShadow +
             "px " +
             item.imgHoverShadow +
-            "px rgba(43, 43, 43, 0.19)\";  ' onmouseout='this.style.opacity=1;  this.style.transform=\"scale(1,1)\" ;this.style.boxShadow=\"\";' "
+            'px rgba(43, 43, 43, 0.19)";  \' onmouseout=\'this.style.opacity=1;  this.style.transform="scale(1,1)" ;this.style.boxShadow="";\' '
         );
       }
     },

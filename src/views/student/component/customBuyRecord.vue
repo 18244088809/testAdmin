@@ -2,7 +2,13 @@
 <template>
   <!-- --------------------学员的跟进记录模块----------------------- -->
   <div class="p_both10">
-    <el-table :data="customBuyCourseList" border tooltip-effect="dark" style="width: 100%" :height="documentHeight">
+    <el-table
+      :data="customBuyCourseList"
+      border
+      tooltip-effect="dark"
+      style="width: 100%"
+      :height="documentHeight"
+    >
       <el-table-column prop="CourseImage" width="90" label="课程logo">
         <template slot-scope="scope">
           <div
@@ -214,21 +220,22 @@ export default {
           { required: true, message: "实际金额不能为空", trigger: "blur" }
         ]
       },
-      documentHeight:500,
+      documentHeight: 500
     };
   },
- watch: {
+  watch: {
     customData(newval) {
       this.fire();
     }
-  }, 
- 
-  methods: {
-      fire() { this.documentHeight = document.body.clientHeight-400;
-    this.customBuyCourseList = [];
-    this.customItemData = this.customData;
-    this.getBuyCouseRecord();
   },
+
+  methods: {
+    fire() {
+      this.documentHeight = document.body.clientHeight - 400;
+      this.customBuyCourseList = [];
+      this.customItemData = this.customData;
+      this.getBuyCouseRecord();
+    },
     // 根据选中的学院获取课程类别
     collegeChange(selVa) {
       this.selectCourseKindId = null;
@@ -251,7 +258,8 @@ export default {
       this.addBuyCourseFormData.selectedCourseId = null;
       this.selectCourseKindId = this.courseKindsOps[selVa].Id;
       const res = await GetCourseOfKind("", {
-        kindid: this.selectCourseKindId
+        kindid: this.selectCourseKindId,
+        platform: this.customData.Platform
       });
       this.courseOptions = res.data ? res.data : [];
       if (this.courseOptions.length > 0) {
@@ -335,7 +343,7 @@ export default {
     saveBuyCourseRecord() {
       this.$refs.refbuyCourse.validate(valid => {
         if (valid) {
-          const that = this; 
+          const that = this;
           that.customBuyCourseList = [];
           that
             .$confirm("确认添加吗", "提示", {

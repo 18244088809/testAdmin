@@ -22,13 +22,18 @@
             </el-select>
           </el-form-item>
           <el-form-item label="课程类别">
-            <el-select v-model="searchCourseKindId" class="wid160" placeholder="请选择课程类别">
+            <el-select
+              v-model="searchCourseKindId"
+              @change="forceUpdate()"
+              class="wid160"
+              placeholder="请选择课程类别"
+            >
               <el-option label="全部课程类别" :value="0"></el-option>
               <el-option
                 v-for="(item,index) in courseKindsOps"
                 :key="index"
                 :label="item.Label"
-                :value="item.Id"
+                :value="index"
               />
             </el-select>
           </el-form-item>
@@ -54,7 +59,7 @@
         border
         tooltip-effect="light"
         style="width: 100%"
-            height="100%"
+        height="100%"
       >
         <el-table-column label="ID" width="50" prop="Id" />
         <el-table-column label="封面图" width="60" prop="Background">
@@ -149,13 +154,13 @@
         />
         <div></div>
       </el-dialog>
-       <my-dialog
+      <my-dialog
         :visible.sync="makeExamDialog"
         :title="'【'+currentItemData.Label+'】试卷管理'"
         :showLeft="false"
       >
         <div slot="right_content" class="flex_dom hgt_100">
-           <makeExercise :courseItemData="currentItemData"></makeExercise>
+          <makeExercise :courseItemData="currentItemData"></makeExercise>
         </div>
       </my-dialog>
     </div>
@@ -216,16 +221,16 @@ export default {
       courseList: [],
       // 默认选中的学院
       collegeIndex: 0,
-        // 当前操作的课程数据的索引
+      // 当前操作的课程数据的索引
       currentCourseIndex: 0,
       // 搜索内容-课程名称
       searchCourseLabel: "",
-      // 搜索内容-课程类别的Id
+      // 搜索内容-课程类别的Id 
       searchCourseKindId: 0,
       CourseKindLabel: "",
       // 学院的选项数据
       collegeList: [],
-       makeExamDialog: false,
+      makeExamDialog: false,
       // 课程类别的选项数据
       courseKindsOps: [],
       // 当前所在面板的名称
@@ -246,6 +251,9 @@ export default {
     }
   },
   methods: {
+    forceUpdate() { 
+      this.$forceUpdate();
+    },
     onChangeTabs(item) {
       item.$children[0].fire();
     },
@@ -296,7 +304,7 @@ export default {
     openMakeExercise(index, row) {
       this.currentItemData = { ...row };
       this.makeExamDialog = true;
-      this.currentCourseIndex = index; 
+      this.currentCourseIndex = index;
     },
     // 选中学院类别后回调
     collegeChange(selVa) {
@@ -312,12 +320,17 @@ export default {
       });
       if (currentCollege && currentCollege.Children) {
         this.courseKindsOps = currentCollege.Children;
-        this.searchCourseKindId = this.courseKindsOps[0].Id;
-        this.CourseKindLabel = this.courseKindsOps[0].Label;
+        if (this.courseKindsOps[0]) {
+          this.searchCourseKindId = this.courseKindsOps[0].Id;
+          this.CourseKindLabel = this.courseKindsOps[0].Label;
+        }else{
+
+        }
+
         // this.getCourseListOfKind();
       }
     },
- 
+
     // 设置是否上架
     setIsUpperShelf(index, row) {
       const checked = row.Open == 1 ? 0 : 1;
