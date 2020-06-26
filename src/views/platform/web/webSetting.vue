@@ -2,68 +2,156 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
-        <div class="m-b-20" v-for="(item,index) in dataList" :key="index">
-          <div class="cardBorder bg-ccc">
-            <el-upload
-              :auto-upload="false"
-              action
-              class="wid_100 flex_dom bg-ddd"
-              :show-file-list="false"
-              :on-change="function(file, fileList){return uploadBannerImg(file,fileList,index)}"
-            >
-              <img v-if="item.image" :src="item.image" style="width:auto; height: 160px" />
-              <i
-                v-else
-                slot="default"
-                class="el-icon-plus flex_1"
-                style="width: 100%; height: 160px"
-              >&nbsp;点击上传</i>
-            </el-upload>
-            <el-form :inline="true" :model="item" class="demo-form-inline m-t-10">
-              <el-form-item label="标题">
-                <el-input v-model="item.label" placeholder="请输入标题"></el-input>
+        <el-form :model="platformWeb" style="width:100%">
+          <div class="flex_dom">
+            <el-form-item label="官网logo" style="width:100%">
+              <img :src="platformWeb.logo" style="width: 130px; height:130px" />
+              <el-upload
+                :auto-upload="false"
+                action
+                :show-file-list="false"
+                :on-change="function(file){return uploadBannerImg(file,'logo')}"
+              >
+                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="浏览器图标" style="width:100%">
+              <img :src="platformWeb.shortcut" style="width: 130px; height:130px" />
+              <el-upload
+                :auto-upload="false"
+                action
+                :show-file-list="false"
+                :on-change="function(file){return uploadBannerImg(file,'shortcut')}"
+              >
+                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="小程序二维码" style="width:100%">
+              <img :src="platformWeb.xcxlogo" style="width: 130px; height:130px" />
+              <el-upload
+                :auto-upload="false"
+                action
+                :show-file-list="false"
+                :on-change="function(file){return uploadBannerImg(file,'xcxlogo')}"
+              >
+                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+              </el-upload>
+            </el-form-item>
+             <el-form-item label="在线报名背景图" style="width:100%">
+              <img :src="platformWeb.zxbm" style="width: 130px; height:130px" />
+              <el-upload
+                :auto-upload="false"
+                action
+                :show-file-list="false"
+                :on-change="function(file){return uploadBannerImg(file,'zxbm')}"
+              >
+                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+              </el-upload>
+            </el-form-item>
+          </div>
+          <div class="flex_dom bg-f1">
+            <div class="flex-column" style="width:40%">
+              <el-form-item label="校区名称" style="width:100%">
+                <el-input v-model="platformWeb.title" placeholder="校区名称."></el-input>
               </el-form-item>
-              <el-form-item label="跳转地址：">
-                <el-input v-model="item.href" placeholder="请输入连接地址"></el-input>
+              <el-form-item label="搜索关键字" style="width:100%">
+                <el-input v-model="platformWeb.keyWords" placeholder="搜索关键字."></el-input>
               </el-form-item>
-            </el-form>
-            <div class="dele_banner" @click="deleBannerItem(index)">
-              <i class="el-icon-error font24 color-999"></i>
+              <el-form-item label="官网网址" style="width:100%">
+                <span v-if="platform.Domain">{{platform.Domain}}</span>
+                <span v-else>如果需要独立域名请联系总部管理员</span>
+              </el-form-item>
+            </div>
+            <el-form-item label="搜索引擎描述" class="m-l-20" style="width:60%">
+              <el-input
+                type="textarea"
+                :rows="7"
+                v-model="platformWeb.description"
+                placeholder="这些文字会显示在搜索引擎，请及时修改"
+              ></el-input>
+            </el-form-item>
+          </div>
+          <div class="flex_dom bg-f1">
+            <div class="flex-column" style="width:40%">
+              <el-form-item label="联系人" style="width:100%">
+                <el-input v-model="platformWeb.linkerMan" placeholder="联系人."></el-input>
+              </el-form-item>
+              <el-form-item label="联系电话" style="width:100%">
+                <el-input v-model="platformWeb.tel" placeholder="联系电话."></el-input>
+              </el-form-item>
+              <el-form-item label="联系邮箱" style="width:100%">
+                <el-input v-model="platformWeb.email" placeholder="联系邮箱"></el-input>
+              </el-form-item>
+              <el-form-item label="联系QQ" style="width:100%">
+                <el-input v-model="platformWeb.qq" placeholder="联系邮箱"></el-input>
+              </el-form-item>
+            </div>
+            <div class="flex-column m-l-20" style="width:60%">
+              <el-form-item label="网站底部文字" style="width:100%">
+                <el-input
+                  type="textarea"
+                  :rows="7"
+                  v-model="platformWeb.about"
+                  placeholder="这些文字会显示在搜索引擎，请及时修改"
+                ></el-input>
+              </el-form-item> 
+                <el-form-item label="办公地址" style="width:100%">
+                  <el-input v-model="platformWeb.address" placeholder="办公地址"></el-input>
+                </el-form-item>
+
+                <el-form-item label="官网备案号" style="width:100%">
+                  <el-input v-model="platformWeb.beian" placeholder="请填写正确的备案号，否则网站要被官方查封"></el-input>
+                </el-form-item>
+             
             </div>
           </div>
-        </div>
+         
+        </el-form>
       </div>
       <div class="m-v-15">
-        <el-button type="primary" @click="addBannerItem">新 增</el-button>
-        <el-button type="success" @click="saveBannerList">保 存</el-button>
+        <el-button type="success" @click="setHeaderFooter">确定</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { GetIndexItem, SetIndexItem } from "@/api/website";
+import platformRowDetail from "@/views/system/component/platformRowDetail";
+import { setHeaderFooter ,getHeaderFooter} from "@/api/platform";
+import { getCosTempKey } from "@/api/cos";
+import common from "@/utils/common";
 import $ImgHttp from "@/api/ImgAPI";
+import cosSDK from "cos-js-sdk-v5";
 export default {
   name: "webBanner",
+  components: {
+    platformRowDetail
+  },
   data() {
     return {
       // banner列表
-      dataList: [],
-      currentPlatform: 0
+      platform: {},
+      platformWeb: {},
+      currentPlatform: 0,
+      videoProgress: "点击上传"
     };
   },
 
   methods: {
-    async GetIndexBanner() {
-      let res = await GetIndexItem(this.currentPlatform + "/banner", "");
+    async GetWebSetting() {
+      let res = await getHeaderFooter(this.currentPlatform, "");
       if (res.code == 200) {
-        this.dataList = res.data ? res.data : [];
+        this.platformWeb = res.data;
+        this.$store.getters.app.platformList.forEach(item => {
+          if (item.Id == res.title) {
+            this.platform = item;
+          }
+        });
       }
     },
     // 图片上传
-    async uploadBannerImg(file, fileList, index) {
-      let res = await $ImgHttp.UploadImg("banner", file.raw);
+    async uploadBannerImg(file, item) {
+      let res = await $ImgHttp.UploadImg("webSetting", file.raw);
       if (res.code != 200) {
         this.$message({
           message: res.data,
@@ -71,27 +159,53 @@ export default {
         });
         return;
       }
-      this.dataList[index].image = res.data;
+      this.platformWeb[item] = res.data;
       this.$message({
         message: "上传成功",
         type: "success"
       });
       this.$forceUpdate();
     },
-    // 保存banner列表
-    async saveBannerList() {
-      let res = await SetIndexItem(
-        this.currentPlatform + "/banner",
+    // setHeaderFooter
+    async setHeaderFooter() {
+      let that = this;
+      let res = await setHeaderFooter(
+        this.currentPlatform,
         "",
-        this.dataList
+        that.platformWeb
       );
       if (res.code == 200) {
-        this.$message({
+        that.$message({
           message: "保存成功",
           type: "success"
         });
       }
     },
+
+    uploadVideoFunc(file) {
+      let NameValue = this.currentPlatform + "-video.mp4";
+      let that = this;
+      let res = common.uploadCosFile(
+        file,
+        "platform",
+        NameValue,
+        function(progressData) {
+          that.videoProgress = "上传进度:" + progressData.percent * 100 + "%";
+        },
+        function(err, data) {
+          if (!err) {
+            that.$message({
+              message: "上传成功",
+              type: "success"
+            });
+            that.platformWeb.webSiteVideo = "https://" + data.Location;
+          } else {
+            console.log("cos上传错误:", err);
+          }
+        }
+      );
+    },
+
     // 添加banner
     addBannerItem() {
       this.dataList.unshift({});
@@ -117,7 +231,7 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    this.GetIndexBanner();
+    this.GetWebSetting();
   }
 };
 </script>

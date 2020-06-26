@@ -47,9 +47,9 @@ export default {
     profile: '个人中心',
     theme: '换肤',
     size: '布局大小'
-  },
+  }, 
   login: {
-    title: '后台管理系统登录',
+    title: '教育管理系统',
     logIn: '登录',
     username: '账号',
     password: '密码',

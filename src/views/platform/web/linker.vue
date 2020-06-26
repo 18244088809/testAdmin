@@ -75,7 +75,7 @@ export default {
     },
     // 添加banner
     addBannerItem() {
-      this.dataList.unshift({});
+      this.dataList.push({});
     },
     // 删除banner
     async deleBannerItem(index) {

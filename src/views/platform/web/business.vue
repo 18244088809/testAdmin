@@ -65,7 +65,7 @@
 
 <script>
 import businessFormData from "@/views/platform/web/component/businessFormData";
-import { getWebContent, setWebContent } from "@/api/platform";
+import { getBuiness, setBuiness } from "@/api/platform";
 import $ImgHttp from "@/api/ImgAPI";
 import myDialog from "@/components/myDialog/myDialog";
 import vuedraggable from "vuedraggable";
@@ -89,7 +89,7 @@ export default {
 
   methods: {
     async GetWebBusiness() {
-      let res = await getWebContent(this.currentPlatform + "/business", "");
+      let res = await getBuiness(this.currentPlatform + "/business", "");
 
       this.dataList = res.data ? res.data : [];
     },
@@ -102,7 +102,7 @@ export default {
     },
     // 保存banner列表
     async saveBannerList() {
-      let res = await setWebContent(
+      let res = await setBuiness(
         this.currentPlatform + "/business",
         "",
         this.dataList
@@ -116,7 +116,7 @@ export default {
       this.currentIndex = index;
       this.contentDilag = true;
       this.currentItem = this.dataList[index];
-      this.currentItem.Id = index;
+      this.currentItem.Id = index+1; 
     },
     formatContent(item) {
       ///word/g  0px 0px 44px 2px rgba(43, 43, 43, 0.19)
@@ -145,7 +145,7 @@ export default {
       item.imgHoverOpacity = 0.7;
       item.imgHoverScale = 0.9;
       item.content = "这里没有什么内容";
-      this.dataList.unshift(item);
+      this.dataList.push(item);
     },
     // 删除banner
     async deleBusinessItem(index) {

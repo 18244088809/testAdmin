@@ -199,7 +199,7 @@ export default {
       if (isType == 1) {
         this.$set(this.newsListTable, this.currentNewsIndex, rowData);
       } else if (isType == 0) {
-        this.newsListTable.unshift(rowData);
+        this.newsListTable.push(rowData);
       }
       this.moreOperationDialog = false;
     },

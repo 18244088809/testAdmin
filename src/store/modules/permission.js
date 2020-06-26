@@ -97,7 +97,7 @@ const actions = {
                   {
                     path: 'setting/' + platform.Id.toString(10),
                     name: 'setting' + index.toString(10),
-                    component: () => import('@/views/platform/web/setting'),
+                    component: () => import('@/views/platform/web/webSetting'),
                     meta: { title: 'setting', icon: "nested" }
                   },
                   {
