@@ -19,6 +19,7 @@
         </span>
         <el-input
           ref="username"
+          @input="onNameChange"
           v-model="loginForm.tel"
           :placeholder="$t('login.username')"
           name="username"
@@ -179,6 +180,9 @@ export default {
     checkCapslock(e) {
       const { key } = e;
       this.capsTooltip = key && key.length === 1 && key >= "A" && key <= "Z";
+    },
+      onNameChange() { 
+      this.loginForm.tel = this.loginForm.tel.trim(); 
     },
     showPwd() {
       if (this.passwordType === "password") {
