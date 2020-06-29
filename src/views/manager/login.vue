@@ -20,6 +20,7 @@
         <el-input
           ref="username"
           v-model="loginForm.tel"
+          @input="onNameChange"
           :placeholder="$t('login.username')"
           name="username"
           type="text"
@@ -78,14 +79,7 @@
         @click.native.prevent="handleLogin"
       >{{ $t('login.logIn') }}</el-button>
     </el-form>
-
-    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
-      {{ $t('login.thirdpartyTips') }}
-      <br />
-      <br />
-      <br />
-      <social-sign />
-    </el-dialog>
+ 
   </div>
 </template>
 
@@ -114,9 +108,9 @@ export default {
         callback();
       }
     };
-    const validateCaptha = (rule, value, callback) => { 
+    const validateCaptha = (rule, value, callback) => {
       if (value.length != 4) {
-        callback(new Error(this.$t("login.code") ));
+        callback(new Error(this.$t("login.code")));
       } else {
         callback();
       }
@@ -127,12 +121,16 @@ export default {
       loginForm: {
         tel: "",
         password: "",
-        captcha:""
+        captcha: ""
       },
       loginRules: {
         tel: [{ required: true, trigger: "blur", validator: validateUsername }],
-        password: [  { required: true, trigger: "blur", validator: validatePassword } ],
-        captcha: [ { required: true, trigger: "blur", validator: validateCaptha }  ]
+        password: [
+          { required: true, trigger: "blur", validator: validatePassword }
+        ],
+        captcha: [
+          { required: true, trigger: "blur", validator: validateCaptha }
+        ]
       },
       passwordType: "password",
       capsTooltip: false,
@@ -160,7 +158,7 @@ export default {
   },
   mounted() {
     // if (this.loginForm.tel === "") {
-      this.$refs.username.focus();
+    this.$refs.username.focus();
     // } else if (this.loginForm.password === "") {
     //   this.$refs.password.focus();
     // }else if (this.loginForm.captcha === "") {
@@ -190,23 +188,26 @@ export default {
         this.$refs.password.focus();
       });
     },
-    onTelBlurHandler(){
-      if (this.loginForm.tel.length!=11) {
-        return
-      } 
-      this.getCode()
+    onNameChange() { 
+      this.loginForm.tel = this.loginForm.tel.trim(); 
+    },
+    onTelBlurHandler() {
+      if (this.loginForm.tel.length != 11) {
+        return;
+      }
+      this.getCode();
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
           const submitData = {};
-          Object.assign(submitData, this.loginForm); 
+          Object.assign(submitData, this.loginForm);
           // 加密
           const md5 = crypto.createHash("md5");
           md5.update(submitData.password);
           submitData.password = md5.digest("hex");
-            submitData.captcha = this.loginForm.captcha;
+          submitData.captcha = this.loginForm.captcha;
           this.$store
             .dispatch("manager/login", submitData)
             .then(() => {

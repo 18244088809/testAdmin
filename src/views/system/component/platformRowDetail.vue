@@ -18,19 +18,25 @@
       <el-form-item label="地址">
         <el-input v-model="currentItemData.Address" />
       </el-form-item>
-      <el-form-item label="年度上限">
-        <el-input-number :min="0" label="每年的招生上限" v-model="currentItemData.MaxPerYear" />
-      </el-form-item>
-      <el-form-item label="总上限">
-        <el-input-number :min="0"  label="总的招生上限" v-model="currentItemData.MaxAllYear" />
-      </el-form-item>
+      <div class="flex_dom">
+        <el-form-item label="年度上限">
+          <el-input-number :min="0" label="每年的招生上限" v-model="currentItemData.MaxPerYear" />
+        </el-form-item>
+        <span>每年该校区的招生上限达到后 校区管理员不能再通过后台直接添加学员.</span>
+      </div>
+      <div class="flex_dom">
+        <el-form-item label="总上限">
+          <el-input-number :min="0" label="总的招生上限" v-model="currentItemData.MaxAllYear" />
+        </el-form-item>
+        <span>该校区总的招生上限达到后 校区管理员不能再通过后台直接添加学员.</span>
+      </div>
       <!-- 校区负责人 -->
       <el-form-item v-if="currentItemData.MasterLabel==''" label="负责人">请在右边校区员工里勾选负责人</el-form-item>
-       <el-form-item v-else label="负责人">{{currentItemData.MasterLabel}}</el-form-item>
+      <el-form-item v-else label="负责人">{{currentItemData.MasterLabel}}</el-form-item>
       <el-form-item label="备注">
         <el-input v-model="currentItemData.Description" />
       </el-form-item>
-       <el-form-item label="网址">
+      <el-form-item label="网址">
         <el-input v-model="currentItemData.Domain" />
       </el-form-item>
     </el-form>
@@ -80,10 +86,10 @@ export default {
       // 表单验证
       platFormInfoRules: {
         Label: [
-          { required: true, message: '校区名称不能为空', trigger: "blur" }
+          { required: true, message: "校区名称不能为空", trigger: "blur" }
         ],
         Telephone: [
-          { required: true, message: '请输入电话号码', trigger: "blur" },
+          { required: true, message: "请输入电话号码", trigger: "blur" },
           {
             pattern: /^\d{11}$/,
             message: "请输入正确的手机号",
@@ -103,12 +109,14 @@ export default {
     async savecurrentFormData() {
       this.$refs.formUI.validate(async valid => {
         if (valid) {
-          if (this.currentItemData.MaxPerYear>this.currentItemData.MaxAllYear){
-             this.$message({
-                  message: "年度招生人数必须小于总招生人数",
-                  type: "warning"
-                });
-            return
+          if (
+            this.currentItemData.MaxPerYear > this.currentItemData.MaxAllYear
+          ) {
+            this.$message({
+              message: "年度招生人数必须小于总招生人数",
+              type: "warning"
+            });
+            return;
           }
 
           this.currentItemData.MasterID = this.masterID;
