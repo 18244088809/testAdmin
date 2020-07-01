@@ -6,7 +6,7 @@
           <transition-group>
         <div class="m-b-10" v-for="(item,index) in dataList" :key="index">
           <div class="flex_mid cardBorder bg-ccc">
-            <el-form label-width="90px" :model="item" style="width:100%">
+            <el-form label-width="90px" :model="item" style="width:100%" @input="$forceUpdate()" >
               <div class="flex_dom">
                 <el-form-item label="网站名称" style="width:400px">
                   <el-input v-model="item.label" placeholder="填写友情链接名"></el-input>

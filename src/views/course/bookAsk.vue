@@ -28,6 +28,18 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="between-center m-v-15"> 
+        <div>
+          <el-pagination
+            background
+            :current-page.sync="nowPage"
+            :page-size="rows"
+            layout="total,prev, pager, next, jumper"
+            :total="allRows"
+            @current-change=" currentPageChange"
+          />
+        </div>
+      </div>
     </div>
     <!-- 新增弹出框 -->
     <div>
@@ -84,7 +96,10 @@ export default {
   },
   mounted() {
     this.documentHeight = document.body.clientHeight - 400;
-    this.bookID = parseInt(this.$router.currentRoute.query.Id);
+    if (!isNaN(this.$router.currentRoute.query.Id)){
+
+      this.bookID = parseInt(this.$router.currentRoute.query.Id);
+    } 
     this.getAskList();
   },
   methods: {

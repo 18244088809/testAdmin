@@ -176,7 +176,14 @@ const actions = {
                 name: 'guest' + index.toString(10),
                 component: () => import('@/views/platform/guest'),
                 meta: { title: 'guest', icon: "wechat" }
-              } 
+              } ,
+              {
+                path: 'questions/' + platform.Id,
+                component: () => import('@/views/course/bookAsk'),
+                name: 'questions' + index.toString(10),
+                meta: { title: 'questions', icon: "user" },
+              }
+              
             ]
           }
           accessedRoutes.push(platformRoute) 
