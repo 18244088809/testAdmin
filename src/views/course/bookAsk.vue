@@ -28,6 +28,18 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="between-center m-v-15"> 
+        <div>
+          <el-pagination
+            background
+            :current-page.sync="nowPage"
+            :page-size="rows"
+            layout="total,prev, pager, next, jumper"
+            :total="allRows"
+            @current-change=" currentPageChange"
+          />
+        </div>
+      </div>
     </div>
     <!-- 新增弹出框 -->
     <div>
@@ -79,12 +91,22 @@ export default {
       bookID: 0,
       currentItemIndex: 0,
       customFormData: {},
-      documentHeight: 500
+      documentHeight: 500,
+      currentPlatform:0
     };
   },
   mounted() {
     this.documentHeight = document.body.clientHeight - 400;
-    this.bookID = parseInt(this.$router.currentRoute.query.Id);
+    if (!isNaN(this.$router.currentRoute.query.Id)){
+
+      this.bookID = parseInt(this.$router.currentRoute.query.Id);
+    }else{
+        let paths = this.$router.currentRoute.path.split("/");
+    this.currentPlatform = parseInt(paths[paths.length - 1]);
+    if (isNaN(this.currentPlatform)) {
+      this.currentPlatform = 0;
+    }
+    }
     this.getAskList();
   },
   methods: {
@@ -98,7 +120,8 @@ export default {
         limit: this.rows,
         offset: offsetRow,
         label: this.searchContent,
-        coursekind: this.searchBookCourseKind
+        coursekind: this.searchBookCourseKind,
+        platform:this.currentPlatform
       };
       const res = await getAskList(this.bookID, params);
       if (res.code == 200) {
