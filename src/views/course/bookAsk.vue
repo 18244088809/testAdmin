@@ -28,7 +28,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="between-center m-v-15"> 
+      <div class="between-center m-v-15">
         <div>
           <el-pagination
             background
@@ -91,15 +91,21 @@ export default {
       bookID: 0,
       currentItemIndex: 0,
       customFormData: {},
-      documentHeight: 500
+      documentHeight: 500,
+      currentPlatform: 0
     };
   },
   mounted() {
     this.documentHeight = document.body.clientHeight - 400;
-    if (!isNaN(this.$router.currentRoute.query.Id)){
-
+    if (!isNaN(this.$router.currentRoute.query.Id)) {
       this.bookID = parseInt(this.$router.currentRoute.query.Id);
-    } 
+    } else {
+      let paths = this.$router.currentRoute.path.split("/");
+      this.currentPlatform = parseInt(paths[paths.length - 1]);
+      if (isNaN(this.currentPlatform)) {
+        this.currentPlatform = 0;
+      }
+    }
     this.getAskList();
   },
   methods: {
@@ -113,7 +119,8 @@ export default {
         limit: this.rows,
         offset: offsetRow,
         label: this.searchContent,
-        coursekind: this.searchBookCourseKind
+        coursekind: this.searchBookCourseKind,
+        platform: this.currentPlatform
       };
       const res = await getAskList(this.bookID, params);
       if (res.code == 200) {
@@ -130,8 +137,6 @@ export default {
     currentPageChange(val) {
       this.nowPage = val;
       this.getAskList();
-
-     
     },
     // 显示列表的时候格式化时间
     TimeFormatter(row, column, cellValue) {
