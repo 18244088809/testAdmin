@@ -1,10 +1,11 @@
 <template>
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
-      <div class="flex_1 m-t-10 overflow_auto my_scrollbar p-r-20">
-        <vuedraggable class="wrapper" v-model="dataList">
+      <div class="flex_1 m-t-10 overflow_auto my_scrollbar p-r-20 center">
+        <span  > 拖拽即可调整模块的顺序  </span>
+        <vuedraggable class="wrapper m-t-20"  v-model="dataList">
           <transition-group>
-            <div class="m-b-10" v-for="(item,index) in dataList" :key="item.label+index">
+            <div class="m-b-10" v-for="(item,index) in dataList" :key=" index">
               <div class="flex_dom cardBorder" :id="'card'+index">
                 <el-form
                   label-width="120px"
@@ -21,10 +22,20 @@
                   <el-form-item label="是否显示">
                     <el-checkbox v-model="item.display" checked="checked" style="width:100%">打钩显示</el-checkbox>
                   </el-form-item>
-                   <el-form-item label="图片">
-                    <el-slider v-model="item.imgHoverOpacity" :max="1" :min="0" :step="0.1"></el-slider>
+                  <el-form-item label="模块图片">
+                    <el-upload
+                      :auto-upload="false"
+                      action
+                      class="wid_100 flex_dom bg-eee"
+                      :show-file-list="false"
+                      :on-change="function(file){return uploadPlatformItem(file,index,item)}"
+                    >
+                      <img v-if="item.image" :src="item.image"   />
+                      <el-button  v-else > 点击上传  </el-button>
+                      
+                    </el-upload>
                   </el-form-item>
-                  <el-form-item label="图片滑动透明度">
+                  <!-- <el-form-item label="图片滑动透明度">
                     <el-slider v-model="item.imgHoverOpacity" :max="1" :min="0" :step="0.1"></el-slider>
                   </el-form-item>
                   <el-form-item label="图片滑动缩放">
@@ -32,12 +43,12 @@
                   </el-form-item>
                   <el-form-item label="图片滑动阴影">
                     <el-slider v-model="item.imgHoverShadow" :max="100" :min="0" :step="1"></el-slider>
-                  </el-form-item>
+                  </el-form-item> -->
                   <el-form-item label="详情内容">
                     <el-button type="primary" @click="openContentEditer(index)">点击编辑</el-button>
                   </el-form-item>
                 </el-form>
-                <div style="width:100%" v-html="formatContent(item)" />
+                <div style="width:100%" v-html="item.content" />
 
                 <div class="dele_banner" @click="deleBusinessItem(index)">
                   <i class="el-icon-error font24 color-999"></i>
@@ -72,6 +83,7 @@ import { getWebContent, setWebContent } from "@/api/platform";
 import $ImgHttp from "@/api/ImgAPI";
 import myDialog from "@/components/myDialog/myDialog";
 import vuedraggable from "vuedraggable";
+import common from "@/utils/common";
 export default {
   components: {
     businessFormData,
@@ -119,8 +131,49 @@ export default {
       this.currentIndex = index;
       this.contentDilag = true;
       this.currentItem = this.dataList[index];
-      this.currentItem.Id = index+1; 
+      this.currentItem.Id = index;
     },
+    async uploadPlatformItem(file, index,item) {
+      let that = this;
+      var index = file.name.lastIndexOf(".");
+      var suffix = file.name.substr(index + 1).toLowerCase();
+      if (
+        suffix.toLowerCase() != "jpg" &&
+        suffix.toLowerCase() != "jpeg" &&
+        suffix.toLowerCase() != "png" &&
+        suffix.toLowerCase() != "gif"
+      ) {
+        this.$message({
+          message: "只能上传图片",
+          type: "warning"
+        });
+        return;
+      }
+      let filename = that.currentPlatform+"business" + (index + 1)+"."+suffix;
+      let res = common.uploadCosFile(
+        file,
+        "platform",
+        filename,
+        function(progressData) {
+          console.log("上传进度:" + progressData.percent * 100 + "%");
+          that.$forceUpdate();
+        },
+        function(err, data, fileURL) {
+          if (!err) {
+            that.$message({
+              message: "上传成功",
+              type: "success"
+            });
+            item.image= "https://" + fileURL;
+          } else {
+            console.log("cos上传错误:", err);
+          }
+
+          that.$forceUpdate();
+        }
+      );
+    },
+    
     formatContent(item) {
       ///word/g  0px 0px 44px 2px rgba(43, 43, 43, 0.19)
       if (item.content) {
@@ -147,8 +200,9 @@ export default {
       item.display = true;
       item.imgHoverOpacity = 0.7;
       item.imgHoverScale = 0.9;
+       item.imgStyle ="";
       item.content = "这里没有什么内容";
-      this.dataList.push(item);
+      this.dataList.unshift(item);
     },
     // 删除banner
     async deleBusinessItem(index) {
