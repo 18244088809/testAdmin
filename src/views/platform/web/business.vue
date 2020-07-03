@@ -21,6 +21,9 @@
                   <el-form-item label="是否显示">
                     <el-checkbox v-model="item.display" checked="checked" style="width:100%">打钩显示</el-checkbox>
                   </el-form-item>
+                   <el-form-item label="图片">
+                    <el-slider v-model="item.imgHoverOpacity" :max="1" :min="0" :step="0.1"></el-slider>
+                  </el-form-item>
                   <el-form-item label="图片滑动透明度">
                     <el-slider v-model="item.imgHoverOpacity" :max="1" :min="0" :step="0.1"></el-slider>
                   </el-form-item>
@@ -30,7 +33,7 @@
                   <el-form-item label="图片滑动阴影">
                     <el-slider v-model="item.imgHoverShadow" :max="100" :min="0" :step="1"></el-slider>
                   </el-form-item>
-                  <el-form-item label="编辑内容">
+                  <el-form-item label="详情内容">
                     <el-button type="primary" @click="openContentEditer(index)">点击编辑</el-button>
                   </el-form-item>
                 </el-form>
@@ -65,7 +68,7 @@
 
 <script>
 import businessFormData from "@/views/platform/web/component/businessFormData";
-import { getBuiness, setBuiness } from "@/api/platform";
+import { getWebContent, setWebContent } from "@/api/platform";
 import $ImgHttp from "@/api/ImgAPI";
 import myDialog from "@/components/myDialog/myDialog";
 import vuedraggable from "vuedraggable";
@@ -89,7 +92,7 @@ export default {
 
   methods: {
     async GetWebBusiness() {
-      let res = await getBuiness(this.currentPlatform + "/business", "");
+      let res = await getWebContent(this.currentPlatform + "/business", "");
 
       this.dataList = res.data ? res.data : [];
     },
@@ -102,7 +105,7 @@ export default {
     },
     // 保存banner列表
     async saveBannerList() {
-      let res = await setBuiness(
+      let res = await setWebContent(
         this.currentPlatform + "/business",
         "",
         this.dataList

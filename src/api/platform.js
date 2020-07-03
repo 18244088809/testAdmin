@@ -53,27 +53,18 @@ export function setPlatformMaster(url, query, data) {
 }
  
 
-
-//  
-export function getWebSiteFooterInfo(url, query, data) {
+ 
+export function getWebTemplate(url, query, data) {
   return request({
-    url: '/platform/getWebSiteFooterInfo/' + url,
+    url: '/platform/getWebTemplate/' + url,
     method: 'get',
     params: query,
     data
   })
 }
-export function getWebSiteInfo(url, query, data) {
+export function setWebTemplate(url, query, data) {
   return request({
-    url: '/platform/getWebSiteInfo/' + url,
-    method: 'get',
-    params: query,
-    data
-  })
-}
-export function setWebSiteInfo(url, query, data) {
-  return request({
-    url: '/platform/setWebSiteInfo/' + url,
+    url: '/platform/setWebTemplate/' + url,
     method: 'put',
     params: query,
     data
@@ -102,90 +93,90 @@ export function getWebContent(url, query, data) {
   })
 }
  
-//  
-export function setBuiness(url, query, data) {
-  return request({
-    url: '/platform/setBuiness/' + url,
-    method: 'put',
-    params: query,
-    data
-  })
-}
+// //  
+// export function setBuiness(url, query, data) {
+//   return request({
+//     url: '/platform/setBuiness/' + url,
+//     method: 'put',
+//     params: query,
+//     data
+//   })
+// }
 
 
-//  
-export function getBuiness(url, query, data) {
-  return request({
-    url: '/platform/getBuiness/' + url,
-    method: 'get',
-    params: query,
-    data
-  })
-}
+// //  
+// export function getBuiness(url, query, data) {
+//   return request({
+//     url: '/platform/getBuiness/' + url,
+//     method: 'get',
+//     params: query,
+//     data
+//   })
+// }
  
  
-//  
-export function setHeader(url, query, data) {
-  return request({
-    url: '/platform/setHeader/' + url,
-    method: 'put',
-    params: query,
-    data
-  })
-}
+// //  
+// export function setHeader(url, query, data) {
+//   return request({
+//     url: '/platform/setHeader/' + url,
+//     method: 'put',
+//     params: query,
+//     data
+//   })
+// }
 
 
-//  
-export function getHeader(url, query, data) {
-  return request({
-    url: '/platform/getHeader/' + url,
-    method: 'get',
-    params: query,
-    data
-  })
-}
+// //  
+// export function getHeader(url, query, data) {
+//   return request({
+//     url: '/platform/getHeader/' + url,
+//     method: 'get',
+//     params: query,
+//     data
+//   })
+// }
  
 
  
-//  
-export function setFooter(url, query, data) {
-  return request({
-    url: '/platform/setFooter/' + url,
-    method: 'put',
-    params: query,
-    data
-  })
-}
+// //  
+// export function setFooter(url, query, data) {
+//   return request({
+//     url: '/platform/setFooter/' + url,
+//     method: 'put',
+//     params: query,
+//     data
+//   })
+// }
 
 
-//  
-export function getFooter(url, query, data) {
-  return request({
-    url: '/platform/getFooter/' + url,
-    method: 'get',
-    params: query,
-    data
-  })
-}
+// //  
+// export function getFooter(url, query, data) {
+//   return request({
+//     url: '/platform/getFooter/' + url,
+//     method: 'get',
+//     params: query,
+//     data
+//   })
+// }
  
-//  
-export function getHeaderFooter(url, query, data) {
-  return request({
-    url: '/platform/getHeaderFooter/' + url,
-    method: 'get',
-    params: query,
-    data
-  })
-}
+// //  
+// export function getHeaderFooter(url, query, data) {
+//   return request({
+//     url: '/platform/getHeaderFooter/' + url,
+//     method: 'get',
+//     params: query,
+//     data
+//   })
+// }
  
  
-//  
-export function setHeaderFooter(url, query, data) {
-  return request({
-    url: '/platform/setHeaderFooter/' + url,
-    method: 'put',
-    params: query,
-    data
-  })
-}
+// //  
+// export function setHeaderFooter(url, query, data) {
+//   return request({
+//     url: '/platform/setHeaderFooter/' + url,
+//     method: 'put',
+//     params: query,
+//     data
+//   })
+// }
 

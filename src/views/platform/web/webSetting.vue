@@ -109,7 +109,7 @@
         </el-form>
       </div>
       <div class="m-v-15">
-        <el-button type="success" @click="setHeaderFooter">确定</el-button>
+        <el-button type="success" @click="setWebContent">确定</el-button>
       </div>
     </div>
   </div>
@@ -117,7 +117,7 @@
 
 <script>
 import platformRowDetail from "@/views/system/component/platformRowDetail";
-import { setHeaderFooter ,getHeaderFooter} from "@/api/platform";
+import { setWebContent ,getWebContent} from "@/api/platform";
 import { getCosTempKey } from "@/api/cos";
 import common from "@/utils/common";
 import $ImgHttp from "@/api/ImgAPI";
@@ -138,8 +138,8 @@ export default {
   },
 
   methods: {
-    async GetWebSetting() {
-      let res = await getHeaderFooter(this.currentPlatform, "");
+    async getWebContent() {
+      let res = await getWebContent(this.currentPlatform+"/setting");
       if (res.code == 200) {
         this.platformWeb = res.data;
         this.$store.getters.app.platformList.forEach(item => {
@@ -167,11 +167,10 @@ export default {
       this.$forceUpdate();
     },
     // setHeaderFooter
-    async setHeaderFooter() {
+    async setWebContent() {
       let that = this;
-      let res = await setHeaderFooter(
-        this.currentPlatform,
-        "",
+      let res = await setWebContent(
+        this.currentPlatform+ "/setting","",
         that.platformWeb
       );
       if (res.code == 200) {
@@ -231,7 +230,7 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-    this.GetWebSetting();
+    this.getWebContent();
   }
 };
 </script>
