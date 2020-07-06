@@ -140,8 +140,8 @@ export default {
   methods: {
     async getWebContent() {
       let res = await getWebContent(this.currentPlatform+"/setting");
-      if (res.code == 200) {
-        this.platformWeb = res.data;
+      if (res.data&&res.data.length>0) {
+        this.platformWeb = res.data[0];
         this.$store.getters.app.platformList.forEach(item => {
           if (item.Id == res.title) {
             this.platform = item;
@@ -171,7 +171,7 @@ export default {
       let that = this;
       let res = await setWebContent(
         this.currentPlatform+ "/setting","",
-        that.platformWeb
+        [that.platformWeb]
       );
       if (res.code == 200) {
         that.$message({

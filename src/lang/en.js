@@ -49,7 +49,9 @@ export default {
     externalLink: 'External Link',
     profile: 'Profile',
     guest:"guest list",
-    bookAsk:"book ask"
+    bookAsk:"book ask",
+    template:"template",
+    questions:"questions",
   },
   navbar: {
     dashboard: 'Dashboard',

@@ -53,8 +53,7 @@ export default {
     saveNewsFormData() {
       this.$emit("updateRowData", this.currentItemData);
     },
-    // 取消编辑或者添加
-    cancleUpdate() {}
+   
   }
 };
 </script> 

@@ -37,7 +37,7 @@ export default {
     height: {
       type: Number,
       required: false,
-      default: 360
+      default:360
     }
   },
   data() {
@@ -62,7 +62,7 @@ export default {
       this.hasChange = false;
     },
 
-    value(val) {
+    value(val) { 
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
           window.tinymce.get(this.tinymceId + "").setContent(val || "")
@@ -87,6 +87,7 @@ export default {
     this.destroyTinymce();
   },
   methods: {
+
     initTinymce() {
       const _this = this;
       tinymce.init({
@@ -139,7 +140,7 @@ export default {
             editor.setContent(_this.value);
           }
           _this.hasInit = true;
-          editor.on("NodeChange Change KeyUp SetContent", () => {
+          editor.on("NodeChange Change KeyUp SetContent", () => { 
             this.hasChange = true;
             this.hasKey = true;
             this.$emit("input", editor.getContent());
@@ -177,9 +178,11 @@ export default {
         tinymce.destroy();
       }
     },
-    // setContent(value) {
-    //   this.hasChange = false;
-    // },
+    setContent(value) {
+      this.$nextTick(() =>
+          window.tinymce.get(this.tinymceId + "").setContent(value || "")
+        );
+    },
     getContent() {
       window.tinymce.get(this.tinymceId + "").getContent();
     },

@@ -145,6 +145,12 @@ const actions = {
                     meta: { title: 'linker', icon: "linker" }
                   }
                 ]
+              } ,
+              {
+                path: 'template/' + platform.Id,
+                component: () => import('@/views/platform/template'),
+                name: 'template' + index.toString(10),
+                meta: { title: 'template', icon: 'template' }
               },
               {
                 path: 'managers/' + platform.Id,

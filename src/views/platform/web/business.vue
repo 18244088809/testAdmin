@@ -104,7 +104,7 @@ export default {
 
   methods: {
     async GetWebBusiness() {
-      let res = await getWebContent(this.currentPlatform + "/business", "");
+      let res = await getWebContent(this.currentPlatform + "/index", "");
 
       this.dataList = res.data ? res.data : [];
     },
@@ -118,7 +118,7 @@ export default {
     // 保存banner列表
     async saveBannerList() {
       let res = await setWebContent(
-        this.currentPlatform + "/business",
+        this.currentPlatform + "/index",
         "",
         this.dataList
       );

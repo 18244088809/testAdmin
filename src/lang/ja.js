@@ -49,7 +49,9 @@ export default {
     externalLink: '外部リンク',
     profile: 'プロフィール',
     guest:"官网报名学员",
-    bookAsk:"学员提问"
+    bookAsk:"学员提问",
+    template:"网页模板",
+    questions:"学员提问",
   },
   navbar: {
     dashboard: 'トップ',
