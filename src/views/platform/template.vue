@@ -32,11 +32,11 @@
         </el-table-column>
       </el-table>
       <div class="between-center m-v-10">
-        <el-button type="primary" @click="createTemplate()">创建页面模板</el-button> 
+        <el-button type="primary" @click="createTemplate()">创建页面模板</el-button>
       </div>
     </div>
     <!-- 弹出框 -->
-    <div>
+    
       <!-- 班级相关操作的模态框 -->
       <my-dialog
         :visible.sync="editDialog"
@@ -47,14 +47,14 @@
           <platformTemplateDetail :formItemData="classFormData" :platform="currentPlatform" />
         </div>
       </my-dialog>
-    </div>
+   
   </div>
 </template> 
 <script>
 import platformTemplateDetail from "@/views/platform/component/platformTemplateDetail";
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
-import { getWebTemplate,deleteWebTemplate } from "@/api/platform";
+import { getWebTemplate, deleteWebTemplate } from "@/api/platform";
 import { isDate } from "xe-utils/methods";
 export default {
   name: "templateList",
@@ -81,7 +81,7 @@ export default {
       activeClassTabs: "bbxy",
       // 控制班级更多操作的弹出框
       moreOperationDialog: false,
-      classStudentsDialog: false, 
+      classStudentsDialog: false,
       searchClassLabel: "",
       searchGrade: new Date(),
       // 当前的校区id
@@ -148,15 +148,21 @@ export default {
     // 编辑
     editeTemplate(index, row) {
       this.classFormData = { ...row };
-      this.makeExamDialog = true;
+      this.editDialog = true;
       this.currentIndex = index;
     },
 
     async deleteTemplate(index, row) {
-      let res = await deleteWebTemplate(this.currentPlatform + "/" + row.url);
-      this.$message({
-        message: "删除成功",
-        type: "success"
+      this.$confirm("你确定要删除吗？删了之后找不回来哦", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        let res = await deleteWebTemplate(this.currentPlatform + "/" + row.url);
+        this.$message({
+          message: "删除成功",
+          type: "success"
+        });
       });
     },
     // 打开更多操作模态框

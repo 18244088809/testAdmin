@@ -1,6 +1,6 @@
 <template>
   <!-- --------------------数据编辑或者添加表单组件----------------------- -->
-  <div class="m-l-20 m-r-20 wid_100">
+  <div class="m-l-20   wid_100">
     <el-form class="m-t-10" size="small" label-width="80px">
       <div class="flex_dom">
         <el-form-item label="页面地址" prop="url" style="width:40%">
@@ -9,31 +9,40 @@
         <el-form-item label="页面名称" prop="label" style="width:40%">
           <el-input placeholder="请输入此页面标题" v-model="currentItemData.label" class="m-r-50"></el-input>
         </el-form-item>
-        <el-form-item label prop="label" style="width:20%">
+        <el-form-item  >
+           <div class="flex_dom">
           <el-button type="primary" @click="saveNewsFormData">保存</el-button>
+          <el-button type="primary" @click="saveNewsFormData">保存</el-button>
+           </div>
         </el-form-item>
       </div>
     </el-form>
-    <el-tabs type="border-card" @tab-click="selectViewModel">
+    <!-- <el-tabs type="border-card" @tab-click="selectViewModel">
       <el-tab-pane>
         <span slot="label">
           <i class="el-icon-sugar">源码编辑器</i>
-        </span>
+        </span> -->
         <el-input
           type="textarea"
-          :rows="(documentHeight/15)"
+          :rows="(documentHeight/13)"
           v-model="currentItemData.content"
           :id="currentItemData.Id"
         ></el-input>
-      </el-tab-pane>
+      <!-- </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
           <i class="el-icon-cold-drink">预览</i>
         </span>
         <div v-html="currentItemData.content"  ></div>
       </el-tab-pane>
-    </el-tabs>
-
+    </el-tabs> -->
+    <!-- <el-dialog
+      :visible.sync="true"
+      width="500px"
+      :title="currentRowData.Id>0?'编辑'+currentRowData.Label:'预览效果'"
+    >
+      <collegeRowDetail :editEnable="true" :formItemData="currentRowData" />
+    </el-dialog> -->
     <div class="flex_dom wid_100 m-b-20"></div>
   </div>
 </template>

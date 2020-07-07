@@ -2,54 +2,53 @@
   <div v-cloak class="font16 hgt_full">
     <div class="flex_column hgt_full">
       <div class="flex_1 m-t-20 overflow_auto my_scrollbar p-r-20 p-l-20 p-v-15">
-        <el-form :model="platformWeb" style="width:100%">
-          <div class="flex_dom">
-            <el-form-item label="官网logo" style="width:100%">
-              <img :src="platformWeb.logo" style="width: 130px; height:130px" />
-              <el-upload
-                :auto-upload="false"
-                action
-                :show-file-list="false"
-                :on-change="function(file){return uploadBannerImg(file,'logo')}"
-              >
-                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
-              </el-upload>
-            </el-form-item>
-            <el-form-item label="浏览器图标" style="width:100%">
-              <img :src="platformWeb.shortcut" style="width: 130px; height:130px" />
-              <el-upload
-                :auto-upload="false"
-                action
-                :show-file-list="false"
-                :on-change="function(file){return uploadBannerImg(file,'shortcut')}"
-              >
-                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
-              </el-upload>
-            </el-form-item>
-            <el-form-item label="小程序二维码" style="width:100%">
-              <img :src="platformWeb.xcxlogo" style="width: 130px; height:130px" />
-              <el-upload
-                :auto-upload="false"
-                action
-                :show-file-list="false"
-                :on-change="function(file){return uploadBannerImg(file,'xcxlogo')}"
-              >
-                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
-              </el-upload>
-            </el-form-item>
-             <el-form-item label="在线报名背景图" style="width:100%">
-              <img :src="platformWeb.zxbm" style="width: 130px; height:130px" />
-              <el-upload
-                :auto-upload="false"
-                action
-                :show-file-list="false"
-                :on-change="function(file){return uploadBannerImg(file,'zxbm')}"
-              >
-                <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
-              </el-upload>
-            </el-form-item>
-          </div>
-          <div class="flex_dom bg-f1">
+        <el-form :model="platformWeb" label-width="200px" style="width:100%">
+          <el-form-item label="官网logo">
+            <img :src="platformWeb.logo" style="width: 130px; height:130px" />
+            <el-upload
+              :auto-upload="false"
+              action
+              :show-file-list="false"
+              :on-change="function(file){return uploadBannerImg(file,'logo')}"
+            >
+              <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+            </el-upload>
+          </el-form-item>
+          <el-form-item label="浏览器图标">
+            <img :src="platformWeb.shortcut" style="width: 130px; height:130px" />
+            <el-upload
+              :auto-upload="false"
+              action
+              :show-file-list="false"
+              :on-change="function(file){return uploadBannerImg(file,'shortcut')}"
+            >
+              <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+            </el-upload>
+          </el-form-item>
+          <el-form-item label="小程序二维码">
+            <img :src="platformWeb.xcxlogo" style="width: 130px; height:130px" />
+            <el-upload
+              :auto-upload="false"
+              action
+              :show-file-list="false"
+              :on-change="function(file){return uploadBannerImg(file,'xcxlogo')}"
+            >
+              <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+            </el-upload>
+          </el-form-item>
+          <el-form-item label="在线报名背景图">
+            <img :src="platformWeb.zxbm" style="width: 130px; height:130px" />
+            <el-upload
+              :auto-upload="false"
+              action
+              :show-file-list="false"
+              :on-change="function(file){return uploadBannerImg(file,'zxbm')}"
+            >
+              <i slot="default" class="el-icon-plus">&nbsp;点击上传</i>
+            </el-upload>
+          </el-form-item>
+
+          <!-- <div class="flex_dom bg-f1">
             <div class="flex-column" style="width:40%">
               <el-form-item label="校区名称" style="width:100%">
                 <el-input v-model="platformWeb.title" placeholder="校区名称."></el-input>
@@ -104,8 +103,7 @@
                 </el-form-item>
              
             </div>
-          </div>
-         
+          </div>-->
         </el-form>
       </div>
       <div class="m-v-15">
@@ -117,7 +115,7 @@
 
 <script>
 import platformRowDetail from "@/views/system/component/platformRowDetail";
-import { setWebContent ,getWebContent} from "@/api/platform";
+import { setWebContent, getWebContent } from "@/api/platform";
 import { getCosTempKey } from "@/api/cos";
 import common from "@/utils/common";
 import $ImgHttp from "@/api/ImgAPI";
@@ -139,8 +137,8 @@ export default {
 
   methods: {
     async getWebContent() {
-      let res = await getWebContent(this.currentPlatform+"/setting");
-      if (res.data&&res.data.length>0) {
+      let res = await getWebContent(this.currentPlatform + "/setting");
+      if (res.data && res.data.length > 0) {
         this.platformWeb = res.data[0];
         this.$store.getters.app.platformList.forEach(item => {
           if (item.Id == res.title) {
@@ -169,10 +167,9 @@ export default {
     // setHeaderFooter
     async setWebContent() {
       let that = this;
-      let res = await setWebContent(
-        this.currentPlatform+ "/setting","",
-        [that.platformWeb]
-      );
+      let res = await setWebContent(this.currentPlatform + "/setting", "", [
+        that.platformWeb
+      ]);
       if (res.code == 200) {
         that.$message({
           message: "保存成功",
