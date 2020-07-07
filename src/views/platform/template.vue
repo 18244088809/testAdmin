@@ -9,57 +9,52 @@
         ref="refElTabel"
       >
         <el-table-column prop="url" label="页面地址" width="200"></el-table-column>
-        <el-table-column prop="label" label="页面名称"></el-table-column> 
+        <el-table-column prop="label" label="页面名称"></el-table-column>
 
-        <el-table-column label="操作" width="180" fixed="right">
+        <el-table-column label="操作" width="240" fixed="right">
           <template slot-scope="scope">
             <el-button
               type="warning"
               style="margin:0px;"
-              @click="openExerciseManager(scope.$index, scope.row)"
-            >编辑内容</el-button>
+              @click="editeTemplate(scope.$index, scope.row)"
+            >编辑模板</el-button>
             <el-button
               type="success"
               style="margin:0px;"
-              @click="openClassStudents(scope.$index, scope.row)"
+              @click="enableTemplate(scope.$index, scope.row)"
             >已上线</el-button>
+            <el-button
+              type="danger"
+              style="margin:0px;"
+              @click="deleteTemplate(scope.$index, scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="between-center m-v-10">
-        <el-button type="primary" @click="createClass()">创建页面模板</el-button>
-        <!-- <div>
-          <el-pagination
-            background
-            @current-change=" currentPageChange"
-            :current-page.sync="nowPage"
-            :page-size="rows"
-            layout="total,prev, pager, next, jumper"
-            :total="allRows"
-          ></el-pagination>
-        </div> -->
+        <el-button type="primary" @click="createTemplate()">创建页面模板</el-button> 
       </div>
     </div>
     <!-- 弹出框 -->
     <div>
       <!-- 班级相关操作的模态框 -->
       <my-dialog
-        :visible.sync="makeExamDialog"
+        :visible.sync="editDialog"
         :title="'【'+classFormData.label+'】页面模板编辑'"
         :showLeft="false"
       >
         <div slot="right_content" class="flex_dom hgt_100">
-          <platformTemplateDetail :formItemData="classFormData"  :platform="currentPlatform" />
+          <platformTemplateDetail :formItemData="classFormData" :platform="currentPlatform" />
         </div>
       </my-dialog>
     </div>
   </div>
 </template> 
-<script> 
+<script>
 import platformTemplateDetail from "@/views/platform/component/platformTemplateDetail";
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
-import { getWebTemplate } from "@/api/platform";
+import { getWebTemplate,deleteWebTemplate } from "@/api/platform";
 import { isDate } from "xe-utils/methods";
 export default {
   name: "templateList",
@@ -86,8 +81,7 @@ export default {
       activeClassTabs: "bbxy",
       // 控制班级更多操作的弹出框
       moreOperationDialog: false,
-      classStudentsDialog: false,
-      makeExamDialog: false,
+      classStudentsDialog: false, 
       searchClassLabel: "",
       searchGrade: new Date(),
       // 当前的校区id
@@ -117,13 +111,12 @@ export default {
       let offsetRow = (that.nowPage - 1) * that.rows;
       let res = await getWebTemplate(that.currentPlatform + "/all");
       if (res.data) {
-       for(var key in res.data){
+        for (var key in res.data) {
           let item = null;
-           item = res.data[key];
+          item = res.data[key];
 
-         
           // if (key=="business"){
-           
+
           // } else if (key=="setting"){
           //  item = res.data[key];
           // } else if (key=="index"){
@@ -138,29 +131,34 @@ export default {
           //  item = res.data[key];
           // }
 
-          if (item) { 
+          if (item) {
             let jsonItem = JSON.parse(item);
-              jsonItem.url = key;
+            jsonItem.url = key;
             that.templateList.push(jsonItem);
           }
-        };
-
-      
+        }
       }
     },
-    // 打开本班的学员列表
-    openClassStudents(index, row) {
+    // 启用
+    enableTemplate(index, row) {
       this.classFormData = { ...row };
       this.classStudentsDialog = true;
       this.currentIndex = index;
     },
-    // 组卷管理
-    openExerciseManager(index, row) {
+    // 编辑
+    editeTemplate(index, row) {
       this.classFormData = { ...row };
       this.makeExamDialog = true;
       this.currentIndex = index;
     },
 
+    async deleteTemplate(index, row) {
+      let res = await deleteWebTemplate(this.currentPlatform + "/" + row.url);
+      this.$message({
+        message: "删除成功",
+        type: "success"
+      });
+    },
     // 打开更多操作模态框
     openMoreOptationDialog(index, row) {
       this.classFormData = { ...row };
@@ -171,7 +169,7 @@ export default {
       this.currentIndex = index;
     },
     //打开班级信息模态框
-    createClass(type) {
+    createTemplate(type) {
       this.classFormData = {};
       this.classFormData.OpenTime = new Date();
       this.classFormData.Endtime = new Date();

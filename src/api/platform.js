@@ -93,15 +93,15 @@ export function getWebContent(url, query, data) {
   })
 }
  
-// //  
-// export function setBuiness(url, query, data) {
-//   return request({
-//     url: '/platform/setBuiness/' + url,
-//     method: 'put',
-//     params: query,
-//     data
-//   })
-// }
+//  
+export function deleteWebTemplate(url, query, data) {
+  return request({
+    url: '/platform/deleteWebTemplate/' + url,
+    method: 'delete',
+    params: query,
+    data
+  })
+}
 
 
 // //  

@@ -147,8 +147,8 @@ export default {
       // 添加数据  getWebTemplate,setWebTemplate
       let res = await setWebTemplate(
         this.platform + "/" + this.currentItemData.url,
-        "",
-        this.currentItemData
+        {label: this.currentItemData.label},
+        this.currentItemData.content
       );
 
       this.isShowPlatformDialog = false;
