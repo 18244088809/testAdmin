@@ -104,10 +104,10 @@ export function deleteWebTemplate(url, query, data) {
 }
 
 
-//  previewWebPage 预览官网页面
-export function previewWebPage(url, query, data) {
+//  savePreviewPage 预览官网页面
+export function savePreviewPage(url, query, data) {
   return request({
-    url: '/platform/previewWebPage/' + url,
+    url: '/platform/savePreviewPage/' + url,
     method: 'put',
     params: query,
     data
@@ -115,15 +115,7 @@ export function previewWebPage(url, query, data) {
 }
  
  
-//  
-export function reviewWebPage(url, query, data) {
-  return request({
-    url: '/platform/reviewWebPage/' + url,
-    method: 'get',
-    params: query,
-    data
-  })
-}
+ 
 
 
 // //  

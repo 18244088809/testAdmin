@@ -27,25 +27,24 @@
               placement="top"
             >
               <span
-                class="tag-read"
+                class="tag-read m-l-20"
                 style="width:100%"
                 :data-clipboard-text="fileURL"
                 @click="copyText"
-              >   {{fileURL}}</span>
+              >{{fileURL}}</span>
             </el-tooltip>
 
             <el-button type="success" @click="previewPage" class="m-r-10">预览</el-button>
-            <el-button type="primary" @click="saveNewsFormData">保存</el-button>
           </div>
         </el-form-item>
       </div>
     </el-form>
-     <el-input
-          type="textarea"
-          :rows="(documentHeight/13)"
-          v-model="currentItemData.content"
-          :id="currentItemData.Id"
-        ></el-input>
+    <el-input
+      type="textarea"
+      :rows="(documentHeight/13)"
+      v-model="currentItemData.content"
+      :id="currentItemData.Id"
+    ></el-input>
     <!-- <el-tabs>
       <el-tab-pane label="a">
         <el-input
@@ -58,24 +57,29 @@
       <el-tab-pane label="b">
         <div style="width:100%;height:100px" v-html="currentPreviewHtml"></div>
       </el-tab-pane>
-    </el-tabs> -->
+    </el-tabs>-->
 
-    <div >
+    <div>
       <el-dialog
         :visible.sync="previewPageEnable"
-        width="100%" :modal="false"
-        append-to-body  
+        width="100%"
+        :modal="false"
+        append-to-body
         :title="currentItemData.label "
         @close="previewPageEnable=false"
-      > 
-      <div style="width:100%;top:50px " v-html="currentPreviewHtml"></div> 
+      >
+        <div style="width:100%;top:50px " v-html="currentPreviewHtml"></div>
       </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { getWebTemplate, setWebTemplate, previewWebPage,reviewWebPage } from "@/api/platform";
+import {
+  getWebTemplate,
+  setWebTemplate,
+  savePreviewPage
+} from "@/api/platform";
 import common from "@/utils/common";
 import $ImgAPI from "@/api/ImgAPI";
 export default {
@@ -111,8 +115,7 @@ export default {
       currentItemData: this.formItemData,
       currentPreviewHtml: "",
       previewPageEnable: false,
-      previewSRC:""
-
+      previewSRC: ""
     };
   },
   watch: {
@@ -145,7 +148,7 @@ export default {
       }
       return "";
     },
-   // 复制文本
+    // 复制文本
     copyText() {
       let clipboard = new this.clipboard(".tag-read");
       clipboard.on("success", e => {
@@ -156,13 +159,23 @@ export default {
       });
     },
     async previewPage() {
-      let res = await previewWebPage(
+      let that = this;
+      let res = await savePreviewPage(
         this.platform + "/" + this.currentItemData.url,
-        { label: this.currentItemData.label },
+        "",
         this.currentItemData.content
       );
-    this.currentPreviewHtml = res;
-      this.previewPageEnable = true;
+      // this.currentPreviewHtml = res;
+      window.open("/api/platform/getPreviewPage/" + res.data, "_blank");
+      that
+        .$confirm("预览效果如何?满意的话就发布吧,不满意就再修改一下", "提示", {
+          confirmButtonText: "满意.发布",
+          cancelButtonText: "再修改一下",
+          type: "warning"
+        })
+        .then(async () => {
+          that.saveNewsFormData();
+        });
     },
 
     // 上传附件
@@ -191,7 +204,7 @@ export default {
 
       this.isShowPlatformDialog = false;
       this.$message({
-        message: "添加成功",
+        message: "发布成功",
         type: "success"
       });
       let item = this.currentItemData;
