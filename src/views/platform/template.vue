@@ -9,7 +9,7 @@
         ref="refElTabel"
       >
         <el-table-column prop="url" label="页面地址" width="200"></el-table-column>
-        <el-table-column prop="label" label="页面名称"></el-table-column>
+        <el-table-column prop="label" label="备注.说明"></el-table-column>
 
         <el-table-column label="操作" width="240" fixed="right">
           <template slot-scope="scope">
@@ -36,18 +36,21 @@
       </div>
     </div>
     <!-- 弹出框 -->
-    
-      <!-- 班级相关操作的模态框 -->
-      <my-dialog
-        :visible.sync="editDialog"
-        :title="'【'+classFormData.label+'】页面模板编辑'"
-        :showLeft="false"
-      >
-        <div slot="right_content" class="flex_dom hgt_100">
-          <platformTemplateDetail :formItemData="classFormData" :platform="currentPlatform" />
-        </div>
-      </my-dialog>
-   
+
+    <!-- 班级相关操作的模态框 -->
+    <my-dialog
+      :visible.sync="editDialog"
+      :title="'【'+classFormData.label+'】页面模板编辑'"
+      :showLeft="false"
+    >
+      <div slot="right_content" class="flex_dom hgt_100">
+        <platformTemplateDetail
+          :formItemData="classFormData"
+          @updateRowData="updateListItem"
+          :platform="currentPlatform"
+        />
+      </div>
+    </my-dialog>
   </div>
 </template> 
 <script>
@@ -114,23 +117,6 @@ export default {
         for (var key in res.data) {
           let item = null;
           item = res.data[key];
-
-          // if (key=="business"){
-
-          // } else if (key=="setting"){
-          //  item = res.data[key];
-          // } else if (key=="index"){
-          //  item = res.data[key];
-          // } else if (key=="index"){
-          //  item = res.data[key];
-          // } else if (key=="index"){
-          //  item = res.data[key];
-          // } else if (key=="index"){
-          //  item = res.data[key];
-          // } else if (key=="index"){
-          //  item = res.data[key];
-          // }
-
           if (item) {
             let jsonItem = JSON.parse(item);
             jsonItem.url = key;
@@ -153,6 +139,12 @@ export default {
     },
 
     async deleteTemplate(index, row) {
+      if (row.url == "index") {
+        this.$alert("这是首页.不能删掉.您可以修改内容.", "警告");
+
+        return;
+      }
+
       this.$confirm("你确定要删除吗？删了之后找不回来哦", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -162,6 +154,13 @@ export default {
         this.$message({
           message: "删除成功",
           type: "success"
+        });
+
+        let hasIn = false;
+        this.templateList.forEach(item => {
+          if (item.url == row.url) {
+            this.templateList.splice(index, 1);
+          }
         });
       });
     },
@@ -183,22 +182,18 @@ export default {
       this.editDialog = true;
     },
     // 添加班级成功之后更新表格数据-班级列表
-    updateListItem(type, rowData) {
-      if (rowData.OpenTime > 1507800391000) {
-        rowData.OpenTime = parseInt(rowData.OpenTime / 1000);
+    updateListItem(rowData) {
+      let hasIn = false;
+      this.templateList.forEach(item => {
+        if (item.url == rowData.url) {
+          item.label = rowData.label;
+          item.content = rowData.content;
+          hasIn = true;
+        }
+      });
+      if (hasIn == false) {
+        this.templateList.push(rowData);
       }
-      if (rowData.Endtime > 1507800391000) {
-        rowData.Endtime = parseInt(rowData.Endtime / 1000);
-      }
-      if (rowData.Createtime > 1507800391000) {
-        rowData.Createtime = parseInt(rowData.Createtime / 1000);
-      }
-      if (type == 0) {
-        this.templateList.unshift(rowData);
-      } else if (type == 1) {
-        this.$set(this.templateList, this.currentIndex, rowData);
-      }
-      this.editDialog = false;
     },
 
     // 格式化日期

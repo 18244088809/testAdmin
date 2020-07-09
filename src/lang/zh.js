@@ -13,7 +13,7 @@ export default {
     bookList: '教材列表',
     questionsList:"试题管理",
     documentation: '文档',
-    web: '官网',
+    web: '官网数据',
     platform: '校区管理',
     platformCustom: '本校学员',
     banner: '轮播图',
@@ -39,7 +39,7 @@ export default {
     personalData:"个人设置",
     guest:"官网报名学员",
     bookAsk:"学员提问",
-    template:"网页模板",
+    template:"官网模板",
     questions:"学员提问",
   },
   navbar: {

@@ -13,7 +13,7 @@ export default {
     bookList: '教材列表',
     questionsList:"试题管理",
     documentation: '文檔',
-    web: '官网',
+    web: '官网数据',
     platform: '校区管理',
     platformCustom:'本校学员',
     banner: '轮播图',

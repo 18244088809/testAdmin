@@ -47,6 +47,9 @@ service.interceptors.response.use(
     if (res.code == 200) {
       return res
     }
+    if (!res.code && !res.data) {
+      return res
+    }
     Message({
       message: res.title || 'Error',
       type: 'error',
@@ -56,7 +59,7 @@ service.interceptors.response.use(
       removeToken();
       location.href = "/login"
     }
-    return   Promise.reject(response);
+    return Promise.reject(response);
     // // if the custom code is not 20000, it is judged as an error.
     // if (res.code !== 200) {
     //   Message({

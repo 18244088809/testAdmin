@@ -92,6 +92,7 @@ export default {
       const _this = this;
       tinymce.init({
         language: "zh_CN",
+       valid_elements : 'meta,link,html,head',
         selector: `#${this.tinymceId + ""}`,
         height: this.height,
         body_class: "panel-body ",

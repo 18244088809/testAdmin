@@ -104,26 +104,26 @@ export function deleteWebTemplate(url, query, data) {
 }
 
 
-// //  
-// export function getBuiness(url, query, data) {
-//   return request({
-//     url: '/platform/getBuiness/' + url,
-//     method: 'get',
-//     params: query,
-//     data
-//   })
-// }
+//  previewWebPage 预览官网页面
+export function previewWebPage(url, query, data) {
+  return request({
+    url: '/platform/previewWebPage/' + url,
+    method: 'put',
+    params: query,
+    data
+  })
+}
  
  
-// //  
-// export function setHeader(url, query, data) {
-//   return request({
-//     url: '/platform/setHeader/' + url,
-//     method: 'put',
-//     params: query,
-//     data
-//   })
-// }
+//  
+export function reviewWebPage(url, query, data) {
+  return request({
+    url: '/platform/reviewWebPage/' + url,
+    method: 'get',
+    params: query,
+    data
+  })
+}
 
 
 // //  

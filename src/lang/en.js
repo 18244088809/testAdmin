@@ -13,7 +13,7 @@ export default {
     bookList: 'book list',
     questionsList:"question list",
     documentation: 'Documentation',
-    web: 'web site',
+    web: 'web site data',
     platform: 'site list',
     platformCustom:'student list',
     banner: 'banner',

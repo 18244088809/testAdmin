@@ -138,19 +138,19 @@ const actions = {
                     meta: { title: 'honorList', icon: "star" }
                   },
                   
-                  {
-                    path: 'linker/' + platform.Id.toString(10),
-                    name: 'linker' + index.toString(10),
-                    component: () => import('@/views/platform/web/linker'),
-                    meta: { title: 'linker', icon: "linker" }
-                  }
+                  // {
+                  //   path: 'linker/' + platform.Id.toString(10),
+                  //   name: 'linker' + index.toString(10),
+                  //   component: () => import('@/views/platform/web/linker'),
+                  //   meta: { title: 'linker', icon: "linker" }
+                  // }
                 ]
               } ,
               {
                 path: 'template/' + platform.Id,
                 component: () => import('@/views/platform/template'),
                 name: 'template' + index.toString(10),
-                meta: { title: 'template', icon: 'template' }
+                meta: { title: 'template', icon: 'tree' }
               },
               {
                 path: 'managers/' + platform.Id,
