@@ -1,6 +1,6 @@
 <template>
   <div class="font16 hgt_full" v-cloak>
-    <div class="flex_column hgt_full p-t-20">
+    <!-- <div class="flex_column hgt_full p-t-20">
       <el-table
         tooltip-effect="light"
         :data="templateList"
@@ -34,8 +34,20 @@
       <div class="between-center m-v-10">
         <el-button type="primary" @click="createTemplate()">创建页面模板</el-button>
       </div>
-    </div>
-    <!-- 弹出框 -->
+    </div> -->
+
+<el-row :gutter="12">
+  <el-col :span="8">
+    <platformPageCard  />
+      
+  </el-col>
+  <el-col :span="8">
+    <platformPageCard  />
+  </el-col>
+  <el-col :span="8">
+    <platformPageCard  />
+  </el-col>
+</el-row>
 
     <!-- 班级相关操作的模态框 -->
     <my-dialog
@@ -55,6 +67,7 @@
 </template> 
 <script>
 import platformTemplateDetail from "@/views/platform/component/platformTemplateDetail";
+import platformPageCard from "@/views/platform/component/platformPageCard";
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
 import { getWebTemplate, deleteWebTemplate } from "@/api/platform";
@@ -63,7 +76,8 @@ export default {
   name: "templateList",
   components: {
     myDialog,
-    platformTemplateDetail
+    platformTemplateDetail,
+    platformPageCard
   },
   data() {
     return {

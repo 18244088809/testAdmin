@@ -34,7 +34,7 @@
               >{{fileURL}}</span>
             </el-tooltip>
 
-            <el-button type="success" @click="previewPage" class="m-r-10">预览</el-button>
+            <el-button type="success" @click="previewPage" class="m-r-10">预览本模块(页面)</el-button>
           </div>
         </el-form-item>
       </div>
