@@ -154,8 +154,7 @@ export default {
         file,
         "platform",
         filename,
-        function(progressData) {
-          console.log("上传进度:" + progressData.percent * 100 + "%");
+        function(progressData) { 
           that.$forceUpdate();
         },
         function(err, data, fileURL) {

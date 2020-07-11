@@ -34,33 +34,29 @@
       <div class="between-center m-v-10">
         <el-button type="primary" @click="createTemplate()">创建页面模板</el-button>
       </div>
-    </div> -->
-
-<el-row :gutter="12">
-  <el-col :span="8">
-    <platformPageCard  />
-      
-  </el-col>
-  <el-col :span="8">
-    <platformPageCard  />
-  </el-col>
-  <el-col :span="8">
-    <platformPageCard  />
-  </el-col>
-</el-row>
-
+    </div>-->
+    <div class="p-t-20" :style="{height:documentHeight+'px',overflow:'auto'}">
+      <platformPageCard
+        v-for="(item, index) in templateList"
+        :key="index"
+        @delete="deleteTemplate"
+        @edit="editeTemplate"
+        :index="index"
+        :pageTemplateItem="item"
+      />
+    </div>
     <!-- 班级相关操作的模态框 -->
     <my-dialog
       :visible.sync="editDialog"
-      :title="'【'+classFormData.label+'】页面模板编辑'"
+      :title="'页面地址:          '+classFormData.url "
       :showLeft="false"
     >
-      <div slot="right_content" class="flex_dom hgt_100">
+      <div slot="right_content" class="flex_dom hgt_100  ">
         <platformTemplateDetail
-          :formItemData="classFormData"
-          @updateRowData="updateListItem"
-          :platform="currentPlatform"
-        />
+              :formItemData="classFormData"
+              @updateRowData="updateListItem"
+              :currentPlatform="currentPlatform"
+            />
       </div>
     </my-dialog>
   </div>
@@ -105,10 +101,7 @@ export default {
       currentPlatform: 0,
       // 更多操作弹窗
       editDialog: false,
-      // 预览图片的图片地址
-      imageViewerSrc: "",
-      // 显示图片查看器
-      showViewer: false
+      documentHeight: 500
     };
   },
   methods: {
@@ -116,7 +109,7 @@ export default {
       item.$children[0].fire();
     },
     // 获取所有班级的列表
-    async getAllClass() {
+    async getAllTemplate() {
       let that = this;
       let year = 0;
       if (isDate(that.searchGrade)) {
@@ -217,12 +210,12 @@ export default {
     // 分页获取数据
     currentPageChange(val) {
       this.nowPage = val;
-      this.getAllClass();
+      this.getAllTemplate();
     },
     // 条件搜索
     searchSubmit() {
       this.nowPage = 1;
-      this.getAllClass();
+      this.getAllTemplate();
     }
   },
   mounted() {
@@ -232,7 +225,8 @@ export default {
       this.currentPlatform = 0;
     }
     this.nowPage = 1;
-    this.getAllClass();
+    this.documentHeight = document.body.clientHeight;
+    this.getAllTemplate();
   }
 };
 </script>
