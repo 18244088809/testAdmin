@@ -1,62 +1,30 @@
 <template>
   <div class="font16 hgt_full" v-cloak>
-    <!-- <div class="flex_column hgt_full p-t-20">
-      <el-table
-        tooltip-effect="light"
-        :data="templateList"
-        border
-        style="width: 100%"
-        ref="refElTabel"
-      >
-        <el-table-column prop="url" label="页面地址" width="200"></el-table-column>
-        <el-table-column prop="label" label="备注.说明"></el-table-column>
-
-        <el-table-column label="操作" width="240" fixed="right">
-          <template slot-scope="scope">
-            <el-button
-              type="warning"
-              style="margin:0px;"
-              @click="editeTemplate(scope.$index, scope.row)"
-            >编辑模板</el-button>
-            <el-button
-              type="success"
-              style="margin:0px;"
-              @click="enableTemplate(scope.$index, scope.row)"
-            >已上线</el-button>
-            <el-button
-              type="danger"
-              style="margin:0px;"
-              @click="deleteTemplate(scope.$index, scope.row)"
-            >删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="between-center m-v-10">
-        <el-button type="primary" @click="createTemplate()">创建页面模板</el-button>
+    <div :style="{height:(documentHeight-150)+'px',overflow:'auto'}">
+      <div class="p-t-20">
+        <platformPageCard
+          v-for="(item, index) in templateList"
+          :key="index"
+          @delete="deleteTemplate"
+          @edit="editeTemplate"
+          :index="index"
+          :pageTemplateItem="item"
+        />
       </div>
-    </div>-->
-    <div class="p-t-20" :style="{height:documentHeight+'px',overflow:'auto'}">
-      <platformPageCard
-        v-for="(item, index) in templateList"
-        :key="index"
-        @delete="deleteTemplate"
-        @edit="editeTemplate"
-        :index="index"
-        :pageTemplateItem="item"
-      />
     </div>
+    <el-button type="primary" @click="createTemplate" class="m-t-10">新增页面</el-button>
     <!-- 班级相关操作的模态框 -->
     <my-dialog
       :visible.sync="editDialog"
       :title="'页面地址:          '+classFormData.url "
       :showLeft="false"
     >
-      <div slot="right_content" class="flex_dom hgt_100  ">
+      <div slot="right_content" class="flex_dom hgt_100">
         <platformTemplateDetail
-              :formItemData="classFormData"
-              @updateRowData="updateListItem"
-              :currentPlatform="currentPlatform"
-            />
+          :formItemData="classFormData"
+          @updateRowData="updateListItem"
+          :currentPlatform="currentPlatform"
+        />
       </div>
     </my-dialog>
   </div>
@@ -151,23 +119,38 @@ export default {
 
         return;
       }
-
-      this.$confirm("你确定要删除吗？删了之后找不回来哦", "提示", {
+      this.$prompt("请输入你要删除的页面地址确认", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
-      }).then(async () => {
-        let res = await deleteWebTemplate(this.currentPlatform + "/" + row.url);
-        this.$message({
-          message: "删除成功",
-          type: "success"
-        });
+        inputErrorMessage: "邮箱格式不正确"
+      }).then(async ({ value }) => {
+        if (value != row.url) {
+          this.$message({
+            message: "输入错误.不予删除",
+            type: "warning"
+          });
+          return;
+        }
 
-        let hasIn = false;
-        this.templateList.forEach(item => {
-          if (item.url == row.url) {
-            this.templateList.splice(index, 1);
-          }
+        this.$confirm("你确定要删除吗？删了之后找不回来哦", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(async () => {
+          let res = await deleteWebTemplate(
+            this.currentPlatform + "/" + row.url
+          );
+          this.$message({
+            message: "删除成功",
+            type: "success"
+          });
+
+          let hasIn = false;
+          this.templateList.forEach(item => {
+            if (item.url == row.url) {
+              this.templateList.splice(index, 1);
+            }
+          });
         });
       });
     },
@@ -182,17 +165,26 @@ export default {
     },
     //打开班级信息模态框
     createTemplate(type) {
-      this.classFormData = {};
-      this.classFormData.OpenTime = new Date();
-      this.classFormData.Endtime = new Date();
-      this.classFormData.Createtime = new Date();
-      this.editDialog = true;
+      this.$prompt(
+        "请输入新页面的地址,一般是英文或者英文和数字组合,请不要使用汉字",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消"
+        }
+      ).then(async ({ value }) => {
+        this.classFormData = {};
+        this.classFormData.url = value;
+        this.editDialog = true;
+        return;
+      });
     },
     // 添加班级成功之后更新表格数据-班级列表
     updateListItem(rowData) {
       let hasIn = false;
       this.templateList.forEach(item => {
         if (item.url == rowData.url) {
+          console.log(item.label, rowData.label);
           item.label = rowData.label;
           item.content = rowData.content;
           hasIn = true;

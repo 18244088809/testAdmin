@@ -12,25 +12,9 @@
           v-model="showTempateCode"
         >
           <el-radio-button :label="true">布局代码</el-radio-button>
-          <el-radio-button :label="false">数据管理</el-radio-button>
+          <el-radio-button :label="false">页面数据</el-radio-button>
         </el-radio-group>
         <el-form-item label prop="label" class="wid_100">
-          <el-tooltip
-            class="item cursor"
-            style="width:100%"
-            effect="dark"
-            content="点击复制后贴到任何你想要放的地方"
-            placement="top"
-          >
-            <span
-              class="tag-read m-l-20"
-              style="width:100%"
-              :data-clipboard-text="fileURL"
-              @click="copyText"
-            >{{fileURL}}</span>
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item v-show="showTempateCode==true">
           <div class="flex_dom">
             <el-upload
               :auto-upload="false"
@@ -48,8 +32,28 @@
                 <el-button type="info">上传资源</el-button>
               </el-tooltip>
             </el-upload>
-            <el-button type="success" @click="previewPage">预览页面</el-button>
+            
+          <el-tooltip
+          v-show="fileURL.length>0"
+            class="item cursor"
+            style="width:100%"
+            effect="dark"
+            content="点击复制后贴到任何你想要放的地方"
+            placement="top"
+          >
+            <span
+              class="tag-read m-l-20"
+              style="width:100%"
+              :data-clipboard-text="fileURL"
+              @click="copyText"
+            >{{fileURL}}</span>
+          </el-tooltip>
           </div>
+        </el-form-item>
+        <el-form-item v-show="showTempateCode==true">
+          
+            <el-button type="success" @click="previewPage">预览页面</el-button>
+         
         </el-form-item>
         <el-form-item v-show="showTempateCode==false">
           <div class="flex_dom">
@@ -80,9 +84,9 @@
                   <el-form-item label="(description)副标题">
                     <el-input v-model="item.description" placeholder="可填写英文做副标题" style="width:100%"></el-input>
                   </el-form-item>
-                  <el-form-item label="(display)是否显示">
+                  <!-- <el-form-item label="(display)是否显示">
                     <el-checkbox v-model="item.display" checked="checked" style="width:100%">打钩显示</el-checkbox>
-                  </el-form-item>
+                  </el-form-item> -->
                   <el-form-item label="(image)图片">
                     <el-upload
                       :auto-upload="false"
@@ -317,6 +321,10 @@ export default {
         "",
         this.dataList
       );
+
+
+
+      this.$emit()
       this.$message({
         message: "保存成功",
         type: "success"
@@ -340,6 +348,7 @@ export default {
     },
     async previewPage() {
       let that = this;
+      this.currentItemData.content = this.editor.getValue(); 
       let res = await savePreviewPage(
         this.currentPlatform + "/" + this.currentItemData.url,
         "",
@@ -379,6 +388,7 @@ export default {
     // 添加或编辑数据
     async saveTemplate() {
       // 添加数据  getWebTemplate,setWebTemplate
+        this.currentItemData.content = this.editor.getValue(); 
       let res = await setWebTemplate(
         this.currentPlatform + "/" + this.currentItemData.url,
         { label: this.currentItemData.label },
@@ -391,7 +401,7 @@ export default {
         type: "success"
       });
       let item = this.currentItemData;
-      item.content = res.data;
+      // item.content = res.data;
       this.$emit("updateRowData", item);
     },
     // 取消编辑或者添加

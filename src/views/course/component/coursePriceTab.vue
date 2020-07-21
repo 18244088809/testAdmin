@@ -3,15 +3,15 @@
     <el-form style="padding:10px 0px 0px 0px" label-width="80px" size="small">
       <el-form-item label="绑定教材">
         <div style="display:flex">
-          <el-input v-model="searchSubjectContent" placeholder="请输入教材名称" class="m-r-12 flex_1" />
+          <el-input v-model="searchSubjectContent" placeholder="请输入搜索的教材名称" class="m-r-12 flex_1" />
           <el-button type="primary" @click="getBookList">查询</el-button>
         </div>
       </el-form-item>
-      <el-form-item label="可选科目">
+      <el-form-item label="可选教材">
         <div class="addSubject flex_dom flex_wrap">
           <p v-for="(item,index) in allBookList" :key="item.Id">
             {{ item.Label }}
-            <i class="el-icon-circle-plus" @click="addBookToSourse(item,index)" />
+            <i class="el-icon-circle-plus" @click="addBookToSourse(item,index)" style="margin-right:30px"/>
           </p>
         </div>
       </el-form-item>
@@ -20,7 +20,7 @@
       border
       :height="documentHeight"
       resizable
-      :data.sync="currentItemData.Children"
+      :data.sync="currentCourseBooks"
       :edit-config="{trigger: 'click', mode: 'row'}"
       :columns="coursePriceColumnTitle"
     />
@@ -52,6 +52,7 @@ export default {
       // 学院默认选中第一项
       collegeIndex: 0,
       currentItemData: {},
+      currentCourseBooks:[],
       // 设置价格表格列字段
       coursePriceColumnTitle: [],
       // 存储价格的列名称
@@ -76,6 +77,7 @@ export default {
     fire() {
       this.documentHeight = document.body.clientHeight - 400;
       if (!this.formItemData || !this.formItemData.Id) {
+        console.log("-----------走了")
         return;
       }
       this.currentItemData = this.formItemData;
@@ -134,10 +136,10 @@ export default {
       // 初始化数据
       this.coursePriceColumnTitle = [
         { title: "ID", field: "Id", width: 70 },
-        { title: "科目名称", field: "Label" }
+        { title: "教材名称", field: "Label" }
       ];
       this.priceColumnTitle = [];
-      this.currentItemData.Children = [];
+      this.currentCourseBooks = [];
       if (!this.currentItemData.Id) {
         return;
       }
@@ -165,17 +167,15 @@ export default {
             this.tableColumnValue.push(name);
           });
         }
-        this.currentItemData.Children = res.data.Children;
+        this.currentCourseBooks = res.data.Children;
       }
     },
     // 给课程关联学科
     addBookToSourse(subjectItem, index) {
       let has = false;
-      this.currentItemData.Children = this.currentItemData.Children
-        ? this.currentItemData.Children
-        : [];
-      this.currentItemData.Children.forEach(item => {
-        if (item.Id == subjectItem.Id) {
+      this.currentCourseBooks = this.currentCourseBooks  ? this.currentCourseBooks  : [];
+      this.currentCourseBooks.forEach(item => { 
+        if (parseInt(item.Id) ==  subjectItem.Id) {
           has = true;
         }
       });
@@ -185,7 +185,12 @@ export default {
         courseBookitem.Id = subjectItem.Id + "";
         courseBookitem.TCourseId = this.currentItemData.Id + "";
         courseBookitem.TopicNum = subjectItem.Topic + "";
-        this.currentItemData.Children.push(courseBookitem);
+        this.currentCourseBooks.push(courseBookitem);  
+      }else{
+         this.$message({
+            message: subjectItem.Label+"已经添加到了本课程",
+            type: "warning"
+          });
       }
     },
     // 新增课程有效期列
@@ -213,7 +218,7 @@ export default {
           });
           this.tableColumnValue.push(value);
           // 添加列后,将字段添加到数据表中
-          for (const items of this.currentItemData.Children) {
+          for (const items of this.currentCourseBooks) {
             items[value] = null;
           }
         })
@@ -221,7 +226,7 @@ export default {
     },
     // 保存价格
     saveCoursePrice() {
-      for (const items of this.currentItemData.Children) {
+      for (const items of this.currentCourseBooks) {
         for (const item in items) {
           if (items[item] == null || items[item] == "") {
             this.$alert("价格不能为空", "提示", {
@@ -243,7 +248,7 @@ export default {
           const res = await saveCoursePriceList(
             urlParams,
             "",
-            this.currentItemData.Children
+            this.currentCourseBooks
           );
           if (res.code == 200) {
             this.$message({

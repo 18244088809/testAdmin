@@ -92,7 +92,7 @@ export default {
       const _this = this;
       tinymce.init({
         language: "zh_CN",
-       valid_elements : 'meta,link,html,head',
+      //  valid_elements : 'meta,link,html,head',
         selector: `#${this.tinymceId + ""}`,
         height: this.height,
         body_class: "panel-body ",
@@ -153,16 +153,12 @@ export default {
           });
         },
         async images_upload_handler(blobInfo, success, failure, progress) {
-          progress(0);
-          let that = this;
+          progress(0); 
           const res = await $ImgAPI.UploadImg("news", blobInfo.blob());
           if (res.code == 200) {
             success(res.data);
           } else {
-            that.$message({
-              message: res.title,
-              type: "warning"
-            });
+            alert(res.title)
           }
 
           progress(100);

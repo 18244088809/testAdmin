@@ -8,7 +8,7 @@
           <el-form-item label="查询内容">
             <el-input
               v-model="searchContent"
-              placeholder="请输入科目名称"
+              placeholder="请输入教材名称"
               @keyup.enter.native="searchSubmit"
             />
           </el-form-item>

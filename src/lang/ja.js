@@ -48,9 +48,9 @@ export default {
     i18n: '多言語',
     externalLink: '外部リンク',
     profile: 'プロフィール',
-    guest:"官网报名学员",
+    party:"竞赛活动",
     bookAsk:"学员提问",
-    template:"网页模板",
+    template:"官网页面",
     questions:"学员提问",
   },
   navbar: {

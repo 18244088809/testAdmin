@@ -48,9 +48,9 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link',
     profile: 'Profile',
-    guest:"guest list",
+    party:"party",
     bookAsk:"book ask",
-    template:"template",
+    template:"web site",
     questions:"questions",
   },
   navbar: {

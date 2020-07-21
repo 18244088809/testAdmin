@@ -259,7 +259,8 @@ export default {
       this.selectCourseKindId = this.courseKindsOps[selVa].Id;
       const res = await GetCourseOfKind("", {
         kindid: this.selectCourseKindId,
-        platform: this.customData.Platform
+        platform: this.customData.Platform,
+           public:-1 //获取全部
       });
       this.courseOptions = res.data ? res.data : [];
       if (this.courseOptions.length > 0) {

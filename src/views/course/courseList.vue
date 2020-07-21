@@ -33,7 +33,7 @@
                 v-for="(item,index) in courseKindsOps"
                 :key="index"
                 :label="item.Label"
-                :value="index"
+                :value="item.Id"
               />
             </el-select>
           </el-form-item>
@@ -225,8 +225,9 @@ export default {
       currentCourseIndex: 0,
       // 搜索内容-课程名称
       searchCourseLabel: "",
-      // 搜索内容-课程类别的Id 
+      // 搜索内容-课程类别的Id
       searchCourseKindId: 0,
+      searchCourseCollegeId: 0,
       CourseKindLabel: "",
       // 学院的选项数据
       collegeList: [],
@@ -251,7 +252,7 @@ export default {
     }
   },
   methods: {
-    forceUpdate() { 
+    forceUpdate() {
       this.$forceUpdate();
     },
     onChangeTabs(item) {
@@ -267,35 +268,28 @@ export default {
       this.showViewer = false;
     },
 
-    // 通过搜索具体内容查询获取列表
-    async searchSubmit() {
-      const that = this;
-      const res = await getCourseList("", {
-        label: this.searchCourseLabel,
-        kindid: this.searchCourseKindId
-      });
-      if (res.code == 200) {
-        this.courseList = res.data ? res.data : [];
-      }
-    },
     // 根据课程类别获取课程列表
     async getCourseListOfKind() {
-      const res = await GetCourseOfKind(
+      let that = this; 
+      let res = await GetCourseOfKind(
         "",
         {
-          label: this.searchCourseLabel,
+          label: that.searchCourseLabel,
           all: 1,
-          kindid: this.searchCourseKindId
+          kindid: that.searchCourseKindId,
+          collegeID: that.searchCourseCollegeId, 
+          public:-1 //获取全部
         },
         ""
       );
       if (res.code == 200) {
-        this.courseList = res.data ? res.data : [];
+        that.courseList = res.data ? res.data : [];
       }
     },
     // 获取所有学院以及所属的课程类别
     async getAllCollegeWithCourseKind() {
-      const res = await getCollegeWithCourseKind("", { include: 1 });
+      let that = this;
+      let res = await getCollegeWithCourseKind("", { include: 1 });
       if (res.code == 200) {
         this.collegeList = res.data ? res.data : [];
       }
@@ -313,6 +307,7 @@ export default {
       this.courseList = [];
       this.searchCourseKindId = 0;
       let currentCollege = null;
+      this.searchCourseCollegeId = selVa;
       this.collegeList.forEach(item => {
         if (item.Id == selVa) {
           currentCollege = item;
@@ -320,14 +315,8 @@ export default {
       });
       if (currentCollege && currentCollege.Children) {
         this.courseKindsOps = currentCollege.Children;
-        if (this.courseKindsOps[0]) {
-          this.searchCourseKindId = this.courseKindsOps[0].Id;
-          this.CourseKindLabel = this.courseKindsOps[0].Label;
-        }else{
 
-        }
-
-        // this.getCourseListOfKind();
+        this.searchCourseKindId = 0;
       }
     },
 

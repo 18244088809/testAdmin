@@ -19,26 +19,41 @@
         <el-input v-model="currentItemData.Address" />
       </el-form-item>
       <div class="flex_dom">
-        <el-form-item label="年度上限">
-          <el-input-number :min="0" label="每年的招生上限" v-model="currentItemData.MaxPerYear" />
-        </el-form-item>
-        <span>每年该校区的招生上限达到后 校区管理员不能再通过后台直接添加学员.</span>
+        <el-tooltip
+          effect="light"
+          class="flex_1 m-r-10"
+          content="每年该校区的招生上限达到后 校区管理员不能再通过后台直接添加学员."
+          placement="top"
+        >
+          <el-form-item label="年度上限">
+            <el-input-number :min="0" label="每年的招生上限" v-model="currentItemData.MaxPerYear" />
+          </el-form-item>
+        </el-tooltip>
       </div>
       <div class="flex_dom">
-        <el-form-item label="总上限">
-          <el-input-number :min="0" label="总的招生上限" v-model="currentItemData.MaxAllYear" />
-        </el-form-item>
-        <span>该校区总的招生上限达到后 校区管理员不能再通过后台直接添加学员.</span>
+        <el-tooltip
+          effect="light"
+          class="flex_1 m-r-10"
+          content="该校区总的招生上限达到后 校区管理员不能再通过后台直接添加学员."
+          placement="top"
+        >
+          <el-form-item label="总上限">
+            <el-input-number :min="0" label="总的招生上限" v-model="currentItemData.MaxAllYear" />
+          </el-form-item>
+        </el-tooltip>
       </div>
       <!-- 校区负责人 -->
-      <el-form-item v-if="currentItemData.MasterLabel==''" label="负责人">请在右边校区员工里勾选负责人</el-form-item>
-      <el-form-item v-else label="负责人">{{currentItemData.MasterLabel}}</el-form-item>
+      <el-tooltip effect="light" content="请在右边校区员工里勾选负责人 ." placement="top">
+        <el-form-item label="负责人">{{currentItemData.MasterLabel}}</el-form-item>
+      </el-tooltip>
       <el-form-item label="备注">
         <el-input v-model="currentItemData.Description" />
       </el-form-item>
-      <el-form-item label="网址">
-        <el-input v-model="currentItemData.Domain" />
-      </el-form-item>
+      <el-tooltip effect="light" content=" 如果需要绑定网址请联系网管设置域名 ." placement="top">
+        <el-form-item label="网址">
+          <el-input v-model="currentItemData.Domain" />
+        </el-form-item>
+      </el-tooltip>
     </el-form>
     <div class="around-center marg20">
       <el-button

@@ -119,8 +119,7 @@
 import { queryStudentCert } from "@/api/student";
 import { addCert, updateCert, listCert, deleteCert } from "@/api/certificate";
 
-import $ImgHttp from "@/api/ImgAPI";
-import { GetCourseOfKind } from "@/api/course";
+import $ImgHttp from "@/api/ImgAPI"; 
 import common from "@/utils/common";
 export default {
   name: "studentCertificate",

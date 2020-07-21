@@ -6,8 +6,8 @@ import store from '@/store'
  * @param role
  * @param route
  */
-function hasPermission(role, route) { 
-  if (route.meta && route.meta.roles) { 
+function hasPermission(role, route) {
+  if (route.meta && route.meta.roles) {
     return route.meta.roles.includes(role)
   } else {
     return true
@@ -54,28 +54,9 @@ const actions = {
         await store.dispatch('manager/getInfo')
       }
       let accessedRoutes
-      // if (store.getters.manager.role == 1) {
-      //   // 分校工作员
-      //   accessedRoutes = asyncRoutes || []
-      // } else {
-        // 管理员
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, store.getters.manager.Role)
-      // }
+      accessedRoutes = filterAsyncRoutes(asyncRoutes, store.getters.manager.Role)
 
-      // const topPlatformRoute = {
-      //   path: '/platform',
-      //   component: Layout,
-      //   redirect: 'noRedirect',
-      //   alwaysShow: true,
-      //   name: 'platform',
-      //   meta: {
-      //     title: 'platform',
-      //     icon: 'nested'
-      //   },
-      //   children: [
-      //   ]
-      // }
-      let myPlatformList = store.getters.manager.myPlatformList;  
+      let myPlatformList = store.getters.manager.myPlatformList;
       if (myPlatformList) {
         let index = 0;
         myPlatformList.forEach(platform => {
@@ -87,65 +68,8 @@ const actions = {
             name: platform.Id,
             meta: { title: platform.Label, icon: "platform" },
             children: [
-              // {
-              //   path: 'web',
-              //   redirect: 'noRedirect',
-              //   component: () => import('@/views/platform/web/container'), // Parent router-view
-              //   name: 'web' + platform.Id.toString(10),
-              //   meta: { title: 'web', icon: "website" },
-              //   children: [
-              //     {
-              //       path: 'setting/' + platform.Id.toString(10),
-              //       name: 'setting' + index.toString(10),
-              //       component: () => import('@/views/platform/web/webSetting'),
-              //       meta: { title: 'setting', icon: "nested" }
-              //     },
-              //     {
-              //       path: 'banner/' + platform.Id.toString(10),
-              //       component: () => import('@/views/platform/web/banner'),
-              //       name: 'banner' + index.toString(10),
-              //       meta: { title: 'banner', icon: "banner" }
-              //     },
-              //     {
-              //       path: 'docDownload/' + platform.Id.toString(10),
-              //       name: 'docDownload' + index.toString(10),
-              //       component: () => import('@/views/platform/web/docDownload'),
-              //       meta: { title: 'docDownload', icon: "download" }
-              //     },
-              //     {
-              //       path: 'news/' + platform.Id.toString(10),
-              //       name: 'newsList' + index.toString(10),
-              //       component: () => import('@/views/platform/web/news'),
-              //       meta: { title: 'news', icon: "news" }
-              //     },
-                 
-              //     {
-              //       path: 'business/' + platform.Id.toString(10),
-              //       name: 'business' + index.toString(10),
-              //       component: () => import('@/views/platform/web/business'),
-              //       meta: { title: 'business', icon: "table" }
-              //     },
-              //     {
-              //       path: 'teacher/' + platform.Id.toString(10),
-              //       name: 'teacher' + index.toString(10),
-              //       component: () => import('@/views/platform/web/teacher'),
-              //       meta: { title: 'teacher', icon: "hotteacher" }
-              //     },
-              //     {
-              //       path: 'honor/' + platform.Id.toString(10),
-              //       name: 'honor' + index.toString(10),
-              //       component: () => import('@/views/platform/web/honor'),
-              //       meta: { title: 'honorList', icon: "star" }
-              //     },
-                  
-              //     // {
-              //     //   path: 'linker/' + platform.Id.toString(10),
-              //     //   name: 'linker' + index.toString(10),
-              //     //   component: () => import('@/views/platform/web/linker'),
-              //     //   meta: { title: 'linker', icon: "linker" }
-              //     // }
-              //   ]
-              // } ,
+
+
               {
                 path: 'template/' + platform.Id,
                 component: () => import('@/views/platform/template'),
@@ -153,10 +77,10 @@ const actions = {
                 meta: { title: 'template', icon: 'tree' }
               },
               {
-                path: 'webContent/' + platform.Id,
-                component: () => import('@/views/platform/template'),
-                name: 'webContent' + index.toString(10),
-                meta: { title: 'business', icon: 'table' }
+                path: 'news/' + platform.Id.toString(10),
+                name: 'newsList' + index.toString(10),
+                component: () => import('@/views/platform/web/news'),
+                meta: { title: 'news', icon: "news" }
               },
               {
                 path: 'managers/' + platform.Id,
@@ -184,21 +108,21 @@ const actions = {
                 name: 'contractList' + index.toString(10),
                 meta: { title: 'contractList', icon: 'contract' }
               }, {
-                path: 'guest/' + platform.Id,
-                name: 'guest' + index.toString(10),
-                component: () => import('@/views/platform/guest'),
-                meta: { title: 'guest', icon: "wechat" }
-              } ,
+                path: 'party/' + platform.Id,
+                name: 'party' + index.toString(10),
+                component: () => import('@/views/platform/party'),
+                meta: { title: 'party', icon: "wechat" }
+              },
               {
                 path: 'questions/' + platform.Id,
                 component: () => import('@/views/course/bookAsk'),
                 name: 'questions' + index.toString(10),
                 meta: { title: 'questions', icon: "user" },
               }
-              
+
             ]
           }
-          accessedRoutes.push(platformRoute) 
+          accessedRoutes.push(platformRoute)
         })
       }
       // accessedRoutes.push(topPlatformRoute)

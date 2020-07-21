@@ -5,42 +5,35 @@
         <el-table
           ref="refElTabel"
           tooltip-effect="light"
-          :data="newsListTable"
+          :data="partyList"
           height="100%"
           border
-          style="width: 100%" 
+          style="width: 100%"
         >
           <el-table-column prop="Id" label="ID" width="50"></el-table-column>
-          <el-table-column prop="Title" label="新闻标题" :show-overflow-tooltip="true">
+          <el-table-column prop="Label" label="活动标题"  width="300" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span
                 class="color-1f85aa font-w6 cursor"
                 @click="openMoreOptationDialog(scope.$index, scope.row)"
-              >{{ scope.row.Title }}</span>
+              >{{ scope.row.Label }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="新闻类型" width="100">
-            <template slot-scope="scope">
-              <span>{{common.FormatSelect(newsKindOptions,scope.row.KindID)}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="是否公共" width="100">
-            <template slot-scope="scope">
-              <span v-if="scope.row.Platform==0">公共新闻</span>
-              <span v-else>校区新闻</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="Creattime" :formatter="TimeFormatter" label="发布时间" width="130"></el-table-column>
+            <el-table-column prop="Description"  label="简介"></el-table-column>
+          <el-table-column prop="Starttime"   label="开始时间" width="130"></el-table-column>
+          <el-table-column prop="Endtime"  label="结束时间" width="130"></el-table-column>
+          <el-table-column prop="Createtime"  label="发布时间" width="130"></el-table-column>
           <el-table-column prop="AuthorLabel" label="发布人" width="100"></el-table-column>
-          <el-table-column label="操作" width="100" fixed="right">
+          <el-table-column label="操作" width="200" fixed="right">
             <template slot-scope="scope">
+               <el-button type="primary" @click="seePartyMember(scope.$index, scope.row)">查看报名名单</el-button>
               <el-button type="danger" @click="deleteNewsRow(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <div class="between-center m-v-15">
-        <el-button type="primary" @click="newsAdd">添加新闻</el-button>
+        <el-button type="primary" @click="newsAdd">添加活动</el-button>
         <el-pagination
           background
           @current-change=" currentPageChange"
@@ -51,17 +44,31 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 弹出框 -->
+
+    <my-dialog title="新闻详情编辑" :showLeft="false" :visible.sync="newsFormDialog">
+      <div slot="right_content">
+        <partyFormData
+          ref="newsForm"
+          :kindList="newsKindOptions"
+          :platform="currentPlatform"
+          :formItemData="currentItemData"
+          @updateRowData="updateNewsList"
+        ></partyFormData>
+      </div>
+    </my-dialog>
+
     <div>
-      <my-dialog title="新闻详情编辑" :showLeft="false" :visible.sync="newsFormDialog">
-        <div slot="right_content">
-          <newsFormData
-            ref="newsForm"
-            :kindList="newsKindOptions"
-            :platform="currentPlatform"
-            :formItemData="currentItemData"
-            @updateRowData="updateNewsList"
-          ></newsFormData>
+      <!-- 弹出框 -->
+      <my-dialog :visible.sync="moreOperationDialog" :title="currentItemData.Label">
+        <div slot="left_content" class="p_both20 p-b-20">
+           
+        </div>
+        <div slot="right_content" class="p_both20 p-b-20">
+          <el-tabs @tab-click="onChangeTabs">
+            <el-tab-pane label="报名名单" name="bbxy" id="bbxy">
+              <!-- <classStudent :formItemData="currentItemData"></classStudent> -->
+            </el-tab-pane>
+          </el-tabs>
         </div>
       </my-dialog>
     </div>
@@ -71,13 +78,13 @@
 <script>
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
-import newsFormData from "@/views/platform/web/component/newsFormData";
-import { GetPlatformNews, deleNewsRow } from "@/api/news";
+import partyFormData from "@/views/platform/web/component/partyFormData";
+import { getPartyList, deleteOne } from "@/api/party";
 export default {
   name: "newsList",
   components: {
     myDialog,
-    newsFormData
+    partyFormData
   },
   data() {
     return {
@@ -98,7 +105,7 @@ export default {
         }
       ],
       // 新闻的数据列表
-      newsListTable: [],
+      partyList: [],
       // 数据总条数
       allRows: 0,
       // 当前页数
@@ -107,29 +114,42 @@ export default {
       rows: 30,
       // 显示隐藏模态框
       newsFormDialog: false,
+      moreOperationDialog:false,
       // 模态框获得的单条数据
-      currentItemData: null,
+      currentItemData: {},
       // 当前索引
       currentNewsIndex: null,
       currentPlatform: 0,
-      documentHeight:500,
+      documentHeight: 500
     };
   },
   methods: {
+     onChangeTabs(item) {
+      item.$children[0].fire();
+    },
+
+    
+     // 查看报名的名单
+    async seePartyMember() {
+
+
+
+    },
     // 获取新闻的数据列表
     async GetPlatformNews() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
+        kind: 3,
         needPublic: false,
-        content: 1,
+        content: 0,
         limit: this.rows,
         offset: offsetRow
       };
-      let res = await GetPlatformNews(this.currentPlatform, newParams);
+      let res = await getPartyList(this.currentPlatform, newParams);
       if (res.code == 200) {
-        this.newsListTable = [];
+        this.partyList = [];
         if (res.data) {
-          this.newsListTable = res.data;
+          this.partyList = res.data;
         }
         this.allRows = res.title;
       }
@@ -148,7 +168,7 @@ export default {
       })
         .then(async () => {
           this.currentNewsIndex = index;
-          let res = await deleNewsRow(row.Id);
+          let res = await deleteOne(row.Id);
           if (res.code == 200) {
             this.GetPlatformNews();
           }
@@ -182,9 +202,9 @@ export default {
     updateNewsList(rowData, isType) {
       // isType编辑还是添加
       if (isType == 1) {
-        this.$set(this.newsListTable, this.currentNewsIndex, rowData);
+        this.$set(this.partyList, this.currentNewsIndex, rowData);
       } else if (isType == 0) {
-        this.newsListTable.unshift(rowData);
+        this.partyList.unshift(rowData);
       }
       this.newsFormDialog = false;
     }
@@ -196,7 +216,7 @@ export default {
     if (isNaN(this.currentPlatform)) {
       this.currentPlatform = 0;
     }
-     
+
     this.GetPlatformNews();
   }
 };

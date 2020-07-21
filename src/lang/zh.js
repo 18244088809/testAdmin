@@ -37,9 +37,9 @@ export default {
     taskExam: '任务模考',
     achievementAnalysis: '成绩分析',
     personalData:"个人设置",
-    guest:"官网报名学员",
+    party:"竞赛活动",
     bookAsk:"学员提问",
-    template:"官网模板",
+    template:"官网页面",
     questions:"学员提问",
   },
   navbar: {

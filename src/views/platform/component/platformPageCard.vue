@@ -1,15 +1,16 @@
 <template>
   <!-- 考勤记录表单 -->
-  <div>
-    <el-card shadow="hover"  class="card m-t-40 bg-f7">
-      <div slot="header" class="clearfix ">
+  <div >
+    <el-card shadow="hover" :class="'card m-t-40 '+systemRemainCSS"  >
+      <div slot="header" class="clearfix">
         <span>{{pageTemplateItem.url}}</span>
         <el-link
-          icon="el-icon-close"  @click="$emit('delete',index,pageTemplateItem)"
-          v-if="pageTemplateItem.url!='index'&&pageTemplateItem.url!='header'&&pageTemplateItem.url!='footer'"
+          icon="el-icon-close"
+          @click="$emit('delete',index,pageTemplateItem)"
+          v-if="systemRemain"
           style="float: right; "
         >删除</el-link>
-       
+        <label style="float: right; " class="font12" v-else>系统保留</label>
       </div>
       <el-form
         :model="pageTemplateItem"
@@ -20,9 +21,8 @@
         size="small"
         class="dialog-body-pad"
       >
-      
         <el-input v-model="pageTemplateItem.label" type="textarea" :rows="9" disabled></el-input>
-         <el-link
+        <el-link
           icon="el-icon-edit"
           style="float: right; padding: 0px 0px"
           @click="$emit('edit',index,pageTemplateItem)"
@@ -41,9 +41,16 @@ export default {
     pageTemplateItem: {},
     index: 0
   },
+  watch: {
+    pageTemplateItem(newval) {
+      this.checkSystemRemain();
+    }
+  },
 
   data() {
     return {
+      systemRemain: false,
+      systemRemainCSS:"",
       pageRules: {
         ShiJi: [
           { required: true, message: "实际课时不能为空", trigger: "blur" }
@@ -63,6 +70,19 @@ export default {
     };
   },
   methods: {
+    checkSystemRemain(){ 
+      if (
+        this.pageTemplateItem.url != "index" &&
+        this.pageTemplateItem.url != "header" &&
+        this.pageTemplateItem.url != "footer"
+      ) {
+        this.systemRemain = true;
+        this.systemRemainCSS ="bg-f7";
+      } else {
+        this.systemRemain = false;
+        this.systemRemainCSS ="bg-danlv";
+      }
+    },
     // 图片预览
     onPreview(src) {
       this.showViewer = true;
@@ -74,7 +94,9 @@ export default {
     }
   },
 
-  mounted() {}
+  mounted() {
+      this.checkSystemRemain()
+  }
 };
 </script>  
 <style scoped>

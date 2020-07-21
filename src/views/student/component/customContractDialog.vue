@@ -466,7 +466,7 @@ export default {
 
     // 获取课程
     async getCourse(coursekind) {
-      const res = await GetCourseOfKind("", { kindid: coursekind.Id });
+      const res = await GetCourseOfKind("", { kindid: coursekind.Id ,   public:-1  });
       this.courseList = res.data;
       if (this.courseList != null && this.courseList.length > 0) {
         this.currentItemData.CourseID = this.courseList[0].Id;

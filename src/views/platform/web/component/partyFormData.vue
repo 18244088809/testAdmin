@@ -22,17 +22,21 @@
         </el-tooltip>
         <div class="flex_1 m-l-30">
           <div class="flex_dom">
-            <el-form-item label="新闻类别">
-              <el-select v-model="currentItemData.KindID" placeholder="请选择类别">
-                <el-option
-                  :label="item.Label"
-                  :key="index"
-                  :value="item.value"
-                  v-for="(item,index) in kindList"
-                ></el-option>
-              </el-select>
+            <el-form-item label="是否开启" prop="Status">
+              <el-checkbox placeholder="请输入内容" v-model="currentItemData.Status"></el-checkbox>
             </el-form-item>
-            <el-form-item label="附件">
+            <el-form-item label="开启时间" prop="Starttime">
+              <el-date-picker placeholder="请输入内容" v-model="currentItemData.Starttime"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop="Endtime">
+              <el-date-picker placeholder="请输入内容" v-model="currentItemData.Endtime"></el-date-picker>
+            </el-form-item>
+          </div>
+          <div class="flex_dom">
+            <el-form-item label="活动标题" prop="Label" style="width:50%">
+              <el-input placeholder="请输入内容" v-model="currentItemData.Label"></el-input>
+            </el-form-item>
+            <el-form-item label="附件" style="width:50%">
               <el-upload
                 :multiple="false"
                 :on-change="uploadEnclosure"
@@ -44,16 +48,13 @@
               </el-upload>
             </el-form-item>
           </div>
-          <el-form-item label="新闻标题" prop="Title">
-            <el-input placeholder="请输入内容" v-model="currentItemData.Title"></el-input>
-          </el-form-item>
         </div>
       </div>
-      <el-form-item label="副标题">
+      <el-form-item label="简介">
         <el-input placeholder="请输入内容" v-model="currentItemData.Description"></el-input>
       </el-form-item>
-      <el-form-item label="内容">
-        <Tinymce ref :height="400" v-model="currentItemData.Content"   :id="currentItemData.Id"></Tinymce>
+      <el-form-item label="详情">
+        <Tinymce ref :height="400" v-model="currentItemData.Content" :id="currentItemData.Id"></Tinymce>
       </el-form-item>
     </el-form>
     <div class="center-end m-v-15">
@@ -65,11 +66,11 @@
 
 <script>
 import Tinymce from "@/components/Tinymce";
-import { editNewsRow, addNewsRow } from "@/api/news";
+import { updateParty, addParty } from "@/api/party";
 import common from "@/utils/common";
 import $ImgAPI from "@/api/ImgAPI";
 export default {
-  name: "newsForm",
+  name: "partyForm",
   props: {
     // 表单数据
     formItemData: {
@@ -100,7 +101,7 @@ export default {
       currentItemData: this.formItemData,
       // 表单验证
       newsFormRules: {
-        Title: [{ required: true, message: '标题不能为空', trigger: "blur" }]
+        Title: [{ required: true, message: "标题不能为空", trigger: "blur" }]
       }
     };
   },
@@ -123,7 +124,6 @@ export default {
       this.currentItemData = this.formItemData;
     },
 
-
     // 上传的图片
     async newsImgUpload(file) {
       let that = this;
@@ -143,7 +143,7 @@ export default {
       let that = this;
       let RightType = this.common.beforeUploadEnclosure(file.name);
       if (RightType) {
-        let res = await $ImgAPI.UploadImg("news", file.raw);
+        let res = await $ImgAPI.UploadImg("party", file.raw);
         if (res.code == 200) {
           that.currentItemData.Downfile = res.data;
         } else {
@@ -162,14 +162,12 @@ export default {
     // 添加或编辑数据
     saveNewsFormData() {
       // 验证表单数据
-      this.currentItemData.Platform = this.platform;
-      this.currentItemData.Isnews = 1;
+      this.currentItemData.PlatformID = this.platform; 
       this.$refs.newsForm.validate(async valid => {
-        if (valid) {
-          this.currentItemData.Isnews = 1; //新闻
+        if (valid) { 
           if (this.currentItemData.Id > 0) {
             // 编辑数据
-            let res = await editNewsRow(
+            let res = await updateParty(
               this.currentItemData.Id,
               "",
               this.currentItemData
@@ -185,7 +183,7 @@ export default {
             }
           } else if (this.currentItemData.Id == 0) {
             // 添加数据
-            let res = await addNewsRow("", "", this.currentItemData);
+            let res = await addParty("", "", this.currentItemData);
             if (res.code == 200) {
               this.isShowPlatformDialog = false;
               this.currentItemData = res.data;
