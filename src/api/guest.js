@@ -8,3 +8,12 @@ export function listSchoolTeacher(url, param, data) {
     data
   })
 } 
+// 获取所有班级
+export function listPartyMembers(url, param, data) {
+  return request({
+    url: '/guest/listPartyMembers/'+url,
+    method: 'get',
+    params: param,
+    data
+  })
+} 

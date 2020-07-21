@@ -9,7 +9,7 @@
       label-width="80px"
       size="small"
     >
-      <el-form-item label="活动名称" prop="Label">
+      <el-form-item label="班级名称" prop="Label">
         <el-input v-model="currentItemData.Label" @input="$forceUpdate()" placeholder="请输入班级名称"></el-input>
       </el-form-item>
       <el-form-item label="开班时间" prop="OpenTime">

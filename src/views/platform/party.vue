@@ -11,7 +11,7 @@
           style="width: 100%"
         >
           <el-table-column prop="Id" label="ID" width="50"></el-table-column>
-          <el-table-column prop="Label" label="活动标题"  width="300" :show-overflow-tooltip="true">
+          <el-table-column prop="Label" label="活动标题" width="300" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span
                 class="color-1f85aa font-w6 cursor"
@@ -19,14 +19,15 @@
               >{{ scope.row.Label }}</span>
             </template>
           </el-table-column>
-            <el-table-column prop="Description"  label="简介"></el-table-column>
-          <el-table-column prop="Starttime"   label="开始时间" width="130"></el-table-column>
-          <el-table-column prop="Endtime"  label="结束时间" width="130"></el-table-column>
-          <el-table-column prop="Createtime"  label="发布时间" width="130"></el-table-column>
+          <el-table-column prop="Starttime" label="开始时间" width="130"></el-table-column>
+          <el-table-column prop="Endtime" label="结束时间" width="130"></el-table-column>
+           <el-table-column prop="Address" label="举办地址" width="230"></el-table-column>
+          <el-table-column prop="Createtime" label="发布时间" width="130"></el-table-column>
+          <el-table-column prop="Description" label="简介"></el-table-column>
           <el-table-column prop="AuthorLabel" label="发布人" width="100"></el-table-column>
           <el-table-column label="操作" width="200" fixed="right">
             <template slot-scope="scope">
-               <el-button type="primary" @click="seePartyMember(scope.$index, scope.row)">查看报名名单</el-button>
+              <el-button type="primary" @click="seePartyMember(scope.$index, scope.row)">查看报名名单</el-button>
               <el-button type="danger" @click="deleteNewsRow(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -45,7 +46,7 @@
       </div>
     </div>
 
-    <my-dialog title="新闻详情编辑" :showLeft="false" :visible.sync="newsFormDialog">
+    <my-dialog title="竞赛活动详情编辑" :showLeft="false" :visible.sync="newsFormDialog">
       <div slot="right_content">
         <partyFormData
           ref="newsForm"
@@ -59,16 +60,14 @@
 
     <div>
       <!-- 弹出框 -->
-      <my-dialog :visible.sync="moreOperationDialog" :title="currentItemData.Label">
-        <div slot="left_content" class="p_both20 p-b-20">
-           
-        </div>
-        <div slot="right_content" class="p_both20 p-b-20">
-          <el-tabs @tab-click="onChangeTabs">
+      <my-dialog :visible.sync="moreOperationDialog" :showLeft="false" :title="currentItemData.Label">
+        <div slot="left_content" class="p_both20 p-b-20"></div>
+        <div slot="right_content" class="  p-b-20">
+              <partyMember :formItemData="currentItemData" ref="partyMember" :currentPlatform="currentPlatform"></partyMember>
+          <!-- <el-tabs @tab-click="onChangeTabs">
             <el-tab-pane label="报名名单" name="bbxy" id="bbxy">
-              <!-- <classStudent :formItemData="currentItemData"></classStudent> -->
             </el-tab-pane>
-          </el-tabs>
+          </el-tabs> -->
         </div>
       </my-dialog>
     </div>
@@ -79,32 +78,34 @@
 import myDialog from "@/components/myDialog/myDialog";
 import common from "@/utils/common";
 import partyFormData from "@/views/platform/web/component/partyFormData";
+import partyMember from "@/views/platform/component/partyMember";
 import { getPartyList, deleteOne } from "@/api/party";
 export default {
   name: "newsList",
   components: {
     myDialog,
-    partyFormData
+    partyFormData,
+    partyMember
   },
   data() {
     return {
       common,
-      // 新闻类型的选项
+      // 竞赛活动类型的选项
       newsKindOptions: [
         {
           value: 1,
-          Label: "行业新闻"
+          Label: "行业竞赛活动"
         },
         {
           value: 2,
-          Label: "我的新闻"
+          Label: "我的竞赛活动"
         },
         {
           value: 3,
           Label: "最新活动"
         }
       ],
-      // 新闻的数据列表
+      // 竞赛活动的数据列表
       partyList: [],
       // 数据总条数
       allRows: 0,
@@ -114,7 +115,7 @@ export default {
       rows: 30,
       // 显示隐藏模态框
       newsFormDialog: false,
-      moreOperationDialog:false,
+      moreOperationDialog: false,
       // 模态框获得的单条数据
       currentItemData: {},
       // 当前索引
@@ -124,18 +125,26 @@ export default {
     };
   },
   methods: {
-     onChangeTabs(item) {
+    onChangeTabs(item) {
       item.$children[0].fire();
     },
 
-    
-     // 查看报名的名单
-    async seePartyMember() {
-
-
-
+    // 查看报名的名单
+    async seePartyMember(index, row) {
+      this.moreOperationDialog = true
+          this.currentNewsIndex = index;
+      this.currentItemData = row;
+      this.$refs["partyMember"].fire()
+      // let res = await getPartyList(this.currentPlatform, newParams);
+      // if (res.code == 200) {
+      //   this.partyList = [];
+      //   if (res.data) {
+      //     this.partyList = res.data;
+      //   }
+      //   this.allRows = res.title;
+      // }
     },
-    // 获取新闻的数据列表
+    // 获取竞赛活动的数据列表
     async GetPlatformNews() {
       let offsetRow = (this.nowPage - 1) * this.rows;
       let newParams = {
@@ -145,9 +154,10 @@ export default {
         limit: this.rows,
         offset: offsetRow
       };
+         this.partyList = [];
       let res = await getPartyList(this.currentPlatform, newParams);
       if (res.code == 200) {
-        this.partyList = [];
+     
         if (res.data) {
           this.partyList = res.data;
         }
@@ -159,7 +169,7 @@ export default {
       this.nowPage = val;
       this.GetPlatformNews();
     },
-    // 删除新闻数据
+    // 删除竞赛活动数据
     deleteNewsRow: function(index, row) {
       this.$confirm("你确定要删除吗？删了之后找不回来哦", "提示", {
         confirmButtonText: "确定",
@@ -185,7 +195,7 @@ export default {
     TimeFormatter(row, column, cellValue) {
       return this.common.dateFormat(cellValue, 2);
     },
-    // 点击新增新闻
+    // 点击新增竞赛活动
     newsAdd() {
       this.newsFormDialog = true;
       this.currentItemData = {
@@ -198,7 +208,7 @@ export default {
         KindId: 1
       };
     },
-    // 编辑或者添加之后更新表格数据-新闻列表
+    // 编辑或者添加之后更新表格数据-竞赛活动列表
     updateNewsList(rowData, isType) {
       // isType编辑还是添加
       if (isType == 1) {

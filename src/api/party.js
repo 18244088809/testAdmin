@@ -54,3 +54,12 @@ export function setStatus(url, param, data) {
     data
   })
 }
+// 添加单条新闻数据
+export function getPartyMembers(url, param, data) {
+  return request({
+    url: '/party/getPartyList/'+url,
+    method: 'get',
+    params: param,
+    data
+  })
+}

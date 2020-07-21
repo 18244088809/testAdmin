@@ -17,7 +17,7 @@
             :auto-upload="false"
             action
           >
-            <img :src="currentItemData.icon" width="100px" height="100px" />
+            <img :src="currentItemData.Icon" width="100px" height="100px" />
           </el-upload>
         </el-tooltip>
         <div class="flex_1 m-l-30">
@@ -32,6 +32,12 @@
               <el-date-picker placeholder="请输入内容" v-model="currentItemData.Endtime"></el-date-picker>
             </el-form-item>
           </div>
+          <div class="flex_dom">
+            <el-form-item label="举办地址" prop="Status" style="width:100%">
+              <el-input placeholder="输入举办地址" style="width:100%" v-model="currentItemData.Address"></el-input>
+            </el-form-item>
+          </div>
+
           <div class="flex_dom">
             <el-form-item label="活动标题" prop="Label" style="width:50%">
               <el-input placeholder="请输入内容" v-model="currentItemData.Label"></el-input>
@@ -66,7 +72,7 @@
 
 <script>
 import Tinymce from "@/components/Tinymce";
-import { updateParty, addParty } from "@/api/party";
+import { updateParty, addParty, getOne } from "@/api/party";
 import common from "@/utils/common";
 import $ImgAPI from "@/api/ImgAPI";
 export default {
@@ -120,16 +126,20 @@ export default {
     this.setData();
   },
   methods: {
-    setData() {
+    async setData() {
       this.currentItemData = this.formItemData;
+      let res = await getOne(this.currentItemData.Id, "");
+      if (res.code == 200) {
+        this.currentItemData = res.data;
+      }
     },
 
     // 上传的图片
     async newsImgUpload(file) {
       let that = this;
-      let res = await $ImgAPI.UploadImg("news", file.raw);
+      let res = await $ImgAPI.UploadImg("party", file.raw);
       if (res.code == 200) {
-        that.currentItemData.icon = res.data;
+        that.currentItemData.Icon = res.data;
       } else {
         that.$message({
           message: res.title,
@@ -162,9 +172,9 @@ export default {
     // 添加或编辑数据
     saveNewsFormData() {
       // 验证表单数据
-      this.currentItemData.PlatformID = this.platform; 
+      this.currentItemData.PlatformID = this.platform;
       this.$refs.newsForm.validate(async valid => {
-        if (valid) { 
+        if (valid) {
           if (this.currentItemData.Id > 0) {
             // 编辑数据
             let res = await updateParty(
