@@ -55,7 +55,7 @@
         </el-form-item>
       </el-tooltip>
     </el-form>
-    <div class="around-center marg20">
+    <div class="around-center marg20" v-if="fromPlatform==0">
       <el-button
         type="warning"
         :disabled="false"
@@ -84,6 +84,11 @@ export default {
       type: Object,
       default: function() {
         return { Id: 0 };
+      },
+
+      fromPlatform: {
+        type: Number,
+        default: 0
       }
     },
     editEnable: {

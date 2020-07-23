@@ -1,6 +1,6 @@
 <template>
   <div class="font16 hgt_full" v-cloak>
-    <platformRowDetail :formItemData="customFormData" />
+    <platformRowDetail :fromPlatform="1" :formItemData="currentPlafformItem" />
   </div>
 </template> 
 <script>
@@ -14,30 +14,9 @@ export default {
   data() {
     return {
       common,
-      // 数据总条数
-      allRows: 0,
-      // 当前页数
-      nowPage: 1,
-      // 每页数据的总条
-      rows: 50,
-      // 班级的列表数据
-      templateList: [],
-      // 模态框获得的单条班级数据
-      classFormData: {},
-      // 当前操作的班级数据的索引
-      currentIndex: 0,
-      // 模态框当前激活的标签页
-      activeClassTabs: "bbxy",
-      // 控制班级更多操作的弹出框
-      moreOperationDialog: false,
-      classStudentsDialog: false,
-      searchClassLabel: "",
-      searchGrade: new Date(),
       // 当前的校区id
       currentPlatform: 0,
-      // 更多操作弹窗
-      editDialog: false,
-      documentHeight: 500
+      currentPlafformItem: {}
     };
   },
   methods: {},
@@ -52,15 +31,15 @@ export default {
       });
       return;
     }
-
-  //  let res = await updatePlatform(
-  //             this.currentItemData.Id,
-  //             "",
-  //             this.currentItemData
-  //           );
-
-
-
+    this.$nextTick(() => {
+      this.platforms = this.$store.getters.app.platformList;
+      let myplatformList = [];
+      this.platforms.forEach(platform => {
+        if (platform.Id == this.currentPlatform) {
+          this.currentPlafformItem = platform;
+        }
+      });
+    });
   }
 };
 </script>

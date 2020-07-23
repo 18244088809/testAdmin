@@ -73,12 +73,12 @@ const actions = {
             meta: { title: platform.Label, icon: "platform" },
             children: [
 
-              {
-                path: 'setting/' + platform.Id,
-                component: () => import('@/views/platform/setting'),
-                name: 'setting' + index.toString(10),
-                meta: { title: 'setting', icon: 'tree' }
-              },
+              // {
+              //   path: 'setting/' + platform.Id,
+              //   component: () => import('@/views/platform/setting'),
+              //   name: 'setting' + index.toString(10),
+              //   meta: { title: 'setting', icon: 'tree' }
+              // },
               {
                 path: 'template/' + platform.Id,
                 component: () => import('@/views/platform/template'),
