@@ -107,7 +107,7 @@ export default {
     // 图片上传
     async uploadBannerImg(file) {
       let res = await $ImgHttp.UploadImg(
-        "studentWork?attach=" + file.name,
+        "studentWork/0?attach=" + file.name,
         file.raw
       );
 

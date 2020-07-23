@@ -9,6 +9,7 @@ const getters = {
   token: state => state.manager.token, 
   manager: state => state.manager.manager, 
   permission_routes: state => state.permission.routes,
+  permission: state => state.permission,
   errorLogs: state => state.errorLog.logs,
   currentClassMate: state => state.class.currentClassMate
 

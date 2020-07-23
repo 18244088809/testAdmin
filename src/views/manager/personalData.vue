@@ -141,7 +141,7 @@ import crypto from "crypto";
 import $ from "jquery";
 import common from "@/utils/common";
 import $ImgAPI from "@/api/ImgAPI";
-import { updateMyInfo, getInfo, uploadFace, updatePSWD } from "@/api/manager";
+import { updateMyInfo, getInfo,  updatePSWD } from "@/api/manager";
 export default {
   name: "",
   data() {
@@ -194,7 +194,7 @@ export default {
     async imgUpload(file) {
       this.isbusy = true;
       let that = this;
-      let res = await $ImgAPI.UploadImg("manager", file.raw);
+      let res = await $ImgAPI.UploadImg("manager/0", file.raw);
       if (res.code == 200) {
         that.mineData.Face = res.data;
         that.isbusy = false;

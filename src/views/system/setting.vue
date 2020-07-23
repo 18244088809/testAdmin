@@ -23,6 +23,9 @@
          <el-form-item label="短信落款">
           <el-input v-model="common.systemForm.SMSName" placeholder="必须和 短信提供商哪里设置的落款名完全一致，否则短信发送会失败" />
         </el-form-item>
+         <el-form-item label="秘钥">
+          <el-input type="textarea" :rows="6" v-model="common.systemForm.Secret" placeholder="请输入秘钥" />
+        </el-form-item>
         <el-form-item label>
           <el-button @click="setSystemData">保存</el-button>
         </el-form-item>
@@ -62,7 +65,7 @@ export default {
     // 题库上传图片
     async ImgUploadQuestion(file, fileList) {
       let that = this;
-      let res = await $ImgHttp.UploadImg("system", file.raw);
+      let res = await $ImgHttp.UploadImg("system/0", file.raw);
       if (res.code != 200) {
         that.$message({
           message: res.data,

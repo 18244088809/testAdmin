@@ -44,14 +44,7 @@ export function updatePSWD(url, param, data) {
     data
   })
 } 
-export function uploadFace(url, param, data) {
-  return request({
-    url: '/manager/uploadFace' + url,
-    method: 'post',
-    params: param,
-    data
-  })
-} 
+ 
 export function getCodeImg(url, param, data) {
   return request({
     url: '/manager/getCaptcha/' + url,

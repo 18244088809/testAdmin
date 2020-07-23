@@ -331,7 +331,7 @@ export default {
     // 题库上传图片
     async ImgUploadQuestion(file, fileList) {
       this.isbusy = true;
-      let res = await $ImgHttp.UploadImg("exercise", file.raw);
+      let res = await $ImgHttp.UploadImg("exercise/0", file.raw);
       if (res.code != 200) {
         this.$message({
           message: res.data,

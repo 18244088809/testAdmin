@@ -1,31 +1,12 @@
 <template>
-  <div class="p_both10 p-t-5">
-    <!-- <el-form :inline="true" label-width="100px" class="m-t-20">
-      <el-form-item label="录入时间段">
-        <el-date-picker
-          v-model="queryEndDate"
-          type="daterange"
-          align="right"
-          unlink-panels
-          value-format="timestamp"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="common.datePickerOptions"
-          style="width:220px;"
-        />
-      </el-form-item>
-      <el-form-item label-width="30px">
-        <el-button type="primary" @click="getPageMembers" class="border0">查 询</el-button>
-      </el-form-item>
-    </el-form> -->
-    <div class="flex_column" :style="'height:'+documentHeight">
-      <div class="flex_1">
+  <div class="p_both10 p-t-5 hgt_full"> 
+    <div class="flex_column hgt_full" >
+      <div class="flex_1 hgt_full">
         <el-table
           ref="refElTabel"
           tooltip-effect="light"
           :data="members"
-          height="100%"
+          :height="documentHeight"
           border
           style="width: 100%"
         >
@@ -34,7 +15,7 @@
           <el-table-column prop="Realname" label="姓名" width="90"></el-table-column>
           <el-table-column prop="Tel" label="报名电话" width="130"></el-table-column>
           <el-table-column prop="Createtime" :formatter="TimeFormatter" label="报名时间" width="130"></el-table-column>
-          <el-table-column prop="Message" label="留言" ></el-table-column> 
+          <el-table-column prop="Message" label="留言"></el-table-column>
         </el-table>
       </div>
       <div class="between-center m-v-15">
@@ -87,7 +68,7 @@ export default {
       // 获取班级的所有学员
       members: [],
       // 复选框所选中的学员ID
-      documentHeight: 500
+      documentHeight:  document.body.clientHeight -150
     };
   },
   watch: {
@@ -95,25 +76,28 @@ export default {
       this.fire();
     }
   },
+  mounted() {
+    this.fire();
+  },
   methods: {
-     // 格式化日期
+    // 格式化日期
     TimeFormatter(row, column, cellValue) {
-      return this.common.dateFormat(cellValue,true);
+      return this.common.dateFormat(cellValue, true);
     },
     // 获取班级的所有学员
     async fire() {
-      this.documentHeight = document.body.clientHeight - 400;
+      // this.documentHeight = document.body.clientHeight - 100;
       this.serachStuList = [];
       this.ShowSearchForm = false;
       this.showSearchStuResult = false;
       this.getPageMembers();
     },
     async getPageMembers() {
-      let that  =this;
-      that.members =[];
+      let that = this;
+      that.members = [];
       let offsetRow = (that.nowPage - 1) * that.rows;
-      let res = await listPartyMembers(this.formItemData.Id,{ 
-        platform: that.currentPlatform, 
+      let res = await listPartyMembers(this.formItemData.Id, {
+        platform: that.currentPlatform,
         limit: that.rows,
         offset: offsetRow
       });

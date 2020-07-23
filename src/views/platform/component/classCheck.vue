@@ -215,7 +215,7 @@ export default {
     // 考勤表的图片上传
     async uploadClassCheckImg(file) {
       let that = this;
-      let res = await $ImgAPI.UploadImg("courseTime", file.raw);
+      let res = await $ImgAPI.UploadImg("courseTime/0", file.raw);
       if (res.code == 200) {
         that.$message({
           message: "操作成功",
@@ -233,7 +233,7 @@ export default {
     // 更换考勤表的图片
     async updateClassCheckImg(file, fileList, index) {
       let that = this;
-      let res = await $ImgAPI.UploadImg("courseTime", file.raw);
+      let res = await $ImgAPI.UploadImg("courseTime/0", file.raw);
       if (res.code == 200) {
         that.$message({
           message: "操作成功",

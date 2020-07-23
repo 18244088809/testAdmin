@@ -17,16 +17,7 @@ export function addcustomTracks(url, query, data) {
     params: query,
     data
   })
-}
-// 上传跟进记录中的照片
-export function uploadImgInTracks(url, query, data) {
-  return request({
-    url: '/helper/uploadFile/' + url,
-    method: 'post',
-    params: query,
-    data
-  })
-}
+} 
 // 回复跟进记录
 export function replyTracks(url, query, data) {
   return request({

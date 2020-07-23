@@ -90,12 +90,9 @@ export default {
         },
         {
           value: 2,
-          Label: "我的新闻"
-        },
-        {
-          value: 3,
-          Label: "最新活动"
+          Label: "政策资讯"
         }
+         
       ],
       // 新闻的数据列表
       newsListTable: [],

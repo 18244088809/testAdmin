@@ -100,8 +100,7 @@
 import {
   GetStudentDataTrackAnalysis,
   getCustomTracks,
-  addcustomTracks,
-  uploadImgInTracks,
+  addcustomTracks, 
   replyTracks,
   receiveSmsTrack,
   getTrackList,
@@ -186,7 +185,7 @@ export default {
     // 上传跟进记录的图片
     async uploadTrackImg(file) {
       let that = this;
-      const res = await $ImgAPI.UploadImg("track", file.raw);
+      const res = await $ImgAPI.UploadImg("track/0", file.raw);
       if (res.code == 200) {
         that.$message({
           message: "操作成功",

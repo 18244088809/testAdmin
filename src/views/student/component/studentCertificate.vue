@@ -200,7 +200,7 @@ export default {
     },
     // 学员资料图片上传
     async uploadCertificateImg(file) {
-      let res = await $ImgHttp.UploadImg("studentCert", file.raw);
+      let res = await $ImgHttp.UploadImg("studentCert/0", file.raw);
       if (res.code != 200) {
         this.$message({
           message: res.data,

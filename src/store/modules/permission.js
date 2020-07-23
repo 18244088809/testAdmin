@@ -1,6 +1,7 @@
 import { asyncRoutes, constantRoutes } from '@/router'
 import Layout from '@/layout'
 import store from '@/store'
+import { isUndefined } from 'xe-utils/methods'
 /**
  * Use meta.role to determine if the current user has permission
  * @param role
@@ -48,7 +49,7 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }) {
+  generateRoutes({ commit }, newMyplatfromlist) {
     return new Promise(async resolve => {
       if (!store.getters.manager.Tel) {
         await store.dispatch('manager/getInfo')
@@ -57,6 +58,9 @@ const actions = {
       accessedRoutes = filterAsyncRoutes(asyncRoutes, store.getters.manager.Role)
 
       let myPlatformList = store.getters.manager.myPlatformList;
+      if (newMyplatfromlist) {
+        myPlatformList = newMyplatfromlist;
+      } 
       if (myPlatformList) {
         let index = 0;
         myPlatformList.forEach(platform => {
@@ -69,7 +73,12 @@ const actions = {
             meta: { title: platform.Label, icon: "platform" },
             children: [
 
-
+              {
+                path: 'setting/' + platform.Id,
+                component: () => import('@/views/platform/setting'),
+                name: 'setting' + index.toString(10),
+                meta: { title: 'setting', icon: 'tree' }
+              },
               {
                 path: 'template/' + platform.Id,
                 component: () => import('@/views/platform/template'),
@@ -81,6 +90,12 @@ const actions = {
                 name: 'newsList' + index.toString(10),
                 component: () => import('@/views/platform/web/news'),
                 meta: { title: 'news', icon: "news" }
+              },
+              {
+                path: 'party/' + platform.Id,
+                name: 'party' + index.toString(10),
+                component: () => import('@/views/platform/party'),
+                meta: { title: 'party', icon: "wechat" }
               },
               {
                 path: 'managers/' + platform.Id,
@@ -107,11 +122,6 @@ const actions = {
                 component: () => import('@/views/student/contractList'),
                 name: 'contractList' + index.toString(10),
                 meta: { title: 'contractList', icon: 'contract' }
-              }, {
-                path: 'party/' + platform.Id,
-                name: 'party' + index.toString(10),
-                component: () => import('@/views/platform/party'),
-                meta: { title: 'party', icon: "wechat" }
               },
               {
                 path: 'questions/' + platform.Id,
@@ -130,6 +140,7 @@ const actions = {
       resolve(accessedRoutes)
     })
   }
+
 }
 
 export default {

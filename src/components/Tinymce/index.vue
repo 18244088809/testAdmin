@@ -154,7 +154,7 @@ export default {
         },
         async images_upload_handler(blobInfo, success, failure, progress) {
           progress(0); 
-          const res = await $ImgAPI.UploadImg("news", blobInfo.blob());
+          const res = await $ImgAPI.UploadImg("news/0", blobInfo.blob());
           if (res.code == 200) {
             success(res.data);
           } else {

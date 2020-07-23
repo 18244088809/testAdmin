@@ -163,8 +163,7 @@ import common from "@/utils/common";
 import {
   GetStudentDataTrackAnalysis,
   getCustomTracks,
-  addcustomTracks,
-  uploadImgInTracks,
+  addcustomTracks, 
   replyTracks,
   receiveSmsTrack,
   getTrackList,
@@ -359,7 +358,7 @@ export default {
     },
     // 学员资料图片上传
     async uploadCustomImg(file) {
-      let res = await $ImgHttp.UploadImg("custom", file.raw);
+      let res = await $ImgHttp.UploadImg("custom/0", file.raw);
       if (res.code != 200) {
         this.$message({
           message: res.data,

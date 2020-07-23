@@ -154,15 +154,7 @@ export default {
         });
       });
     },
-    // 打开更多操作模态框
-    openMoreOptationDialog(index, row) {
-      this.classFormData = { ...row };
-      this.classFormData.OpenTime = row.OpenTime * 1000;
-      this.classFormData.Endtime = row.Endtime * 1000;
-      this.classFormData.Createtime = row.Createtime * 1000;
-      this.moreOperationDialog = true;
-      this.currentIndex = index;
-    },
+ 
     //打开班级信息模态框
     createTemplate(type) {
       this.$prompt(
@@ -175,6 +167,8 @@ export default {
       ).then(async ({ value }) => {
         this.classFormData = {};
         this.classFormData.url = value;
+        this.classFormData.label = "请修改页面备注";
+        this.classFormData.content = "<div > 这个页面刚刚建好,还没填写内容</div>";
         this.editDialog = true;
         return;
       });

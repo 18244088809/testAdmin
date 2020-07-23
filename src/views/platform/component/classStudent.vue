@@ -102,8 +102,7 @@ import {
 import {
   GetStudentDataTrackAnalysis,
   getCustomTracks,
-  addcustomTracks,
-  uploadImgInTracks,
+  addcustomTracks, 
   replyTracks,
   receiveSmsTrack,
   getTrackList,

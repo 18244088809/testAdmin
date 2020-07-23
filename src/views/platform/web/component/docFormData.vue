@@ -152,7 +152,7 @@ export default {
     // 上传的图片
     async newsImgUpload(file) {
       let that = this;
-      let res = await $ImgAPI.UploadImg("news", file.raw);
+      let res = await $ImgAPI.UploadImg("news/0", file.raw);
       if (res.code == 200) {
         that.currentItemData.icon = res.data;
       } else {
@@ -168,7 +168,7 @@ export default {
       let that = this;
       let RightType = this.common.beforeUploadEnclosure(file.name);
       if (RightType) {
-        let res = await $ImgAPI.UploadImg("news", file.raw);
+        let res = await $ImgAPI.UploadImg("news/0", file.raw);
         if (res.code == 200) {
           that.currentItemData.Downfile = res.data;
         } else {

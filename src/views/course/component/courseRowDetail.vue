@@ -306,7 +306,7 @@ export default {
         this.isbusy3 = true;
       }
       let that = this;
-      const res = await $ImgAPI.UploadImg("course", file.raw);
+      const res = await $ImgAPI.UploadImg("course/0", file.raw);
 
       if (res.code == 200) {
         if (type == 1) {

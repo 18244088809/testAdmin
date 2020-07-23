@@ -61,8 +61,8 @@
     <div>
       <!-- 弹出框 -->
       <my-dialog :visible.sync="moreOperationDialog" :showLeft="false" :title="currentItemData.Label">
-        <div slot="left_content" class="p_both20 p-b-20"></div>
-        <div slot="right_content" class="  p-b-20">
+        
+        <div slot="right_content" class="hgt_full  p-b-20">
               <partyMember :formItemData="currentItemData" ref="partyMember" :currentPlatform="currentPlatform"></partyMember>
           <!-- <el-tabs @tab-click="onChangeTabs">
             <el-tab-pane label="报名名单" name="bbxy" id="bbxy">

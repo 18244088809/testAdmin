@@ -252,7 +252,7 @@ export default {
         });
         return;
       }
-      let res = await $ImgAPI.UploadImg("platform?originname=true", file.raw);
+      let res = await $ImgAPI.UploadImg("platform/"+  this.currentPlatform +"?originname=true", file.raw);
       if (res.code == 200) {
         item.image = res.data;
         that.$forceUpdate();
@@ -375,7 +375,7 @@ export default {
     async uploadAttach(file) {
       // 上传附件之前的验证
       let that = this;
-      let res = await $ImgAPI.UploadImg("platform?originname=true", file.raw);
+      let res = await $ImgAPI.UploadImg("platform/"+  this.currentPlatform +"?originname=true", file.raw);
       if (res.code == 200) {
         that.fileURL = res.data;
       } else {

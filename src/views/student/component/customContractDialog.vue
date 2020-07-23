@@ -379,7 +379,7 @@ export default {
     // 学员合同图片上传
     async uploadContractImg(file) {
       let that = this;
-      const res = await $ImgAPI.UploadImg("contract", file.raw);
+      const res = await $ImgAPI.UploadImg("contract/0", file.raw);
       if (res.code == 200) {
         that.$message({
           message: "操作成功",

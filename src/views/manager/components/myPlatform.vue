@@ -29,15 +29,15 @@ export default {
     currentPlatform: {
       type: Number,
       default: 0
-    },
-      documentHeight:500,
+    }
   },
   name: "setPlatform",
   data() {
     return {
       platforms: [],
       myPlatforms: [],
-      removePlatforms: []
+      removePlatforms: [],
+      documentHeight: 500
     };
   },
   watch: {
@@ -47,8 +47,9 @@ export default {
   },
 
   methods: {
-     fire() { this.documentHeight = document.body.clientHeight-400;
-      if (!this.formItemData||!this.formItemData.Id) {
+    fire() {
+      this.documentHeight = document.body.clientHeight - 400;
+      if (!this.formItemData || !this.formItemData.Id) {
         return;
       }
       this.getManagerPlatforms();
@@ -92,8 +93,30 @@ export default {
         { remove: this.removePlatforms.join(",") },
         selectedIDS
       );
+
+      if (this.formItemData.Id == this.$store.getters.manager.Id) {
+        // 如果管理的正好是自己.那么就更新自己的左侧导航
+
+        this.platforms = this.$store.getters.app.platformList.slice(
+          0,
+          this.$store.getters.app.platformList.length
+        );
+        let myplatformList = [];
+        this.platforms.forEach(platform => {
+          platform.Selected = false;
+          res.data.forEach(hasPlatform => {
+            if (platform.Id == hasPlatform) {
+              myplatformList.push(platform);
+            }
+          });
+        });
+
+        this.$store
+          .dispatch("permission/generateRoutes", myplatformList)
+          .then(response => {});
+      }
       this.$message({
-        message: "操作成功",
+        message: "修改成功",
         type: "success"
       });
     }

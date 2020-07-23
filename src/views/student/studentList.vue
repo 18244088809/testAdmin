@@ -280,8 +280,7 @@ import $ from "jquery";
 import {
   GetStudentDataTrackAnalysis,
   getCustomTracks,
-  addcustomTracks,
-  uploadImgInTracks,
+  addcustomTracks, 
   replyTracks,
   receiveSmsTrack,
   getTrackList,
@@ -912,7 +911,7 @@ export default {
               this.websocketsend(
                 '{"command":"UploadFile","arguments":{"url":"' +
                   url +
-                  '/api/managecourse/uploadFile/telRecord","file":"' +
+                  '/api/helper/uploadFile/telRecord/0","file":"' +
                   msgJsonData.dynamicdata.recordpath +
                   '","diykey":"attach","diyvalue":"' +
                   currentRecordname +
